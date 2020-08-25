@@ -8,16 +8,9 @@ namespace HZDCoreEditor
 {
     class Program
     {
-        private static IMp3FrameDecompressor CreateFrameDecompressor(Mp3Frame frame)
-        {
-            WaveFormat waveFormat = new Mp3WaveFormat(frame.SampleRate, frame.ChannelMode == ChannelMode.Mono ? 1 : 2,
-                frame.FrameLength, frame.BitRate);
-            return new AcmMp3FrameDecompressor(waveFormat);
-        }
-
         static void Main(string[] args)
         {
-            DecodeLocalizationTest();
+            DecodeAudioTest();
             return;
 
             var testFiles = new string[]

@@ -133,13 +133,14 @@ namespace Decima
 
                 for (int i = 0; i < itemCount; i++)
                 {
-                    var newObj = RTTI.TestDeserializeType<T>(reader);
+                    var newObj = RTTI.DeserializeType<T>(reader);
 
-                    Add((T)newObj);
+                    Add(newObj);
                 }
             }
         }
 
+        [DebuggerDisplay("{Value}")]
         public class HashMap<T> : RTTI.ISerializable
         {
             Dictionary<uint, T> Value;
@@ -152,9 +153,9 @@ namespace Decima
                 for (uint i = 0; i < itemCount; i++)
                 {
                     var unknown = reader.ReadUInt32();
-                    var newObj = RTTI.TestDeserializeType<T>(reader);
+                    var newObj = RTTI.DeserializeType<T>(reader);
 
-                    items.Add(unknown, (T)newObj);
+                    items.Add(unknown, newObj);
                 }
 
                 Value = items;
@@ -180,9 +181,9 @@ namespace Decima
                 for (uint i = 0; i < itemCount; i++)
                 {
                     uint entryHash = reader.ReadUInt32();
-                    var newObj = RTTI.TestDeserializeType<T>(reader);
+                    var newObj = RTTI.DeserializeType<T>(reader);
 
-                    setItems.Add(entryHash, (T)newObj);
+                    setItems.Add(entryHash, newObj);
                 }
 
                 Value = setItems;

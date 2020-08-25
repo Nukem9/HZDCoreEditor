@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace Decima
@@ -9,42 +10,48 @@ namespace Decima
     {
         public static readonly Dictionary<ulong, Type> TypeIdLookupMap;
 
+        /// <summary>
+        /// Describes a class, struct, or enum that is serialized as Core binary data
+        /// </summary>
         [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum, AllowMultiple = false, Inherited = false)]
         public class SerializableAttribute : Attribute
         {
             public readonly ulong BinaryTypeId;
-            public readonly uint RuntimeSizeOf;
             public readonly bool IsPrimitiveType;
 
-            public SerializableAttribute(ulong binaryTypeId, uint runtimeSizeOf, bool isPrimitiveType = false)
+            public SerializableAttribute(ulong binaryTypeId, bool isPrimitiveType = false)
             {
                 BinaryTypeId = binaryTypeId;
-                RuntimeSizeOf = runtimeSizeOf;
                 IsPrimitiveType = isPrimitiveType;
             }
         }
 
+        /// <summary>
+        /// Describes a class member that is serialized as Core binary data
+        /// </summary>
         [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
         public class MemberAttribute : Attribute
         {
-            public readonly uint RuntimeOffset;
             public readonly uint Order;
+            public readonly uint RuntimeOffset;
+            public readonly string Category;
 
-            public MemberAttribute(uint runtimeOffset, uint order)
+            public MemberAttribute(uint order, uint runtimeOffset, string category = "")
             {
-                RuntimeOffset = runtimeOffset;
                 Order = order;
+                RuntimeOffset = runtimeOffset;
+                Category = category;
             }
         }
 
+        /// <summary>
+        /// Describes a class member that is emulating C++ multiple base class inheritance
+        /// </summary>
         [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
-        public class BrokenReflectionOffsetAttribute : Attribute
+        public class BaseClassAttribute : MemberAttribute
         {
-            public readonly uint RealOffset;
-
-            public BrokenReflectionOffsetAttribute(uint realOffset)
+            public BaseClassAttribute(uint runtimeOffset) : base(0, runtimeOffset, null)
             {
-                RealOffset = realOffset;
             }
         }
 
@@ -62,9 +69,7 @@ namespace Decima
                 //throw new NotImplementedException();
             }
 
-            public void SerializeExtraData(BinaryWriter writer)
-            {
-            }
+            public void SerializeExtraData(BinaryWriter writer) => throw new NotImplementedException();
         }
 
         static RTTI()
@@ -81,183 +86,129 @@ namespace Decima
             }
         }
 
-        private static bool TryReadPrimitiveType(out object value, Type type, BinaryReader reader)
+        public static T DeserializeType<T>(BinaryReader reader)
         {
-            // The game engine does a direct memory copy for these trivial types
-            if (type == typeof(bool))
-                value = reader.ReadBoolean();
-            else if (type == typeof(sbyte))
-                value = reader.ReadSByte();
-            else if (type == typeof(byte))
-                value = reader.ReadByte();
-            else if (type == typeof(short))
-                value = reader.ReadInt16();
-            else if (type == typeof(ushort))
-                value = reader.ReadUInt16();
-            else if (type == typeof(int))
-                value = reader.ReadInt32();
-            else if (type == typeof(uint))
-                value = reader.ReadUInt32();
-            else if (type == typeof(long))
-                value = reader.ReadInt64();
-            else if (type == typeof(ulong))
-                value = reader.ReadUInt64();
-            else if (type == typeof(float))
-                value = reader.ReadSingle();
-            else if (type == typeof(double))
-                value = reader.ReadDouble();
-            else
-            {
-                value = null;
-                return false;
-            }
-
-            return true;
+            return (T)DeserializeType(reader, typeof(T));
         }
 
-        public static object TestDeserializeType<T>(BinaryReader reader)
+        public static object DeserializeType(BinaryReader reader, Type type)
         {
-            var baseType = typeof(T);
-
-            if (TryReadPrimitiveType(out object value, baseType, reader))
-                return value;
-            else
+            // Enums are essentially trivial types
+            if (type.IsEnum)
             {
-                // Class, structure, or enum. Overwrite the current object instance if no member offset is given.
-                var newObj = Activator.CreateInstance(baseType);
+                if (!TryReadTrivialType(reader, type.GetEnumUnderlyingType(), out object enumValue))
+                    throw new Exception("Failed to handle underlying enum type");
 
-                if (newObj is ISerializable)
+                return enumValue;
+            }
+
+            // Actual trivial types
+            if (TryReadTrivialType(reader, type, out object trivialValue))
+                return trivialValue;
+
+            // Classes and structs
+            if (type.IsClass || type.IsValueType)
+            {
+                var newObj = Activator.CreateInstance(type);
+
+                if (newObj is ISerializable asSerializable)
                 {
                     // Custom deserialization function implemented. Let the interface do the work.
-                    (newObj as ISerializable).Deserialize(reader);
+                    asSerializable.Deserialize(reader);
                 }
                 else
                 {
-                    // Manually build the hierarchy since C# doesn't allow you to grab private fields from base classes (Type.GetFields()). This
-                    // recursively parses child members & assumes multiple inheritance doesn't exist.
-                    var baseClassTypes = new List<Type>();
-                    var allStructureFields = new List<FieldInfo>();
+                    //
+                    // This tries to replicate HZD's sorting mechanism. Rebuild class member hierarchy for a few reasons:
+                    //
+                    // - C# doesn't allow multiple inheritance / multiple base classes.
+                    // - C# doesn't expose private fields from base classes with ParentType.GetFields().
+                    // - Things are not well defined when multiple fields are declared at offset 0. Their reflection parser is buggy.
+                    //
+                    // All [RTTI.Member()] fields are enumerated and sorted by offset, order, and most complex class type. Multiple
+                    // inheritance offsets are handled by the dumping code ([RTTI.BaseClass()]) so it doesn't need to be taken into account.
+                    //
+                    // Test: AIDynamicObstacleRectangleResource members are out of order and overlap the base (AIDynamicObstacleResource)
+                    // Test: CubemapZone emulated MI (Shape2DExtrusion)
+                    //
+                    var allFields = new List<(MemberAttribute Attr, uint Offset, uint ClassOrder, FieldInfo Field)>();
+                    uint classIndex = 0;
 
-                    for (var currentType = baseType; currentType != null; currentType = currentType.BaseType)
+                    void addFieldsRecursively(Type classType, uint offset = 0)
                     {
-                        if (currentType.IsDefined(typeof(SerializableAttribute)))
-                            baseClassTypes.Add(currentType);
-                    }
-
-                    for (int i = baseClassTypes.Count - 1; i >= 0; i--)
-                    {
-                        var fields = baseClassTypes[i].GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-
-                        allStructureFields.AddRange(fields);
-                    }
-
-                    // Fields that have BrokenReflectionOffsetAttribute must be read first regardless of field order
-                    foreach (var field in allStructureFields)
-                    {
-                        var reflectionFixAttr = field.GetCustomAttribute<BrokenReflectionOffsetAttribute>();
-
-                        if (reflectionFixAttr != null)
+                        // Drill down until System.Object is hit
+                        for (; classType != null; classType = classType.BaseType)
                         {
-                            if (reflectionFixAttr.RealOffset != 0)
-                                throw new Exception("This code doesn't handle non-0 offsets");
+                            if (!classType.IsDefined(typeof(SerializableAttribute)))
+                                continue;
 
-                            DeserializeType(newObj, field, reader);
+                            classIndex++;
+                            var fields = classType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
+
+                            foreach (var field in fields)
+                            {
+                                var baseClassAttr = field.GetCustomAttribute<BaseClassAttribute>();
+                                var reflectionAttr = field.GetCustomAttribute<MemberAttribute>();
+
+                                if (baseClassAttr != null)
+                                    addFieldsRecursively(field.FieldType, offset + baseClassAttr.RuntimeOffset);
+                                else if (reflectionAttr != null)
+                                    allFields.Add((reflectionAttr, offset + reflectionAttr.RuntimeOffset, classIndex, field));
+                            }
                         }
                     }
 
-                    foreach (var field in allStructureFields)
-                    {
-                        var reflectionFixAttr = field.GetCustomAttribute<BrokenReflectionOffsetAttribute>();
+                    // Sort: member offset, member index, class index
+                    addFieldsRecursively(type);
 
-                        if (reflectionFixAttr == null)
-                            DeserializeType(newObj, field, reader);
-                    }
+                    var finalHierarchy = allFields
+                        .OrderBy(x => x.Offset)
+                        .ThenBy(x => x.Attr.Order)
+                        .ThenByDescending(x => x.ClassOrder)
+                        .Select(x => x.Field);
+
+                    foreach (var field in finalHierarchy)
+                        DeserializeTypeFromField(null, null, field);
                 }
+
+                // Done reading. Now copy what the engine does and notify MsgReadBinary subscribers.
+                if (newObj is IExtraBinaryDataCallback asExtraBinaryDataCallback)
+                    asExtraBinaryDataCallback.DeserializeExtraData(reader);
 
                 return newObj;
             }
 
+            // Invalid
             return null;
         }
 
-        public static void DeserializeType(object instance, FieldInfo info, BinaryReader reader)
+        public static void DeserializeTypeFromField(BinaryReader reader, object instance, FieldInfo field)
         {
-            var baseType = info == null ? instance.GetType() : info.FieldType;
+            field.SetValue(instance, DeserializeType(reader, field.FieldType));
+        }
 
-            if (baseType.IsEnum)
+        private static bool TryReadTrivialType(BinaryReader reader, Type type, out object value)
+        {
+            bool valid = true;
+
+            // The game always does a direct memory copy for these
+            value = Type.GetTypeCode(type) switch
             {
-                if (TryReadPrimitiveType(out object value, baseType.GetEnumUnderlyingType(), reader))
-                    info.SetValue(instance, value);
-                else
-                    throw new Exception("Failed to handle underlying enum type");
-            }
-            else if (TryReadPrimitiveType(out object value, baseType, reader))
-                info.SetValue(instance, value);
-            else
-            {
-                // Class, structure, or enum. Overwrite the current object instance if no member offset is given.
-                var newObj = info == null ? instance : Activator.CreateInstance(baseType);
+                TypeCode.Boolean => reader.ReadBoolean(),
+                TypeCode.SByte => reader.ReadSByte(),
+                TypeCode.Byte => reader.ReadByte(),
+                TypeCode.Int16 => reader.ReadInt16(),
+                TypeCode.UInt16 => reader.ReadUInt16(),
+                TypeCode.Int32 => reader.ReadInt32(),
+                TypeCode.UInt32 => reader.ReadUInt32(),
+                TypeCode.Int64 => reader.ReadInt64(),
+                TypeCode.UInt64 => reader.ReadUInt64(),
+                TypeCode.Single => reader.ReadSingle(),
+                TypeCode.Double => reader.ReadDouble(),
+                _ => valid = false,
+            };
 
-                if (newObj is ISerializable asISerializable)
-                {
-                    // Custom deserialization function implemented. Let the interface do the work.
-                    asISerializable.Deserialize(reader);
-                }
-                else
-                {
-                    if (baseType.GetCustomAttribute<SerializableAttribute>() == null)
-                        throw new Exception();
-
-                    // Manually build the hierarchy since C# doesn't allow you to grab private fields from base classes (Type.GetFields()). This
-                    // assumes multiple inheritance is not used & recursively parses child members.
-                    var baseClassTypes = new List<Type>();
-                    var allStructureFields = new List<FieldInfo>();
-
-                    for (var currentType = baseType; currentType != null; currentType = currentType.BaseType)
-                    {
-                        if (currentType.IsDefined(typeof(SerializableAttribute)))
-                            baseClassTypes.Add(currentType);
-                    }
-
-                    for (int i = baseClassTypes.Count - 1; i >= 0; i--)
-                    {
-                        var fields = baseClassTypes[i].GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-
-                        allStructureFields.AddRange(fields);
-                    }
-
-                    // Fields that have BrokenReflectionOffsetAttribute must be read first regardless of field order
-                    foreach (var field in allStructureFields)
-                    {
-                        var reflectionFixAttr = field.GetCustomAttribute<BrokenReflectionOffsetAttribute>();
-
-                        if (reflectionFixAttr != null)
-                        {
-                            //if (reflectionFixAttr.RealOffset != 0)
-                            //    throw new Exception("This code doesn't handle non-0 offsets");
-
-                            DeserializeType(newObj, field, reader);
-                        }
-                    }
-
-                    foreach (var field in allStructureFields)
-                    {
-                        var reflectionFixAttr = field.GetCustomAttribute<BrokenReflectionOffsetAttribute>();
-
-                        if (field.Name == "XX_Text")
-                            continue;
-
-                        if (reflectionFixAttr == null)
-                            DeserializeType(newObj, field, reader);
-                    }
-                }
-
-                if (newObj is IExtraBinaryDataCallback asIExtraBinaryDataCallback)
-                    asIExtraBinaryDataCallback.DeserializeExtraData(reader);
-
-                if (info != null)
-                    info.SetValue(instance, newObj);
-            }
+            return valid;
         }
     }
 }

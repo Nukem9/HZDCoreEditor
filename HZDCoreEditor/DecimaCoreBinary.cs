@@ -14,43 +14,36 @@ namespace Decima
             {
                 while (reader.BaseStream.Position != reader.BaseStream.Length)
                 {
+                    Console.WriteLine($"Beginning chunk parse at {reader.BaseStream.Position:X}");
+
                     var entry = new GameData.CoreBinaryEntry();
                     entry.Deserialize(reader);
+
+                    // TODO: This needs to be part of CoreBinaryEntry
+                    object topLevelObject;
 
                     long currentFilePos = reader.BaseStream.Position;
                     long expectedFilePos = currentFilePos + entry.ChunkSize;
 
                     if ((currentFilePos + entry.ChunkSize) > reader.BaseStream.Length)
-                        throw new Exception($"Invalid chunk size {entry.ChunkSize} was supplied at offset {currentFilePos}");
+                        throw new Exception($"Invalid chunk size {entry.ChunkSize} was supplied at offset {currentFilePos:X}");
 
-                    //Console.WriteLine("Beginning chunk parse at {0:X}", currentFilePos - 8 - 4);
-
-                    Type topLevelObjectType;
-                    object topLevelObject;
-
-                    if (RTTI.TypeIdLookupMap.ContainsKey(entry.TypeId))
+                    if (RTTI.TypeIdLookupMap.TryGetValue(entry.TypeId, out Type topLevelObjectType))
                     {
-                        topLevelObjectType = RTTI.TypeIdLookupMap[entry.TypeId];
-                        topLevelObject = Activator.CreateInstance(topLevelObjectType);
-
-                        RTTI.DeserializeType(topLevelObject, null, reader);
+                        topLevelObject = RTTI.DeserializeType(reader, topLevelObjectType);
                     }
                     else
                     {
-                        // Invalid or unknown chunk ID hit - try to continue with the rest of the file
-                        if (ignoreUnknownChunks)
-                        {
-                            // Append as raw binary data
-                            topLevelObject = reader.ReadBytes((int)entry.ChunkSize);
-                        }
-                        else
-                        {
-                            throw new Exception($"Unknown type ID {entry.TypeId} found in Core file at offset {currentFilePos}");
-                        }
+                        if (!ignoreUnknownChunks)
+                            throw new Exception($"Unknown type ID {entry.TypeId:X16} found in Core file at offset {currentFilePos:X}");
+
+                        // Invalid or unknown chunk ID hit - create an array of bytes "object" and try to continue with the rest of the file
+                        topLevelObject = reader.ReadBytes((int)entry.ChunkSize);
                     }
 
                     if (reader.BaseStream.Position > expectedFilePos)
                         throw new Exception("Read past the end of a chunk while deserializing object");
+
                     //else if (reader.BaseStream.Position < expectedFilePos)
                     //    throw new Exception("Short read of a chunk while deserializing object");
 
