@@ -145,7 +145,7 @@ public:
 			RTTIClassEventInfo *m_EventSubscriptions;	// +0x70
 		} Class;
 
-		// Type 6 = Plain old data
+		// Type 6 = Plain old data. Doesn't exist in static RTTI. They're generated at runtime by combining fields for optimization purposes.
 		struct
 		{
 			uint32_t m_Size;							// +0x8

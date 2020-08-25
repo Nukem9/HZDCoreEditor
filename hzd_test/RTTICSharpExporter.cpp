@@ -65,7 +65,8 @@ namespace RTTICSharpExporter
 	void ExportFileHeader(FILE *F)
 	{
 		const char *data =
-			"using System.Runtime.InteropServices;\n"
+			"#pragma warning disable CS0649 // warning CS0649: 'member' is never assigned to, and will always have its default value 'value'.\n"
+			"#pragma warning disable CS0108 // warning CS0108: 'class' hides inherited member 'member'. Use the new keyword if hiding was intended.\n"
 			"\n"
 			"namespace Decima\n"
 			"{\n"
@@ -105,7 +106,7 @@ namespace RTTICSharpExporter
 	void ExportRTTIEnum(FILE *F, const RTTI *Type)
 	{
 		// Attributes/decl
-		fprintf(F, "[RTTI.Serializable(0x%llX, 0x%X)]\n", Type->GetCoreBinaryTypeId_UNSAFE(), Type->m_EnumUnderlyingTypeSize);
+		fprintf(F, "[RTTI.Serializable(0x%llX)]\n", Type->GetCoreBinaryTypeId_UNSAFE());
 		fprintf(F, "public enum %s : %s\n{\n", Type->GetSymbolName().c_str(), EnumTypeToString(Type));
 
 		// Members
@@ -144,16 +145,11 @@ namespace RTTICSharpExporter
 		// C# doesn't support multiple base classes, so pick one based on the order in RTTI data and treat the others as members (manual composition)
 		char inheritanceDecl[1024] = {};
 		auto inheritance = Type->ClassInheritance();
-
-		size_t baseClassOffset = 0;
 		bool postLoadCallback = IsPostLoadCallbackEnabled(Type);
 
 		if (!inheritance.empty())
 		{
 			// TODO: Sort 'inheritance'?
-			for (auto& base : inheritance)
-				baseClassOffset = std::max<size_t>(baseClassOffset, base.m_Offset + base.m_Type->Class.m_Size);
-
 			sprintf_s(inheritanceDecl, " : %s", inheritance[0].m_Type->GetSymbolName().c_str());
 		}
 
@@ -183,22 +179,10 @@ namespace RTTICSharpExporter
 		//
 		// Possible attributes:
 		//
-		// [StructLayout(LayoutKind.Sequential)]
-		// [RTTI.Serializable(0xDC3D43D192F22E9B, 0x60)]
+		// [RTTI.Serializable(0xDC3D43D192F22E9B)]
 		//
-		fprintf(F, "[StructLayout(LayoutKind.Sequential)]\n");
-		fprintf(F, "[RTTI.Serializable(0x%llX, 0x%X)]\n", Type->GetCoreBinaryTypeId_UNSAFE(), Type->Class.m_Size);
+		fprintf(F, "[RTTI.Serializable(0x%llX)]\n", Type->GetCoreBinaryTypeId_UNSAFE());
 		fprintf(F, "%s\n{\n", fullDecl);
-
-		// Insert fake members from base classes, skipping the first one
-		for (size_t i = 1; i < inheritance.size(); i++)
-		{
-			if (IsBaseClassSuperfluous(inheritance[i].m_Type))
-				continue;
-
-			auto name = inheritance[i].m_Type->GetSymbolName();
-			fprintf(F, "\t%s base_%s;\n", name.c_str(), name.c_str());
-		}
 
 		// Build a list of real members and sort them by offset
 		const char *activeCategory = "";
@@ -223,6 +207,28 @@ namespace RTTICSharpExporter
 			return A.first->m_Offset < B.first->m_Offset;
 		});
 
+		//
+		// Possible members:
+		//
+		// [RTTI.Member(0, 0x0)] public WorldPosition CenterPosition;
+		// [RTTI.Member(1, 0x74, "General")] public bool UsedForStealthGrass;
+		// [RTTI.Member(0, 0x20)] public GlobalRenderVariableValues @GlobalRenderVariableValues;
+		// [RTTI.BaseClass(0xC0)] public Shape2DExtrusion @Shape2DExtrusion;
+		//
+		int index = 0;
+
+		// Insert fake members from base classes, skipping the first one
+		for (size_t i = 1; i < inheritance.size(); i++)
+		{
+			auto name = inheritance[i].m_Type->GetSymbolName();
+
+			if (IsBaseClassSuperfluous(inheritance[i].m_Type))
+				continue;
+
+			fprintf(F, "\t[RTTI.BaseClass(0x%X)] public %s @%s;\n", inheritance[i].m_Offset, name.c_str(), name.c_str());
+			index++;
+		}
+
 		// Insert real members
 		for (auto& [member, category] : members)
 		{
@@ -240,14 +246,15 @@ namespace RTTICSharpExporter
 			// Sometimes variable names start with a number. This isn't allowed either.
 			FilterMemberNameString(memberName);
 
-			if (member->m_Offset == 0 && member->m_Offset < baseClassOffset)
-			{
-				// Certain classes (ex. EntityResource {Lockable, ZoomLockable}) have variables declared at offset 0 WITH parent types. That's not possible in C# or
-				// C++. How did their reflection system break this? Anyway, I have to force a specific order with stupid attributes now.
-				fprintf(F, "\t[RTTI.BrokenReflectionOffset(0x%X)]\n", member->m_Offset);
-			}
+			char attributeDecl[1024] = {};
 
-			fprintf(F, "\t%s %s;\n", typeName.c_str(), memberName.c_str());
+			if (strlen(category) > 0)
+				sprintf_s(attributeDecl, "[RTTI.Member(%d, 0x%X, \"%s\")]", index, member->m_Offset, category);
+			else
+				sprintf_s(attributeDecl, "[RTTI.Member(%d, 0x%X)]", index, member->m_Offset);
+
+			fprintf(F, "\t%s public %s %s;\n", attributeDecl, typeName.c_str(), memberName.c_str());
+			index++;
 		}
 
 		fprintf(F, "}\n\n");
