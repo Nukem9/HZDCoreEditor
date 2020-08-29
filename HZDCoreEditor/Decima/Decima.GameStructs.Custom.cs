@@ -180,7 +180,7 @@ namespace Decima
                 }
 
                 byte mipCount = reader.ReadByte();                      // 8
-                var textureFormat = (EPixelFormat)reader.ReadByte();    // 9
+                var pixelFormat = (EPixelFormat)reader.ReadByte();      // 9
                 byte unknown2 = reader.ReadByte();                      // 10
                 byte unknown3 = reader.ReadByte();                      // 11
                 byte unknown4 = reader.ReadByte();                      // 12
@@ -251,8 +251,8 @@ namespace Decima
         {
             public void DeserializeExtraData(BinaryReader reader)
             {
-                //if (IsStreaming)
-                //    ReadGenericThing(reader);
+                if (IsStreaming)
+                    ReadGenericThing(reader);
             }
         }
     }
