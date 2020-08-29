@@ -33,6 +33,8 @@ static_assert_offset(RTTIInheritanceTypeInfo, m_Offset, 0x8);
 class RTTIMemberTypeInfo
 {
 public:
+	using PropertyValuePfn = void(*)(void *, void *);
+
 	enum Flags : uint8_t
 	{
 		IGNORE_BINARY_SERIALIZE = 2,
@@ -42,7 +44,9 @@ public:
 	uint16_t m_Offset;
 	Flags m_Flags;
 	const char *m_Name;
-	char _pad0[0x20];
+	PropertyValuePfn m_PropertyGetter;
+	PropertyValuePfn m_PropertySetter;
+	char _pad0[0x10];
 
 	bool IgnoreBinarySerialization() const
 	{
@@ -54,6 +58,8 @@ static_assert_offset(RTTIMemberTypeInfo, m_Type, 0x0);
 static_assert_offset(RTTIMemberTypeInfo, m_Offset, 0x8);
 static_assert_offset(RTTIMemberTypeInfo, m_Flags, 0xA);
 static_assert_offset(RTTIMemberTypeInfo, m_Name, 0x10);
+static_assert_offset(RTTIMemberTypeInfo, m_PropertyGetter, 0x18);
+static_assert_offset(RTTIMemberTypeInfo, m_PropertySetter, 0x20);
 
 class RTTIClassEventInfo
 {

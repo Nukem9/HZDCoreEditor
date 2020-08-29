@@ -95,6 +95,16 @@ namespace RTTIIDAExporter
 					printDBOffset(event.m_Callback, "set_name(0x%llX, \"%sCallback_%llX\");\n", formatStr.c_str());
 				}
 
+				for (auto& member : type->ClassMembers())
+				{
+					if (!member.m_Type)
+						continue;
+
+					auto formatStr = symbolName + "::" + std::string(member.m_Name);
+					printDBOffset(member.m_PropertyGetter, "set_name(0x%llX, \"%sGetter_%llX\");\n", formatStr.c_str());
+					printDBOffset(member.m_PropertySetter, "set_name(0x%llX, \"%sSetter_%llX\");\n", formatStr.c_str());
+				}
+
 				printDBOffset(type->Class.m_Constructor, "set_name(0x%llX, \"%s::RTTIConstructor_%llX\");\n", symbolName.c_str());
 				printDBOffset(type->Class.m_Destructor, "set_name(0x%llX, \"%s::RTTIDestructor_%llX\");\n", symbolName.c_str());
 				printDBOffset(type->Class.m_Deserialize, "set_name(0x%llX, \"%s::RTTIDeserializeText_%llX\");\n", symbolName.c_str());
