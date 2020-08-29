@@ -8949,9 +8949,9 @@ namespace Decima
         [RTTI.Serializable(0xADD2CA3346D09DD1)]
         public class ControlledEntity : Entity
         {
-            [RTTI.Member(0, 0x0, "Logic")] public float MinAimHeading;
+            [RTTI.Member(0, 0x0, "Logic")] public float MinAimPitch;
             [RTTI.Member(1, 0x0, "Logic")] public float MaxAimHeading;
-            [RTTI.Member(2, 0x0, "Logic")] public float MinAimPitch;
+            [RTTI.Member(2, 0x0, "Logic")] public float MinAimHeading;
             [RTTI.Member(3, 0x0, "Logic")] public float MaxAimPitch;
         }
 
@@ -9754,8 +9754,8 @@ namespace Decima
         [RTTI.Serializable(0xE6368E56B30495DC)]
         public class DamageArea : Entity
         {
-            [RTTI.Member(0, 0x0, "Logic")] public Vec3 BoxOverrideMin;
-            [RTTI.Member(1, 0x0, "Logic")] public Vec3 BoxOverrideMax;
+            [RTTI.Member(0, 0x0, "Logic")] public Vec3 BoxOverrideMax;
+            [RTTI.Member(1, 0x0, "Logic")] public Vec3 BoxOverrideMin;
             [RTTI.Member(2, 0x0, "AI")] public Vec3 DangerAreaBoxOverrideMin;
             [RTTI.Member(3, 0x0, "AI")] public Vec3 DangerAreaBoxOverrideMax;
             [RTTI.Member(4, 0x330, "Logic")] public float DamagePerSecondOverride;
@@ -12512,8 +12512,8 @@ namespace Decima
         [RTTI.Serializable(0x78C2D25A923D336D)]
         public class EntityResource : Resource
         {
-            [RTTI.Member(0, 0x0, "Logic")] public bool Lockable;
-            [RTTI.Member(1, 0x0, "Logic")] public bool ZoomLockable;
+            [RTTI.Member(0, 0x0, "Logic")] public bool ZoomLockable;
+            [RTTI.Member(1, 0x0, "Logic")] public bool Lockable;
             [RTTI.Member(2, 0x38, "General")] public Ref<ObjectAttributeAnimatorResourceBase> ObjectAttributeAnimatorResource;
             [RTTI.Member(3, 0x40, "Logic")] public EEntityUpdateFrequency UpdateFrequency;
             [RTTI.Member(4, 0x48, "Logic")] public Ref<EntityActivationPolicy> ActivationPolicy;
@@ -14382,8 +14382,8 @@ namespace Decima
         [RTTI.Serializable(0x7CE2335A82FDBD2)]
         public class ForceFieldSettings
         {
-            [RTTI.Member(0, 0x0, "General")] public EForceFieldShape Shape;
-            [RTTI.Member(1, 0x0, "General")] public uint8 EffectiveAxes;
+            [RTTI.Member(0, 0x0, "General")] public uint8 EffectiveAxes;
+            [RTTI.Member(1, 0x0, "General")] public EForceFieldShape Shape;
             [RTTI.Member(2, 0x4, "General")] public EForceBehaviour ForceBehaviour;
             [RTTI.Member(3, 0x8, "General")] public EForceType ForceType;
             [RTTI.Member(4, 0xC, "General")] public EForceFieldFlowDriver FlowDriver;
@@ -15279,10 +15279,10 @@ namespace Decima
         [RTTI.Serializable(0xF8298F67758EC033)]
         public class Gradient : Resource
         {
-            [RTTI.Member(0, 0x0, "General")] public int StartColorPegID;
-            [RTTI.Member(1, 0x0, "General")] public int EndColorPegID;
-            [RTTI.Member(2, 0x0, "General")] public int StartAlphaPegID;
-            [RTTI.Member(3, 0x0, "General")] public int EndAlphaPegID;
+            [RTTI.Member(0, 0x0, "General")] public int EndAlphaPegID;
+            [RTTI.Member(1, 0x0, "General")] public int StartAlphaPegID;
+            [RTTI.Member(2, 0x0, "General")] public int EndColorPegID;
+            [RTTI.Member(3, 0x0, "General")] public int StartColorPegID;
             [RTTI.Member(4, 0x28, "General")] public Array<ColorPeg> ColorPegs;
             [RTTI.Member(5, 0x38, "General")] public Array<AlphaPeg> AlphaPegs;
             [RTTI.Member(6, 0x50, "General")] public int NumberOfSamples;
@@ -18961,10 +18961,10 @@ namespace Decima
         [RTTI.Serializable(0xBDBEA8EB6E1B7109)]
         public class ImpactEffectResource : Resource
         {
-            [RTTI.Member(0, 0x0, "Logic")] public bool UsableForCollidingAndResting;
-            [RTTI.Member(1, 0x0, "Logic")] public bool UsableForCollidingAndBouncing;
-            [RTTI.Member(2, 0x0, "Logic")] public bool UsableForSliding;
-            [RTTI.Member(3, 0x0, "Logic")] public bool UsableForRolling;
+            [RTTI.Member(0, 0x0, "Logic")] public bool UsableForCollidingAndBouncing;
+            [RTTI.Member(1, 0x0, "Logic")] public bool UsableForCollidingAndResting;
+            [RTTI.Member(2, 0x0, "Logic")] public bool UsableForRolling;
+            [RTTI.Member(3, 0x0, "Logic")] public bool UsableForSliding;
             [RTTI.Member(4, 0x28, "Logic")] public MaterialType MaterialA;
             [RTTI.Member(5, 0x2A, "Logic")] public MaterialType MaterialB;
             [RTTI.Member(6, 0x30, "Effects")] public bool OverridesSound;
@@ -32883,8 +32883,8 @@ namespace Decima
         [RTTI.Serializable(0xBD337994F0FD85FD)]
         public class SRTElement
         {
-            [RTTI.Member(0, 0x0)] public String Name;
-            [RTTI.Member(1, 0x0)] public String SubSetName;
+            [RTTI.Member(0, 0x0)] public String SubSetName;
+            [RTTI.Member(1, 0x0)] public String Name;
             [RTTI.Member(2, 0x18)] public int ResourceIndex;
             [RTTI.Member(3, 0x1C)] public int16 Offset;
             [RTTI.Member(4, 0x1E)] public int16 ArrayCount;
@@ -38738,11 +38738,11 @@ namespace Decima
         [RTTI.Serializable(0xED2405F58FDC7F09)]
         public class TextureSetEntry
         {
-            [RTTI.Member(0, 0x0)] public uint32 PackingInfo;
-            [RTTI.Member(1, 0x0)] public int TextureType;
+            [RTTI.Member(0, 0x0)] public EImageCompressionMethod CompressMethod;
+            [RTTI.Member(1, 0x0)] public bool CreateMipMaps;
             [RTTI.Member(2, 0x0)] public ETexColorSpace ColorSpace;
-            [RTTI.Member(3, 0x0)] public EImageCompressionMethod CompressMethod;
-            [RTTI.Member(4, 0x0)] public bool CreateMipMaps;
+            [RTTI.Member(3, 0x0)] public uint32 PackingInfo;
+            [RTTI.Member(4, 0x0)] public int TextureType;
             [RTTI.Member(5, 0x8)] public Ref<Resource> Texture;
         }
 
@@ -40414,9 +40414,9 @@ namespace Decima
         [RTTI.Serializable(0x685DC980BBF316E3)]
         public partial class WaveResource : Resource, RTTI.IExtraBinaryDataCallback
         {
-            [RTTI.Member(0, 0x0, "Format")] public bool IsStreaming;
-            [RTTI.Member(1, 0x0, "Format")] public bool UseVBR;
-            [RTTI.Member(2, 0x0, "Format")] public EWaveDataEncodingQuality EncodingQuality;
+            [RTTI.Member(0, 0x0, "Format")] public EWaveDataEncodingQuality EncodingQuality;
+            [RTTI.Member(1, 0x0, "Format")] public bool IsStreaming;
+            [RTTI.Member(2, 0x0, "Format")] public bool UseVBR;
             [RTTI.Member(3, 0x28, "Data")] public Array<uint8> WaveData;
             [RTTI.Member(4, 0x38, "Data")] public uint WaveDataSize;
             [RTTI.Member(5, 0x48, "Format")] public int SampleRate;

@@ -184,29 +184,6 @@ namespace RTTICSharpExporter
 		fprintf(F, "[RTTI.Serializable(0x%llX)]\n", Type->GetCoreBinaryTypeId_UNSAFE());
 		fprintf(F, "%s\n{\n", fullDecl);
 
-		// Build a list of real members and sort them by offset
-		const char *activeCategory = "";
-		std::vector<std::pair<const RTTIMemberTypeInfo *, const char *>> members;
-
-		for (auto& member : Type->ClassMembers())
-		{
-			if (!member.m_Type)
-			{
-				// Internal marker
-				activeCategory = member.m_Name;
-			}
-			else if (!member.IgnoreBinarySerialization())
-			{
-				// Regular variable
-				members.emplace_back(&member, activeCategory);
-			}
-		}
-
-		std::stable_sort(members.begin(), members.end(), [](const auto& A, const auto& B)
-		{
-			return A.first->m_Offset < B.first->m_Offset;
-		});
-
 		//
 		// Possible members:
 		//
@@ -229,9 +206,14 @@ namespace RTTICSharpExporter
 			index++;
 		}
 
-		// Insert real members
+		// Insert real members sorted by offset
+		auto members = GetSortedClassMembers(Type);
+
 		for (auto& [member, category] : members)
 		{
+			if (member->IgnoreBinarySerialization())
+				continue;
+
 			std::string typeName = member->m_Type->GetSymbolName();
 			std::string memberName = member->m_Name;
 
@@ -305,6 +287,23 @@ namespace RTTICSharpExporter
 		return true;
 	}
 
+	void FilterMemberNameString(std::string& Name)
+	{
+		// Member names can't start with numbers or be reserved identifiers. Slowwwwwwwwww.
+		if (isdigit(Name[0]) ||
+			Name == "float" ||
+			Name == "uint" ||
+			Name == "int" ||
+			Name == "HalfFloat" ||
+			Name == "Vec4" ||
+			Name == "uint32" ||
+			Name == "uint16" ||
+			Name == "uint8" ||
+			Name == "RGBAColorRev" ||
+			Name == "FRGBAColor")
+			Name = "_" + Name;
+	}
+
 	bool IsPostLoadCallbackEnabled(const RTTI *Type)
 	{
 		if (Type->m_InfoType != RTTI::INFO_TYPE_CLASS)
@@ -336,20 +335,59 @@ namespace RTTICSharpExporter
 		return false;
 	}
 
-	void FilterMemberNameString(std::string& Name)
+	void BuildFullClassMemberLayout(const RTTI *Type, std::vector<SorterEntry>& Members, uint32_t Offset, bool TopLevel)
 	{
-		// Member names can't start with numbers or be reserved identifiers. Slowwwwwwwwww.
-		if (isdigit(Name[0]) ||
-			Name == "float" ||
-			Name == "uint" ||
-			Name == "int" ||
-			Name == "HalfFloat" ||
-			Name == "Vec4" ||
-			Name == "uint32" ||
-			Name == "uint16" ||
-			Name == "uint8" ||
-			Name == "RGBAColorRev" ||
-			Name == "FRGBAColor")
-			Name = "_" + Name;
+		const char *activeCategory = "";
+
+		for (auto& base : Type->ClassInheritance())
+			BuildFullClassMemberLayout(base.m_Type, Members, Offset + base.m_Offset, false);
+
+		for (auto& member : Type->ClassMembers())
+		{
+			if (!member.m_Type)
+				activeCategory = member.m_Name;
+
+			SorterEntry entry
+			{
+				.m_Type = &member,
+				.m_Category = activeCategory,
+				.m_Offset = member.m_Offset + Offset,
+				.m_TopLevel = TopLevel,
+			};
+
+			Members.emplace_back(entry);
+		}
+	}
+
+	std::vector<std::pair<const RTTIMemberTypeInfo *, const char *>> GetSortedClassMembers(const RTTI *Type)
+	{
+		// Nasty hack: I don't know how sorting order works with multiple properties at offset 0. Let the game determine it.
+		std::vector<SorterEntry> sortedEntries;
+		BuildFullClassMemberLayout(Type, sortedEntries, 0, true);
+
+		auto sortCompare = [](const SorterEntry *A, const SorterEntry *B)
+		{
+			return A->m_Offset < B->m_Offset;
+		};
+
+		if (sortedEntries.size() > 1)
+		{
+			auto start = &sortedEntries.data()[0];
+			auto end = &sortedEntries.data()[sortedEntries.size() - 1];
+			uint32_t temp = 0;
+
+			((void(__fastcall *)(SorterEntry **, SorterEntry **, bool(__fastcall *)(const SorterEntry *, const SorterEntry *), uint32_t *))(g_ModuleBase + 0x2E28F0))(&start, &end, sortCompare, &temp);
+		}
+
+		// We only care about the top-level fields here
+		std::vector<std::pair<const RTTIMemberTypeInfo *, const char *>> out;
+
+		for (auto& entry : sortedEntries)
+		{
+			if (entry.m_TopLevel)
+				out.emplace_back(entry.m_Type, entry.m_Category);
+		}
+
+		return out;
 	}
 }
