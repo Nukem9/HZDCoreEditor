@@ -1028,6 +1028,35 @@ namespace Decima
             Not_Equals = 2,
         }
 
+        [RTTI.Serializable(0xDD1CF5F847F285DC)]
+        public enum EDataBufferFormat : int32
+        {
+            Invalid = 0,
+            R_FLOAT_16 = 1,
+            R_FLOAT_32 = 2,
+            RG_FLOAT_32 = 3,
+            RGB_FLOAT_32 = 4,
+            RGBA_FLOAT_32 = 5,
+            R_UINT_8 = 6,
+            R_UINT_16 = 7,
+            R_UINT_32 = 8,
+            RG_UINT_32 = 9,
+            RGB_UINT_32 = 10,
+            RGBA_UINT_32 = 11,
+            R_INT_32 = 12,
+            RG_INT_32 = 13,
+            RGB_INT_32 = 14,
+            RGBA_INT_32 = 15,
+            R_UNORM_8 = 16,
+            R_UNORM_16 = 17,
+            RGBA_UNORM_8 = 18,
+            RGBA_UINT_8 = 19,
+            RG_UINT_16 = 20,
+            RGBA_UINT_16 = 21,
+            RGBA_INT_8 = 22,
+            Structured = 23,
+        }
+
         [RTTI.Serializable(0x55BE62549B690A95)]
         public enum EDebugFlagDefault : int32
         {
@@ -2150,6 +2179,13 @@ namespace Decima
         {
             Add = 0,
             Replace = 1,
+        }
+
+        [RTTI.Serializable(0x76B127086C01CEF9)]
+        public enum EIndexFormat : int32
+        {
+            Index16 = 0,
+            Index32 = 1,
         }
 
         [RTTI.Serializable(0x15F24152ACDFBE11)]
@@ -3866,6 +3902,63 @@ namespace Decima
             ANIMATION_FOLLOW = 2,
         }
 
+        [RTTI.Serializable(0x20A3D650ADF7422A)]
+        public enum ERenderBufferFormat : int32
+        {
+            Invalid = 0,
+            RB_FORMAT_RGBA8 = 1,
+            RB_FORMAT_RGBA8_REV = 2,
+            RB_FORMAT_RGBA_FLOAT_32 = 3,
+            RB_FORMAT_RG_FLOAT_32 = 4,
+            RB_FORMAT_R_FLOAT_32 = 5,
+            RB_FORMAT_RGBA_FLOAT_16 = 6,
+            RB_FORMAT_RG_FLOAT_16 = 7,
+            RB_FORMAT_R_FLOAT_16 = 8,
+            RB_FORMAT_RGBA_UNORM_32 = 9,
+            RB_FORMAT_RG_UNORM_32 = 10,
+            RB_FORMAT_R_UNORM_32 = 11,
+            RB_FORMAT_RGBA_UNORM_16 = 12,
+            RB_FORMAT_RG_UNORM_16 = 13,
+            RB_FORMAT_R_UNORM_16 = 14,
+            RB_FORMAT_RGBA_UNORM_8 = 15,
+            RB_FORMAT_RG_UNORM_8 = 16,
+            RB_FORMAT_R_UNORM_8 = 17,
+            RB_FORMAT_RGBA_NORM_32 = 18,
+            RB_FORMAT_RG_NORM_32 = 19,
+            RB_FORMAT_R_NORM_32 = 20,
+            RB_FORMAT_RGBA_NORM_16 = 21,
+            RB_FORMAT_RG_NORM_16 = 22,
+            RB_FORMAT_R_NORM_16 = 23,
+            RB_FORMAT_RGBA_NORM_8 = 24,
+            RB_FORMAT_RG_NORM_8 = 25,
+            RB_FORMAT_R_NORM_8 = 26,
+            RB_FORMAT_RGBA_UINT_32 = 27,
+            RB_FORMAT_RG_UINT_32 = 28,
+            RB_FORMAT_R_UINT_32 = 29,
+            RB_FORMAT_RGBA_UINT_16 = 30,
+            RB_FORMAT_RG_UINT_16 = 31,
+            RB_FORMAT_R_UINT_16 = 32,
+            RB_FORMAT_RGBA_UINT_8 = 33,
+            RB_FORMAT_RG_UINT_8 = 34,
+            RB_FORMAT_R_UINT_8 = 35,
+            RB_FORMAT_RGBA_INT_32 = 36,
+            RB_FORMAT_RG_INT_32 = 37,
+            RB_FORMAT_R_INT_32 = 38,
+            RB_FORMAT_RGBA_INT_16 = 39,
+            RB_FORMAT_RG_INT_16 = 40,
+            RB_FORMAT_R_INT_16 = 41,
+            RB_FORMAT_RGBA_INT_8 = 42,
+            RB_FORMAT_RG_INT_8 = 43,
+            RB_FORMAT_R_INT_8 = 44,
+            RB_FORMAT_RGB_FLOAT_11_11_10 = 45,
+            RB_FORMAT_RGBA_UNORM_10_10_10_2_REV = 46,
+            RB_FORMAT_RGB_UNORM_11_11_10 = 47,
+            RB_FORMAT_DEPTH_FLOAT32_STENCIL8 = 48,
+            RB_FORMAT_DEPTH_FLOAT32_STENCIL0 = 49,
+            RB_FORMAT_DEPTH24_STENCIL8 = 50,
+            RB_FORMAT_DEPTH16_STENCIL0 = 51,
+        }
+
         [RTTI.Serializable(0xFA671FD95C527BA)]
         public enum ERenderDataHintDataType : int8
         {
@@ -4904,6 +4997,15 @@ namespace Decima
             Count = 14,
         }
 
+        [RTTI.Serializable(0xCDC39E10FC548E63)]
+        public enum ETextureType : int32
+        {
+            _2D = 0,
+            _3D = 1,
+            CubeMap = 2,
+            _2DArray = 3,
+        }
+
         [RTTI.Serializable(0x85B079E963333F06)]
         public enum EThirdPersonCameraActorState : int32
         {
@@ -5084,6 +5186,23 @@ namespace Decima
             AltColor = 25,
             AltUV0 = 26,
             Invalid = 27,
+        }
+
+        [RTTI.Serializable(0x5AE55465BEED6FAE)]
+        public enum EVertexElementStorageType : int8
+        {
+            Undefined = 0,
+            SignedShortNormalized = 1,
+            Float = 2,
+            _HalfFloat = 3,
+            UnsignedByteNormalized = 4,
+            SignedShort = 5,
+            X10Y10Z10W2NORMALIZED = 6,
+            UnsignedByte = 7,
+            UnsignedShort = 8,
+            UnsignedShortNormalized = 9,
+            UNorm8sRGB = 10,
+            X10Y10Z10W2UNorm = 11,
         }
 
         [RTTI.Serializable(0xA38F534E13232B36)]
