@@ -22,6 +22,32 @@ namespace Decima
             var unknown2 = reader.ReadUInt64();
         }
 
+        public partial class DataBufferResource
+        {
+            HwBuffer Buffer;
+
+            public void DeserializeExtraData(BinaryReader reader)
+            {
+                uint bufferElementCount = reader.ReadUInt32();
+
+                if (bufferElementCount > 0)
+                {
+                    uint isStreaming = reader.ReadUInt32();
+                    uint flags = reader.ReadUInt32();
+                    var format = (EDataBufferFormat)reader.ReadUInt32();
+                    uint bufferStride = reader.ReadUInt32();
+
+                    if (isStreaming != 0 && isStreaming != 1)
+                        throw new Exception("???");
+
+                    if (format != EDataBufferFormat.Structured)
+                        bufferStride = HwBuffer.GetStrideForFormat(format);
+
+                    Buffer = HwBuffer.FromData(reader, format, isStreaming != 0, bufferStride, bufferElementCount);
+                }
+            }
+        }
+
         public partial class IndexArrayResource
         {
             public uint Flags;
@@ -50,15 +76,74 @@ namespace Decima
 
         public partial class LocalizedSimpleSoundResource
         {
+            string SoundDataFilePath;
+            WaveResource SoundFormat;
+
             public void DeserializeExtraData(BinaryReader reader)
             {
-                // ANNOYING
+                uint stringLength = reader.ReadUInt32();
+
+                if (stringLength > 0)
+                    SoundDataFilePath = Encoding.UTF8.GetString(reader.ReadBytes(stringLength));
+
+                ushort languageBits = reader.ReadUInt16();
+                byte dataLength = reader.ReadByte();
+
+                SoundFormat = new WaveResource();
+                SoundFormat.DecodeFlags(reader.ReadByte());
+                SoundFormat.FrameSize = reader.ReadUInt16();
+                SoundFormat.Encoding = (EWaveDataEncoding)reader.ReadByte();
+                SoundFormat.ChannelCount = reader.ReadByte();
+                SoundFormat.SampleRate = reader.ReadInt32();
+                SoundFormat.BitsPerSample = reader.ReadUInt16();
+                SoundFormat.BitsPerSecond = reader.ReadUInt32();
+                SoundFormat.BlockAlignment = reader.ReadUInt16();
+                SoundFormat.FormatTag = reader.ReadUInt16();
+
+                uint currentLanguageBit = 1;
+                for (uint i = 1; i < 22; i++)
+                {
+                    if ((GetLanguageSpecificFlags((ELanguage)i) & 2) == 0)
+                        continue;
+
+                    if ((currentLanguageBit & languageBits) != 0)
+                    {
+                        var unknownData = reader.ReadBytes(dataLength);
+                    }
+
+                    // Bit rotate left
+                    currentLanguageBit = (currentLanguageBit << 1) | (currentLanguageBit >> 31);
+                }
+            }
+
+            public static byte GetLanguageSpecificFlags(ELanguage language)
+            {
+                switch (language)
+                {
+                    case ELanguage.English:
+                        return 7;
+
+                    case ELanguage.French:
+                    case ELanguage.Spanish:
+                    case ELanguage.German:
+                    case ELanguage.Italian:
+                    case ELanguage.Portugese:
+                    case ELanguage.Russian:
+                    case ELanguage.Polish:
+                    case ELanguage.Japanese:
+                    case ELanguage.LATAMSP:
+                    case ELanguage.LATAMPOR:
+                    case ELanguage.Arabic:
+                        return 3;
+                }
+
+                return 1;
             }
         }
 
         public partial class LocalizedTextResource
         {
-            private const uint LanguageCount = (uint)ELanguage.Chinese_Simplified - 1;
+            private const uint LanguageCount = (uint)ELanguage.Chinese_Simplified;
 
             public byte[][] TextData;
 
@@ -82,6 +167,37 @@ namespace Decima
                     throw new ArgumentException("Invalid language", nameof(language));
 
                 return Encoding.UTF8.GetString(TextData[(int)language - 1]);
+            }
+        }
+
+        public partial class MorphemeAnimationResource
+        {
+            public byte[] MorphemeData;
+
+            public void DeserializeExtraData(BinaryReader reader)
+            {
+                uint morphemeDataLength = reader.ReadUInt32();
+
+                if (morphemeDataLength > 0)
+                    MorphemeData = reader.ReadBytes(morphemeDataLength);
+            }
+        }
+
+        public partial class MusicResource
+        {
+            public byte[] MusicData;
+
+            public void DeserializeExtraData(BinaryReader reader)
+            {
+                uint dataLength = reader.ReadUInt32();
+
+                if (dataLength > 0)
+                    MusicData = reader.ReadBytes(dataLength);
+
+                for (uint i = 0; i < StreamingBankNames.Count; i++)
+                {
+                    ReadGenericThing(reader);
+                }
             }
         }
 
@@ -111,12 +227,30 @@ namespace Decima
             }
         }
 
+        public partial class PhysicsRagdollResource
+        {
+            public byte[] HavokData;
+
+            public void DeserializeExtraData(BinaryReader reader)
+            {
+                // Generic havok reader
+                uint havokDataLength = reader.ReadUInt32();
+
+                if (havokDataLength > 0)
+                {
+                    // Havok 2014 HKX file ("hk_2014.2.0-r1")
+                    HavokData = reader.ReadBytes(havokDataLength);
+                }
+            }
+        }
+
         public partial class PhysicsShapeResource
         {
             public byte[] HavokData;
 
             public void DeserializeExtraData(BinaryReader reader)
             {
+                // Generic havok reader
                 uint havokDataLength = reader.ReadUInt32();
 
                 if (havokDataLength > 0)
@@ -194,6 +328,27 @@ namespace Decima
             }
         }
 
+        public partial class TextureList
+        {
+            Texture[] Textures;
+
+            public void DeserializeExtraData(BinaryReader reader)
+            {
+                uint textureCount = reader.ReadUInt32();
+
+                if (textureCount > 0)
+                {
+                    Textures = new Texture[textureCount];
+
+                    for (uint i = 0; i < textureCount; i++)
+                    {
+                        Textures[i] = new Texture();
+                        Textures[i].DeserializeExtraData(reader);
+                    }
+                }
+            }
+        }
+
         public partial class UITexture
         {
             Texture HiResTexture;   // Screen res >  1920x1080 (Default if low res not present)
@@ -229,7 +384,7 @@ namespace Decima
 
                 for (uint i = 0; i < vertexStreamCount; i++)
                 {
-                    uint unknown4 = reader.ReadUInt32();
+                    uint unknownFlags = reader.ReadUInt32();
                     uint vertexByteStride = reader.ReadUInt32();
                     uint unknownCounter = reader.ReadUInt32();
 
@@ -249,10 +404,35 @@ namespace Decima
 
         public partial class WaveResource
         {
+            [Flags]
+            public enum Flags : byte
+            {
+                Streaming = 1,
+                VBR = 2,
+                EncodingQualityMask = 15,
+            }
+
             public void DeserializeExtraData(BinaryReader reader)
             {
                 if (IsStreaming)
                     ReadGenericThing(reader);
+            }
+
+            public byte EncodeFlags()
+            {
+                byte flags = 0;
+                flags |= (byte)(IsStreaming ? Flags.Streaming : 0);
+                flags |= (byte)(UseVBR ? Flags.VBR : 0);
+                flags |= (byte)(((byte)EncodingQuality & (byte)Flags.EncodingQualityMask) << 2);
+
+                return flags;
+            }
+
+            public void DecodeFlags(byte value)
+            {
+                IsStreaming = (value & (byte)Flags.Streaming) != 0;
+                UseVBR = (value & (byte)Flags.VBR) != 0;
+                EncodingQuality = (EWaveDataEncodingQuality)((value >> 2) & (byte)Flags.EncodingQualityMask);
             }
         }
     }

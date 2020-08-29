@@ -44,7 +44,7 @@ namespace Decima
                     long expectedFilePos = currentFilePos + entry.ChunkSize;
 
                     if ((ulong)(currentFilePos + entry.ChunkSize) > reader.StreamLength())
-                        throw new Exception($"Invalid chunk size {entry.ChunkSize} was supplied in Core file at offset {currentFilePos:X}");
+                        throw new InvalidDataException($"Invalid chunk size {entry.ChunkSize} was supplied in Core file at offset {currentFilePos:X}");
 
                     // TODO: This needs to be part of Entry
                     Type topLevelObjectType = RTTI.GetTypeById(entry.TypeId);
@@ -57,7 +57,7 @@ namespace Decima
                     else
                     {
                         if (!ignoreUnknownChunks)
-                            throw new Exception($"Unknown type ID {entry.TypeId:X16} found in Core file at offset {currentFilePos:X}");
+                            throw new InvalidDataException($"Unknown type ID {entry.TypeId:X16} found in Core file at offset {currentFilePos:X}");
 
                         // Invalid or unknown chunk ID hit - create an array of bytes "object" and try to continue with the rest of the file
                         topLevelObject = reader.ReadBytes(entry.ChunkSize);

@@ -3,7 +3,6 @@ using NAudio.Wave;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace HZDCoreEditor
 {
@@ -11,49 +10,90 @@ namespace HZDCoreEditor
     {
         static void Main(string[] args)
         {
+            DecodeQuickTest();
+            //DecodeAllFilesTest();
+            //DecodeLocalizationTest();
             //DecodeAudioTest();
-            //return;
+        }
 
-            var testFiles = new string[]
+        static void DecodeQuickTest()
+        {
+            var files = new string[]
             {
-                @"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\interface\textures\markers\ui_marker_compass_bunker.core",
-                @"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\levels\worlds\world\tiles\tile_x05_y-01\layers\lighting\cubezones\cubemapzone_07_cube.core",
-                @"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\levels\worlds\world\tiles\tile_x05_y-01\layers\lighting\cubezones\cubezones_foundry_1.core",
-                @"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\textures\lighting_setups\skybox\star_field.core",
-                @"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\textures\base_maps\clouds_512.core",
-                @"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\textures\detail_textures\buildingblock\buildingblock_detailmap_array.core",
-                @"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\sounds\effects\dlc1\weapons\firebreather\wav\fire_loop_flames_01_m.core",
-                @"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\models\building_blocks\nora\dressing\components\dressing_b125_c006_resource.core",
-                @"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\entities\characters\models\humanoid_player.core",
-                @"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\telemetry\designtelemetry.core",
-                @"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\worlddata\worlddatapacking.core",
-                @"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\entities\weapons\heavy_weapons\heavy_railgun_cables.core",
-                @"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\entities\collectables\collectable_datapoint\datapoint_world.core",
-                @"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\entities\shops\shops.core",
-                @"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\levels\quests.core",
-                @"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\levels\game.core",
-                @"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\levels\worlds\world\leveldata\terrain.core",
-                @"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\weather\defaultweathersystem.core",
-                @"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\climates\regions\faro\faro_master_climate.core",
-                @"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\entities\armor\outfits\outfits.core",
-                @"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\models\weapons\raptordisc_playerversion\model\model.core",
-                @"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\loadouts\loadout.core",
-                @"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\levels\worlds\world\quests\mainquests\mq15_themountainthatfell_files\mq15_quest.core",
-                @"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\entities\characters\models\humanoid_civilian.core",
-                @"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\system\waves\white_noise_0dbfs.core",
+                @"models\characters\humans\heads\baby\babyaloy\animation\parts\head_lx.core",
+                @"models\characters\humans\hair\aloy\model\model.core",
+                @"models\animation_managers\characters\animals\blackrat\blackrat_blackrat.core",
+                @"sounds\music\world\world.core",
+                @"shaders\ecotope\texturesetarrays\terrain_texture_array.core",
+                @"animation_objects\ledge_climb\network\moaf_honst_fight_intro_network.core",
+                @"movies\movielist.core",
+                @"entities\trackedgamestats.core",
+                @"localized\sentences\aigenerated\nora_adult_male1_1\sentences.core",
+                @"interface\textures\markers\ui_marker_compass_bunker.core",
+                @"levels\worlds\world\tiles\tile_x05_y-01\layers\lighting\cubezones\cubemapzone_07_cube.core",
+                @"levels\worlds\world\tiles\tile_x05_y-01\layers\lighting\cubezones\cubezones_foundry_1.core",
+                @"textures\lighting_setups\skybox\star_field.core",
+                @"textures\base_maps\clouds_512.core",
+                @"textures\detail_textures\buildingblock\buildingblock_detailmap_array.core",
+                @"sounds\effects\dlc1\weapons\firebreather\wav\fire_loop_flames_01_m.core",
+                @"models\building_blocks\nora\dressing\components\dressing_b125_c006_resource.core",
+                @"entities\characters\models\humanoid_player.core",
+                @"telemetry\designtelemetry.core",
+                @"worlddata\worlddatapacking.core",
+                @"entities\weapons\heavy_weapons\heavy_railgun_cables.core",
+                @"entities\collectables\collectable_datapoint\datapoint_world.core",
+                @"entities\shops\shops.core",
+                @"levels\quests.core",
+                @"levels\game.core",
+                @"levels\worlds\world\leveldata\terrain.core",
+                @"weather\defaultweathersystem.core",
+                @"climates\regions\faro\faro_master_climate.core",
+                @"entities\armor\outfits\outfits.core",
+                @"models\weapons\raptordisc_playerversion\model\model.core",
+                @"loadouts\loadout.core",
+                @"levels\worlds\world\quests\mainquests\mq15_themountainthatfell_files\mq15_quest.core",
+                @"entities\characters\models\humanoid_civilian.core",
+                @"system\waves\white_noise_0dbfs.core",
             };
 
-            foreach (string file in testFiles)
+            foreach (string file in files)
             {
-                var objects = Decima.CoreBinary.Load(file, false);
+                string fullPath = Path.Combine(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\", file);
+                Console.WriteLine(fullPath);
 
+                try
+                {
+                    var objects = Decima.CoreBinary.Load(fullPath);
+                }
+                catch (InvalidDataException)
+                {
+                    // Broken pack file extraction
+                }
+            }
+        }
+
+        static void DecodeAllFilesTest()
+        {
+            var files = Directory.GetFiles(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\", "*", SearchOption.AllDirectories);
+
+            foreach (string file in files)
+            {
                 Console.WriteLine(file);
+
+                try
+                {
+                    var objects = Decima.CoreBinary.Load(file);
+                }
+                catch (InvalidDataException)
+                {
+                    // Broken pack file extraction
+                }
             }
         }
 
         static void DecodeLocalizationTest()
         {
-            var files = Directory.GetFiles(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\localized\sentences\", "*", SearchOption.AllDirectories);
+            var files = Directory.GetFiles(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\localized\", "*", SearchOption.AllDirectories);
             var allStrings = new List<string>();
 
             foreach (string file in files)
@@ -110,8 +150,6 @@ namespace HZDCoreEditor
                         rs = new RawSourceWaveStream(ms, new Mp3WaveFormat(wave.SampleRate, wave.ChannelCount, wave.FrameSize, (int)wave.BitsPerSecond));
                     else if (wave.Encoding == GameData.EWaveDataEncoding.PCM)
                         rs = new RawSourceWaveStream(ms, new WaveFormat(wave.SampleRate, 16, wave.ChannelCount));
-
-                    WaveFileWriter.CreateWaveFile(@"C:\baretheme-left.wav", rs);
 
                     if (rs != null)
                     {

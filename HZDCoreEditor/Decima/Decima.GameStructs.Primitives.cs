@@ -61,6 +61,7 @@ namespace Decima
                 }
             }
 
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)]
             private string DebugDisplay
             {
                 get
@@ -132,6 +133,30 @@ namespace Decima
             }
         }
 
+        public class GlobalRenderVariableInfo_GLOBAL_RENDER_VAR_COUNT<T> : Array<T>
+        {
+        }
+
+        public class float_GLOBAL_RENDER_VAR_COUNT<T> : Array<T>
+        {
+        }
+
+        public class uint64_PLACEMENT_LAYER_MASK_SIZE<T> : Array<T>
+        {
+        }
+
+        public class uint16_PBD_MAX_SKIN_WEIGHTS<T> : Array<T>
+        {
+        }
+
+        public class uint8_PBD_MAX_SKIN_WEIGHTS<T> : Array<T>
+        {
+        }
+
+        public class ShaderProgramResourceSet_36<T> : Array<T>
+        {
+        }
+
         /// <remarks>
         /// File data format:
         /// UInt32        (+0) Item count
@@ -166,9 +191,6 @@ namespace Decima
             public void Deserialize(BinaryReader reader)
             {
                 uint itemCount = reader.ReadUInt32();
-
-                if (itemCount > 1)
-                    throw new Exception("Found a hash set with more than 1 entry! Debug this.");
 
                 if (itemCount > reader.StreamLength())
                     throw new Exception("HashSet item count is out of bounds");
@@ -226,8 +248,7 @@ namespace Decima
         /// <remarks>
         /// File data format:
         /// UInt32   (+0) String length
-        /// UInt32   (+4) Case sensitive CRC32-C hash
-        /// UInt16[] (+8) String data
+        /// UInt16[] (+4) String data
         /// </remarks>
         [DebuggerDisplay("{Value}")]
         public class WString : RTTI.ISerializable
@@ -244,13 +265,12 @@ namespace Decima
 
                 if (readLength > 0)
                 {
-                    uint hash = reader.ReadUInt32();
                     byte[] data = reader.ReadBytes(readLength);
 
                     if (readLength != data.Length)
                         throw new Exception("Short read while trying to load string");
 
-                    throw new NotImplementedException();
+                    Value = Encoding.Unicode.GetString(data);
                 }
             }
         }

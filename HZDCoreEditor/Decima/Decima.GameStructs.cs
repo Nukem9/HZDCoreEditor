@@ -15234,13 +15234,13 @@ namespace Decima
         [RTTI.Serializable(0x83AADF670FAE7536)]
         public class GlobalRenderVariableInfoSet : CoreObject
         {
-            //[RTTI.Member(0, 0x20)] public GlobalRenderVariableInfo_GLOBAL_RENDER_VAR_COUNT<GlobalRenderVariableInfo> Variables;
+            [RTTI.Member(0, 0x20)] public GlobalRenderVariableInfo_GLOBAL_RENDER_VAR_COUNT<GlobalRenderVariableInfo> Variables;
         }
 
         [RTTI.Serializable(0x317FB0D3952A647E)]
         public class GlobalRenderVariableValues
         {
-            //[RTTI.Member(0, 0x0)] public float_GLOBAL_RENDER_VAR_COUNT<float> Values;
+            [RTTI.Member(0, 0x0)] public float_GLOBAL_RENDER_VAR_COUNT<float> Values;
         }
 
         [RTTI.Serializable(0x3791E11136078110)]
@@ -20387,7 +20387,7 @@ namespace Decima
         [RTTI.Serializable(0x36F087322F622F92)]
         public class LayerGroupMask
         {
-            //[RTTI.Member(0, 0x0)] public uint64_PLACEMENT_LAYER_MASK_SIZE<uint64> MaskData;
+            [RTTI.Member(0, 0x0)] public uint64_PLACEMENT_LAYER_MASK_SIZE<uint64> MaskData;
         }
 
         [RTTI.Serializable(0xAC07752A8176B520)]
@@ -28004,8 +28004,8 @@ namespace Decima
         [RTTI.Serializable(0x6714FF0562C796B0)]
         public class PBDVtxSkinBinding
         {
-            //[RTTI.Member(0, 0x0)] public uint16_PBD_MAX_SKIN_WEIGHTS<uint16> InflIdx;
-            //[RTTI.Member(1, 0x8)] public uint8_PBD_MAX_SKIN_WEIGHTS<uint8> Weights;
+            [RTTI.Member(0, 0x0)] public uint16_PBD_MAX_SKIN_WEIGHTS<uint16> InflIdx;
+            [RTTI.Member(1, 0x8)] public uint8_PBD_MAX_SKIN_WEIGHTS<uint8> Weights;
         }
 
         [RTTI.Serializable(0x591428E700F463F0)]
@@ -34730,7 +34730,7 @@ namespace Decima
         [RTTI.Serializable(0xD5A3C77C8C860D1)]
         public class ShaderResourceValidationSet
         {
-            //[RTTI.Member(0, 0x0)] public ShaderProgramResourceSet_36<ShaderProgramResourceSet> ResourceSet;
+            [RTTI.Member(0, 0x0)] public ShaderProgramResourceSet_36<ShaderProgramResourceSet> ResourceSet;
         }
 
         [RTTI.Serializable(0xF2A3A244CBB8033F)]
