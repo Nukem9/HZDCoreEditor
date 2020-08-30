@@ -9,6 +9,9 @@ namespace Decima
 {
     static partial class RTTI
     {
+        private static readonly Dictionary<ulong, Type> TypeIdLookupMap;
+        private static readonly Dictionary<Type, OrderedFieldInfo> TypeFieldInfoCache;
+
         private class OrderedFieldInfo
         {
             public struct Entry
@@ -20,9 +23,6 @@ namespace Decima
             public FieldInfo[] MIBases;
             public Entry[] Members;
         }
-
-        private static readonly Dictionary<ulong, Type> TypeIdLookupMap;
-        private static readonly Dictionary<Type, OrderedFieldInfo> TypeFieldInfoCache;
 
         static RTTI()
         {

@@ -12,7 +12,7 @@ namespace RTTIIDAExporter
 	void ExportAll(const char *Directory)
 	{
 		char outputFilePath[MAX_PATH];
-		sprintf_s(outputFilePath, "%s\\HZD_IDA_RTTI.idc", Directory);
+		sprintf_s(outputFilePath, "%s\\HZD_IDA_TYPEINFO.idc", Directory);
 
 		if (FILE *f; fopen_s(&f, outputFilePath, "w") == 0)
 		{
@@ -59,11 +59,11 @@ namespace RTTIIDAExporter
 			for (uint64_t i = 0; i < rtti->VFunctionCount; i++)
 			{
 				uintptr_t vfuncPointer = rtti->VTableAddress + (i * sizeof(uintptr_t));
-				uintptr_t vfunc = *(uintptr_t *)vfuncPointer;
-				uintptr_t vfuncDBAddress = vfunc - g_ModuleBase + 0x140000000;
+				uint8_t *vfunc = *reinterpret_cast<uint8_t **>(vfuncPointer);
+				uint8_t *vfuncDBAddress = vfunc - g_ModuleBase + 0x140000000;
 
 				// Make sure it's not a pure virtual function
-				if (*(uint8_t *)vfunc == 0xFF && *(uint8_t *)(vfunc + 1) == 0x25)
+				if (vfunc[0] == 0xFF && vfunc[1] == 0x25)
 					fprintf(F, "set_name(0x%llX, \"_purecall\");\n", vfuncDBAddress);
 				else
 					fprintf(F, "set_name(0x%llX, \"%s::VFunc%02lld_%llX\");\n", vfuncDBAddress, className.c_str(), i, vfuncDBAddress);
@@ -81,7 +81,7 @@ namespace RTTIIDAExporter
 				if (!Pointer)
 					return;
 
-				uintptr_t address = (uintptr_t)Pointer - g_ModuleBase + 0x140000000;
+				uintptr_t address = reinterpret_cast<uintptr_t>(Pointer) - g_ModuleBase + 0x140000000;
 				fprintf(F, Format, address, Name, address);
 			};
 
@@ -172,7 +172,7 @@ namespace RTTIIDAExporter
 
 	void ExportGameSymbolRTTI(FILE * F)
 	{
-		auto& gameSymbolGroups = *(Array<ExportedSymbolGroup *> *)(g_ModuleBase + 0x2A1F870);
+		auto& gameSymbolGroups = *reinterpret_cast<Array<ExportedSymbolGroup *> *>(g_ModuleBase + 0x2A1F870);
 
 		for (auto& group : gameSymbolGroups)
 		{
@@ -207,7 +207,7 @@ namespace RTTIIDAExporter
 					if (parsedFirst)
 						strcat_s(fullDecl, ");");
 
-					fprintf(F, "set_name(0x%llX, \"%s\");// %s\n", (uintptr_t)info.m_Address - g_ModuleBase + 0x140000000, member.m_SymbolName, fullDecl);
+					fprintf(F, "set_name(0x%llX, \"%s\");// %s\n", reinterpret_cast<uintptr_t>(info.m_Address) - g_ModuleBase + 0x140000000, member.m_SymbolName, fullDecl);
 
 					// Skip multiple localization entries for now
 					break;

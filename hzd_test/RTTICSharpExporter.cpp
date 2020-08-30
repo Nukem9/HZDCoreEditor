@@ -7,7 +7,7 @@ namespace RTTICSharpExporter
 {
 	void ExportAll(const char *Directory)
 	{
-		// Build a list of all {classes|enums}, sort by name, then dump to separate files
+		// Build a list of all {classes|enums}, sorted by name
 		std::vector<const RTTI *> sortedTypes;
 
 		for (auto& type : AllRegisteredTypeInfo)
@@ -27,9 +27,53 @@ namespace RTTICSharpExporter
 			return A->GetSymbolName() < B->GetSymbolName();
 		});
 
+		// Dump these types into their own separate files
+		const char *separatedTypes[] =
+		{
+			"DataBufferResource",
+			"IndexArrayResource",
+			"LocalizedSimpleSoundResource",
+			"LocalizedTextResource",
+			"MorphemeAnimationResource",
+			"MusicResource",
+			"PhysicsRagdollResource",
+			"PhysicsShapeResource",
+			"Pose",
+			"ShaderResource",
+			"Texture",
+			"TextureList",
+			"UITexture",
+			"VertexArrayResource",
+			"WaveResource",
+		};
+
+		sortedTypes.erase(std::remove_if(sortedTypes.begin(), sortedTypes.end(), [Directory, separatedTypes](const RTTI *Type)
+		{
+			for (auto name : separatedTypes)
+			{
+				if (Type->GetSymbolName() == name)
+				{
+					char outputFilePath[MAX_PATH];
+					sprintf_s(outputFilePath, "%s\\Decima.HZD.%s.cs", Directory, name);
+
+					if (FILE *f; fopen_s(&f, outputFilePath, "w") == 0)
+					{
+						ExportFileHeader(f);
+						ExportRTTIClass(f, Type);
+						ExportFileFooter(f);
+						fclose(f);
+					}
+
+					return true;
+				}
+			}
+
+			return false;
+		}), sortedTypes.end());
+
 		// TODO: Split classes into separate files if they all reference a common base (i.e > 30 instances per)
 		char outputFilePath[MAX_PATH];
-		sprintf_s(outputFilePath, "%s\\%s.cs", Directory, "Decima.GameStructs");
+		sprintf_s(outputFilePath, "%s\\Decima.HZD.AllStructs.cs", Directory);
 
 		if (FILE *f; fopen_s(&f, outputFilePath, "w") == 0)
 		{
@@ -45,7 +89,7 @@ namespace RTTICSharpExporter
 			fclose(f);
 		}
 
-		sprintf_s(outputFilePath, "%s\\%s.cs", Directory, "Decima.GameEnums");
+		sprintf_s(outputFilePath, "%s\\Decima.HZD.AllEnums.cs", Directory);
 
 		if (FILE *f; fopen_s(&f, outputFilePath, "w") == 0)
 		{
@@ -68,7 +112,7 @@ namespace RTTICSharpExporter
 			"#pragma warning disable CS0649 // warning CS0649: 'member' is never assigned to, and will always have its default value 'value'.\n"
 			"#pragma warning disable CS0108 // warning CS0108: 'class' hides inherited member 'member'. Use the new keyword if hiding was intended.\n"
 			"\n"
-			"namespace Decima\n"
+			"namespace Decima.HZD\n"
 			"{\n"
 			"    using int8 = System.SByte;\n"
 			"    using uint8 = System.Byte;\n"
@@ -87,9 +131,7 @@ namespace RTTICSharpExporter
 			"    using AnimationStateID = System.UInt32;\n"
 			"    using AnimationEventID = System.UInt32;\n"
 			"    using PhysicsCollisionFilterInfo = System.UInt32;\n"
-			"\n"
-			"    static partial class GameData\n"
-			"    {\n";
+			"\n";
 
 		fputs(data, F);
 	}
@@ -97,7 +139,6 @@ namespace RTTICSharpExporter
 	void ExportFileFooter(FILE *F)
 	{
 		const char *data =
-			"    }\n"
 			"}\n";
 
 		fputs(data, F);
@@ -166,15 +207,11 @@ namespace RTTICSharpExporter
 		//
 		// public class AIAtmosphereBoxResource
 		// public class AIAtmosphereBoxResource : Resource
-		// public partial class AIAtmosphereBoxResource : Resource, RTTI.IExtraBinaryDataCallback
-		// public partial class AIAtmosphereBoxResource : RTTI.IExtraBinaryDataCallback
+		// public class AIAtmosphereBoxResource : Resource, RTTI.IExtraBinaryDataCallback
+		// public class AIAtmosphereBoxResource : RTTI.IExtraBinaryDataCallback
 		//
 		char fullDecl[1024] = {};
-
-		if (postLoadCallback)
-			sprintf_s(fullDecl, "public partial class %s%s", Type->GetSymbolName().c_str(), inheritanceDecl);
-		else
-			sprintf_s(fullDecl, "public class %s%s", Type->GetSymbolName().c_str(), inheritanceDecl);
+		sprintf_s(fullDecl, "public class %s%s", Type->GetSymbolName().c_str(), inheritanceDecl);
 
 		//
 		// Possible attributes:

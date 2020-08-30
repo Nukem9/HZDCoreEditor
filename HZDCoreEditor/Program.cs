@@ -1,4 +1,5 @@
 ﻿using Decima;
+using Decima.HZD;
 using NAudio.Wave;
 using System;
 using System.Collections.Generic;
@@ -10,8 +11,8 @@ namespace HZDCoreEditor
     {
         static void Main(string[] args)
         {
-            DecodeQuickTest();
-            //DecodeAllFilesTest();
+            //DecodeQuickTest();
+            DecodeAllFilesTest();
             //DecodeLocalizationTest();
             //DecodeAudioTest();
         }
@@ -109,8 +110,8 @@ namespace HZDCoreEditor
 
                     foreach (var obj in objects)
                     {
-                        if (obj is GameData.LocalizedTextResource asResource)
-                            allStrings.Add(asResource.GetStringForLanguage(GameData.ELanguage.English));
+                        if (obj is LocalizedTextResource asResource)
+                            allStrings.Add(asResource.GetStringForLanguage(ELanguage.English));
                     }
                 }
                 catch (Exception)
@@ -134,7 +135,7 @@ namespace HZDCoreEditor
                 Console.WriteLine(file);
 
                 var objects = CoreBinary.Load(file, false);
-                var wave = objects[0] as GameData.WaveResource;
+                var wave = objects[0] as WaveResource;
 
                 if (wave == null)
                     continue;
@@ -146,9 +147,9 @@ namespace HZDCoreEditor
                 {
                     RawSourceWaveStream rs = null;
 
-                    if (wave.Encoding == GameData.EWaveDataEncoding.MP3)
+                    if (wave.Encoding == EWaveDataEncoding.MP3)
                         rs = new RawSourceWaveStream(ms, new Mp3WaveFormat(wave.SampleRate, wave.ChannelCount, wave.FrameSize, (int)wave.BitsPerSecond));
-                    else if (wave.Encoding == GameData.EWaveDataEncoding.PCM)
+                    else if (wave.Encoding == EWaveDataEncoding.PCM)
                         rs = new RawSourceWaveStream(ms, new WaveFormat(wave.SampleRate, 16, wave.ChannelCount));
 
                     if (rs != null)
