@@ -193,7 +193,7 @@ namespace Decima
             // The game always does a direct memory copy for these
             value = Type.GetTypeCode(type) switch
             {
-                TypeCode.Boolean => reader.ReadBooleanWithCheck(),
+                TypeCode.Boolean => reader.ReadBooleanStrict(),
                 TypeCode.SByte => reader.ReadSByte(),
                 TypeCode.Byte => reader.ReadByte(),
                 TypeCode.Int16 => reader.ReadInt16(),

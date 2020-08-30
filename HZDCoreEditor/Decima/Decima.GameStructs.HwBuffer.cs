@@ -19,7 +19,7 @@ namespace Decima
                 }
                 else
                 {
-                    return new HwBuffer { Data = reader.ReadBytes(elementCount * byteStride) };
+                    return new HwBuffer { Data = reader.ReadBytesStrict(elementCount * byteStride) };
                 }
             }
 

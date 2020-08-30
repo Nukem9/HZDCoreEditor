@@ -14,7 +14,17 @@ namespace BinaryStreamExtensions
             return reader.ReadBytes((int)count);
         }
 
-        public static bool ReadBooleanWithCheck(this BinaryReader reader)
+        public static byte[] ReadBytesStrict(this BinaryReader reader, uint count)
+        {
+            byte[] data = reader.ReadBytes((int)count);
+
+            if (data.Length != count)
+                throw new InvalidDataException();
+
+            return data;
+        }
+
+        public static bool ReadBooleanStrict(this BinaryReader reader)
         {
             byte value = reader.ReadByte();
 

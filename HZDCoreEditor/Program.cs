@@ -63,7 +63,7 @@ namespace HZDCoreEditor
 
                 try
                 {
-                    var objects = Decima.CoreBinary.Load(fullPath);
+                    var objects = CoreBinary.Load(fullPath);
                 }
                 catch (InvalidDataException)
                 {
@@ -82,7 +82,7 @@ namespace HZDCoreEditor
 
                 try
                 {
-                    var objects = Decima.CoreBinary.Load(file);
+                    var objects = CoreBinary.Load(file);
                 }
                 catch (InvalidDataException)
                 {
@@ -105,7 +105,7 @@ namespace HZDCoreEditor
 
                 try
                 {
-                    var objects = Decima.CoreBinary.Load(file);
+                    var objects = CoreBinary.Load(file);
 
                     foreach (var obj in objects)
                     {
@@ -133,7 +133,7 @@ namespace HZDCoreEditor
             {
                 Console.WriteLine(file);
 
-                var objects = Decima.CoreBinary.Load(file, false);
+                var objects = CoreBinary.Load(file, false);
                 var wave = objects[0] as GameData.WaveResource;
 
                 if (wave == null)
@@ -142,7 +142,7 @@ namespace HZDCoreEditor
                 var data = File.ReadAllBytes(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\sounds\music\loadingmusic\wav\temp.core");
 
                 //using (var ms = new System.IO.MemoryStream(wave.WaveData.ToArray()))
-                using (var ms = new System.IO.MemoryStream(data))
+                using (var ms = new MemoryStream(data))
                 {
                     RawSourceWaveStream rs = null;
 

@@ -14,7 +14,7 @@ namespace Decima
             if (stringLength > 0)
             {
                 // Stream resource file path
-                var str = Encoding.UTF8.GetString(reader.ReadBytes(stringLength));
+                var str = Encoding.UTF8.GetString(reader.ReadBytesStrict(stringLength));
             }
 
             // Likely file offsets or length
@@ -67,7 +67,7 @@ namespace Decima
                         throw new Exception("???");
 
                     // Likely GUID or at least an identifier
-                    var resourceGUID = reader.ReadBytes(16);
+                    var resourceGUID = reader.ReadBytesStrict(16);
 
                     Buffer = HwBuffer.FromIndexData(reader, format, isStreaming != 0, indexElementCount);
                 }
@@ -108,7 +108,7 @@ namespace Decima
 
                     if ((currentLanguageBit & languageBits) != 0)
                     {
-                        var unknownData = reader.ReadBytes(dataLength);
+                        var unknownData = reader.ReadBytesStrict(dataLength);
                     }
 
                     // Bit rotate left
@@ -157,7 +157,7 @@ namespace Decima
                     ushort stringLength = reader.ReadUInt16();
 
                     if (stringLength > 0)
-                        TextData[i] = reader.ReadBytes(stringLength);
+                        TextData[i] = reader.ReadBytesStrict(stringLength);
                 }
             }
 
@@ -179,7 +179,7 @@ namespace Decima
                 uint morphemeDataLength = reader.ReadUInt32();
 
                 if (morphemeDataLength > 0)
-                    MorphemeData = reader.ReadBytes(morphemeDataLength);
+                    MorphemeData = reader.ReadBytesStrict(morphemeDataLength);
             }
         }
 
@@ -192,7 +192,7 @@ namespace Decima
                 uint dataLength = reader.ReadUInt32();
 
                 if (dataLength > 0)
-                    MusicData = reader.ReadBytes(dataLength);
+                    MusicData = reader.ReadBytesStrict(dataLength);
 
                 for (uint i = 0; i < StreamingBankNames.Count; i++)
                 {
@@ -205,7 +205,7 @@ namespace Decima
         {
             public void DeserializeExtraData(BinaryReader reader)
             {
-                bool hasExtraData = reader.ReadBooleanWithCheck();
+                bool hasExtraData = reader.ReadBooleanStrict();
 
                 if (hasExtraData)
                 {
@@ -213,15 +213,15 @@ namespace Decima
 
                     if (count > 0)
                     {
-                        var unknownData1 = reader.ReadBytes(count * 48);
-                        var unknownData2 = reader.ReadBytes(count * 64);
+                        var unknownData1 = reader.ReadBytesStrict(count * 48);
+                        var unknownData2 = reader.ReadBytesStrict(count * 64);
                     }
 
                     count = reader.ReadUInt32();
 
                     if (count > 0)
                     {
-                        var unknownData3 = reader.ReadBytes(count * 4);
+                        var unknownData3 = reader.ReadBytesStrict(count * 4);
                     }
                 }
             }
@@ -239,7 +239,7 @@ namespace Decima
                 if (havokDataLength > 0)
                 {
                     // Havok 2014 HKX file ("hk_2014.2.0-r1")
-                    HavokData = reader.ReadBytes(havokDataLength);
+                    HavokData = reader.ReadBytesStrict(havokDataLength);
                 }
             }
         }
@@ -256,7 +256,7 @@ namespace Decima
                 if (havokDataLength > 0)
                 {
                     // Havok 2014 HKX file ("hk_2014.2.0-r1")
-                    HavokData = reader.ReadBytes(havokDataLength);
+                    HavokData = reader.ReadBytesStrict(havokDataLength);
                 }
             }
         }
@@ -276,7 +276,7 @@ namespace Decima
                 uint unknown4 = reader.ReadUInt32();
 
                 // Contains the actual DXBC/DXIL shader
-                ShaderData = reader.ReadBytes(shaderDataLength);
+                ShaderData = reader.ReadBytesStrict(shaderDataLength);
             }
         }
 
@@ -321,10 +321,10 @@ namespace Decima
                 byte flags = reader.ReadByte();                         // 13
                 byte unknown6 = reader.ReadByte();                      // 14 Something to do with mips
                 byte unknown7 = reader.ReadByte();                      // 15
-                var resourceGUID = reader.ReadBytes(16);                // 16
+                var resourceGUID = reader.ReadBytesStrict(16);          // 16
 
                 uint hwTextureSize = reader.ReadUInt32();
-                var hwTextureData = reader.ReadBytes(hwTextureSize);
+                var hwTextureData = reader.ReadBytesStrict(hwTextureSize);
             }
         }
 
@@ -378,7 +378,7 @@ namespace Decima
             {
                 uint vertexElementCount = reader.ReadUInt32();
                 uint vertexStreamCount = reader.ReadUInt32();
-                bool isStreaming = reader.ReadBooleanWithCheck();
+                bool isStreaming = reader.ReadBooleanStrict();
 
                 Buffers = new HwBuffer[vertexStreamCount];
 
@@ -391,11 +391,11 @@ namespace Decima
                     for (uint j = 0; j < unknownCounter; j++)
                     {
                         // 4 bytes read separately
-                        var packedData = reader.ReadBytes(4);
+                        var packedData = reader.ReadBytesStrict(4);
                     }
 
                     // Likely GUID or at least an identifier
-                    var resourceGUID = reader.ReadBytes(16);
+                    var resourceGUID = reader.ReadBytesStrict(16);
 
                     Buffers[i] = HwBuffer.FromVertexData(reader, isStreaming, vertexByteStride, vertexElementCount);
                 }

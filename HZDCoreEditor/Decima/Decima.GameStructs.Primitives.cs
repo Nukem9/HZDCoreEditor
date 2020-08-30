@@ -44,12 +44,12 @@ namespace Decima
 
                     case Types.LocalCoreUUID:
                     case Types.UUIDRef:
-                        Handle = new Guid(reader.ReadBytes(16));
+                        Handle = new Guid(reader.ReadBytesStrict(16));
                         break;
 
                     case Types.ExternalCoreUUID:
                     case Types.StreamingRef:
-                        Handle = new Guid(reader.ReadBytes(16));
+                        Handle = new Guid(reader.ReadBytesStrict(16));
 
                         // This could be a regular String instance - no way to determine the type
                         ExternalFile = new Filename();
@@ -228,10 +228,7 @@ namespace Decima
                 if (readLength > 0)
                 {
                     uint hash = reader.ReadUInt32();
-                    byte[] data = reader.ReadBytes(readLength);
-
-                    if (readLength != data.Length)
-                        throw new Exception("Short read while trying to load string");
+                    byte[] data = reader.ReadBytesStrict(readLength);
 
                     Value = Encoding.UTF8.GetString(data);
                 }
@@ -265,10 +262,7 @@ namespace Decima
 
                 if (readLength > 0)
                 {
-                    byte[] data = reader.ReadBytes(readLength);
-
-                    if (readLength != data.Length)
-                        throw new Exception("Short read while trying to load string");
+                    byte[] data = reader.ReadBytesStrict(readLength);
 
                     Value = Encoding.Unicode.GetString(data);
                 }
@@ -283,7 +277,7 @@ namespace Decima
 
             public void Deserialize(BinaryReader reader)
             {
-                Value = new BigInteger(reader.ReadBytes(16));
+                Value = new BigInteger(reader.ReadBytesStrict(16));
             }
         }
     }

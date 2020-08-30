@@ -50,6 +50,9 @@ namespace Decima
             }
         }
 
+        /// <summary>
+        /// Interface used for classes that manually encode/decode all of their fields
+        /// </summary>
         public interface ISerializable
         {
             public void Deserialize(BinaryReader reader) => throw new NotImplementedException();
@@ -57,6 +60,9 @@ namespace Decima
             public void Serialize(BinaryWriter writer) => throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Interface used for classes that have data appended after the serialized structure (Equivalent to MsgReadBinary)
+        /// </summary>
         public interface IExtraBinaryDataCallback
         {
             public void DeserializeExtraData(BinaryReader reader)
