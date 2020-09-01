@@ -24,7 +24,7 @@ namespace Decima.HZD
         [RTTI.Member(11, 0x5E, "Format")] public uint16 FormatTag;
         [RTTI.Member(12, 0x62, "Format")] public uint16 FrameSize;
         [RTTI.Member(13, 0x64, "Format")] public int SampleCount;
-        StreamHandle StreamInfo;
+        public StreamHandle StreamInfo;
 
         [Flags]
         private enum Flags : byte

@@ -43,9 +43,9 @@
 //
 using System;
 
-namespace SMHasher
+namespace HZDCoreEditor
 {
-    public static class MurmurHash3
+    public static class SMHasher
     {
         private static ulong BIG_CONSTANT(ulong x)
         {

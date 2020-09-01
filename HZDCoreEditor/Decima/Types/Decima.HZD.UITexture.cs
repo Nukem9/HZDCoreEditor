@@ -7,8 +7,8 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x30, "Logic")] public String TextureName;
         [RTTI.Member(1, 0x38, "Logic")] public ISize Size;
-        Texture HiResTexture;   // Screen res >  1920x1080 (Default if low res not present)
-        Texture LowResTexture;  // Screen res <= 1920x1080
+        public Texture HiResTexture;   // Screen res >  1920x1080 (Default if low res not present)
+        public Texture LowResTexture;  // Screen res <= 1920x1080
 
         public void DeserializeExtraData(BinaryReader reader)
         {

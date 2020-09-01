@@ -19,7 +19,7 @@ namespace BinaryStreamExtensions
             byte[] data = reader.ReadBytes((int)count);
 
             if (data.Length != count)
-                throw new InvalidDataException();
+                throw new EndOfStreamException();
 
             return data;
         }

@@ -9,15 +9,15 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x100, "General")] public Ref<SoundMixStateResource> SoundMixState;
         [RTTI.Member(1, 0x108, "General")] public Ref<LocalizedSoundPreset> Preset;
-        string SoundDataFilePath;
-        WaveResource SoundFormat;
+        public string SoundDataFilePath;
+        public WaveResource SoundFormat;
 
         public void DeserializeExtraData(BinaryReader reader)
         {
             uint stringLength = reader.ReadUInt32();
 
             if (stringLength > 0)
-                SoundDataFilePath = Encoding.UTF8.GetString(reader.ReadBytes(stringLength));
+                SoundDataFilePath = Encoding.UTF8.GetString(reader.ReadBytesStrict(stringLength));
 
             ushort languageBits = reader.ReadUInt16();
             byte dataLength = reader.ReadByte();

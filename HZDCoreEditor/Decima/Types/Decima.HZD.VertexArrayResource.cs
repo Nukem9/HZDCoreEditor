@@ -16,7 +16,7 @@ namespace Decima.HZD
 
             Buffers = new HwBuffer[vertexStreamCount];
 
-            for (uint i = 0; i < vertexStreamCount; i++)
+            for (uint i = 0; i < Buffers.Length; i++)
             {
                 uint unknownFlags = reader.ReadUInt32();
                 uint vertexByteStride = reader.ReadUInt32();

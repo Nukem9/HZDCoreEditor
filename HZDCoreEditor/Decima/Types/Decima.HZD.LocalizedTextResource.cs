@@ -17,7 +17,7 @@ namespace Decima.HZD
             // Keep this as an array of bytes for the time being since I don't know the encoding type
             TextData = new byte[LanguageCount][];
 
-            for (uint i = 0; i < LanguageCount; i++)
+            for (uint i = 0; i < TextData.Length; i++)
             {
                 ushort stringLength = reader.ReadUInt16();
 

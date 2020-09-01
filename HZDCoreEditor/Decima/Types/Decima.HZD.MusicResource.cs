@@ -26,7 +26,7 @@ namespace Decima.HZD
 
             StreamInfo = new StreamHandle[StreamingBankNames.Count];
 
-            for (uint i = 0; i < StreamingBankNames.Count; i++)
+            for (uint i = 0; i < StreamInfo.Length; i++)
                 StreamInfo[i] = StreamHandle.FromData(reader);
         }
     }
