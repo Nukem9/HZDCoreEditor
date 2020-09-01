@@ -12,9 +12,30 @@ namespace HZDCoreEditor
         static void Main(string[] args)
         {
             //DecodeQuickTest();
-            DecodeAllFilesTest();
+            //DecodeAllFilesTest();
             //DecodeLocalizationTest();
             //DecodeAudioTest();
+            DecodeArchivesTest();
+        }
+
+        static void DecodeArchivesTest()
+        {
+            var indexFile = new PackfileIndex(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\Initial.idx");
+            var archive = new Packfile(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\Initial.bin");
+
+            foreach (var entry in archive.FileEntries)
+            {
+                if (!indexFile.ResolvePathByHash(entry.PathHash, out string fn))
+                    throw new Exception();
+
+                var physicalPath = Path.Combine(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted", fn);
+                var physicalDir = Path.GetDirectoryName(physicalPath);
+
+                Directory.CreateDirectory(physicalDir);
+                archive.ExtractFile(fn, physicalPath);
+
+                Console.WriteLine(fn);
+            }
         }
 
         static void DecodeQuickTest()
