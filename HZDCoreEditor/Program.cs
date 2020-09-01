@@ -20,21 +20,36 @@ namespace HZDCoreEditor
 
         static void DecodeArchivesTest()
         {
-            var indexFile = new PackfileIndex(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\Initial.idx");
-            var archive = new Packfile(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\Initial.bin");
+            string basePath = @"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\";
 
-            foreach (var entry in archive.FileEntries)
+            var archiveList = new string[]
             {
-                if (!indexFile.ResolvePathByHash(entry.PathHash, out string fn))
-                    throw new Exception();
+                "DLC1.bin",
+                "DLC1_English.bin",
+                "Initial.bin",
+                "Initial_English.bin",
+                "Remainder.bin",
+                "Remainder_English.bin",
+            };
 
-                var physicalPath = Path.Combine(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted", fn);
-                var physicalDir = Path.GetDirectoryName(physicalPath);
+            foreach (var file in archiveList)
+            {
+                var indexFile = new PackfileIndex(Path.Combine(basePath, Path.ChangeExtension(file, ".idx")));
+                var archive = new Packfile(Path.Combine(basePath, file));
 
-                Directory.CreateDirectory(physicalDir);
-                archive.ExtractFile(fn, physicalPath);
+                foreach (var entry in archive.FileEntries)
+                {
+                    if (!indexFile.ResolvePathByHash(entry.PathHash, out string fn))
+                        throw new Exception();
 
-                Console.WriteLine(fn);
+                    var physicalPath = Path.Combine(basePath, "extracted", fn);
+                    var physicalDir = Path.GetDirectoryName(physicalPath);
+
+                    Directory.CreateDirectory(physicalDir);
+                    archive.ExtractFile(fn, physicalPath);
+                }
+
+                Console.WriteLine(file);
             }
         }
 
@@ -83,39 +98,25 @@ namespace HZDCoreEditor
                 string fullPath = Path.Combine(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\", file);
                 Console.WriteLine(fullPath);
 
-                try
-                {
-                    var objects = CoreBinary.Load(fullPath);
-                }
-                catch (InvalidDataException)
-                {
-                    // Broken pack file extraction
-                }
+                var objects = CoreBinary.Load(fullPath);
             }
         }
 
         static void DecodeAllFilesTest()
         {
-            var files = Directory.GetFiles(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\", "*", SearchOption.AllDirectories);
+            var files = Directory.GetFiles(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\", "*.core", SearchOption.AllDirectories);
 
             foreach (string file in files)
             {
                 Console.WriteLine(file);
 
-                try
-                {
-                    var objects = CoreBinary.Load(file);
-                }
-                catch (InvalidDataException)
-                {
-                    // Broken pack file extraction
-                }
+                var objects = CoreBinary.Load(file, true);
             }
         }
 
         static void DecodeLocalizationTest()
         {
-            var files = Directory.GetFiles(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\localized\", "*", SearchOption.AllDirectories);
+            var files = Directory.GetFiles(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\localized\", "*.core", SearchOption.AllDirectories);
             var allStrings = new List<string>();
 
             foreach (string file in files)
@@ -125,19 +126,12 @@ namespace HZDCoreEditor
                 allStrings.Add("\n");
                 allStrings.Add(file);
 
-                try
-                {
-                    var objects = CoreBinary.Load(file);
+                var objects = CoreBinary.Load(file);
 
-                    foreach (var obj in objects)
-                    {
-                        if (obj is LocalizedTextResource asResource)
-                            allStrings.Add(asResource.GetStringForLanguage(ELanguage.English));
-                    }
-                }
-                catch (Exception)
+                foreach (var obj in objects)
                 {
-                    allStrings.Add("!!! File was skipped due to invalid data !!!");
+                    if (obj is LocalizedTextResource asResource)
+                        allStrings.Add(asResource.GetStringForLanguage(ELanguage.English));
                 }
             }
 
@@ -146,43 +140,40 @@ namespace HZDCoreEditor
 
         static void DecodeAudioTest()
         {
-            var files = Directory.GetFiles(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\sounds\music\menumusic\mainthememusic");
-            //var files = Directory.GetFiles(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\sounds\music\loadingmusic\wav");
-            //var files = Directory.GetFiles(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\sounds\effects\interface\hacking\wav");
-            //var files = Directory.GetFiles(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\sounds\effects\quest\mq13\wav");
+            var files = Directory.GetFiles(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\sounds\", "*.core", SearchOption.AllDirectories);
 
             foreach (string file in files)
             {
                 Console.WriteLine(file);
 
-                var objects = CoreBinary.Load(file, false);
-                var wave = objects[0] as WaveResource;
+                var coreObjects = CoreBinary.Load(file, true);
 
-                if (wave == null)
-                    continue;
-
-                var data = File.ReadAllBytes(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\sounds\music\loadingmusic\wav\temp.core");
-
-                //using (var ms = new System.IO.MemoryStream(wave.WaveData.ToArray()))
-                using (var ms = new MemoryStream(data))
+                foreach (var obj in coreObjects)
                 {
-                    RawSourceWaveStream rs = null;
+                    var wave = obj as WaveResource;
 
-                    if (wave.Encoding == EWaveDataEncoding.MP3)
-                        rs = new RawSourceWaveStream(ms, new Mp3WaveFormat(wave.SampleRate, wave.ChannelCount, wave.FrameSize, (int)wave.BitsPerSecond));
-                    else if (wave.Encoding == EWaveDataEncoding.PCM)
-                        rs = new RawSourceWaveStream(ms, new WaveFormat(wave.SampleRate, 16, wave.ChannelCount));
+                    if (wave == null)
+                        continue;
 
-                    if (rs != null)
+                    if (wave.IsStreaming)
+                        continue;
+
+                    //var data = File.ReadAllBytes(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\sounds\music\loadingmusic\wav\temp.core");
+
+                    using (var ms = new System.IO.MemoryStream(wave.WaveData.ToArray()))
+                    //using (var ms = new MemoryStream(data))
                     {
-                        using (var wo = new WaveOutEvent())
-                        {
-                            wo.Init(rs);
-                            wo.Play();
+                        RawSourceWaveStream rs = null;
 
-                            while (wo.PlaybackState == PlaybackState.Playing)
-                                System.Threading.Thread.Sleep(50);
-                        }
+                        if (wave.Encoding == EWaveDataEncoding.MP3)
+                            rs = new RawSourceWaveStream(ms, new Mp3WaveFormat(wave.SampleRate, wave.ChannelCount, wave.FrameSize, (int)wave.BitsPerSecond));
+                        else if (wave.Encoding == EWaveDataEncoding.PCM)
+                            rs = new RawSourceWaveStream(ms, new WaveFormat(wave.SampleRate, 16, wave.ChannelCount));
+
+                        string outFile = Path.Combine(Path.GetDirectoryName(file), wave.Name.Value + ".wav");
+
+                        if (rs != null)
+                            WaveFileWriter.CreateWaveFile(outFile, rs);
                     }
                 }
             }

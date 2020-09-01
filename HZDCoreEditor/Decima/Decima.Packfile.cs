@@ -81,7 +81,7 @@ namespace Decima
             {
                 ArchiveFileHandle = File.Open(archivePath, mode, FileAccess.Read, FileShare.Read);
 
-                using (var reader = new BinaryReader(ArchiveFileHandle))
+                using (var reader = new BinaryReader(ArchiveFileHandle, Encoding.UTF8, true))
                 {
                     Header = PackfileHeader.FromData(reader);
 
@@ -122,7 +122,7 @@ namespace Decima
             uint firstBlock = GetBlockEntryIndex(fileEntry.DecompressedOffset);
             uint lastBlock = GetBlockEntryIndex(fileEntry.DecompressedOffset + fileEntry.DecompressedSize - 1);
 
-            using (var reader = new BinaryReader(ArchiveFileHandle))
+            using (var reader = new BinaryReader(ArchiveFileHandle, Encoding.UTF8, true))
             using (var writer = new BinaryWriter(File.Open(destinationPath, allowOverwrite ? FileMode.CreateNew : FileMode.Create, FileAccess.Write)))
             {
                 // Keep a small cache sitting around to avoid excessive allocations

@@ -51,7 +51,7 @@ namespace Decima
             {
                 IndexFileHandle = File.Open(indexPath, mode, FileAccess.Read, FileShare.Read);
 
-                using (var reader = new BinaryReader(IndexFileHandle))
+                using (var reader = new BinaryReader(IndexFileHandle, Encoding.UTF8, true))
                 {
                     uint magic = reader.ReadUInt32();
                     uint entryCount = reader.ReadUInt32();
