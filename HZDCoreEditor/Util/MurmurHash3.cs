@@ -43,7 +43,7 @@
 //
 using System;
 
-namespace HZDCoreEditor
+namespace Utility
 {
     public static class SMHasher
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace HZDCoreEditor
+namespace Utility
 {
     public static class OodleLZ
     {
