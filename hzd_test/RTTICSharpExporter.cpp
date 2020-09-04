@@ -226,7 +226,9 @@ namespace RTTICSharpExporter
 		//
 		// [RTTI.Member(0, 0x0)] public WorldPosition CenterPosition;
 		// [RTTI.Member(1, 0x74, "General")] public bool UsedForStealthGrass;
+		// [RTTI.Member(1, 0x74, "General", true)] public bool UsedForStealthGrass;
 		// [RTTI.Member(0, 0x20)] public GlobalRenderVariableValues @GlobalRenderVariableValues;
+		// [RTTI.Member(0, 0x20, true)] public GlobalRenderVariableValues @GlobalRenderVariableValues;
 		// [RTTI.BaseClass(0xC0)] public Shape2DExtrusion @Shape2DExtrusion;
 		//
 		int index = 0;
@@ -248,7 +250,7 @@ namespace RTTICSharpExporter
 
 		for (auto& [member, category] : members)
 		{
-			if (member->IgnoreBinarySerialization())
+			if (member->IsGroupMarker())
 				continue;
 
 			std::string typeName = member->m_Type->GetSymbolName();
@@ -268,9 +270,14 @@ namespace RTTICSharpExporter
 			char attributeDecl[1024] = {};
 
 			if (strlen(category) > 0)
-				sprintf_s(attributeDecl, "[RTTI.Member(%d, 0x%X, \"%s\")]", index, member->m_Offset, category);
+				sprintf_s(attributeDecl, "[RTTI.Member(%d, 0x%X, \"%s\"", index, member->m_Offset, category);
 			else
-				sprintf_s(attributeDecl, "[RTTI.Member(%d, 0x%X)]", index, member->m_Offset);
+				sprintf_s(attributeDecl, "[RTTI.Member(%d, 0x%X", index, member->m_Offset);
+
+			if (member->IgnoreBinarySerialization())
+				strcat_s(attributeDecl, ", true)]");
+			else
+				strcat_s(attributeDecl, ")]");
 
 			fprintf(F, "\t%s public %s %s;\n", attributeDecl, typeName.c_str(), memberName.c_str());
 			index++;

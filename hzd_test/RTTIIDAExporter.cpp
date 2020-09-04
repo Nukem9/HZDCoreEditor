@@ -85,7 +85,8 @@ namespace RTTIIDAExporter
 				fprintf(F, Format, address, Name, address);
 			};
 
-			printDBOffset(type, "set_name(0x%llX, \"GGRTTI_%s_%llX\");\n", symbolName.c_str());
+			printDBOffset(type, "set_name(0x%llX, \"GGRTTI_%s_%llX\");", symbolName.c_str());
+			fprintf(F, "// 0x%llX\n", type->GetCoreBinaryTypeId_UNSAFE());
 
 			if (type->m_InfoType == RTTI::INFO_TYPE_CLASS)
 			{

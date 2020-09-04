@@ -48,9 +48,14 @@ public:
 	PropertyValuePfn m_PropertySetter;
 	char _pad0[0x10];
 
+	bool IsGroupMarker() const
+	{
+		return m_Type == nullptr;
+	}
+
 	bool IgnoreBinarySerialization() const
 	{
-		return (m_Type == nullptr) || (m_Flags & IGNORE_BINARY_SERIALIZE) != 0;
+		return IsGroupMarker() || (m_Flags & IGNORE_BINARY_SERIALIZE) != 0;
 	}
 };
 static_assert(sizeof(RTTIMemberTypeInfo) == 0x38);

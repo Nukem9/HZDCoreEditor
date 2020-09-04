@@ -30,12 +30,18 @@ namespace Decima
             public readonly uint Order;
             public readonly uint RuntimeOffset;
             public readonly string Category;
+            public readonly bool IgnoreBinarySerialization;
 
-            public MemberAttribute(uint order, uint runtimeOffset, string category = "")
+            public MemberAttribute(uint order, uint runtimeOffset, string category = "", bool ignoreBinarySerialization = false)
             {
                 Order = order;
                 RuntimeOffset = runtimeOffset;
                 Category = category;
+                IgnoreBinarySerialization = ignoreBinarySerialization;
+            }
+
+            public MemberAttribute(uint order, uint runtimeOffset, bool ignoreBinarySerialization) : this(order, runtimeOffset, "", ignoreBinarySerialization)
+            {
             }
         }
 

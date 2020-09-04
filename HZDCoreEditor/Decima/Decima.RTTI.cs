@@ -12,16 +12,30 @@ namespace Decima
         private static readonly Dictionary<ulong, Type> TypeIdLookupMap;
         private static readonly Dictionary<Type, OrderedFieldInfo> TypeFieldInfoCache;
 
-        private class OrderedFieldInfo
+        public class OrderedFieldInfo
         {
             public struct Entry
             {
-                public FieldInfo MIBase;
-                public FieldInfo Field;
+                public readonly FieldInfo MIBase;
+                public readonly FieldInfo Field;
+                public readonly bool IgnoreBinarySerialization;
+
+                public Entry(FieldInfo miBase, FieldInfo field, bool ignoreBinarySerialization)
+                {
+                    MIBase = miBase;
+                    Field = field;
+                    IgnoreBinarySerialization = ignoreBinarySerialization;
+                }
             }
 
-            public FieldInfo[] MIBases;
-            public Entry[] Members;
+            public readonly FieldInfo[] MIBases;
+            public readonly Entry[] Members;
+
+            public OrderedFieldInfo(FieldInfo[] bases, Entry[] members)
+            {
+                MIBases = bases;
+                Members = members;
+            }
         }
 
         static RTTI()
@@ -47,7 +61,7 @@ namespace Decima
             return null;
         }
 
-        private static OrderedFieldInfo GetOrderedFieldsForClass(Type type)
+        public static OrderedFieldInfo GetOrderedFieldsForClass(Type type)
         {
             if (TypeFieldInfoCache.TryGetValue(type, out OrderedFieldInfo info))
                 return info;
@@ -104,22 +118,21 @@ namespace Decima
                 .ThenBy(x => x.Attr.Order)
                 .ThenByDescending(x => x.ClassOrder);
 
-            info = new OrderedFieldInfo
-            {
-                // Unique base classes
-                MIBases = sortedHierarchy
+            // Unique base classes
+            var miBases = sortedHierarchy
                 .Where(x => x.MIBase != null)
                 .Select(x => x.MIBase)
                 .Distinct()
-                .ToArray(),
+                .ToArray();
 
-                // All members
-                Members = sortedHierarchy
-                .Select(x => new OrderedFieldInfo.Entry { MIBase = x.MIBase, Field = x.Field })
-                .ToArray(),
-            };
+            // All members
+            var members = sortedHierarchy
+                .Select(x => new OrderedFieldInfo.Entry(x.MIBase, x.Field, x.Attr.IgnoreBinarySerialization))
+                .ToArray();
 
+            info = new OrderedFieldInfo(miBases, members);
             TypeFieldInfoCache.Add(type, info);
+
             return info;
         }
 
@@ -141,7 +154,7 @@ namespace Decima
             throw new NotImplementedException($"Unhandled object type '{type.FullName}'");
         }
 
-        public static void DeserializeTypeFromField(BinaryReader reader, object instance, FieldInfo field)
+        private static void DeserializeTypeFromField(BinaryReader reader, object instance, FieldInfo field)
         {
             field.SetValue(instance, DeserializeType(reader, field.FieldType));
         }
@@ -172,6 +185,9 @@ namespace Decima
                 // Read members
                 foreach (var member in info.Members)
                 {
+                    if (member.IgnoreBinarySerialization)
+                        continue;
+
                     if (member.MIBase != null)
                         DeserializeTypeFromField(reader, member.MIBase.GetValue(objectInstance), member.Field);
                     else

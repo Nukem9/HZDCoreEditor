@@ -2499,11 +2499,16 @@ namespace Decima.HZD
         [RTTI.Member(19, 0xA8, "Animation")] public String VariableStartHeading;
         [RTTI.Member(20, 0xB0, "Animation")] public String VariableTurnAngle;
         [RTTI.Member(21, 0xB8, "Animation")] public String VariableQuickTurnAngle;
-        [RTTI.Member(22, 0xE8, "Animation")] public AnimationTagID StartTagID;
-        [RTTI.Member(23, 0xEC, "Animation")] public AnimationTagID StopTagID;
-        [RTTI.Member(24, 0xF0, "Animation")] public AnimationTagID CycleTagID;
-        [RTTI.Member(25, 0xF4, "Animation")] public AnimationTagID TurnTagID;
-        [RTTI.Member(26, 0xF8, "Animation")] public AnimationTagID QuickTurnTagID;
+        [RTTI.Member(22, 0xC0, "Animation", true)] public String AnimTagStart;
+        [RTTI.Member(23, 0xC8, "Animation", true)] public String AnimTagCycle;
+        [RTTI.Member(24, 0xD0, "Animation", true)] public String AnimTagStop;
+        [RTTI.Member(25, 0xD8, "Animation", true)] public String AnimTagTurn;
+        [RTTI.Member(26, 0xE0, "Animation", true)] public String AnimTagQuickTurn;
+        [RTTI.Member(27, 0xE8, "Animation")] public AnimationTagID StartTagID;
+        [RTTI.Member(28, 0xEC, "Animation")] public AnimationTagID StopTagID;
+        [RTTI.Member(29, 0xF0, "Animation")] public AnimationTagID CycleTagID;
+        [RTTI.Member(30, 0xF4, "Animation")] public AnimationTagID TurnTagID;
+        [RTTI.Member(31, 0xF8, "Animation")] public AnimationTagID QuickTurnTagID;
     }
 
     [RTTI.Serializable(0x3D57A32E7DCDBDD0)]
@@ -3388,6 +3393,7 @@ namespace Decima.HZD
         [RTTI.Member(9, 0x98, "Cover")] public Ref<AIPositionList> Positions;
         [RTTI.Member(10, 0xA0, "Cover")] public uint Stride;
         [RTTI.Member(11, 0xA4, "Cover")] public bool IsForObjects;
+        [RTTI.Member(12, 0xA8, "Cover", true)] public BitstreamData Data;
     }
 
     [RTTI.Serializable(0x70E5B7F389530D87)]
@@ -4230,30 +4236,31 @@ namespace Decima.HZD
         [RTTI.Member(5, 0x48, "Animation")] public String HoverAnimationAction;
         [RTTI.Member(6, 0x50, "Animation")] public String LocomotionTag;
         [RTTI.Member(7, 0x58, "Animation")] public String AdditiveTranslationTag;
-        [RTTI.Member(8, 0x68, "Animation")] public Array<Ref<AirMoverComponentPostureSettings>> Postures;
-        [RTTI.Member(9, 0x78, "Animation")] public String VariableDesiredPosture;
-        [RTTI.Member(10, 0x80, "Animation")] public Ref<AnimationManagerResource> AnimationManager;
-        [RTTI.Member(11, 0x88, "Animation")] public AnimationTagID LandingTagID;
-        [RTTI.Member(12, 0x90, "Animation")] public String VariableBankHeading;
-        [RTTI.Member(13, 0x98, "Animation")] public String AnimVarClimbingStart;
-        [RTTI.Member(14, 0xA0, "Animation")] public String AnimVarSpeed;
-        [RTTI.Member(15, 0xA8, "Animation")] public String RandomFlyingAnimationAction;
-        [RTTI.Member(16, 0xB0, "Animation")] public String QuickTurnAnimationAction;
-        [RTTI.Member(17, 0xB8, "Animation")] public String QuickTurnDirectionVariable;
-        [RTTI.Member(18, 0xC0, "HoverPushAnimation")] public float HoverPushThreshold;
-        [RTTI.Member(19, 0xC8, "HoverPushAnimation")] public String HoverPushAnimationAction;
-        [RTTI.Member(20, 0xD0, "HoverPushAnimation")] public String HoverPushDirectionVariable;
-        [RTTI.Member(21, 0xD8, "HoverPushAnimation")] public int HoverPushLeftValue;
-        [RTTI.Member(22, 0xDC, "HoverPushAnimation")] public int HoverPushRightValue;
-        [RTTI.Member(23, 0xE0, "HoverPushAnimation")] public int HoverPushBackwardValue;
-        [RTTI.Member(24, 0xE4, "HoverPushAnimation")] public int HoverPushForwardValue;
-        [RTTI.Member(25, 0xE8, "HoverPushAnimation")] public int HoverPushDownValue;
-        [RTTI.Member(26, 0xEC, "HoverPushAnimation")] public int HoverPushUpValue;
-        [RTTI.Member(27, 0xF0, "Logic")] public bool Aquatic;
-        [RTTI.Member(28, 0xF4, "Logic")] public float PhysicsCollisionSize;
-        [RTTI.Member(29, 0xF8, "Logic")] public bool IsAgentAnOwl;
-        [RTTI.Member(30, 0xFC, "Logic")] public float LookAheadTime;
-        [RTTI.Member(31, 0x100, "Logic")] public float QuickTurnAngleThreshold;
+        [RTTI.Member(8, 0x60, "Animation", true)] public String AnimTagLanding;
+        [RTTI.Member(9, 0x68, "Animation")] public Array<Ref<AirMoverComponentPostureSettings>> Postures;
+        [RTTI.Member(10, 0x78, "Animation")] public String VariableDesiredPosture;
+        [RTTI.Member(11, 0x80, "Animation")] public Ref<AnimationManagerResource> AnimationManager;
+        [RTTI.Member(12, 0x88, "Animation")] public AnimationTagID LandingTagID;
+        [RTTI.Member(13, 0x90, "Animation")] public String VariableBankHeading;
+        [RTTI.Member(14, 0x98, "Animation")] public String AnimVarClimbingStart;
+        [RTTI.Member(15, 0xA0, "Animation")] public String AnimVarSpeed;
+        [RTTI.Member(16, 0xA8, "Animation")] public String RandomFlyingAnimationAction;
+        [RTTI.Member(17, 0xB0, "Animation")] public String QuickTurnAnimationAction;
+        [RTTI.Member(18, 0xB8, "Animation")] public String QuickTurnDirectionVariable;
+        [RTTI.Member(19, 0xC0, "HoverPushAnimation")] public float HoverPushThreshold;
+        [RTTI.Member(20, 0xC8, "HoverPushAnimation")] public String HoverPushAnimationAction;
+        [RTTI.Member(21, 0xD0, "HoverPushAnimation")] public String HoverPushDirectionVariable;
+        [RTTI.Member(22, 0xD8, "HoverPushAnimation")] public int HoverPushLeftValue;
+        [RTTI.Member(23, 0xDC, "HoverPushAnimation")] public int HoverPushRightValue;
+        [RTTI.Member(24, 0xE0, "HoverPushAnimation")] public int HoverPushBackwardValue;
+        [RTTI.Member(25, 0xE4, "HoverPushAnimation")] public int HoverPushForwardValue;
+        [RTTI.Member(26, 0xE8, "HoverPushAnimation")] public int HoverPushDownValue;
+        [RTTI.Member(27, 0xEC, "HoverPushAnimation")] public int HoverPushUpValue;
+        [RTTI.Member(28, 0xF0, "Logic")] public bool Aquatic;
+        [RTTI.Member(29, 0xF4, "Logic")] public float PhysicsCollisionSize;
+        [RTTI.Member(30, 0xF8, "Logic")] public bool IsAgentAnOwl;
+        [RTTI.Member(31, 0xFC, "Logic")] public float LookAheadTime;
+        [RTTI.Member(32, 0x100, "Logic")] public float QuickTurnAngleThreshold;
     }
 
     [RTTI.Serializable(0x1E2621C8FA90F01A)]
@@ -4840,7 +4847,8 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x38, "General")] public Array<AnimatedTextureFrame> Frames;
         [RTTI.Member(1, 0x48, "General")] public float TotalDuration;
-        [RTTI.Member(2, 0x55, "General")] public bool PausedByDefault;
+        [RTTI.Member(2, 0x4C, "General", true)] public float DefaultDuration;
+        [RTTI.Member(3, 0x55, "General")] public bool PausedByDefault;
     }
 
     [RTTI.Serializable(0xDCAC9874322AC4D6)]
@@ -6278,6 +6286,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0xF4222E8B92D481A6)]
     public class BitstreamData
     {
+        [RTTI.Member(0, 0x0, true)] public Array<uint8> Data;
     }
 
     [RTTI.Serializable(0x811486F25B793F60)]
@@ -6521,6 +6530,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0x49DB8ED4D1EB432C)]
     public class BoolProperty : BoolPropertyBase
     {
+        [RTTI.Member(0, 0x0, "Flags", true)] public bool Replicated;
+        [RTTI.Member(1, 0x0, "Flags", true)] public bool Persistent;
     }
 
     [RTTI.Serializable(0x2A68CEDDC19C030A)]
@@ -6877,6 +6888,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0x16F9F6994A8BDE54)]
     public class BuyBackItemRestoreState : RTTIObject
     {
+        [RTTI.Member(0, 0x28, "StateSaving", true)] public Ref<ItemRestoreState> Item;
+        [RTTI.Member(1, 0x30, "StateSaving", true)] public int TotalSellPrice;
     }
 
     [RTTI.Serializable(0x527946DBCC42AAD7)]
@@ -7823,6 +7836,13 @@ namespace Decima.HZD
     [RTTI.Serializable(0x4C4EFB2E3479D407)]
     public class CharacterProgressionSave : RTTIRefObject
     {
+        [RTTI.Member(0, 0x28, "StateSave", true)] public int Xp;
+        [RTTI.Member(1, 0x2C, "StateSave", true)] public int CurrentLevel;
+        [RTTI.Member(2, 0x30, "StateSave", true)] public int AvailablePerkPoints;
+        [RTTI.Member(3, 0x34, "StateSave", true)] public bool PerksUnlocked;
+        [RTTI.Member(4, 0x38, "StateSave", true)] public Array<GGUUID> ChosenPerks;
+        [RTTI.Member(5, 0x48, "StateSave", true)] public bool MaxXpPatched;
+        [RTTI.Member(6, 0x4C, "StateSave", true)] public int GoldenXp;
     }
 
     [RTTI.Serializable(0x5241165A20CF2A75)]
@@ -8333,7 +8353,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0xA5B38AE190F649E2)]
     public class CollisionTrigger : PhysicsCollisionInstance
     {
-        [RTTI.Member(0, 0xE0, "General")] public String Name;
+        [RTTI.Member(0, 0x88, "General", true)] public WorldTransform Orientation;
+        [RTTI.Member(1, 0xE0, "General")] public String Name;
     }
 
     [RTTI.Serializable(0x61E0C8F38F07D6D8)]
@@ -8874,11 +8895,14 @@ namespace Decima.HZD
     [RTTI.Serializable(0x47B51A14A44A887)]
     public class ContextualSpeechRuleSave : RTTIObject
     {
+        [RTTI.Member(0, 0x10, true)] public GGUUID UUID;
+        [RTTI.Member(1, 0x20, true)] public int RepeatCount;
     }
 
     [RTTI.Serializable(0x6942E2F5E5D6D4F)]
     public class ContextualSpeechSave : RTTIRefObject
     {
+        [RTTI.Member(0, 0x28, true)] public Array<ContextualSpeechRuleSave> Rules;
     }
 
     [RTTI.Serializable(0x353B2D32C58139BA)]
@@ -8898,11 +8922,12 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x1A0, "Logic")] public String AnimationState;
         [RTTI.Member(1, 0x1A8, "Logic")] public int ContactEventUserData;
-        [RTTI.Member(2, 0x1C0, "Logic")] public Vec3 ContactPosition;
-        [RTTI.Member(3, 0x1D0, "Logic")] public Vec3 ContactWarpOffset;
-        [RTTI.Member(4, 0x1E0, "Logic")] public bool KeepUpdatingOrientation;
-        [RTTI.Member(5, 0x1E1, "Logic")] public bool KeepUpdatingWarpAnimationVariables;
-        [RTTI.Member(6, 0x1E8, "Logic")] public Ref<SkinnedModelResource> ModelResource;
+        [RTTI.Member(2, 0x1B0, "Logic", true)] public String ContactJointName;
+        [RTTI.Member(3, 0x1C0, "Logic")] public Vec3 ContactPosition;
+        [RTTI.Member(4, 0x1D0, "Logic")] public Vec3 ContactWarpOffset;
+        [RTTI.Member(5, 0x1E0, "Logic")] public bool KeepUpdatingOrientation;
+        [RTTI.Member(6, 0x1E1, "Logic")] public bool KeepUpdatingWarpAnimationVariables;
+        [RTTI.Member(7, 0x1E8, "Logic")] public Ref<SkinnedModelResource> ModelResource;
     }
 
     [RTTI.Serializable(0x32A0FBEF7F8C800)]
@@ -8951,6 +8976,13 @@ namespace Decima.HZD
         [RTTI.Member(1, 0x0, "Logic")] public float MaxAimHeading;
         [RTTI.Member(2, 0x0, "Logic")] public float MinAimHeading;
         [RTTI.Member(3, 0x0, "Logic")] public float MaxAimPitch;
+        [RTTI.Member(4, 0x2C2, "AI", true)] public bool AiIndividualCreated;
+        [RTTI.Member(5, 0x2C3, "AI", true)] public bool AiIndividualAdded;
+        [RTTI.Member(6, 0x2C8, "AI", true)] public Ref<AIIndividual> AIIndividual;
+        [RTTI.Member(7, 0x2D0, "Logic", true)] public Ref<Controller> Controller;
+        [RTTI.Member(8, 0x2D8, "Logic", true)] public WeakPtr<CameraEntity> Camera;
+        [RTTI.Member(9, 0x2F0, "AI", true)] public bool ClaimsTerrain;
+        [RTTI.Member(10, 0x398, "Logic", true)] public Array<WorldPosition> SafePositionHistory;
     }
 
     [RTTI.Serializable(0x667180E908054C67)]
@@ -9049,6 +9081,22 @@ namespace Decima.HZD
     [RTTI.Serializable(0xC82E765C7CC99656)]
     public class ControllerConfig
     {
+        [RTTI.Member(0, 0x0, true)] public int ControllerConfigID;
+        [RTTI.Member(1, 0x8, true)] public Array<int> ControllerConfigIDPreferences;
+        [RTTI.Member(2, 0x18, true)] public Array<float> HeadingSpeedFactor;
+        [RTTI.Member(3, 0x28, true)] public Array<float> PitchSpeedFactor;
+        [RTTI.Member(4, 0x38, true)] public bool LookInvertYAxis;
+        [RTTI.Member(5, 0x39, true)] public bool LookInvertXAxis;
+        [RTTI.Member(6, 0x40, true)] public Vec2 LookSensitivity;
+        [RTTI.Member(7, 0x50, true)] public Vec2 LookSensitivityMouse;
+        [RTTI.Member(8, 0x60, true)] public float CameraDistance;
+        [RTTI.Member(9, 0x64, true)] public int32 ZoomSwitchMode;
+        [RTTI.Member(10, 0x68, true)] public bool SprintToggle;
+        [RTTI.Member(11, 0x69, true)] public bool CrouchToggle;
+        [RTTI.Member(12, 0x6A, true)] public bool SwapSticks;
+        [RTTI.Member(13, 0x6B, true)] public bool SwapL1L2;
+        [RTTI.Member(14, 0x6C, true)] public bool SwapR1R2;
+        [RTTI.Member(15, 0x6D, true)] public bool FlightInvertYAxis;
     }
 
     [RTTI.Serializable(0x76780B07BDD4C05C)]
@@ -9273,6 +9321,11 @@ namespace Decima.HZD
     [RTTI.Serializable(0xF8596DFD73A58B08)]
     public class CountdownTimerSave : RTTIObject
     {
+        [RTTI.Member(0, 0x10, "StateSaving", true)] public bool Running;
+        [RTTI.Member(1, 0x14, "StateSaving", true)] public float Duration;
+        [RTTI.Member(2, 0x18, "StateSaving", true)] public bool VisibleOnScreen;
+        [RTTI.Member(3, 0x1C, "StateSaving", true)] public float ElapsedTime;
+        [RTTI.Member(4, 0x20, "StateSaving", true)] public float BlinkStartTime;
     }
 
     [RTTI.Serializable(0x85B2C38935792194)]
@@ -9337,6 +9390,9 @@ namespace Decima.HZD
     [RTTI.Serializable(0x669EFFE7DA052306)]
     public class CraftingSave : RTTIRefObject
     {
+        [RTTI.Member(0, 0x28, "StateSave", true)] public Array<GGUUID> UpgradeUUIDs;
+        [RTTI.Member(1, 0x38, "StateSave", true)] public Array<GGUUID> UnlockedRecipes;
+        [RTTI.Member(2, 0x48, "StateSave", true)] public Array<GGUUID> CraftedRecipes;
     }
 
     [RTTI.Serializable(0x2E91F539B607235B)]
@@ -9645,6 +9701,8 @@ namespace Decima.HZD
         [RTTI.Member(0, 0x28, "General")] public Array<Vec2> Points;
         [RTTI.Member(1, 0x38, "General")] public Array<float> Tangents;
         [RTTI.Member(2, 0x58, "General")] public bool Smooth;
+        [RTTI.Member(3, 0x88, "General", true)] public String HorizontalAxisName;
+        [RTTI.Member(4, 0x90, "General", true)] public String VerticalAxisName;
     }
 
     [RTTI.Serializable(0x40E48BD894F27DD1)]
@@ -10719,9 +10777,10 @@ namespace Decima.HZD
     [RTTI.Serializable(0x7EA5BF5FFAAEFBC4)]
     public class DecalShaderVariable
     {
-        [RTTI.Member(0, 0x8)] public EDecalVariableSource Source;
-        [RTTI.Member(1, 0xC)] public uint32 VariableIDHash;
-        [RTTI.Member(2, 0x10)] public float Default;
+        [RTTI.Member(0, 0x0, true)] public String VariableID;
+        [RTTI.Member(1, 0x8)] public EDecalVariableSource Source;
+        [RTTI.Member(2, 0xC)] public uint32 VariableIDHash;
+        [RTTI.Member(3, 0x10)] public float Default;
     }
 
     [RTTI.Serializable(0xB36F74417118DABC)]
@@ -10786,6 +10845,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x58DB3CE83A473653)]
     public class DelayedScriptMessage : ScriptMessage
     {
+        [RTTI.Member(0, 0x68, "StateSaving", true)] public float TimeLeft;
     }
 
     [RTTI.Serializable(0xFEB100F7E49548AE)]
@@ -11414,7 +11474,15 @@ namespace Decima.HZD
     [RTTI.Serializable(0x1752E0F75EA5FB53)]
     public class DrawFlags
     {
-        [RTTI.Member(0, 0x0, "General")] public uint32 Data;
+        [RTTI.Member(0, 0x0, "General", true)] public float ShadowBiasMultiplier;
+        [RTTI.Member(1, 0x0, "General", true)] public bool DisableOcclusionCulling;
+        [RTTI.Member(2, 0x0, "General", true)] public bool DisableDepthOnlyPass;
+        [RTTI.Member(3, 0x0, "General", true)] public EShadowBiasMode ShadowBiasMode;
+        [RTTI.Member(4, 0x0, "General", true)] public EViewLayer ViewLayer;
+        [RTTI.Member(5, 0x0, "General", true)] public EShadowCull ShadowCullMode;
+        [RTTI.Member(6, 0x0, "General")] public uint32 Data;
+        [RTTI.Member(7, 0x0, "General", true)] public EDrawPartType RenderType;
+        [RTTI.Member(8, 0x0, "General", true)] public bool CastShadows;
     }
 
     [RTTI.Serializable(0x56958D1D4960FF90)]
@@ -11470,6 +11538,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x10330CF2842C237)]
     public class DynamicQuestManager : RTTIObject
     {
+        [RTTI.Member(0, 0x30, "Saving", true)] public Array<Ptr<GeneratedQuestSave>> Saves;
     }
 
     [RTTI.Serializable(0x20A7A5E087E59B87)]
@@ -12073,9 +12142,18 @@ namespace Decima.HZD
     [RTTI.Serializable(0x6B5B170F51665F08)]
     public class Entity : CoreObject
     {
-        [RTTI.Member(0, 0x38, "General")] public String Name;
-        [RTTI.Member(1, 0x120, "General")] public WorldTransform Orientation;
-        [RTTI.Member(2, 0x180, "General")] public StreamingRef<EntityResource> Resource;
+        [RTTI.Member(0, 0x0, "General", true)] public uint32 Flags;
+        [RTTI.Member(1, 0x0, "Hierarchy", true)] public Ptr<Entity> Parent;
+        [RTTI.Member(2, 0x38, "General")] public String Name;
+        [RTTI.Member(3, 0x88, "General", true)] public uint32 UpdateStepTicks;
+        [RTTI.Member(4, 0x120, "General")] public WorldTransform Orientation;
+        [RTTI.Member(5, 0x180, "General")] public StreamingRef<EntityResource> Resource;
+        [RTTI.Member(6, 0x1A0, "General", true)] public Ref<EntityActivationPolicy> ActivationPolicy;
+        [RTTI.Member(7, 0x1E0, "Components", true)] public Ptr<Mover> Mover;
+        [RTTI.Member(8, 0x1E8, "Components", true)] public Ptr<Model> Model;
+        [RTTI.Member(9, 0x1F0, "Components", true)] public Ptr<Destructibility> Destructibility;
+        [RTTI.Member(10, 0x228, "General", true)] public Ptr<AIFaction> Faction;
+        [RTTI.Member(11, 0x288, "Components", true)] public EntityComponentContainer Components;
     }
 
     [RTTI.Serializable(0xE88A878937E8724D)]
@@ -12241,11 +12319,14 @@ namespace Decima.HZD
     [RTTI.Serializable(0x11068012818867F2)]
     public class EntityComponent : RTTIRefObject
     {
+        [RTTI.Member(0, 0x30, "General", true)] public Ref<EntityComponentResource> Resource;
+        [RTTI.Member(1, 0x48, "General", true)] public Ptr<Entity> Entity;
     }
 
     [RTTI.Serializable(0x586A4426CAD07C0B)]
     public class EntityComponentContainer
     {
+        [RTTI.Member(0, 0x0, true)] public Array<Ptr<EntityComponent>> Components;
     }
 
     [RTTI.Serializable(0x268C5ABD3EAEC98E)]
@@ -12346,6 +12427,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0xBDE6BC0CF6C1D42)]
     public class EntityInstanceProperty : EntityInstancePropertyBase
     {
+        [RTTI.Member(0, 0x0, "Flags", true)] public bool Replicated;
+        [RTTI.Member(1, 0x0, "Flags", true)] public bool Persistent;
     }
 
     [RTTI.Serializable(0x16BAF4FD2F34EA86)]
@@ -12407,10 +12490,12 @@ namespace Decima.HZD
         [RTTI.Member(0, 0x60, "General")] public String Name;
         [RTTI.Member(1, 0x68, "General")] public Ref<EntityResource> EntityResource;
         [RTTI.Member(2, 0x70, "General")] public Array<Ref<EntityComponentResource>> EntityComponentResources;
-        [RTTI.Member(3, 0x90, "General")] public Array<Ref<FactValue>> Facts;
-        [RTTI.Member(4, 0xB0, "General")] public int8 DestructibilityState;
-        [RTTI.Member(5, 0xB2, "General")] public EFactContextLifetime FactsLifetime;
-        [RTTI.Member(6, 0xB3, "General")] public EPhysicsInitMode PhysicsInitMode;
+        [RTTI.Member(3, 0x88, "General", true)] public Ref<EntityActivationPolicy> ActivationPolicy;
+        [RTTI.Member(4, 0x90, "General")] public Array<Ref<FactValue>> Facts;
+        [RTTI.Member(5, 0xA0, "General", true)] public GGUUID OriginalUUID;
+        [RTTI.Member(6, 0xB0, "General")] public int8 DestructibilityState;
+        [RTTI.Member(7, 0xB2, "General")] public EFactContextLifetime FactsLifetime;
+        [RTTI.Member(8, 0xB3, "General")] public EPhysicsInitMode PhysicsInitMode;
     }
 
     [RTTI.Serializable(0x71C254683E13FE36)]
@@ -12532,6 +12617,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0xD5C409CFC4245A9E)]
     public class EntityResourceProperty : EntityResourcePropertyBase
     {
+        [RTTI.Member(0, 0x0, "Flags", true)] public bool Replicated;
+        [RTTI.Member(1, 0x0, "Flags", true)] public bool Persistent;
     }
 
     [RTTI.Serializable(0x139EBEAA813053F7)]
@@ -12706,6 +12793,9 @@ namespace Decima.HZD
     [RTTI.Serializable(0xF9583550F29FF2D6)]
     public class EntityStatistic
     {
+        [RTTI.Member(0, 0x0, true)] public int8 StatClassID;
+        [RTTI.Member(1, 0x1, true)] public int8 StatID;
+        [RTTI.Member(2, 0x4, true)] public int Value;
     }
 
     [RTTI.Serializable(0xE3DD4FB52EF2F5E6)]
@@ -13527,6 +13617,9 @@ namespace Decima.HZD
     [RTTI.Serializable(0x64F0B9394F4E27A8)]
     public class FactContextDescription : RTTIObject
     {
+        [RTTI.Member(0, 0x10, true)] public GGUUID Context;
+        [RTTI.Member(1, 0x20, true)] public EFactType Type;
+        [RTTI.Member(2, 0x28, true)] public String Description;
     }
 
     [RTTI.Serializable(0xC3835A4A06E1473D)]
@@ -13853,6 +13946,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0xA5D856AEEC225E8A)]
     public class FloatProperty : FloatPropertyBase
     {
+        [RTTI.Member(0, 0x0, "Flags", true)] public bool Replicated;
+        [RTTI.Member(1, 0x0, "Flags", true)] public bool Persistent;
     }
 
     [RTTI.Serializable(0x3EFFB7F768AC70A0)]
@@ -15103,6 +15198,20 @@ namespace Decima.HZD
     [RTTI.Serializable(0x7520F5D9A86D15E3)]
     public class GeneratedQuestSave : RTTIObject
     {
+        [RTTI.Member(0, 0x10, "Saving", true)] public GGUUID QuestUUID;
+        [RTTI.Member(1, 0x20, "Saving", true)] public GGUUID StartUUID;
+        [RTTI.Member(2, 0x30, "Saving", true)] public GGUUID EndUUID;
+        [RTTI.Member(3, 0x40, "Saving", true)] public GGUUID SubSectionUUID;
+        [RTTI.Member(4, 0x50, "Saving", true)] public GGUUID MainObjectiveUUID;
+        [RTTI.Member(5, 0x60, "Saving", true)] public GGUUID FinishObjectiveUUID;
+        [RTTI.Member(6, 0x70, "Saving", true)] public GGUUID TriggerUUID;
+        [RTTI.Member(7, 0x90, "Saving", true)] public GGUUID Recipe;
+        [RTTI.Member(8, 0xA0, "Saving", true)] public GGUUID TradingItem;
+        [RTTI.Member(9, 0xB0, "Saving", true)] public StreamingRef<EntityResource> ItemToBuy;
+        [RTTI.Member(10, 0xD0, "Saving", true)] public GGUUID TurnInLocationUUID;
+        [RTTI.Member(11, 0xE0, "Saving", true)] public GGUUID MerchantSpawnSetupUUID;
+        [RTTI.Member(12, 0xF0, "Saving", true)] public Array<StreamingRef<EntityResource>> ItemsToTradeIn;
+        [RTTI.Member(13, 0x100, "Saving", true)] public Array<int> AmountOfItemsToTradeIn;
     }
 
     [RTTI.Serializable(0xA34221D70353BA4)]
@@ -15684,6 +15793,9 @@ namespace Decima.HZD
     [RTTI.Serializable(0x40072979FEE279AE)]
     public class GroundToAirTransitionComponent : EntityComponent
     {
+        [RTTI.Member(0, 0x58, true)] public EMovementStateGroundToAir MovementState;
+        [RTTI.Member(1, 0x80, true)] public WorldPosition LandingPosition;
+        [RTTI.Member(2, 0xC0, true)] public float TakeOffActivationTime;
     }
 
     [RTTI.Serializable(0x66C05A1306C1F900)]
@@ -15701,7 +15813,8 @@ namespace Decima.HZD
         [RTTI.Member(9, 0x80, "Animation")] public String LandingOrientationAnimVarName;
         [RTTI.Member(10, 0x88, "Animation")] public String AnimTagOnGround;
         [RTTI.Member(11, 0x90, "Animation")] public String AnimTagInAir;
-        [RTTI.Member(12, 0xA0, "Animation")] public int AirSpawnStateID;
+        [RTTI.Member(12, 0x98, "Animation", true)] public String AnimTagAirSpawnState;
+        [RTTI.Member(13, 0xA0, "Animation")] public int AirSpawnStateID;
     }
 
     [RTTI.Serializable(0xC2046768F847F1A3)]
@@ -16181,6 +16294,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0x16BE783AC6675D37)]
     public class HUDGroupShowOption
     {
+        [RTTI.Member(0, 0x0, true)] public GGUUID LogicGroupResourceUUID;
+        [RTTI.Member(1, 0x10, true)] public EHUDShowOption HUDShowOption;
     }
 
     [RTTI.Serializable(0x1D40754F54C28D97)]
@@ -16718,6 +16833,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x30A261BB4EC4684F)]
     public class HUDRestoreState : RTTIRefObject
     {
+        [RTTI.Member(0, 0x28, "StateSaving", true)] public Array<GGUUID> HUDResources;
     }
 
     [RTTI.Serializable(0xFB17A935CC4E8230)]
@@ -17369,6 +17485,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0xD6DA3F3CFB37B1BC)]
     public class HealthBucketRestoreState : RTTIRefObject
     {
+        [RTTI.Member(0, 0x28, "StateSaving", true)] public float Content;
     }
 
     [RTTI.Serializable(0xB1AB431020AAE8AB)]
@@ -17802,6 +17919,11 @@ namespace Decima.HZD
     [RTTI.Serializable(0x9E70A2CDAF755790)]
     public class HorseCallRestoreState : RTTIRefObject
     {
+        [RTTI.Member(0, 0x28, "StateSaving", true)] public GGUUID LastCalledHorseResourceUUID;
+        [RTTI.Member(1, 0x38, "StateSaving", true)] public EHorseRestoreState HorseRestoreState;
+        [RTTI.Member(2, 0x39, "StateSaving", true)] public GGUUID HorseEntityUUID;
+        [RTTI.Member(3, 0x50, "StateSaving", true)] public StreamingRef<EntityResource> HorseResource;
+        [RTTI.Member(4, 0x70, "StateSaving", true)] public WorldTransform HorseWorldTransform;
     }
 
     [RTTI.Serializable(0x1F4AF3462D4A00B0)]
@@ -18067,7 +18189,8 @@ namespace Decima.HZD
         [RTTI.Member(1, 0x74, "Logic")] public float IncomingMomentumDeceleration;
         [RTTI.Member(2, 0x78, "Logic")] public FRange SprintForwardAngularRange;
         [RTTI.Member(3, 0x80, "Logic")] public FRange WalkForwardAngularRange;
-        [RTTI.Member(4, 0x90, "Private")] public AnimationTagID AnimTagDiveRoll;
+        [RTTI.Member(4, 0x88, "Animation", true)] public String AnimTagDiveRollName;
+        [RTTI.Member(5, 0x90, "Private")] public AnimationTagID AnimTagDiveRoll;
     }
 
     [RTTI.Serializable(0x90B8621E82505CE3)]
@@ -18104,39 +18227,56 @@ namespace Decima.HZD
         [RTTI.Member(9, 0xB4, "Logic")] public FRange SprintForwardAngularRange;
         [RTTI.Member(10, 0xBC, "Logic")] public FRange WalkForwardAngularRange;
         [RTTI.Member(11, 0xC4, "Aim")] public FRange AimRotationComfortRange;
-        [RTTI.Member(12, 0xD8, "Private")] public AnimationTagID AnimTagIdle;
-        [RTTI.Member(13, 0xE8, "Private")] public AnimationTagID AnimTagStart;
-        [RTTI.Member(14, 0xF8, "Private")] public AnimationTagID AnimTagStartDirection;
-        [RTTI.Member(15, 0x108, "Private")] public AnimationTagID AnimTagCycle;
-        [RTTI.Member(16, 0x118, "Private")] public AnimationTagID AnimTagSprint;
-        [RTTI.Member(17, 0x128, "Private")] public AnimationTagID AnimTagStop;
-        [RTTI.Member(18, 0x138, "Private")] public AnimationTagID AnimTagCrouch;
-        [RTTI.Member(19, 0x148, "Private")] public AnimationTagID AnimTagCombat;
-        [RTTI.Member(20, 0x158, "Private")] public AnimationTagID AnimTagIsAimed;
-        [RTTI.Member(21, 0x168, "Private")] public AnimationTagID AnimTagTurning;
-        [RTTI.Member(22, 0x178, "Private")] public AnimationTagID AnimTagTurn180;
-        [RTTI.Member(23, 0x188, "Private")] public AnimationTagID AnimTagJump;
-        [RTTI.Member(24, 0x198, "Private")] public AnimationTagID AnimTagDiveRoll;
-        [RTTI.Member(25, 0x1A8, "Private")] public AnimationTagID AnimTagSliding;
-        [RTTI.Member(26, 0x1B8, "Private")] public AnimationTagID AnimTagTacticalToCombat;
-        [RTTI.Member(27, 0x1C8, "Private")] public AnimationStateID DefaultStandIdleAnimationState;
-        [RTTI.Member(28, 0x1D8, "Private")] public AnimationStateID DefaultCrouchIdleAnimationState;
-        [RTTI.Member(29, 0x1DC, "Logic")] public float StartSmoothTime;
-        [RTTI.Member(30, 0x1E0, "Logic")] public float StopSmoothTime;
-        [RTTI.Member(31, 0x1E4, "Logic")] public float StartToMoveSmoothTime;
-        [RTTI.Member(32, 0x1E8, "Logic")] public float TurnspeedWhileStarting;
-        [RTTI.Member(33, 0x1EC, "Logic")] public float MaxCrouchWaterHeight;
-        [RTTI.Member(34, 0x1F0, "Unlocks")] public Ref<PerkLevel> ExtendedDiveRollPerk;
-        [RTTI.Member(35, 0x1F8, "Unlocks")] public String ExtendedDiveRollAnimName;
-        [RTTI.Member(36, 0x200, "Logic")] public Array<int> JumpAnimationVariantWeights;
-        [RTTI.Member(37, 0x210, "BumpIntoEnvironment")] public float BumpMaxAngleBetweenNormalAndInput;
-        [RTTI.Member(38, 0x214, "BumpIntoEnvironment")] public float BumpMinTimeToStopMove;
-        [RTTI.Member(39, 0x218, "BumpIntoEnvironment")] public float BumpMinTimeDiffBetweenActualAndDesiredVelocity;
-        [RTTI.Member(40, 0x21C, "BumpIntoEnvironment")] public float BumpVerticalEpsilon;
-        [RTTI.Member(41, 0x220, "BumpIntoEnvironment")] public float BumpForwardDistance;
-        [RTTI.Member(42, 0x224, "BumpIntoEnvironment")] public float SlideMinDiffBetweenActualAndDesiredVelocity;
-        [RTTI.Member(43, 0x228, "BumpIntoEnvironment")] public float SlideMinTimeDiffBetweenActualAndDesiredVelocity;
-        [RTTI.Member(44, 0x22C, "BumpIntoEnvironment")] public float SlideMinHeight;
+        [RTTI.Member(12, 0xD0, "Animation", true)] public String AnimTagIdleName;
+        [RTTI.Member(13, 0xD8, "Private")] public AnimationTagID AnimTagIdle;
+        [RTTI.Member(14, 0xE0, "Animation", true)] public String AnimTagStartName;
+        [RTTI.Member(15, 0xE8, "Private")] public AnimationTagID AnimTagStart;
+        [RTTI.Member(16, 0xF0, "Animation", true)] public String AnimTagStartDirectionName;
+        [RTTI.Member(17, 0xF8, "Private")] public AnimationTagID AnimTagStartDirection;
+        [RTTI.Member(18, 0x100, "Animation", true)] public String AnimTagCycleName;
+        [RTTI.Member(19, 0x108, "Private")] public AnimationTagID AnimTagCycle;
+        [RTTI.Member(20, 0x110, "Animation", true)] public String AnimTagSprintName;
+        [RTTI.Member(21, 0x118, "Private")] public AnimationTagID AnimTagSprint;
+        [RTTI.Member(22, 0x120, "Animation", true)] public String AnimTagStopName;
+        [RTTI.Member(23, 0x128, "Private")] public AnimationTagID AnimTagStop;
+        [RTTI.Member(24, 0x130, "Animation", true)] public String AnimTagCrouchName;
+        [RTTI.Member(25, 0x138, "Private")] public AnimationTagID AnimTagCrouch;
+        [RTTI.Member(26, 0x140, "Animation", true)] public String AnimTagCombatName;
+        [RTTI.Member(27, 0x148, "Private")] public AnimationTagID AnimTagCombat;
+        [RTTI.Member(28, 0x150, "Aim", true)] public String Aim_AnimTagIsAimed;
+        [RTTI.Member(29, 0x158, "Private")] public AnimationTagID AnimTagIsAimed;
+        [RTTI.Member(30, 0x160, "Animation", true)] public String AnimTagTurningName;
+        [RTTI.Member(31, 0x168, "Private")] public AnimationTagID AnimTagTurning;
+        [RTTI.Member(32, 0x170, "Animation", true)] public String AnimTagTurn180Name;
+        [RTTI.Member(33, 0x178, "Private")] public AnimationTagID AnimTagTurn180;
+        [RTTI.Member(34, 0x180, "Animation", true)] public String AnimTagJumpName;
+        [RTTI.Member(35, 0x188, "Private")] public AnimationTagID AnimTagJump;
+        [RTTI.Member(36, 0x190, "Animation", true)] public String AnimTagDiveRollName;
+        [RTTI.Member(37, 0x198, "Private")] public AnimationTagID AnimTagDiveRoll;
+        [RTTI.Member(38, 0x1A0, "Animation", true)] public String AnimTagSlidingName;
+        [RTTI.Member(39, 0x1A8, "Private")] public AnimationTagID AnimTagSliding;
+        [RTTI.Member(40, 0x1B0, "Animation", true)] public String AnimTagTacticalToCombatName;
+        [RTTI.Member(41, 0x1B8, "Private")] public AnimationTagID AnimTagTacticalToCombat;
+        [RTTI.Member(42, 0x1C0, "Animation", true)] public String DefaultStandIdleAnimationStateName;
+        [RTTI.Member(43, 0x1C8, "Private")] public AnimationStateID DefaultStandIdleAnimationState;
+        [RTTI.Member(44, 0x1D0, "Animation", true)] public String DefaultCrouchIdleAnimationStateName;
+        [RTTI.Member(45, 0x1D8, "Private")] public AnimationStateID DefaultCrouchIdleAnimationState;
+        [RTTI.Member(46, 0x1DC, "Logic")] public float StartSmoothTime;
+        [RTTI.Member(47, 0x1E0, "Logic")] public float StopSmoothTime;
+        [RTTI.Member(48, 0x1E4, "Logic")] public float StartToMoveSmoothTime;
+        [RTTI.Member(49, 0x1E8, "Logic")] public float TurnspeedWhileStarting;
+        [RTTI.Member(50, 0x1EC, "Logic")] public float MaxCrouchWaterHeight;
+        [RTTI.Member(51, 0x1F0, "Unlocks")] public Ref<PerkLevel> ExtendedDiveRollPerk;
+        [RTTI.Member(52, 0x1F8, "Unlocks")] public String ExtendedDiveRollAnimName;
+        [RTTI.Member(53, 0x200, "Logic")] public Array<int> JumpAnimationVariantWeights;
+        [RTTI.Member(54, 0x210, "BumpIntoEnvironment")] public float BumpMaxAngleBetweenNormalAndInput;
+        [RTTI.Member(55, 0x214, "BumpIntoEnvironment")] public float BumpMinTimeToStopMove;
+        [RTTI.Member(56, 0x218, "BumpIntoEnvironment")] public float BumpMinTimeDiffBetweenActualAndDesiredVelocity;
+        [RTTI.Member(57, 0x21C, "BumpIntoEnvironment")] public float BumpVerticalEpsilon;
+        [RTTI.Member(58, 0x220, "BumpIntoEnvironment")] public float BumpForwardDistance;
+        [RTTI.Member(59, 0x224, "BumpIntoEnvironment")] public float SlideMinDiffBetweenActualAndDesiredVelocity;
+        [RTTI.Member(60, 0x228, "BumpIntoEnvironment")] public float SlideMinTimeDiffBetweenActualAndDesiredVelocity;
+        [RTTI.Member(61, 0x22C, "BumpIntoEnvironment")] public float SlideMinHeight;
     }
 
     [RTTI.Serializable(0xD4D6527D7B03E913)]
@@ -18149,9 +18289,12 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x70, "Logic")] public bool AttachGunBoneToHandBone;
         [RTTI.Member(1, 0x78, "Logic")] public Ref<DamageTypeResource> FallingDamageTypeResource;
-        [RTTI.Member(2, 0x88, "Private")] public AnimationTagID AnimTagFallingOver;
-        [RTTI.Member(3, 0x98, "Private")] public AnimationTagID AnimTagGettingUp;
-        [RTTI.Member(4, 0xA8, "Private")] public AnimationTagID AnimTagWounded;
+        [RTTI.Member(2, 0x80, "Animation", true)] public String AnimTagFallingOverName;
+        [RTTI.Member(3, 0x88, "Private")] public AnimationTagID AnimTagFallingOver;
+        [RTTI.Member(4, 0x90, "Animation", true)] public String AnimTagGettingUpName;
+        [RTTI.Member(5, 0x98, "Private")] public AnimationTagID AnimTagGettingUp;
+        [RTTI.Member(6, 0xA0, "Animation", true)] public String AnimTagWoundedName;
+        [RTTI.Member(7, 0xA8, "Private")] public AnimationTagID AnimTagWounded;
     }
 
     [RTTI.Serializable(0xC27B8A3428CB957F)]
@@ -18206,9 +18349,11 @@ namespace Decima.HZD
     public class HumanoidParkourStateResource : HumanoidSubStateResource
     {
         [RTTI.Member(0, 0x70, "Logic")] public String PerchedWalkStateName;
-        [RTTI.Member(1, 0x80, "Animation")] public AnimationTagID TurningTagID;
-        [RTTI.Member(2, 0x90, "Animation")] public AnimationTagID ParkouringTagID;
-        [RTTI.Member(3, 0x94, "Logic")] public float AttachmentCoolDownDuration;
+        [RTTI.Member(1, 0x78, "Animation", true)] public String TurningTag;
+        [RTTI.Member(2, 0x80, "Animation")] public AnimationTagID TurningTagID;
+        [RTTI.Member(3, 0x88, "Animation", true)] public String ParkouringTag;
+        [RTTI.Member(4, 0x90, "Animation")] public AnimationTagID ParkouringTagID;
+        [RTTI.Member(5, 0x94, "Logic")] public float AttachmentCoolDownDuration;
     }
 
     [RTTI.Serializable(0x51DBA86B0A566375)]
@@ -18279,184 +18424,186 @@ namespace Decima.HZD
     [RTTI.Serializable(0x1A51083F9FDA40A5)]
     public class HumanoidResource : ControlledEntityResource
     {
-        [RTTI.Member(0, 0x210, "Logic")] public String HeadBone;
-        [RTTI.Member(1, 0x218, "Logic")] public String ChestBone;
-        [RTTI.Member(2, 0x220, "Logic")] public String NeckBone;
-        [RTTI.Member(3, 0x228, "Logic")] public String NeckRootBone;
-        [RTTI.Member(4, 0x230, "Logic")] public String PelvisBone;
-        [RTTI.Member(5, 0x238, "Logic")] public String WalkLeftBone;
-        [RTTI.Member(6, 0x240, "Logic")] public String WalkRightBone;
-        [RTTI.Member(7, 0x248, "Logic")] public String SlideFootBone;
-        [RTTI.Member(8, 0x250, "Logic")] public String LeftHandIKAttachBone;
-        [RTTI.Member(9, 0x258, "Logic")] public String RightHandIKAttachBone;
-        [RTTI.Member(10, 0x260, "Logic")] public String LeftHandIKChannelName;
-        [RTTI.Member(11, 0x268, "Logic")] public String RightHandIKChannelName;
-        [RTTI.Member(12, 0x270, "Logic")] public String GunBone;
-        [RTTI.Member(13, 0x278, "Logic")] public String HandBoneName;
-        [RTTI.Member(14, 0x280, "Logic")] public String LeftLowerLegBoneName;
-        [RTTI.Member(15, 0x288, "Logic")] public String RightLowerLegBoneName;
-        [RTTI.Member(16, 0x290, "Logic")] public int RootBoneIndex;
-        [RTTI.Member(17, 0x294, "Logic")] public int HeadBoneIndex;
-        [RTTI.Member(18, 0x298, "Logic")] public int NeckBoneIndex;
-        [RTTI.Member(19, 0x29C, "Logic")] public int NeckRootBoneIndex;
-        [RTTI.Member(20, 0x2A0, "Logic")] public int HandBoneIndex;
-        [RTTI.Member(21, 0x2A8, "Logic")] public Ref<DestructibilityPart> HeadPart;
-        [RTTI.Member(22, 0x2B0, "Logic")] public Ref<DestructibilityPart> HelmetPart;
-        [RTTI.Member(23, 0x2B8, "Logic")] public bool IsHeadshotAllowed;
-        [RTTI.Member(24, 0x2BC, "Logic")] public float HeadshotDamageModifier;
-        [RTTI.Member(25, 0x2C0, "Logic")] public float HeadshotMaxSpread;
-        [RTTI.Member(26, 0x2C8, "Logic")] public Array<Ref<ModelPartResource>> BrokenHeadModelPartResources;
-        [RTTI.Member(27, 0x2D8, "Logic")] public Array<Ref<DestructibilityPart>> LegParts;
-        [RTTI.Member(28, 0x2E8, "Logic")] public float MaxStamina;
-        [RTTI.Member(29, 0x2EC, "Logic")] public float InitialStamina;
-        [RTTI.Member(30, 0x2F0, "Logic")] public float MinimalStaminaRequiredForSprint;
-        [RTTI.Member(31, 0x2F4, "Logic")] public float StaminaIncrease;
-        [RTTI.Member(32, 0x2F8, "Logic")] public float StaminaDecreaseSprint;
-        [RTTI.Member(33, 0x2FC, "Logic")] public float SprintMaxWaterDepth;
-        [RTTI.Member(34, 0x300, "Logic")] public float LandPredictionTime;
-        [RTTI.Member(35, 0x304, "Logic")] public float JumpStaminaCost;
-        [RTTI.Member(36, 0x308, "Logic")] public float JumpStaminaNeeded;
-        [RTTI.Member(37, 0x30C, "Logic")] public float JumpOnForce;
-        [RTTI.Member(38, 0x310, "Logic")] public float JumpOnLaunchTime;
-        [RTTI.Member(39, 0x314, "Logic")] public float JumpMinForwardSpeed;
-        [RTTI.Member(40, 0x318, "Logic")] public float JumpMaxWaterDepth;
-        [RTTI.Member(41, 0x31C, "Logic")] public bool CanFireWhileJumping;
-        [RTTI.Member(42, 0x320, "Logic")] public float DiveRollStaminaCost;
-        [RTTI.Member(43, 0x328, "Logic")] public Ref<StaminaUsageType> SprintStaminaUsageType;
-        [RTTI.Member(44, 0x330, "Logic")] public Ref<StaminaUsageType> JumpStaminaUsageType;
-        [RTTI.Member(45, 0x338, "Logic")] public Ref<StaminaUsageType> DiveRollStaminaUsageType;
-        [RTTI.Member(46, 0x340, "Logic")] public float LandDuration;
-        [RTTI.Member(47, 0x344, "Logic")] public float MaxWalkSlope;
-        [RTTI.Member(48, 0x348, "Logic")] public float MaxStepHeight;
-        [RTTI.Member(49, 0x34C, "Logic")] public float StopSprintTime;
-        [RTTI.Member(50, 0x350, "Logic")] public float AimNoiseFactor;
-        [RTTI.Member(51, 0x354, "Logic")] public float SprintAimSpeedFactor;
-        [RTTI.Member(52, 0x35C, "Logic")] public float MaxAngleBetweenGunAndAimCos;
-        [RTTI.Member(53, 0x360, "Logic")] public float MovementAcceleration;
-        [RTTI.Member(54, 0x364, "Logic")] public float MovementDeceleration;
-        [RTTI.Member(55, 0x368, "Logic")] public float HeadingAcceleration;
-        [RTTI.Member(56, 0x36C, "Logic")] public float SlideToMountPositionSpeed;
-        [RTTI.Member(57, 0x370, "Logic")] public Vec3 StandingEyePosition;
-        [RTTI.Member(58, 0x380, "Logic")] public Vec3 CrouchEyePosition;
-        [RTTI.Member(59, 0x390, "Logic")] public Vec3 StandAimOffset;
-        [RTTI.Member(60, 0x3A0, "Logic")] public Vec3 CrouchAimOffset;
-        [RTTI.Member(61, 0x3B0, "Logic")] public Ref<PhysicsCharacterMoverResource> PhysicsCharacterMoverResource;
-        [RTTI.Member(62, 0x3B8, "Logic")] public float StanceSwitchDurationDown;
-        [RTTI.Member(63, 0x3BC, "Logic")] public float StanceSwitchDurationUp;
-        [RTTI.Member(64, 0x3C0, "Logic")] public float TurnSpeed;
-        [RTTI.Member(65, 0x3C4, "Logic")] public float StandingSprintSpeed;
-        [RTTI.Member(66, 0x3C8, "Logic")] public float StandingForwardSpeed;
-        [RTTI.Member(67, 0x3CC, "Logic")] public float StandingBackwardSpeed;
-        [RTTI.Member(68, 0x3D0, "Logic")] public float StandingStrafeSpeed;
-        [RTTI.Member(69, 0x3D4, "Logic")] public float CrouchForwardSpeed;
-        [RTTI.Member(70, 0x3D8, "Logic")] public float CrouchBackwardSpeed;
-        [RTTI.Member(71, 0x3DC, "Logic")] public float CrouchStrafeSpeed;
-        [RTTI.Member(72, 0x3E0, "Logic")] public float CombatStandingForwardSpeed;
-        [RTTI.Member(73, 0x3E4, "Logic")] public float CombatStandingBackwardSpeed;
-        [RTTI.Member(74, 0x3E8, "Logic")] public float CombatStandingStrafeSpeed;
-        [RTTI.Member(75, 0x3EC, "Logic")] public float CombatCrouchForwardSpeed;
-        [RTTI.Member(76, 0x3F0, "Logic")] public float CombatCrouchBackwardSpeed;
-        [RTTI.Member(77, 0x3F4, "Logic")] public float CombatCrouchStrafeSpeed;
-        [RTTI.Member(78, 0x3F8, "Logic")] public float MaxForwardSpeed;
-        [RTTI.Member(79, 0x3FC, "Logic")] public float MaxBackwardSpeed;
-        [RTTI.Member(80, 0x400, "Logic")] public float MaxStrafeSpeed;
-        [RTTI.Member(81, 0x404, "Logic")] public float MaxSprintSpeed;
-        [RTTI.Member(82, 0x408, "Logic")] public float MinStandingSpeedPlayer;
-        [RTTI.Member(83, 0x40C, "Logic")] public float MinCrouchSpeedPlayer;
-        [RTTI.Member(84, 0x410, "Logic")] public bool CanWalkAndAim;
-        [RTTI.Member(85, 0x411, "Logic")] public bool HasInfiniteAmmo;
-        [RTTI.Member(86, 0x420, "Logic")] public BoundingBox3 CrouchUseBox;
-        [RTTI.Member(87, 0x440, "Logic")] public float PickupUseAngle;
-        [RTTI.Member(88, 0x448, "Logic")] public Array<Ref<HumanoidSubStateResource>> SubStates;
-        [RTTI.Member(89, 0x458, "MovementInterpolation")] public float HorizontalCatchUpGain;
-        [RTTI.Member(90, 0x45C, "MovementInterpolation")] public float MaxCatchUpHorizontalDisplacement;
-        [RTTI.Member(91, 0x460, "MovementInterpolation")] public float VerticalGain;
-        [RTTI.Member(92, 0x468, "Representation")] public Ref<SoundResource> StowSound;
-        [RTTI.Member(93, 0x470, "Representation")] public Ref<SoundResource> GearMovementSound;
-        [RTTI.Member(94, 0x478, "Representation")] public Ref<SoundResource> InventoryUseChargeSound;
-        [RTTI.Member(95, 0x480, "Representation")] public float FootstepTriggerHeight;
-        [RTTI.Member(96, 0x484, "Representation")] public MaterialType FootstepDownMaterialType;
-        [RTTI.Member(97, 0x486, "Representation")] public MaterialType FootstepUpMaterialType;
-        [RTTI.Member(98, 0x488, "Representation")] public float SlowFootstepVelocityThreshold;
-        [RTTI.Member(99, 0x48C, "Representation")] public MaterialType SlowFootstepDownMaterialType;
-        [RTTI.Member(100, 0x48E, "Representation")] public MaterialType SlowFootstepUpMaterialType;
-        [RTTI.Member(101, 0x490, "Representation")] public MaterialType SprintFootstepDownMaterialType;
-        [RTTI.Member(102, 0x492, "Representation")] public MaterialType SprintFootstepUpMaterialType;
-        [RTTI.Member(103, 0x494, "Representation")] public MaterialType CrouchFootstepDownMaterialType;
-        [RTTI.Member(104, 0x496, "Representation")] public MaterialType CrouchFootstepUpMaterialType;
-        [RTTI.Member(105, 0x498, "Representation")] public MaterialType FootstepDragMaterialType;
-        [RTTI.Member(106, 0x49A, "Representation")] public MaterialType JumpMaterialType;
-        [RTTI.Member(107, 0x49C, "Representation")] public MaterialType LandMaterialType;
-        [RTTI.Member(108, 0x49E, "Representation")] public MaterialType FootSlideImpactMaterialType;
-        [RTTI.Member(109, 0x4A0, "Representation")] public Ref<SoundResource> SlowBreathingSound;
-        [RTTI.Member(110, 0x4A8, "Representation")] public Ref<SoundResource> MediumBreathingSound;
-        [RTTI.Member(111, 0x4B0, "Representation")] public Ref<SoundResource> FastBreathingSound;
-        [RTTI.Member(112, 0x4B8, "Representation")] public Ref<SoundResource> SpawnOnPartyMemberSound;
-        [RTTI.Member(113, 0x4C0, "Logic")] public Ref<CurveResource> ImpactDamagePerMeterPerSecondCurve;
-        [RTTI.Member(114, 0x4C8, "Logic")] public Ref<CurveResource> ImpactDamagePerFallingHeightCurve;
-        [RTTI.Member(115, 0x4D0, "Logic")] public float MinDamageLinearVelocity;
-        [RTTI.Member(116, 0x4D4, "Logic")] public float MinDamageAngularVelocity;
-        [RTTI.Member(117, 0x4D8, "Logic")] public float MinDamageMass;
-        [RTTI.Member(118, 0x4DC, "Logic")] public float ImpactImpulseHumanoidScale;
-        [RTTI.Member(119, 0x4E0, "Logic")] public float DamageFactor;
-        [RTTI.Member(120, 0x4E4, "Logic")] public float MinTimeForWalkingDamage;
-        [RTTI.Member(121, 0x4E8, "Logic")] public float WalkingDamageFactor;
-        [RTTI.Member(122, 0x4EC, "Logic")] public float WalkingDamageEndDelay;
-        [RTTI.Member(123, 0x4F0, "Player")] public float DefaultAimDistance;
-        [RTTI.Member(124, 0x4F8, "Representation")] public Ref<AISignalType> DeathSignalType;
-        [RTTI.Member(125, 0x500, "Representation")] public Ref<AISignalType> HeadshotSignalType;
-        [RTTI.Member(126, 0x508, "Representation")] public Ref<AISignalType> FallSignalType;
-        [RTTI.Member(127, 0x510, "Representation")] public Ref<AISignalType> FallStopSignalType;
-        [RTTI.Member(128, 0x518, "AI")] public Ref<AIVisualStimulusResource> VisualStimulus;
-        [RTTI.Member(129, 0x520, "AI")] public Ref<GraphProgramResource> VisualStimulusSelectorProgramResource;
-        [RTTI.Member(130, 0x528, "AI")] public Ref<GraphProgramResource> FootstepStimulusSelectorProgramResource;
-        [RTTI.Member(131, 0x530, "AI")] public Ref<AIAuralStimulusResource> FootStepSoundStimulus;
-        [RTTI.Member(132, 0x538, "AI")] public float FootStepSoundStimulusCrouchModifier;
-        [RTTI.Member(133, 0x53C, "AI")] public float QuietFootStepSoundStimulusModifier;
-        [RTTI.Member(134, 0x540, "AI")] public float FootstepMinSpeed;
-        [RTTI.Member(135, 0x544, "AI")] public float FootstepMaxSpeed;
-        [RTTI.Member(136, 0x548, "AI")] public Ref<AIAuralStimulusResource> HitScreamSoundStimulus;
-        [RTTI.Member(137, 0x550, "AI")] public Ref<AIAuralStimulusResource> DeathScreamSoundStimulus;
-        [RTTI.Member(138, 0x558, "AI")] public Ref<AIAuralStimulusResource> SilentKillSoundStimulus;
-        [RTTI.Member(139, 0x560, "AI")] public Ref<AIAuralStimulusResource> SprintFootStepSoundStimulus;
-        [RTTI.Member(140, 0x568, "AI")] public Ref<AIAuralStimulusResource> DropDownSoundStimulus;
-        [RTTI.Member(141, 0x570, "AI")] public float DropDownSoundStimulusTriggerAtSpeed;
-        [RTTI.Member(142, 0x578, "Representation")] public Array<Ref<HumanoidBodyVariant>> BodyVariants;
-        [RTTI.Member(143, 0x588, "Representation")] public int AnimationCharacterType;
-        [RTTI.Member(144, 0x58C, "AI")] public float Deceleration;
-        [RTTI.Member(145, 0x590, "AI")] public float EarlyStopDistance;
-        [RTTI.Member(146, 0x594, "AI")] public EStance LowestAllowedStance;
-        [RTTI.Member(147, 0x598, "Player")] public bool PlayStowAnimations;
-        [RTTI.Member(148, 0x5A0, "HitResponse")] public Ref<HitResponseResource> HitResponseResource;
-        [RTTI.Member(149, 0x5A8, "HitResponse")] public Array<DestructiblePartToHitLocationMapping> DestructiblePartToHitLocationMapping;
-        [RTTI.Member(150, 0x5B8, "HitResponse")] public String AnimTagDeadName;
-        [RTTI.Member(151, 0x5C0, "Representation")] public Ref<BloodPuddleSettings> BloodPuddleSettings;
-        [RTTI.Member(152, 0x5C8, "Logic")] public Ref<DamageTypeResource> SlideDamageTypeResource;
-        [RTTI.Member(153, 0x5D0, "Logic")] public float SlideDamage;
-        [RTTI.Member(154, 0x5D4, "Logic")] public float SlideImpulse;
-        [RTTI.Member(155, 0x5D8, "Logic")] public float SlideImpulseHumanoidFactor;
-        [RTTI.Member(156, 0x5DC, "Logic")] public float SlideImpactSeverity;
-        [RTTI.Member(157, 0x5E0, "Logic")] public float MaxSlideIncline;
-        [RTTI.Member(158, 0x5E4, "Representation")] public float FPCameraOffsetWhenCrouching;
-        [RTTI.Member(159, 0x5E8, "Representation")] public float FPCameraOffsetRelaxation;
-        [RTTI.Member(160, 0x5EC, "Representation")] public float FPCameraOffsetGunLowered;
-        [RTTI.Member(161, 0x5F0, "Logic")] public float GravityOverride;
-        [RTTI.Member(162, 0x5F4, "Logic")] public float DragLowGravity;
-        [RTTI.Member(163, 0x5F8, "Logic")] public float MovementModifierLowGravity;
-        [RTTI.Member(164, 0x600, "Logic")] public Ref<DamageTypeResource> ImpactDamageTypeResource;
-        [RTTI.Member(165, 0x608, "Logic")] public float MinSpeedForImpact;
-        [RTTI.Member(166, 0x60C, "Network")] public bool StopReplicationWhenDead;
-        [RTTI.Member(167, 0x610, "Jumping")] public float PlayerMaxAirTurnAngleInDegrees;
-        [RTTI.Member(168, 0x618, "Jumping")] public Ref<CurveResource> PlayerMaxTurnSpeedWhileJumpingCurve;
-        [RTTI.Member(169, 0x620, "Jumping")] public Ref<CurveResource> PlayerMaxTurnSpeedWhileJumpingHeadFirstCurve;
-        [RTTI.Member(170, 0x628, "Jumping")] public bool PlayerUseAnimationDrivenJumping;
-        [RTTI.Member(171, 0x629, "Jumping")] public bool PlayerKeepForwardMomentum;
-        [RTTI.Member(172, 0x62C, "Jumping")] public float PlayerAirFriction;
-        [RTTI.Member(173, 0x630, "Jumping")] public float PlayerAirBrakeAngleInDegrees;
-        [RTTI.Member(174, 0x634, "Jumping")] public float PlayerAirBrakeFactor;
-        [RTTI.Member(175, 0x638, "Jumping")] public float PlayerMinTakeOffForwardSpeed;
-        [RTTI.Member(176, 0x63C, "Logic")] public float WaterDepthForWalkingToSwimmingTransition;
-        [RTTI.Member(177, 0x640, "Logic")] public float WaterDepthForSwimmingToWalkingTransition;
+        [RTTI.Member(0, 0x208, "Logic", true)] public String RootBone;
+        [RTTI.Member(1, 0x210, "Logic")] public String HeadBone;
+        [RTTI.Member(2, 0x218, "Logic")] public String ChestBone;
+        [RTTI.Member(3, 0x220, "Logic")] public String NeckBone;
+        [RTTI.Member(4, 0x228, "Logic")] public String NeckRootBone;
+        [RTTI.Member(5, 0x230, "Logic")] public String PelvisBone;
+        [RTTI.Member(6, 0x238, "Logic")] public String WalkLeftBone;
+        [RTTI.Member(7, 0x240, "Logic")] public String WalkRightBone;
+        [RTTI.Member(8, 0x248, "Logic")] public String SlideFootBone;
+        [RTTI.Member(9, 0x250, "Logic")] public String LeftHandIKAttachBone;
+        [RTTI.Member(10, 0x258, "Logic")] public String RightHandIKAttachBone;
+        [RTTI.Member(11, 0x260, "Logic")] public String LeftHandIKChannelName;
+        [RTTI.Member(12, 0x268, "Logic")] public String RightHandIKChannelName;
+        [RTTI.Member(13, 0x270, "Logic")] public String GunBone;
+        [RTTI.Member(14, 0x278, "Logic")] public String HandBoneName;
+        [RTTI.Member(15, 0x280, "Logic")] public String LeftLowerLegBoneName;
+        [RTTI.Member(16, 0x288, "Logic")] public String RightLowerLegBoneName;
+        [RTTI.Member(17, 0x290, "Logic")] public int RootBoneIndex;
+        [RTTI.Member(18, 0x294, "Logic")] public int HeadBoneIndex;
+        [RTTI.Member(19, 0x298, "Logic")] public int NeckBoneIndex;
+        [RTTI.Member(20, 0x29C, "Logic")] public int NeckRootBoneIndex;
+        [RTTI.Member(21, 0x2A0, "Logic")] public int HandBoneIndex;
+        [RTTI.Member(22, 0x2A8, "Logic")] public Ref<DestructibilityPart> HeadPart;
+        [RTTI.Member(23, 0x2B0, "Logic")] public Ref<DestructibilityPart> HelmetPart;
+        [RTTI.Member(24, 0x2B8, "Logic")] public bool IsHeadshotAllowed;
+        [RTTI.Member(25, 0x2BC, "Logic")] public float HeadshotDamageModifier;
+        [RTTI.Member(26, 0x2C0, "Logic")] public float HeadshotMaxSpread;
+        [RTTI.Member(27, 0x2C8, "Logic")] public Array<Ref<ModelPartResource>> BrokenHeadModelPartResources;
+        [RTTI.Member(28, 0x2D8, "Logic")] public Array<Ref<DestructibilityPart>> LegParts;
+        [RTTI.Member(29, 0x2E8, "Logic")] public float MaxStamina;
+        [RTTI.Member(30, 0x2EC, "Logic")] public float InitialStamina;
+        [RTTI.Member(31, 0x2F0, "Logic")] public float MinimalStaminaRequiredForSprint;
+        [RTTI.Member(32, 0x2F4, "Logic")] public float StaminaIncrease;
+        [RTTI.Member(33, 0x2F8, "Logic")] public float StaminaDecreaseSprint;
+        [RTTI.Member(34, 0x2FC, "Logic")] public float SprintMaxWaterDepth;
+        [RTTI.Member(35, 0x300, "Logic")] public float LandPredictionTime;
+        [RTTI.Member(36, 0x304, "Logic")] public float JumpStaminaCost;
+        [RTTI.Member(37, 0x308, "Logic")] public float JumpStaminaNeeded;
+        [RTTI.Member(38, 0x30C, "Logic")] public float JumpOnForce;
+        [RTTI.Member(39, 0x310, "Logic")] public float JumpOnLaunchTime;
+        [RTTI.Member(40, 0x314, "Logic")] public float JumpMinForwardSpeed;
+        [RTTI.Member(41, 0x318, "Logic")] public float JumpMaxWaterDepth;
+        [RTTI.Member(42, 0x31C, "Logic")] public bool CanFireWhileJumping;
+        [RTTI.Member(43, 0x320, "Logic")] public float DiveRollStaminaCost;
+        [RTTI.Member(44, 0x328, "Logic")] public Ref<StaminaUsageType> SprintStaminaUsageType;
+        [RTTI.Member(45, 0x330, "Logic")] public Ref<StaminaUsageType> JumpStaminaUsageType;
+        [RTTI.Member(46, 0x338, "Logic")] public Ref<StaminaUsageType> DiveRollStaminaUsageType;
+        [RTTI.Member(47, 0x340, "Logic")] public float LandDuration;
+        [RTTI.Member(48, 0x344, "Logic")] public float MaxWalkSlope;
+        [RTTI.Member(49, 0x348, "Logic")] public float MaxStepHeight;
+        [RTTI.Member(50, 0x34C, "Logic")] public float StopSprintTime;
+        [RTTI.Member(51, 0x350, "Logic")] public float AimNoiseFactor;
+        [RTTI.Member(52, 0x354, "Logic")] public float SprintAimSpeedFactor;
+        [RTTI.Member(53, 0x358, "Logic", true)] public float MaxAngleBetweenGunAndAim;
+        [RTTI.Member(54, 0x35C, "Logic")] public float MaxAngleBetweenGunAndAimCos;
+        [RTTI.Member(55, 0x360, "Logic")] public float MovementAcceleration;
+        [RTTI.Member(56, 0x364, "Logic")] public float MovementDeceleration;
+        [RTTI.Member(57, 0x368, "Logic")] public float HeadingAcceleration;
+        [RTTI.Member(58, 0x36C, "Logic")] public float SlideToMountPositionSpeed;
+        [RTTI.Member(59, 0x370, "Logic")] public Vec3 StandingEyePosition;
+        [RTTI.Member(60, 0x380, "Logic")] public Vec3 CrouchEyePosition;
+        [RTTI.Member(61, 0x390, "Logic")] public Vec3 StandAimOffset;
+        [RTTI.Member(62, 0x3A0, "Logic")] public Vec3 CrouchAimOffset;
+        [RTTI.Member(63, 0x3B0, "Logic")] public Ref<PhysicsCharacterMoverResource> PhysicsCharacterMoverResource;
+        [RTTI.Member(64, 0x3B8, "Logic")] public float StanceSwitchDurationDown;
+        [RTTI.Member(65, 0x3BC, "Logic")] public float StanceSwitchDurationUp;
+        [RTTI.Member(66, 0x3C0, "Logic")] public float TurnSpeed;
+        [RTTI.Member(67, 0x3C4, "Logic")] public float StandingSprintSpeed;
+        [RTTI.Member(68, 0x3C8, "Logic")] public float StandingForwardSpeed;
+        [RTTI.Member(69, 0x3CC, "Logic")] public float StandingBackwardSpeed;
+        [RTTI.Member(70, 0x3D0, "Logic")] public float StandingStrafeSpeed;
+        [RTTI.Member(71, 0x3D4, "Logic")] public float CrouchForwardSpeed;
+        [RTTI.Member(72, 0x3D8, "Logic")] public float CrouchBackwardSpeed;
+        [RTTI.Member(73, 0x3DC, "Logic")] public float CrouchStrafeSpeed;
+        [RTTI.Member(74, 0x3E0, "Logic")] public float CombatStandingForwardSpeed;
+        [RTTI.Member(75, 0x3E4, "Logic")] public float CombatStandingBackwardSpeed;
+        [RTTI.Member(76, 0x3E8, "Logic")] public float CombatStandingStrafeSpeed;
+        [RTTI.Member(77, 0x3EC, "Logic")] public float CombatCrouchForwardSpeed;
+        [RTTI.Member(78, 0x3F0, "Logic")] public float CombatCrouchBackwardSpeed;
+        [RTTI.Member(79, 0x3F4, "Logic")] public float CombatCrouchStrafeSpeed;
+        [RTTI.Member(80, 0x3F8, "Logic")] public float MaxForwardSpeed;
+        [RTTI.Member(81, 0x3FC, "Logic")] public float MaxBackwardSpeed;
+        [RTTI.Member(82, 0x400, "Logic")] public float MaxStrafeSpeed;
+        [RTTI.Member(83, 0x404, "Logic")] public float MaxSprintSpeed;
+        [RTTI.Member(84, 0x408, "Logic")] public float MinStandingSpeedPlayer;
+        [RTTI.Member(85, 0x40C, "Logic")] public float MinCrouchSpeedPlayer;
+        [RTTI.Member(86, 0x410, "Logic")] public bool CanWalkAndAim;
+        [RTTI.Member(87, 0x411, "Logic")] public bool HasInfiniteAmmo;
+        [RTTI.Member(88, 0x420, "Logic")] public BoundingBox3 CrouchUseBox;
+        [RTTI.Member(89, 0x440, "Logic")] public float PickupUseAngle;
+        [RTTI.Member(90, 0x448, "Logic")] public Array<Ref<HumanoidSubStateResource>> SubStates;
+        [RTTI.Member(91, 0x458, "MovementInterpolation")] public float HorizontalCatchUpGain;
+        [RTTI.Member(92, 0x45C, "MovementInterpolation")] public float MaxCatchUpHorizontalDisplacement;
+        [RTTI.Member(93, 0x460, "MovementInterpolation")] public float VerticalGain;
+        [RTTI.Member(94, 0x468, "Representation")] public Ref<SoundResource> StowSound;
+        [RTTI.Member(95, 0x470, "Representation")] public Ref<SoundResource> GearMovementSound;
+        [RTTI.Member(96, 0x478, "Representation")] public Ref<SoundResource> InventoryUseChargeSound;
+        [RTTI.Member(97, 0x480, "Representation")] public float FootstepTriggerHeight;
+        [RTTI.Member(98, 0x484, "Representation")] public MaterialType FootstepDownMaterialType;
+        [RTTI.Member(99, 0x486, "Representation")] public MaterialType FootstepUpMaterialType;
+        [RTTI.Member(100, 0x488, "Representation")] public float SlowFootstepVelocityThreshold;
+        [RTTI.Member(101, 0x48C, "Representation")] public MaterialType SlowFootstepDownMaterialType;
+        [RTTI.Member(102, 0x48E, "Representation")] public MaterialType SlowFootstepUpMaterialType;
+        [RTTI.Member(103, 0x490, "Representation")] public MaterialType SprintFootstepDownMaterialType;
+        [RTTI.Member(104, 0x492, "Representation")] public MaterialType SprintFootstepUpMaterialType;
+        [RTTI.Member(105, 0x494, "Representation")] public MaterialType CrouchFootstepDownMaterialType;
+        [RTTI.Member(106, 0x496, "Representation")] public MaterialType CrouchFootstepUpMaterialType;
+        [RTTI.Member(107, 0x498, "Representation")] public MaterialType FootstepDragMaterialType;
+        [RTTI.Member(108, 0x49A, "Representation")] public MaterialType JumpMaterialType;
+        [RTTI.Member(109, 0x49C, "Representation")] public MaterialType LandMaterialType;
+        [RTTI.Member(110, 0x49E, "Representation")] public MaterialType FootSlideImpactMaterialType;
+        [RTTI.Member(111, 0x4A0, "Representation")] public Ref<SoundResource> SlowBreathingSound;
+        [RTTI.Member(112, 0x4A8, "Representation")] public Ref<SoundResource> MediumBreathingSound;
+        [RTTI.Member(113, 0x4B0, "Representation")] public Ref<SoundResource> FastBreathingSound;
+        [RTTI.Member(114, 0x4B8, "Representation")] public Ref<SoundResource> SpawnOnPartyMemberSound;
+        [RTTI.Member(115, 0x4C0, "Logic")] public Ref<CurveResource> ImpactDamagePerMeterPerSecondCurve;
+        [RTTI.Member(116, 0x4C8, "Logic")] public Ref<CurveResource> ImpactDamagePerFallingHeightCurve;
+        [RTTI.Member(117, 0x4D0, "Logic")] public float MinDamageLinearVelocity;
+        [RTTI.Member(118, 0x4D4, "Logic")] public float MinDamageAngularVelocity;
+        [RTTI.Member(119, 0x4D8, "Logic")] public float MinDamageMass;
+        [RTTI.Member(120, 0x4DC, "Logic")] public float ImpactImpulseHumanoidScale;
+        [RTTI.Member(121, 0x4E0, "Logic")] public float DamageFactor;
+        [RTTI.Member(122, 0x4E4, "Logic")] public float MinTimeForWalkingDamage;
+        [RTTI.Member(123, 0x4E8, "Logic")] public float WalkingDamageFactor;
+        [RTTI.Member(124, 0x4EC, "Logic")] public float WalkingDamageEndDelay;
+        [RTTI.Member(125, 0x4F0, "Player")] public float DefaultAimDistance;
+        [RTTI.Member(126, 0x4F8, "Representation")] public Ref<AISignalType> DeathSignalType;
+        [RTTI.Member(127, 0x500, "Representation")] public Ref<AISignalType> HeadshotSignalType;
+        [RTTI.Member(128, 0x508, "Representation")] public Ref<AISignalType> FallSignalType;
+        [RTTI.Member(129, 0x510, "Representation")] public Ref<AISignalType> FallStopSignalType;
+        [RTTI.Member(130, 0x518, "AI")] public Ref<AIVisualStimulusResource> VisualStimulus;
+        [RTTI.Member(131, 0x520, "AI")] public Ref<GraphProgramResource> VisualStimulusSelectorProgramResource;
+        [RTTI.Member(132, 0x528, "AI")] public Ref<GraphProgramResource> FootstepStimulusSelectorProgramResource;
+        [RTTI.Member(133, 0x530, "AI")] public Ref<AIAuralStimulusResource> FootStepSoundStimulus;
+        [RTTI.Member(134, 0x538, "AI")] public float FootStepSoundStimulusCrouchModifier;
+        [RTTI.Member(135, 0x53C, "AI")] public float QuietFootStepSoundStimulusModifier;
+        [RTTI.Member(136, 0x540, "AI")] public float FootstepMinSpeed;
+        [RTTI.Member(137, 0x544, "AI")] public float FootstepMaxSpeed;
+        [RTTI.Member(138, 0x548, "AI")] public Ref<AIAuralStimulusResource> HitScreamSoundStimulus;
+        [RTTI.Member(139, 0x550, "AI")] public Ref<AIAuralStimulusResource> DeathScreamSoundStimulus;
+        [RTTI.Member(140, 0x558, "AI")] public Ref<AIAuralStimulusResource> SilentKillSoundStimulus;
+        [RTTI.Member(141, 0x560, "AI")] public Ref<AIAuralStimulusResource> SprintFootStepSoundStimulus;
+        [RTTI.Member(142, 0x568, "AI")] public Ref<AIAuralStimulusResource> DropDownSoundStimulus;
+        [RTTI.Member(143, 0x570, "AI")] public float DropDownSoundStimulusTriggerAtSpeed;
+        [RTTI.Member(144, 0x578, "Representation")] public Array<Ref<HumanoidBodyVariant>> BodyVariants;
+        [RTTI.Member(145, 0x588, "Representation")] public int AnimationCharacterType;
+        [RTTI.Member(146, 0x58C, "AI")] public float Deceleration;
+        [RTTI.Member(147, 0x590, "AI")] public float EarlyStopDistance;
+        [RTTI.Member(148, 0x594, "AI")] public EStance LowestAllowedStance;
+        [RTTI.Member(149, 0x598, "Player")] public bool PlayStowAnimations;
+        [RTTI.Member(150, 0x5A0, "HitResponse")] public Ref<HitResponseResource> HitResponseResource;
+        [RTTI.Member(151, 0x5A8, "HitResponse")] public Array<DestructiblePartToHitLocationMapping> DestructiblePartToHitLocationMapping;
+        [RTTI.Member(152, 0x5B8, "HitResponse")] public String AnimTagDeadName;
+        [RTTI.Member(153, 0x5C0, "Representation")] public Ref<BloodPuddleSettings> BloodPuddleSettings;
+        [RTTI.Member(154, 0x5C8, "Logic")] public Ref<DamageTypeResource> SlideDamageTypeResource;
+        [RTTI.Member(155, 0x5D0, "Logic")] public float SlideDamage;
+        [RTTI.Member(156, 0x5D4, "Logic")] public float SlideImpulse;
+        [RTTI.Member(157, 0x5D8, "Logic")] public float SlideImpulseHumanoidFactor;
+        [RTTI.Member(158, 0x5DC, "Logic")] public float SlideImpactSeverity;
+        [RTTI.Member(159, 0x5E0, "Logic")] public float MaxSlideIncline;
+        [RTTI.Member(160, 0x5E4, "Representation")] public float FPCameraOffsetWhenCrouching;
+        [RTTI.Member(161, 0x5E8, "Representation")] public float FPCameraOffsetRelaxation;
+        [RTTI.Member(162, 0x5EC, "Representation")] public float FPCameraOffsetGunLowered;
+        [RTTI.Member(163, 0x5F0, "Logic")] public float GravityOverride;
+        [RTTI.Member(164, 0x5F4, "Logic")] public float DragLowGravity;
+        [RTTI.Member(165, 0x5F8, "Logic")] public float MovementModifierLowGravity;
+        [RTTI.Member(166, 0x600, "Logic")] public Ref<DamageTypeResource> ImpactDamageTypeResource;
+        [RTTI.Member(167, 0x608, "Logic")] public float MinSpeedForImpact;
+        [RTTI.Member(168, 0x60C, "Network")] public bool StopReplicationWhenDead;
+        [RTTI.Member(169, 0x610, "Jumping")] public float PlayerMaxAirTurnAngleInDegrees;
+        [RTTI.Member(170, 0x618, "Jumping")] public Ref<CurveResource> PlayerMaxTurnSpeedWhileJumpingCurve;
+        [RTTI.Member(171, 0x620, "Jumping")] public Ref<CurveResource> PlayerMaxTurnSpeedWhileJumpingHeadFirstCurve;
+        [RTTI.Member(172, 0x628, "Jumping")] public bool PlayerUseAnimationDrivenJumping;
+        [RTTI.Member(173, 0x629, "Jumping")] public bool PlayerKeepForwardMomentum;
+        [RTTI.Member(174, 0x62C, "Jumping")] public float PlayerAirFriction;
+        [RTTI.Member(175, 0x630, "Jumping")] public float PlayerAirBrakeAngleInDegrees;
+        [RTTI.Member(176, 0x634, "Jumping")] public float PlayerAirBrakeFactor;
+        [RTTI.Member(177, 0x638, "Jumping")] public float PlayerMinTakeOffForwardSpeed;
+        [RTTI.Member(178, 0x63C, "Logic")] public float WaterDepthForWalkingToSwimmingTransition;
+        [RTTI.Member(179, 0x640, "Logic")] public float WaterDepthForSwimmingToWalkingTransition;
     }
 
     [RTTI.Serializable(0x8884980DA1C6C65E)]
@@ -18490,13 +18637,14 @@ namespace Decima.HZD
         [RTTI.Member(4, 0x88, "Logic")] public Ref<CurveResource> DecelerationCurve;
         [RTTI.Member(5, 0x90, "Logic")] public float AbortSpeedThreshold;
         [RTTI.Member(6, 0x94, "Logic")] public bool UseAnimationDrivenDeceleration;
-        [RTTI.Member(7, 0xA0, "Private")] public AnimationTagID AnimTagSliding;
-        [RTTI.Member(8, 0xA8, "Logic")] public Ref<CurveResource> SlideBrakeCurve;
-        [RTTI.Member(9, 0xB0, "Logic")] public float SlideBrakeAngle;
-        [RTTI.Member(10, 0xB8, "Logic")] public Ref<CurveResource> BankTurnVelocityCurve;
-        [RTTI.Member(11, 0xC0, "Logic")] public Ref<CurveResource> BankSpeedFactorCurve;
-        [RTTI.Member(12, 0xC8, "Logic")] public float BankValueGain;
-        [RTTI.Member(13, 0xCC, "Logic")] public FRange ValidAimRange;
+        [RTTI.Member(7, 0x98, "Logic", true)] public String AnimTagSlidingName;
+        [RTTI.Member(8, 0xA0, "Private")] public AnimationTagID AnimTagSliding;
+        [RTTI.Member(9, 0xA8, "Logic")] public Ref<CurveResource> SlideBrakeCurve;
+        [RTTI.Member(10, 0xB0, "Logic")] public float SlideBrakeAngle;
+        [RTTI.Member(11, 0xB8, "Logic")] public Ref<CurveResource> BankTurnVelocityCurve;
+        [RTTI.Member(12, 0xC0, "Logic")] public Ref<CurveResource> BankSpeedFactorCurve;
+        [RTTI.Member(13, 0xC8, "Logic")] public float BankValueGain;
+        [RTTI.Member(14, 0xCC, "Logic")] public FRange ValidAimRange;
     }
 
     [RTTI.Serializable(0xC4DF6D25B82B6BF7)]
@@ -18669,24 +18817,26 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x28, "Animation")] public Ref<LocalizedTextResource> HUDText;
         [RTTI.Member(1, 0x30, "Conditions")] public Ref<HumanoidVaultTransitionCondition> Condition;
-        [RTTI.Member(2, 0x44, "Animation")] public float OverrideTurnSpeed;
-        [RTTI.Member(3, 0x48, "Animation")] public bool AllowWield;
-        [RTTI.Member(4, 0x50, "Animation")] public Ref<WarpedAnimation> StartAnimation;
-        [RTTI.Member(5, 0x58, "Animation")] public Ref<WarpedAnimation> MidAnimation;
-        [RTTI.Member(6, 0x60, "Animation")] public Ref<WarpedAnimation> EndAnimation;
-        [RTTI.Member(7, 0x70, "Animation")] public Vec3 VaultContactPosition;
-        [RTTI.Member(8, 0x80, "Animation")] public Vec3 VaultMidDisplacement;
-        [RTTI.Member(9, 0x90, "Animation")] public Mat44 VaultMidTurn;
-        [RTTI.Member(10, 0xD0, "Animation")] public Vec3 VaultObjectDepth;
-        [RTTI.Member(11, 0xE0, "Animation")] public Vec3 VaultEndDisplacement;
-        [RTTI.Member(12, 0xF0, "Animation")] public Vec3 VaultLandDisplacement;
-        [RTTI.Member(13, 0x100, "Animation")] public Vec3 VaultContactWarpOffset;
-        [RTTI.Member(14, 0x110, "Collision")] public Array<Vec3> CollisionCapsulePath;
-        [RTTI.Member(15, 0x120, "Collision")] public EAnimationTransitionCollisionPath CollisionPathType;
-        [RTTI.Member(16, 0x124, "Collision")] public int CollisionPathAnimTrackUserData;
-        [RTTI.Member(17, 0x128, "Collision")] public int CollisionPathAnimEventUserData;
-        [RTTI.Member(18, 0x130, "Conditions")] public Ref<BooleanFact> DisallowFact;
-        [RTTI.Member(19, 0x138, "Camera")] public Ref<CameraModeResource> CameraMode;
+        [RTTI.Member(2, 0x38, "Animation", true)] public String VaultContactJointName;
+        [RTTI.Member(3, 0x40, "Animation", true)] public int VaultDisplacementEventUserData;
+        [RTTI.Member(4, 0x44, "Animation")] public float OverrideTurnSpeed;
+        [RTTI.Member(5, 0x48, "Animation")] public bool AllowWield;
+        [RTTI.Member(6, 0x50, "Animation")] public Ref<WarpedAnimation> StartAnimation;
+        [RTTI.Member(7, 0x58, "Animation")] public Ref<WarpedAnimation> MidAnimation;
+        [RTTI.Member(8, 0x60, "Animation")] public Ref<WarpedAnimation> EndAnimation;
+        [RTTI.Member(9, 0x70, "Animation")] public Vec3 VaultContactPosition;
+        [RTTI.Member(10, 0x80, "Animation")] public Vec3 VaultMidDisplacement;
+        [RTTI.Member(11, 0x90, "Animation")] public Mat44 VaultMidTurn;
+        [RTTI.Member(12, 0xD0, "Animation")] public Vec3 VaultObjectDepth;
+        [RTTI.Member(13, 0xE0, "Animation")] public Vec3 VaultEndDisplacement;
+        [RTTI.Member(14, 0xF0, "Animation")] public Vec3 VaultLandDisplacement;
+        [RTTI.Member(15, 0x100, "Animation")] public Vec3 VaultContactWarpOffset;
+        [RTTI.Member(16, 0x110, "Collision")] public Array<Vec3> CollisionCapsulePath;
+        [RTTI.Member(17, 0x120, "Collision")] public EAnimationTransitionCollisionPath CollisionPathType;
+        [RTTI.Member(18, 0x124, "Collision")] public int CollisionPathAnimTrackUserData;
+        [RTTI.Member(19, 0x128, "Collision")] public int CollisionPathAnimEventUserData;
+        [RTTI.Member(20, 0x130, "Conditions")] public Ref<BooleanFact> DisallowFact;
+        [RTTI.Member(21, 0x138, "Camera")] public Ref<CameraModeResource> CameraMode;
     }
 
     [RTTI.Serializable(0x66605C5CEEC84FD4)]
@@ -18739,10 +18889,12 @@ namespace Decima.HZD
         [RTTI.Member(11, 0xA4, "Logic")] public float ZiplineDeactivateBoostFactor;
         [RTTI.Member(12, 0xA8, "Logic")] public float ZiplineDeactivateDistance;
         [RTTI.Member(13, 0xAC, "Logic")] public float ZiplineDeactivateSpeedDifference;
-        [RTTI.Member(14, 0xB8, "Private")] public AnimationTagID ZiplineMountTag;
-        [RTTI.Member(15, 0xC8, "Private")] public AnimationTagID ZiplineDismountTag;
-        [RTTI.Member(16, 0xD0, "Logic")] public Ref<CurveResource> ZiplineFrictionPerAngleCurve;
-        [RTTI.Member(17, 0xD8, "Item")] public Ref<InventoryEntityResource> ZiplineIventoryItem;
+        [RTTI.Member(14, 0xB0, "Animation", true)] public String ZiplineMountTagName;
+        [RTTI.Member(15, 0xB8, "Private")] public AnimationTagID ZiplineMountTag;
+        [RTTI.Member(16, 0xC0, "Animation", true)] public String ZiplineDismountTagName;
+        [RTTI.Member(17, 0xC8, "Private")] public AnimationTagID ZiplineDismountTag;
+        [RTTI.Member(18, 0xD0, "Logic")] public Ref<CurveResource> ZiplineFrictionPerAngleCurve;
+        [RTTI.Member(19, 0xD8, "Item")] public Ref<InventoryEntityResource> ZiplineIventoryItem;
     }
 
     [RTTI.Serializable(0x64939CF29A9E038D)]
@@ -18978,6 +19130,7 @@ namespace Decima.HZD
         [RTTI.Member(0, 0x28, "Logic")] public Array<Ref<ImpactEffectResource>> Effects;
         [RTTI.Member(1, 0x38, "Logic")] public Array<Ref<ImpactEffectResourceCollection>> Collections;
         [RTTI.Member(2, 0x58, "Logic")] public Array<SerializableDecalMaterialTypeMask> DecalMaterialTypeMaskMap;
+        [RTTI.Member(3, 0x68, "Logic", true)] public String MaterialTypeResourcesFilename;
     }
 
     [RTTI.Serializable(0xEE79DCC87FECC455)]
@@ -19208,6 +19361,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0xF902BC82CA35F060)]
     public class IntProperty : IntPropertyBase
     {
+        [RTTI.Member(0, 0x0, "Flags", true)] public bool Replicated;
+        [RTTI.Member(1, 0x0, "Flags", true)] public bool Persistent;
     }
 
     [RTTI.Serializable(0x3AC6A282FDB1892E)]
@@ -19817,6 +19972,10 @@ namespace Decima.HZD
     [RTTI.Serializable(0x6FFB7202B0778038)]
     public class InventoryRestoreState : RTTIObject
     {
+        [RTTI.Member(0, 0x28, "StateSaving", true)] public Array<Ref<BuyBackItemRestoreState>> BuyBackItemList;
+        [RTTI.Member(1, 0x38, "StateSaving", true)] public Ref<ItemListRestoreState> InventoryItemList;
+        [RTTI.Member(2, 0x40, "StateSaving", true)] public Ref<ItemListRestoreState> RememberedItemList;
+        [RTTI.Member(3, 0x48, "StateSaving", true)] public Array<GGUUID> ItemsOnceReceived;
     }
 
     [RTTI.Serializable(0x43EDCD5797C9C9A0)]
@@ -20000,9 +20159,10 @@ namespace Decima.HZD
     [RTTI.Serializable(0xF004E9F7765E65D2)]
     public class IsSpecifiedEntityAction : ConditionalAction
     {
-        [RTTI.Member(0, 0x48, "Logic")] public GGUUID EntityResourceUUID;
-        [RTTI.Member(1, 0x58, "Logic")] public String EntityName;
-        [RTTI.Member(2, 0x60, "Logic")] public String EntityType;
+        [RTTI.Member(0, 0x40, "Logic", true)] public Ref<EntityResource> EntityResource;
+        [RTTI.Member(1, 0x48, "Logic")] public GGUUID EntityResourceUUID;
+        [RTTI.Member(2, 0x58, "Logic")] public String EntityName;
+        [RTTI.Member(3, 0x60, "Logic")] public String EntityType;
     }
 
     [RTTI.Serializable(0x359B8490CB4D2179)]
@@ -20071,6 +20231,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0xDB4EA2690F974E8E)]
     public class ItemListRestoreState : RTTIObject
     {
+        [RTTI.Member(0, 0x28, "StateSaving", true)] public Array<Ref<ItemRestoreState>> Items;
+        [RTTI.Member(1, 0x38, "StateSaving", true)] public GGUUID ActiveItemId;
     }
 
     [RTTI.Serializable(0x83858BF1F03965F7)]
@@ -20110,6 +20272,17 @@ namespace Decima.HZD
     [RTTI.Serializable(0xDDDD9EEC6EBBF96)]
     public class ItemRestoreState : RTTIRefObject
     {
+        [RTTI.Member(0, 0x28, "StateSaving", true)] public GGUUID ItemUUID;
+        [RTTI.Member(1, 0x38, "StateSaving", true)] public bool IsSceneObject;
+        [RTTI.Member(2, 0x39, "StateSaving", true)] public bool IsCurrent;
+        [RTTI.Member(3, 0x3C, "StateSaving", true)] public int EquipIndex;
+        [RTTI.Member(4, 0x40, "StateSaving", true)] public Array<Ref<EquipSlotType>> EquipSlots;
+        [RTTI.Member(5, 0x50, "StateSaving", true)] public Ref<EquipSlotType> CurrentEquipSlot;
+        [RTTI.Member(6, 0x58, "StateSaving", true)] public float Amount;
+        [RTTI.Member(7, 0x60, "StateSaving", true)] public StreamingRef<EntityResource> ItemResource;
+        [RTTI.Member(8, 0x80, "StateSaving", true)] public Array<SocketedModificationItemRestoreState> SocketedModifications;
+        [RTTI.Member(9, 0x90, "StateSaving", true)] public Array<StatModification> PermanentModifications;
+        [RTTI.Member(10, 0xA0, "StateSaving", true)] public GGUUID QuestId;
     }
 
     [RTTI.Serializable(0xEAC9E6ADA9204DB)]
@@ -20902,8 +21075,9 @@ namespace Decima.HZD
     public class LightProbe
     {
         [RTTI.Member(0, 0x0, "General")] public Vec3 Position;
-        [RTTI.Member(1, 0x20, "General")] public SHVector4x9 SHCoeffs;
-        [RTTI.Member(2, 0xB0, "General")] public FRGBAColor Modifier;
+        [RTTI.Member(1, 0x10, "General", true)] public Ref<Texture> Texture;
+        [RTTI.Member(2, 0x20, "General")] public SHVector4x9 SHCoeffs;
+        [RTTI.Member(3, 0xB0, "General")] public FRGBAColor Modifier;
     }
 
     [RTTI.Serializable(0x2B8B7E53E16D038C)]
@@ -20925,10 +21099,13 @@ namespace Decima.HZD
     public class LightProbeSetResource : Resource
     {
         [RTTI.Member(0, 0x28, "General")] public ELightProbeSetType SetType;
-        [RTTI.Member(1, 0x60, "General")] public Array<uint8> ProbeTreeData;
-        [RTTI.Member(2, 0x78, "General")] public Array<uint8> ProbeShData;
-        [RTTI.Member(3, 0x88, "General")] public Ref<Texture> ProbeShTexture;
-        [RTTI.Member(4, 0x90, "General")] public Array<Vec3> ProbePosList;
+        [RTTI.Member(1, 0x30, "General", true)] public Array<LightProbe> LightProbes;
+        [RTTI.Member(2, 0x40, "General", true)] public Array<Ref<LightProbeSetResource>> LightProbeSubsets;
+        [RTTI.Member(3, 0x50, "General", true)] public Array<TetrahedronShadowMap> TetraShadowMapSet;
+        [RTTI.Member(4, 0x60, "General")] public Array<uint8> ProbeTreeData;
+        [RTTI.Member(5, 0x78, "General")] public Array<uint8> ProbeShData;
+        [RTTI.Member(6, 0x88, "General")] public Ref<Texture> ProbeShTexture;
+        [RTTI.Member(7, 0x90, "General")] public Array<Vec3> ProbePosList;
     }
 
     [RTTI.Serializable(0xD535B1D23822CE9E)]
@@ -20943,25 +21120,26 @@ namespace Decima.HZD
         [RTTI.Member(6, 0x68, "Color")] public bool EmitDiffuse;
         [RTTI.Member(7, 0x69, "Color")] public bool EmitSpecular;
         [RTTI.Member(8, 0x6A, "Interactivity")] public bool CastShadows;
-        [RTTI.Member(9, 0x6C, "Interactivity")] public ECastingShadowQuality CastingShadowQuality;
-        [RTTI.Member(10, 0x70, "Interactivity")] public EForwardShadowCastMode ForwardShadowCastMode;
-        [RTTI.Member(11, 0x74, "Interactivity")] public bool UsePreciseRendering;
-        [RTTI.Member(12, 0x75, "Interactivity")] public bool AffectFirstPersonOnly;
-        [RTTI.Member(13, 0x78, "General")] public ELightInfluenceAccuracy InfluenceAccuracy;
-        [RTTI.Member(14, 0x7C, "General")] public EFalloffType FalloffType;
-        [RTTI.Member(15, 0x80, "Attachments")] public Vec3 CoronaOffset;
-        [RTTI.Member(16, 0x90, "Attachments")] public Ref<LensFlareResource> LensFlare;
-        [RTTI.Member(17, 0x98, "General")] public float VolumeLightAmount;
-        [RTTI.Member(18, 0x9C, "General")] public float VolumeLightAmountMinScale;
-        [RTTI.Member(19, 0xA0, "General")] public int VolumeLightSampleCount;
-        [RTTI.Member(20, 0xA4, "General")] public float VolumeHenyeyGreensteinG;
-        [RTTI.Member(21, 0xA8, "General")] public FRange DistanceFadeRange;
-        [RTTI.Member(22, 0xB0, "General")] public FRange NearFadeRange;
-        [RTTI.Member(23, 0xB8, "General")] public bool RenderToLightSamplingBuffer;
-        [RTTI.Member(24, 0xBC, "General")] public FRange LightSamplingFadeRange;
-        [RTTI.Member(25, 0xC8, "Attachments")] public Ref<FlickerLight> FlickerLight;
-        [RTTI.Member(26, 0xD0, "General")] public String IntensityGlobalRenderVariableName;
-        [RTTI.Member(27, 0xE0, "General")] public Ref<RenderEffectResource> RenderEffectsResource;
+        [RTTI.Member(9, 0x6A, "Interactivity", true)] public bool CastDynamicShadows;
+        [RTTI.Member(10, 0x6C, "Interactivity")] public ECastingShadowQuality CastingShadowQuality;
+        [RTTI.Member(11, 0x70, "Interactivity")] public EForwardShadowCastMode ForwardShadowCastMode;
+        [RTTI.Member(12, 0x74, "Interactivity")] public bool UsePreciseRendering;
+        [RTTI.Member(13, 0x75, "Interactivity")] public bool AffectFirstPersonOnly;
+        [RTTI.Member(14, 0x78, "General")] public ELightInfluenceAccuracy InfluenceAccuracy;
+        [RTTI.Member(15, 0x7C, "General")] public EFalloffType FalloffType;
+        [RTTI.Member(16, 0x80, "Attachments")] public Vec3 CoronaOffset;
+        [RTTI.Member(17, 0x90, "Attachments")] public Ref<LensFlareResource> LensFlare;
+        [RTTI.Member(18, 0x98, "General")] public float VolumeLightAmount;
+        [RTTI.Member(19, 0x9C, "General")] public float VolumeLightAmountMinScale;
+        [RTTI.Member(20, 0xA0, "General")] public int VolumeLightSampleCount;
+        [RTTI.Member(21, 0xA4, "General")] public float VolumeHenyeyGreensteinG;
+        [RTTI.Member(22, 0xA8, "General")] public FRange DistanceFadeRange;
+        [RTTI.Member(23, 0xB0, "General")] public FRange NearFadeRange;
+        [RTTI.Member(24, 0xB8, "General")] public bool RenderToLightSamplingBuffer;
+        [RTTI.Member(25, 0xBC, "General")] public FRange LightSamplingFadeRange;
+        [RTTI.Member(26, 0xC8, "Attachments")] public Ref<FlickerLight> FlickerLight;
+        [RTTI.Member(27, 0xD0, "General")] public String IntensityGlobalRenderVariableName;
+        [RTTI.Member(28, 0xE0, "General")] public Ref<RenderEffectResource> RenderEffectsResource;
     }
 
     [RTTI.Serializable(0xE6A67C103CCE0902)]
@@ -21727,6 +21905,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0x4B7397C556844497)]
     public class LootContainerRestoreState : RTTIObject
     {
+        [RTTI.Member(0, 0x28, "StateSaving", true)] public GGUUID LootEntityResourceUUID;
+        [RTTI.Member(1, 0x38, "StateSaving", true)] public Array<Ref<LootItemRestoreState>> ItemsRemaining;
     }
 
     [RTTI.Serializable(0x6B9DD34BD83ADB76)]
@@ -21772,11 +21952,14 @@ namespace Decima.HZD
     [RTTI.Serializable(0xC13D714D24C8A14)]
     public class LootItemRestoreState : RTTIObject
     {
+        [RTTI.Member(0, 0x28, "StateSaving", true)] public StreamingRef<EntityResource> LootItem;
+        [RTTI.Member(1, 0x48, "StateSaving", true)] public int AmountRemaining;
     }
 
     [RTTI.Serializable(0x6A45F279A53A5931)]
     public class LootPackageRestoreState : ItemRestoreState
     {
+        [RTTI.Member(0, 0xB0, "StateSaving", true)] public Array<Ref<ItemRestoreState>> Items;
     }
 
     [RTTI.Serializable(0xA19AA6E50BD842C7)]
@@ -22973,7 +23156,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0x5B5D2F4D8AB6C07A)]
     public class MenuScriptResource : MenuElementResource
     {
-        [RTTI.Member(0, 0x38, "Properties")] public String ConvertedSourceCode;
+        [RTTI.Member(0, 0x30, "Properties", true)] public String SourceCode;
+        [RTTI.Member(1, 0x38, "Properties")] public String ConvertedSourceCode;
     }
 
     [RTTI.Serializable(0x8D80FD81435F69E)]
@@ -23403,6 +23587,9 @@ namespace Decima.HZD
     [RTTI.Serializable(0xB4FDA57B0A0C8D5E)]
     public class MerchantCollectionRestoreState : RTTIObject
     {
+        [RTTI.Member(0, 0x28, "StateSaving", true)] public GGUUID CollectionUUID;
+        [RTTI.Member(1, 0x38, "StateSaving", true)] public Array<MerchantItemRestoreState> Items;
+        [RTTI.Member(2, 0x48, "StateSaving", true)] public float RestockTimer;
     }
 
     [RTTI.Serializable(0xBB0761D99D0DC5A)]
@@ -23436,6 +23623,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0x60A8A6AF899A569)]
     public class MerchantItemRestoreState : RTTIObject
     {
+        [RTTI.Member(0, 0x28, "StateSaving", true)] public StreamingRef<EntityResource> EntityResource;
+        [RTTI.Member(1, 0x48, "StateSaving", true)] public int Amount;
     }
 
     [RTTI.Serializable(0x73F33AF9E3255F6D)]
@@ -23449,6 +23638,14 @@ namespace Decima.HZD
     [RTTI.Serializable(0x2AF865384C4F2C80)]
     public class MerchantRestoreState : RTTIObject
     {
+        [RTTI.Member(0, 0x28, "StateSaving", true)] public GGUUID MerchantUUID;
+        [RTTI.Member(1, 0x38, "StateSaving", true)] public int CurrentMoney;
+        [RTTI.Member(2, 0x3C, "StateSaving", true)] public float CurrentMoneyRegenerationTimer;
+        [RTTI.Member(3, 0x40, "StateSaving", true)] public int MaxMoney;
+        [RTTI.Member(4, 0x44, "StateSaving", true)] public int MoneyRegenerationTimer;
+        [RTTI.Member(5, 0x48, "StateSaving", true)] public int MoneyRegenerationAmount;
+        [RTTI.Member(6, 0x4C, "StateSaving", true)] public float MoneyRegenerationRandomFactor;
+        [RTTI.Member(7, 0x50, "StateSaving", true)] public Array<MerchantCollectionRestoreState> MerchantCollections;
     }
 
     [RTTI.Serializable(0xE7C20981C6EFE1A2)]
@@ -23939,6 +24136,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x92962878FBAF5729)]
     public class ModificationItemRestoreState : ItemRestoreState
     {
+        [RTTI.Member(0, 0xB0, "StateSaving", true)] public Array<StatModification> Modifications;
     }
 
     [RTTI.Serializable(0xF638C7D767B8FD5A)]
@@ -24249,6 +24447,9 @@ namespace Decima.HZD
     [RTTI.Serializable(0x8195BD80471DE208)]
     public class MountableComponent : AIUsableComponent
     {
+        [RTTI.Member(0, 0x80, true)] public EMountRequest MountRequest;
+        [RTTI.Member(1, 0x81, true)] public EMountState MountState;
+        [RTTI.Member(2, 0x88, true)] public Ptr<Entity> Mounter;
     }
 
     [RTTI.Serializable(0x5960F294AA6410A7)]
@@ -24309,6 +24510,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0xB71DDB14560B92BD)]
     public class MounterComponent : EntityComponent
     {
+        [RTTI.Member(0, 0x58, true)] public Ptr<MountableComponent> MountableComponent;
+        [RTTI.Member(1, 0x60, true)] public Ptr<MoverResource> PreviousMoverResource;
     }
 
     [RTTI.Serializable(0x90677C75DAA75DBD)]
@@ -24595,14 +24798,15 @@ namespace Decima.HZD
     [RTTI.Serializable(0xE7FC3387C5A18)]
     public class MsgArcHit : MsgBase
     {
-        [RTTI.Member(0, 0x18)] public WorldPosition To;
-        [RTTI.Member(1, 0x30)] public WorldPosition From;
-        [RTTI.Member(2, 0x48)] public WorldPosition Current;
-        [RTTI.Member(3, 0x60)] public EArcTargetType ToType;
-        [RTTI.Member(4, 0x64)] public EArcTargetType FromType;
-        [RTTI.Member(5, 0x68)] public EArcTargetType CurrentType;
-        [RTTI.Member(6, 0x88)] public WorldPosition Position;
-        [RTTI.Member(7, 0xA0)] public Vec3 Normal;
+        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> HitEntity;
+        [RTTI.Member(1, 0x18)] public WorldPosition To;
+        [RTTI.Member(2, 0x30)] public WorldPosition From;
+        [RTTI.Member(3, 0x48)] public WorldPosition Current;
+        [RTTI.Member(4, 0x60)] public EArcTargetType ToType;
+        [RTTI.Member(5, 0x64)] public EArcTargetType FromType;
+        [RTTI.Member(6, 0x68)] public EArcTargetType CurrentType;
+        [RTTI.Member(7, 0x88)] public WorldPosition Position;
+        [RTTI.Member(8, 0xA0)] public Vec3 Normal;
     }
 
     [RTTI.Serializable(0x127544289A69B3A1)]
@@ -24739,11 +24943,20 @@ namespace Decima.HZD
     [RTTI.Serializable(0xC95C34981AFA8C67)]
     public class MsgContactPoint : MsgBase
     {
+        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> Collider;
     }
 
     [RTTI.Serializable(0x90F726CAE205563B)]
     public class MsgContactPointAdded : MsgContactPoint
     {
+        [RTTI.Member(0, 0x0, true)] public MaterialType MaterialTypeA;
+        [RTTI.Member(1, 0x0, true)] public MaterialType MaterialTypeB;
+        [RTTI.Member(2, 0x50, true)] public WorldPosition Position;
+        [RTTI.Member(3, 0x70, true)] public Vec3 Normal;
+        [RTTI.Member(4, 0x80, true)] public float Distance;
+        [RTTI.Member(5, 0xD0, true)] public float ProjectedVelocity;
+        [RTTI.Member(6, 0xE0, true)] public Vec3 RelativeVelocity;
+        [RTTI.Member(7, 0xF0, true)] public Vec3 RelativeAngularVelocity;
     }
 
     [RTTI.Serializable(0x34F6C334F7E5FD85)]
@@ -24796,28 +25009,48 @@ namespace Decima.HZD
     [RTTI.Serializable(0xD693CD2D0BD152F5)]
     public class MsgDamage : MsgScene
     {
+        [RTTI.Member(0, 0x0, true)] public Ptr<AttackEventContext> AttackEvent;
+        [RTTI.Member(1, 0x0, true)] public Ptr<Entity> InstigatorEntity;
+        [RTTI.Member(2, 0x0, true)] public WorldPosition Position;
+        [RTTI.Member(3, 0x0, true)] public int MaterialType;
+        [RTTI.Member(4, 0x0, true)] public Ptr<Entity> Victim;
+        [RTTI.Member(5, 0x0, true)] public Ptr<InstigatorData> Instigator;
+        [RTTI.Member(6, 0x0, true)] public Ptr<DamageTypeResource> DamageTypeResource;
+        [RTTI.Member(7, 0x0, true)] public Ptr<Player> InstigatorPlayer;
+        [RTTI.Member(8, 0x0, true)] public float CoreAmount;
+        [RTTI.Member(9, 0x0, true)] public Ptr<Entity> Damager;
+        [RTTI.Member(10, 0x30, true)] public Vec3 Impulse;
+        [RTTI.Member(11, 0x44, true)] public float ImpactSeverity;
+        [RTTI.Member(12, 0x60, true)] public Vec3 Normal;
+        [RTTI.Member(13, 0x74, true)] public int ModelPartIndex;
     }
 
     [RTTI.Serializable(0x6309E3D5BD0D39A)]
     public class MsgDamageCaused : MsgBase
     {
-        [RTTI.Member(0, 0x0)] public EDamageFlags DamageFlags;
-        [RTTI.Member(1, 0x40)] public Vec3 ImpactImpulse;
-        [RTTI.Member(2, 0x50)] public float ImpactImpulseHumanoidFactor;
-        [RTTI.Member(3, 0x54)] public float ImpactSeverity;
-        [RTTI.Member(4, 0x70)] public Vec3 Normal;
-        [RTTI.Member(5, 0x84)] public int ModelPartIndex;
-        [RTTI.Member(6, 0xC0)] public float DamageDone;
+        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> Receiver;
+        [RTTI.Member(1, 0x0, true)] public Ptr<AttackEventContext> AttackEvent;
+        [RTTI.Member(2, 0x0)] public EDamageFlags DamageFlags;
+        [RTTI.Member(3, 0x0, true)] public Ptr<DamageTypeResource> DamageTypeResource;
+        [RTTI.Member(4, 0x40)] public Vec3 ImpactImpulse;
+        [RTTI.Member(5, 0x50)] public float ImpactImpulseHumanoidFactor;
+        [RTTI.Member(6, 0x54)] public float ImpactSeverity;
+        [RTTI.Member(7, 0x70)] public Vec3 Normal;
+        [RTTI.Member(8, 0x84)] public int ModelPartIndex;
+        [RTTI.Member(9, 0xC0)] public float DamageDone;
     }
 
     [RTTI.Serializable(0xD2EE350056F9ACD2)]
     public class MsgDamageCausedReport : MsgBase
     {
+        [RTTI.Member(0, 0x0, true)] public float DamageDone;
+        [RTTI.Member(1, 0x0, true)] public Ptr<Entity> Receiver;
     }
 
     [RTTI.Serializable(0x6191F5CF5DE7A245)]
     public class MsgDamageReceivedThisFrame : MsgBase
     {
+        [RTTI.Member(0, 0x18, true)] public float DamageReceived;
     }
 
     [RTTI.Serializable(0x8CE378143B71F880)]
@@ -24883,6 +25116,9 @@ namespace Decima.HZD
     [RTTI.Serializable(0x38A9EA7ED1FD000F)]
     public class MsgEnableModelPart : MsgBase
     {
+        [RTTI.Member(0, 0x0, true)] public Ptr<Model> Model;
+        [RTTI.Member(1, 0x30, true)] public int ModelPartIndex;
+        [RTTI.Member(2, 0x34, true)] public bool Enabled;
     }
 
     [RTTI.Serializable(0x9C1F105808B87D9)]
@@ -24908,7 +25144,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0x406A46319D7B7836)]
     public class MsgEntityAddedToScene : MsgSceneEntityBase
     {
-        [RTTI.Member(0, 0x38)] public Ptr<WorldNode> Source;
+        [RTTI.Member(0, 0x0, true)] public bool EntityWasSpawned;
+        [RTTI.Member(1, 0x38)] public Ptr<WorldNode> Source;
     }
 
     [RTTI.Serializable(0x7DAE0EFC4D684633)]
@@ -24919,6 +25156,20 @@ namespace Decima.HZD
     [RTTI.Serializable(0x7D1BBA432A9E8FB6)]
     public class MsgEntityDie : MsgSceneEntityBase
     {
+        [RTTI.Member(0, 0x0, true)] public Ptr<EntityResource> WeaponResource;
+        [RTTI.Member(1, 0x0, true)] public Ptr<InstigatorData> Instigator;
+        [RTTI.Member(2, 0x0, true)] public Ptr<Entity> InstigatorEntity;
+        [RTTI.Member(3, 0x0, true)] public WorldPosition Position;
+        [RTTI.Member(4, 0x0, true)] public Vec3 Normal;
+        [RTTI.Member(5, 0x0, true)] public int ModelPartIndex;
+        [RTTI.Member(6, 0x0, true)] public MaterialType MaterialType;
+        [RTTI.Member(7, 0x0, true)] public Ptr<Entity> Damager;
+        [RTTI.Member(8, 0x0, true)] public Ptr<DamageTypeResource> DamageTypeResource;
+        [RTTI.Member(9, 0x0, true)] public float CoreAmount;
+        [RTTI.Member(10, 0x0, true)] public float ImpactSeverity;
+        [RTTI.Member(11, 0x0, true)] public Ptr<AttackEventContext> AttackEvent;
+        [RTTI.Member(12, 0x0, true)] public Ptr<Player> InstigatorPlayer;
+        [RTTI.Member(13, 0x0, true)] public Vec3 Impulse;
     }
 
     [RTTI.Serializable(0xDFE3C6EAF5A2D13D)]
@@ -24941,12 +25192,15 @@ namespace Decima.HZD
     [RTTI.Serializable(0x544584E18BAD2023)]
     public class MsgEntityKilled : MsgBase
     {
-        [RTTI.Member(0, 0x0)] public EDamageFlags DamageFlags;
-        [RTTI.Member(1, 0x30)] public Vec3 ImpactImpulse;
-        [RTTI.Member(2, 0x40)] public float ImpactImpulseHumanoidFactor;
-        [RTTI.Member(3, 0x44)] public float ImpactSeverity;
-        [RTTI.Member(4, 0x60)] public Vec3 Normal;
-        [RTTI.Member(5, 0x74)] public int ModelPartIndex;
+        [RTTI.Member(0, 0x0, true)] public Ptr<AttackEventContext> AttackEvent;
+        [RTTI.Member(1, 0x0, true)] public Ptr<Entity> KilledEntity;
+        [RTTI.Member(2, 0x0)] public EDamageFlags DamageFlags;
+        [RTTI.Member(3, 0x0, true)] public Ptr<DamageTypeResource> DamageTypeResource;
+        [RTTI.Member(4, 0x30)] public Vec3 ImpactImpulse;
+        [RTTI.Member(5, 0x40)] public float ImpactImpulseHumanoidFactor;
+        [RTTI.Member(6, 0x44)] public float ImpactSeverity;
+        [RTTI.Member(7, 0x60)] public Vec3 Normal;
+        [RTTI.Member(8, 0x74)] public int ModelPartIndex;
     }
 
     [RTTI.Serializable(0x4198348FE2F4BF90)]
@@ -25002,12 +25256,14 @@ namespace Decima.HZD
     [RTTI.Serializable(0x551F8A8DD70F9CF)]
     public class MsgEntitySpawnCanceled : MsgScene
     {
+        [RTTI.Member(0, 0x0, true)] public Ptr<SpawnpointBase> Spawnpoint;
     }
 
     [RTTI.Serializable(0x8B429EE1A3CFFB26)]
     public class MsgEntitySpotted : MsgBase
     {
-        [RTTI.Member(0, 0x30)] public UUIDRef<SpottableComponentResource> SpottableComponentResource;
+        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> SpottedEntity;
+        [RTTI.Member(1, 0x30)] public UUIDRef<SpottableComponentResource> SpottableComponentResource;
     }
 
     [RTTI.Serializable(0xB2CDA2E3032CB1F2)]
@@ -25114,7 +25370,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0xC34697FA60D07CA4)]
     public class MsgFocusHasAlertSignal : MsgScene
     {
-        [RTTI.Member(0, 0x38)] public bool HasAlertSignal;
+        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> Entity;
+        [RTTI.Member(1, 0x38)] public bool HasAlertSignal;
     }
 
     [RTTI.Serializable(0xAECAF158A13D027F)]
@@ -25126,14 +25383,16 @@ namespace Decima.HZD
     [RTTI.Serializable(0xA574F28D4E38C00A)]
     public class MsgFocusScanning : MsgBase
     {
-        [RTTI.Member(0, 0x30)] public bool IsScanned;
-        [RTTI.Member(1, 0x31)] public bool IsBeingScanned;
+        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> Entity;
+        [RTTI.Member(1, 0x30)] public bool IsScanned;
+        [RTTI.Member(2, 0x31)] public bool IsBeingScanned;
     }
 
     [RTTI.Serializable(0xE3BEABD07DF0C7E4)]
     public class MsgFocusStartScanningPart : MsgBase
     {
-        [RTTI.Member(0, 0x30)] public bool ModelPartIndex;
+        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> Entity;
+        [RTTI.Member(1, 0x30)] public bool ModelPartIndex;
     }
 
     [RTTI.Serializable(0x2CBA716C28A3D558)]
@@ -25144,13 +25403,16 @@ namespace Decima.HZD
     [RTTI.Serializable(0x586ED3F0A5DF62B0)]
     public class MsgFocusTargetIsBeingScanned : MsgScene
     {
-        [RTTI.Member(0, 0x50)] public bool IsBeingScanned;
+        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> Entity;
+        [RTTI.Member(1, 0x0, true)] public Ptr<Entity> ScanningEntity;
+        [RTTI.Member(2, 0x50)] public bool IsBeingScanned;
     }
 
     [RTTI.Serializable(0x4B185F07F48D0B5B)]
     public class MsgFocusTargetScanned : MsgScene
     {
-        [RTTI.Member(0, 0x38)] public bool IsScanned;
+        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> Entity;
+        [RTTI.Member(1, 0x38)] public bool IsScanned;
     }
 
     [RTTI.Serializable(0x6E24E53443221231)]
@@ -25475,6 +25737,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0xA9DA4D808C02B081)]
     public class MsgInventoryItemBase : MsgBase
     {
+        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> Item;
     }
 
     [RTTI.Serializable(0x713633B6556A455F)]
@@ -25852,6 +26115,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x7E22E7687DF19452)]
     public class MsgMountBase : MsgSceneEntityBase
     {
+        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> Mounter;
     }
 
     [RTTI.Serializable(0x47F4FE9D9575A372)]
@@ -25870,6 +26134,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x76E9F526A1DF33BB)]
     public class MsgMounterBase : MsgSceneEntityBase
     {
+        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> MountableObject;
     }
 
     [RTTI.Serializable(0x2229E58CDDCEFE6B)]
@@ -25880,21 +26145,25 @@ namespace Decima.HZD
     [RTTI.Serializable(0xE19C2407675228F6)]
     public class MsgMounterStartDismount : MsgMounterBase
     {
+        [RTTI.Member(0, 0x50, true)] public Ptr<DismountMode> DismountMode;
     }
 
     [RTTI.Serializable(0x7E6709793E42FDD)]
     public class MsgMounterStartMount : MsgMounterBase
     {
+        [RTTI.Member(0, 0x50, true)] public Ptr<MountMode> MountMode;
     }
 
     [RTTI.Serializable(0xC5137E413C76815)]
     public class MsgMounterStopDismount : MsgMounterBase
     {
+        [RTTI.Member(0, 0x50, true)] public Ptr<DismountMode> DismountMode;
     }
 
     [RTTI.Serializable(0x9E8A880D28D4765E)]
     public class MsgMounterStopMount : MsgMounterBase
     {
+        [RTTI.Member(0, 0x50, true)] public Ptr<MountMode> MountMode;
     }
 
     [RTTI.Serializable(0xAAD71A8B38875F3B)]
@@ -25979,7 +26248,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0x22FA09B2AB26DE87)]
     public class MsgPickedUpEntity : MsgBase
     {
-        [RTTI.Member(0, 0x18)] public Ptr<PickUpComponentBase> PickUpComponentBase;
+        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> PickedUpEntity;
+        [RTTI.Member(1, 0x18)] public Ptr<PickUpComponentBase> PickUpComponentBase;
     }
 
     [RTTI.Serializable(0x1D5A31F9203755BA)]
@@ -26273,11 +26543,14 @@ namespace Decima.HZD
     [RTTI.Serializable(0xA70297EB71A83824)]
     public class MsgSceneEntityBase : MsgScene
     {
+        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> Entity;
     }
 
     [RTTI.Serializable(0x48EF3253C4A84DAC)]
     public class MsgSceneEntitySpotted : MsgScene
     {
+        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> SpotterEntity;
+        [RTTI.Member(1, 0x0, true)] public Ptr<Entity> SpottedEntity;
     }
 
     [RTTI.Serializable(0xA7F3CEAE06FA1CF5)]
@@ -26288,6 +26561,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0xE71F918DDF7815C)]
     public class MsgSceneInventoryItemBase : MsgScene
     {
+        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> Item;
+        [RTTI.Member(1, 0x0, true)] public Ptr<Entity> Entity;
     }
 
     [RTTI.Serializable(0x34E07207FCECE3CA)]
@@ -26308,6 +26583,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x15BCC9E8DF6466FA)]
     public class MsgSceneUpdate : MsgScene
     {
+        [RTTI.Member(0, 0x20, true)] public float DeltaTime;
     }
 
     [RTTI.Serializable(0xF97A34DD80E32FD0)]
@@ -26451,11 +26727,13 @@ namespace Decima.HZD
     [RTTI.Serializable(0x89AB7C2E68317B24)]
     public class MsgStartDismount : MsgMountBase
     {
+        [RTTI.Member(0, 0x50, true)] public Ptr<DismountMode> DismountMode;
     }
 
     [RTTI.Serializable(0x5F431749E8457A62)]
     public class MsgStartMount : MsgMountBase
     {
+        [RTTI.Member(0, 0x50, true)] public Ptr<MountMode> MountMode;
     }
 
     [RTTI.Serializable(0xF855AAB0F5875A4)]
@@ -26471,7 +26749,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0x83C312A472E045F9)]
     public class MsgStartedLooting : MsgSceneEntityBase
     {
-        [RTTI.Member(0, 0x50)] public ELootItemRarity ItemRarity;
+        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> LootingEntity;
+        [RTTI.Member(1, 0x50)] public ELootItemRarity ItemRarity;
     }
 
     [RTTI.Serializable(0x6EB602ED6249034E)]
@@ -26518,11 +26797,13 @@ namespace Decima.HZD
     [RTTI.Serializable(0xF9142C3FB40438C5)]
     public class MsgStopDismount : MsgMountBase
     {
+        [RTTI.Member(0, 0x50, true)] public Ptr<DismountMode> DismountMode;
     }
 
     [RTTI.Serializable(0x65186560939BEB6A)]
     public class MsgStopMount : MsgMountBase
     {
+        [RTTI.Member(0, 0x50, true)] public Ptr<MountMode> MountMode;
     }
 
     [RTTI.Serializable(0x152C7EE2518DC6A8)]
@@ -26544,13 +26825,15 @@ namespace Decima.HZD
     [RTTI.Serializable(0x95F72BC93EF7C09A)]
     public class MsgTagged : MsgBase
     {
-        [RTTI.Member(0, 0x30)] public bool IsTagged;
-        [RTTI.Member(1, 0x31)] public bool IsTaggedByFocusMode;
+        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> Entity;
+        [RTTI.Member(1, 0x30)] public bool IsTagged;
+        [RTTI.Member(2, 0x31)] public bool IsTaggedByFocusMode;
     }
 
     [RTTI.Serializable(0x58AFA99D239993EF)]
     public class MsgThreat : MsgBase
     {
+        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> Observer;
     }
 
     [RTTI.Serializable(0xB72040AFCD3448FB)]
@@ -26711,11 +26994,14 @@ namespace Decima.HZD
     [RTTI.Serializable(0x1593F1B87BC90466)]
     public class MsgUseSmartObjectBase : MsgScene
     {
+        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> SmartObject;
+        [RTTI.Member(1, 0x0, true)] public Ptr<Entity> User;
     }
 
     [RTTI.Serializable(0xCAA76C6F772923C8)]
     public class MsgUsedEntity : MsgBase
     {
+        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> UsedEntity;
     }
 
     [RTTI.Serializable(0x7975E373FCCAF1DB)]
@@ -26938,6 +27224,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0x6482632D995712F2)]
     public class NPCScheduleResourceProperty : NPCScheduleResourcePropertyBase
     {
+        [RTTI.Member(0, 0x0, "Flags", true)] public bool Replicated;
+        [RTTI.Member(1, 0x0, "Flags", true)] public bool Persistent;
     }
 
     [RTTI.Serializable(0xA805A18E60515B9A)]
@@ -28084,81 +28372,83 @@ namespace Decima.HZD
         [RTTI.Member(18, 0x250, "Logic")] public Vec3 ReachOriginOffsetWithHands;
         [RTTI.Member(19, 0x260, "Logic")] public float CollisionTestOffsetBelowHangMoving;
         [RTTI.Member(20, 0x264, "Logic")] public float CollisionTestOffsetBelowHangIdle;
-        [RTTI.Member(21, 0x270, "Logic")] public FRange AimComfortRangeIdleRadians;
-        [RTTI.Member(22, 0x280, "Logic")] public FRange AimComfortRangeMovingRadians;
-        [RTTI.Member(23, 0x288, "Animation")] public Array<Ref<HumanoidParkourTransition>> Transitions;
-        [RTTI.Member(24, 0x298, "Animation")] public Array<HumanoidParkourTransitionMetrics> TransitionMetrics;
-        [RTTI.Member(25, 0x2A8, "Animation")] public Ref<HumanoidParkourTransition> DefaultClimbEntryTransitionWithFootSupport;
-        [RTTI.Member(26, 0x2B0, "Animation")] public Ref<HumanoidParkourTransition> DefaultClimbEntryTransitionWithoutFootSupport;
-        [RTTI.Member(27, 0x2C0, "Animation")] public HumanoidParkourTransitionMetrics DefaultClimbEntryTransitionWithFootSupportMetrics;
-        [RTTI.Member(28, 0x330, "Animation")] public HumanoidParkourTransitionMetrics DefaultClimbEntryTransitionWithoutFootSupportMetrics;
-        [RTTI.Member(29, 0x3A0, "Logic")] public Array<String> AutoTraversableAnnotationTags;
-        [RTTI.Member(30, 0x3B0, "AI")] public Ref<AIHapticStimulusResource> ClimbingHapticStimulus;
-        [RTTI.Member(31, 0x3B8, "AI")] public Array<String> ParkourVisualNodeBones;
-        [RTTI.Member(32, 0x3C8, "Logic")] public float LookDistance;
-        [RTTI.Member(33, 0x3CC, "Logic")] public FRange StepOffAllowedHeightDifference;
-        [RTTI.Member(34, 0x3D4, "Logic")] public float StepOffReattachmentPreventionRadius;
-        [RTTI.Member(35, 0x3D8, "Logic")] public Array<Vec3> JumpOffTargetCollisionCheckStartOffsets;
-        [RTTI.Member(36, 0x3E8, "Logic")] public float JumpOffTargetMaxHeight;
-        [RTTI.Member(37, 0x3EC, "Logic")] public float JumpOffTargetScorePenalty;
-        [RTTI.Member(38, 0x3F0, "Logic")] public float JumpOffTargetMaxForwardAngle;
-        [RTTI.Member(39, 0x3F4, "Logic")] public float PullUpToGroundScorePenalty;
-        [RTTI.Member(40, 0x3F8, "Logic")] public float PullUpToGroundAdditionalAllowedExtraHeight;
-        [RTTI.Member(41, 0x400, "Logic")] public Ref<WarpedAnimation> ClimbLedgeWithFootSupportStandingAnimation;
-        [RTTI.Member(42, 0x408, "Logic")] public Ref<WarpedAnimation> ClimbLedgeWithFootSupportCrouchedAnimation;
-        [RTTI.Member(43, 0x418, "Logic")] public Ref<WarpedAnimation> ClimbLedgeWithoutFootSupportStandingAnimation;
-        [RTTI.Member(44, 0x420, "Logic")] public Ref<WarpedAnimation> ClimbLedgeWithoutFootSupportCrouchedAnimation;
-        [RTTI.Member(45, 0x430, "FootPlacement")] public ParkourLimbOffset LeftFootOffsetInIdle;
-        [RTTI.Member(46, 0x450, "FootPlacement")] public ParkourLimbOffset RightFootOffsetInIdle;
-        [RTTI.Member(47, 0x470, "FootPlacement")] public FRange FeetPushDistanceRange;
-        [RTTI.Member(48, 0x478, "FootPlacement")] public float FootSupportDetectionRadius;
-        [RTTI.Member(49, 0x47C, "FootPlacement")] public float SecondaryFootSupportOffset;
-        [RTTI.Member(50, 0x480, "HandPlacement")] public ParkourLimbOffset LeftHandOffsetInIdleWithFootSupport;
-        [RTTI.Member(51, 0x4A0, "HandPlacement")] public ParkourLimbOffset RightHandOffsetInIdleWithFootSupport;
-        [RTTI.Member(52, 0x4C0, "HandPlacement")] public ParkourLimbOffset LeftHandOffsetInIdleWithoutFootSupport;
-        [RTTI.Member(53, 0x4E0, "HandPlacement")] public ParkourLimbOffset RightHandOffsetInIdleWithoutFootSupport;
-        [RTTI.Member(54, 0x500, "HandPlacement")] public Vec3 LeftHandSupportCollisionCheckStartWithFootSupport;
-        [RTTI.Member(55, 0x510, "HandPlacement")] public Vec3 RightHandSupportCollisionCheckStartWithFootSupport;
-        [RTTI.Member(56, 0x520, "HandPlacement")] public Vec3 LeftHandSupportCollisionCheckEndWithFootSupport;
-        [RTTI.Member(57, 0x530, "HandPlacement")] public Vec3 RightHandSupportCollisionCheckEndWithFootSupport;
-        [RTTI.Member(58, 0x540, "HandPlacement")] public Vec3 LeftHandSupportCollisionCheckStartWithoutFootSupport;
-        [RTTI.Member(59, 0x550, "HandPlacement")] public Vec3 RightHandSupportCollisionCheckStartWithoutFootSupport;
-        [RTTI.Member(60, 0x560, "HandPlacement")] public Vec3 LeftHandSupportCollisionCheckEndWithoutFootSupport;
-        [RTTI.Member(61, 0x570, "HandPlacement")] public Vec3 RightHandSupportCollisionCheckEndWithoutFootSupport;
-        [RTTI.Member(62, 0x580, "HandPlacement")] public Vec3 HandSupportLeftFingersOffset;
-        [RTTI.Member(63, 0x590, "HandPlacement")] public Vec3 HandSupportRightFingersOffset;
-        [RTTI.Member(64, 0x5A0, "HandPlacement")] public float HandSupportDetectionRadius;
-        [RTTI.Member(65, 0x5A8, "Logic")] public Ref<SkinnedModelResource> ModelResource;
-        [RTTI.Member(66, 0x5B0, "Logic")] public Array<Ref<DamageTypeResource>> IgnoredDamageTypesCausedByParkourableEntity;
-        [RTTI.Member(67, 0x5C0, "Logic")] public float DeviationAngleSearchWeight;
-        [RTTI.Member(68, 0x5C8, "Unlocks")] public Ref<PerkLevel> AimWhileParkouringPerk;
-        [RTTI.Member(69, 0x5D0, "Logic")] public Ref<CurveResource> ViewAngleTransitionScoreCurve;
-        [RTTI.Member(70, 0x5D8, "Logic")] public float PerchedOnPointMinTurnAngle;
-        [RTTI.Member(71, 0x5DC, "Logic")] public float PerchedOnSegmentTurnAngleThreshold;
-        [RTTI.Member(72, 0x5E0, "Logic")] public float MaxLedgeClimbOverDropHeight;
-        [RTTI.Member(73, 0x5E4, "Logic")] public float MaxLedgeClimbOverSlopeAngle;
-        [RTTI.Member(74, 0x5E8, "Logic")] public float LedgeClimbOverCapsuleZOffset;
-        [RTTI.Member(75, 0x5EC, "Logic")] public float AutoDetachFromClimbDistanceIntoWater;
-        [RTTI.Member(76, 0x5F0, "Logic")] public float AutoDetachFromPerchedDistanceIntoWater;
-        [RTTI.Member(77, 0x5F8, "Facts")] public Ref<BooleanFact> IsTransitioningFact;
-        [RTTI.Member(78, 0x600, "Facts")] public Ref<EnumFact> TransitionTypeFact;
-        [RTTI.Member(79, 0x608, "Camera")] public Ref<CameraModeResource> DefaultCameraModeWithHandsWithFootSupport;
-        [RTTI.Member(80, 0x610, "Camera")] public Ref<CameraModeResource> DefaultCameraModeWithHandsWithoutFootSupport;
-        [RTTI.Member(81, 0x618, "Camera")] public Ref<CameraModeResource> DefaultCameraModeOnFoot;
-        [RTTI.Member(82, 0x620, "Logic")] public float MaxClimbCollisionOnStaticAnnotationPushAwayDistance;
-        [RTTI.Member(83, 0x624, "Logic")] public float MaxClimbCollisionOnMovingAnnotationPushAwayDistance;
-        [RTTI.Member(84, 0x628, "HitResponse")] public float DetachWithHandsFlinchSeverity;
-        [RTTI.Member(85, 0x62C, "Logic")] public ParkourInitialAttachmentSettings DisplacementSmoothAttachmentSettings;
-        [RTTI.Member(86, 0x63C, "Logic")] public ParkourInitialAttachmentSettings TurnSmoothAttachmentSettings;
-        [RTTI.Member(87, 0x64C, "Logic")] public float FacingDirectionSmoothFactor;
-        [RTTI.Member(88, 0x650, "Animation")] public Vec3 ClimbCornerEndOffsetWithoutFootSupportInnerLeft;
-        [RTTI.Member(89, 0x660, "Animation")] public Vec3 ClimbCornerEndOffsetWithFootSupportInnerLeft;
-        [RTTI.Member(90, 0x670, "Animation")] public Vec3 ClimbCornerEndOffsetWithoutFootSupportOuterLeft;
-        [RTTI.Member(91, 0x680, "Animation")] public Vec3 ClimbCornerEndOffsetWithFootSupportOuterLeft;
-        [RTTI.Member(92, 0x690, "Animation")] public Vec3 ClimbCornerEndOffsetWithoutFootSupportInnerRight;
-        [RTTI.Member(93, 0x6A0, "Animation")] public Vec3 ClimbCornerEndOffsetWithFootSupportInnerRight;
-        [RTTI.Member(94, 0x6B0, "Animation")] public Vec3 ClimbCornerEndOffsetWithoutFootSupportOuterRight;
-        [RTTI.Member(95, 0x6C0, "Animation")] public Vec3 ClimbCornerEndOffsetWithFootSupportOuterRight;
+        [RTTI.Member(21, 0x268, "Logic", true)] public FRange AimComfortRangeIdle;
+        [RTTI.Member(22, 0x270, "Logic")] public FRange AimComfortRangeIdleRadians;
+        [RTTI.Member(23, 0x278, "Logic", true)] public FRange AimComfortRangeMoving;
+        [RTTI.Member(24, 0x280, "Logic")] public FRange AimComfortRangeMovingRadians;
+        [RTTI.Member(25, 0x288, "Animation")] public Array<Ref<HumanoidParkourTransition>> Transitions;
+        [RTTI.Member(26, 0x298, "Animation")] public Array<HumanoidParkourTransitionMetrics> TransitionMetrics;
+        [RTTI.Member(27, 0x2A8, "Animation")] public Ref<HumanoidParkourTransition> DefaultClimbEntryTransitionWithFootSupport;
+        [RTTI.Member(28, 0x2B0, "Animation")] public Ref<HumanoidParkourTransition> DefaultClimbEntryTransitionWithoutFootSupport;
+        [RTTI.Member(29, 0x2C0, "Animation")] public HumanoidParkourTransitionMetrics DefaultClimbEntryTransitionWithFootSupportMetrics;
+        [RTTI.Member(30, 0x330, "Animation")] public HumanoidParkourTransitionMetrics DefaultClimbEntryTransitionWithoutFootSupportMetrics;
+        [RTTI.Member(31, 0x3A0, "Logic")] public Array<String> AutoTraversableAnnotationTags;
+        [RTTI.Member(32, 0x3B0, "AI")] public Ref<AIHapticStimulusResource> ClimbingHapticStimulus;
+        [RTTI.Member(33, 0x3B8, "AI")] public Array<String> ParkourVisualNodeBones;
+        [RTTI.Member(34, 0x3C8, "Logic")] public float LookDistance;
+        [RTTI.Member(35, 0x3CC, "Logic")] public FRange StepOffAllowedHeightDifference;
+        [RTTI.Member(36, 0x3D4, "Logic")] public float StepOffReattachmentPreventionRadius;
+        [RTTI.Member(37, 0x3D8, "Logic")] public Array<Vec3> JumpOffTargetCollisionCheckStartOffsets;
+        [RTTI.Member(38, 0x3E8, "Logic")] public float JumpOffTargetMaxHeight;
+        [RTTI.Member(39, 0x3EC, "Logic")] public float JumpOffTargetScorePenalty;
+        [RTTI.Member(40, 0x3F0, "Logic")] public float JumpOffTargetMaxForwardAngle;
+        [RTTI.Member(41, 0x3F4, "Logic")] public float PullUpToGroundScorePenalty;
+        [RTTI.Member(42, 0x3F8, "Logic")] public float PullUpToGroundAdditionalAllowedExtraHeight;
+        [RTTI.Member(43, 0x400, "Logic")] public Ref<WarpedAnimation> ClimbLedgeWithFootSupportStandingAnimation;
+        [RTTI.Member(44, 0x408, "Logic")] public Ref<WarpedAnimation> ClimbLedgeWithFootSupportCrouchedAnimation;
+        [RTTI.Member(45, 0x418, "Logic")] public Ref<WarpedAnimation> ClimbLedgeWithoutFootSupportStandingAnimation;
+        [RTTI.Member(46, 0x420, "Logic")] public Ref<WarpedAnimation> ClimbLedgeWithoutFootSupportCrouchedAnimation;
+        [RTTI.Member(47, 0x430, "FootPlacement")] public ParkourLimbOffset LeftFootOffsetInIdle;
+        [RTTI.Member(48, 0x450, "FootPlacement")] public ParkourLimbOffset RightFootOffsetInIdle;
+        [RTTI.Member(49, 0x470, "FootPlacement")] public FRange FeetPushDistanceRange;
+        [RTTI.Member(50, 0x478, "FootPlacement")] public float FootSupportDetectionRadius;
+        [RTTI.Member(51, 0x47C, "FootPlacement")] public float SecondaryFootSupportOffset;
+        [RTTI.Member(52, 0x480, "HandPlacement")] public ParkourLimbOffset LeftHandOffsetInIdleWithFootSupport;
+        [RTTI.Member(53, 0x4A0, "HandPlacement")] public ParkourLimbOffset RightHandOffsetInIdleWithFootSupport;
+        [RTTI.Member(54, 0x4C0, "HandPlacement")] public ParkourLimbOffset LeftHandOffsetInIdleWithoutFootSupport;
+        [RTTI.Member(55, 0x4E0, "HandPlacement")] public ParkourLimbOffset RightHandOffsetInIdleWithoutFootSupport;
+        [RTTI.Member(56, 0x500, "HandPlacement")] public Vec3 LeftHandSupportCollisionCheckStartWithFootSupport;
+        [RTTI.Member(57, 0x510, "HandPlacement")] public Vec3 RightHandSupportCollisionCheckStartWithFootSupport;
+        [RTTI.Member(58, 0x520, "HandPlacement")] public Vec3 LeftHandSupportCollisionCheckEndWithFootSupport;
+        [RTTI.Member(59, 0x530, "HandPlacement")] public Vec3 RightHandSupportCollisionCheckEndWithFootSupport;
+        [RTTI.Member(60, 0x540, "HandPlacement")] public Vec3 LeftHandSupportCollisionCheckStartWithoutFootSupport;
+        [RTTI.Member(61, 0x550, "HandPlacement")] public Vec3 RightHandSupportCollisionCheckStartWithoutFootSupport;
+        [RTTI.Member(62, 0x560, "HandPlacement")] public Vec3 LeftHandSupportCollisionCheckEndWithoutFootSupport;
+        [RTTI.Member(63, 0x570, "HandPlacement")] public Vec3 RightHandSupportCollisionCheckEndWithoutFootSupport;
+        [RTTI.Member(64, 0x580, "HandPlacement")] public Vec3 HandSupportLeftFingersOffset;
+        [RTTI.Member(65, 0x590, "HandPlacement")] public Vec3 HandSupportRightFingersOffset;
+        [RTTI.Member(66, 0x5A0, "HandPlacement")] public float HandSupportDetectionRadius;
+        [RTTI.Member(67, 0x5A8, "Logic")] public Ref<SkinnedModelResource> ModelResource;
+        [RTTI.Member(68, 0x5B0, "Logic")] public Array<Ref<DamageTypeResource>> IgnoredDamageTypesCausedByParkourableEntity;
+        [RTTI.Member(69, 0x5C0, "Logic")] public float DeviationAngleSearchWeight;
+        [RTTI.Member(70, 0x5C8, "Unlocks")] public Ref<PerkLevel> AimWhileParkouringPerk;
+        [RTTI.Member(71, 0x5D0, "Logic")] public Ref<CurveResource> ViewAngleTransitionScoreCurve;
+        [RTTI.Member(72, 0x5D8, "Logic")] public float PerchedOnPointMinTurnAngle;
+        [RTTI.Member(73, 0x5DC, "Logic")] public float PerchedOnSegmentTurnAngleThreshold;
+        [RTTI.Member(74, 0x5E0, "Logic")] public float MaxLedgeClimbOverDropHeight;
+        [RTTI.Member(75, 0x5E4, "Logic")] public float MaxLedgeClimbOverSlopeAngle;
+        [RTTI.Member(76, 0x5E8, "Logic")] public float LedgeClimbOverCapsuleZOffset;
+        [RTTI.Member(77, 0x5EC, "Logic")] public float AutoDetachFromClimbDistanceIntoWater;
+        [RTTI.Member(78, 0x5F0, "Logic")] public float AutoDetachFromPerchedDistanceIntoWater;
+        [RTTI.Member(79, 0x5F8, "Facts")] public Ref<BooleanFact> IsTransitioningFact;
+        [RTTI.Member(80, 0x600, "Facts")] public Ref<EnumFact> TransitionTypeFact;
+        [RTTI.Member(81, 0x608, "Camera")] public Ref<CameraModeResource> DefaultCameraModeWithHandsWithFootSupport;
+        [RTTI.Member(82, 0x610, "Camera")] public Ref<CameraModeResource> DefaultCameraModeWithHandsWithoutFootSupport;
+        [RTTI.Member(83, 0x618, "Camera")] public Ref<CameraModeResource> DefaultCameraModeOnFoot;
+        [RTTI.Member(84, 0x620, "Logic")] public float MaxClimbCollisionOnStaticAnnotationPushAwayDistance;
+        [RTTI.Member(85, 0x624, "Logic")] public float MaxClimbCollisionOnMovingAnnotationPushAwayDistance;
+        [RTTI.Member(86, 0x628, "HitResponse")] public float DetachWithHandsFlinchSeverity;
+        [RTTI.Member(87, 0x62C, "Logic")] public ParkourInitialAttachmentSettings DisplacementSmoothAttachmentSettings;
+        [RTTI.Member(88, 0x63C, "Logic")] public ParkourInitialAttachmentSettings TurnSmoothAttachmentSettings;
+        [RTTI.Member(89, 0x64C, "Logic")] public float FacingDirectionSmoothFactor;
+        [RTTI.Member(90, 0x650, "Animation")] public Vec3 ClimbCornerEndOffsetWithoutFootSupportInnerLeft;
+        [RTTI.Member(91, 0x660, "Animation")] public Vec3 ClimbCornerEndOffsetWithFootSupportInnerLeft;
+        [RTTI.Member(92, 0x670, "Animation")] public Vec3 ClimbCornerEndOffsetWithoutFootSupportOuterLeft;
+        [RTTI.Member(93, 0x680, "Animation")] public Vec3 ClimbCornerEndOffsetWithFootSupportOuterLeft;
+        [RTTI.Member(94, 0x690, "Animation")] public Vec3 ClimbCornerEndOffsetWithoutFootSupportInnerRight;
+        [RTTI.Member(95, 0x6A0, "Animation")] public Vec3 ClimbCornerEndOffsetWithFootSupportInnerRight;
+        [RTTI.Member(96, 0x6B0, "Animation")] public Vec3 ClimbCornerEndOffsetWithoutFootSupportOuterRight;
+        [RTTI.Member(97, 0x6C0, "Animation")] public Vec3 ClimbCornerEndOffsetWithFootSupportOuterRight;
     }
 
     [RTTI.Serializable(0x5A7B714A7EFB9B90)]
@@ -29428,10 +29718,11 @@ namespace Decima.HZD
     [RTTI.Serializable(0x1C4ABBC0D390AC01)]
     public class PlacementBakePrefabCollection : CoreObject
     {
-        [RTTI.Member(0, 0x30, "General")] public Array<Ref<PlacementLayer>> BakedLayers;
-        [RTTI.Member(1, 0x40, "General")] public EPlacementChunkSizeSetting ChunkSize;
-        [RTTI.Member(2, 0x44, "General")] public float PlacementDistance;
-        [RTTI.Member(3, 0x48, "General")] public IVec2 TargetTile;
+        [RTTI.Member(0, 0x20, "General", true)] public Array<Ref<PrefabInstance>> Objects;
+        [RTTI.Member(1, 0x30, "General")] public Array<Ref<PlacementLayer>> BakedLayers;
+        [RTTI.Member(2, 0x40, "General")] public EPlacementChunkSizeSetting ChunkSize;
+        [RTTI.Member(3, 0x44, "General")] public float PlacementDistance;
+        [RTTI.Member(4, 0x48, "General")] public IVec2 TargetTile;
     }
 
     [RTTI.Serializable(0x9C1E7105F74CEAE2)]
@@ -29505,6 +29796,8 @@ namespace Decima.HZD
         [RTTI.Member(3, 0x80)] public Ref<EcotopeTile> EcotopeTile;
         [RTTI.Member(4, 0x88)] public Ref<PlacementBase> Placement;
         [RTTI.Member(5, 0x90)] public Array<Ref<WorldDataPlacementMap>> GeneratedMaps;
+        [RTTI.Member(6, 0xA0, true)] public Array<Ref<PlacementBakePrefabCollection>> BakedPlacements;
+        [RTTI.Member(7, 0xB0, true)] public EDensityJobBakeType ShaderBakeType;
     }
 
     [RTTI.Serializable(0x2EC83B61996A3D9A)]
@@ -29820,11 +30113,39 @@ namespace Decima.HZD
     [RTTI.Serializable(0x5707B352A14696EB)]
     public class PlayerParams
     {
+        [RTTI.Member(0, 0x0, true)] public bool Subtitles;
+        [RTTI.Member(1, 0x1, true)] public bool DrawCrosshair;
+        [RTTI.Member(2, 0x2, true)] public uint8 DrawHUD;
+        [RTTI.Member(3, 0x3, true)] public EHUDShowOption HUDMasterSwitch;
+        [RTTI.Member(4, 0x8, true)] public Array<HUDGroupShowOption> HUDGroups;
+        [RTTI.Member(5, 0x18, true)] public bool ShowHeadgear;
+        [RTTI.Member(6, 0x1C, true)] public int FacePaintIndex;
+        [RTTI.Member(7, 0x20, true)] public int FocusModelIndex;
+        [RTTI.Member(8, 0x24, true)] public bool UseBreadcrumbing;
+        [RTTI.Member(9, 0x25, true)] public bool UseBreadcrumbingForWaypoint;
+        [RTTI.Member(10, 0x26, true)] public bool ShowMapLegend;
+        [RTTI.Member(11, 0x28, true)] public Array<GGUUID> HiddenMapIconFilters;
+        [RTTI.Member(12, 0x38, true)] public bool ShowHUDWhenTouchingTouchpad;
+        [RTTI.Member(13, 0x39, true)] public bool CanUseSixaxisMotion;
+        [RTTI.Member(14, 0x40, true)] public ControllerConfig ControllerConfig;
+        [RTTI.Member(15, 0xB0, true)] public bool AimAssistEnabled;
+        [RTTI.Member(16, 0xB1, true)] public bool HorseFollowsRoadsEnabled;
+        [RTTI.Member(17, 0xB2, true)] public EMenuInventorySortOrder MerchantInventorySortOrder;
+        [RTTI.Member(18, 0xB3, true)] public EPlayerResourceInventorySortOrder PlayerResourceInventorySortOrder;
+        [RTTI.Member(19, 0xB4, true)] public EDifficulty Difficulty;
+        [RTTI.Member(20, 0xB8, true)] public int32 LastPlayedGameMode;
+        [RTTI.Member(21, 0xC0, true)] public Array<ControllerMapContent> USKeyboardMapping;
+        [RTTI.Member(22, 0xD0, true)] public Array<ControllerMapContent> FrenchKeyboardMapping;
+        [RTTI.Member(23, 0xE0, true)] public Array<ControllerMapContent> PS4Mapping;
+        [RTTI.Member(24, 0xF0, true)] public Array<ControllerMapContent> XBOXMapping;
+        [RTTI.Member(25, 0x100, true)] public Array<ControllerMapContent> STEAMMapping;
     }
 
     [RTTI.Serializable(0x2338A09D7A170015)]
     public class PlayerProfile : RTTIRefObject
     {
+        [RTTI.Member(0, 0xF8, true)] public SystemParams SystemParams;
+        [RTTI.Member(1, 0x290, true)] public Array<PlayerParams> PlayerParams;
     }
 
     [RTTI.Serializable(0xD39D261760EC21E1)]
@@ -29883,6 +30204,22 @@ namespace Decima.HZD
     [RTTI.Serializable(0x7CC7A51E24AA578)]
     public class PlayerRestoreState : RTTIObject
     {
+        [RTTI.Member(0, 0x10, "StateSaving", true)] public String Name;
+        [RTTI.Member(1, 0x18, "StateSaving", true)] public GGUUID UUID;
+        [RTTI.Member(2, 0x28, "StateSaving", true)] public StreamingRef<EntityResource> EntityResource;
+        [RTTI.Member(3, 0x48, "StateSaving", true)] public WorldTransform WorldTransform;
+        [RTTI.Member(4, 0x88, "StateSaving", true)] public bool RestartOnSpawned;
+        [RTTI.Member(5, 0x90, "StateSaving", true)] public Array<uint8> PropertyData;
+        [RTTI.Member(6, 0xA0, "StateSaving", true)] public Ref<InventoryRestoreState> Inventory;
+        [RTTI.Member(7, 0xA8, "StateSaving", true)] public Array<Ref<MerchantRestoreState>> MerchantsSave;
+        [RTTI.Member(8, 0xB8, "StateSaving", true)] public Ref<RewardManagerRestoreState> RewardManagerSave;
+        [RTTI.Member(9, 0xC0, "StateSaving", true)] public Ref<HealthBucketRestoreState> HealthBucket;
+        [RTTI.Member(10, 0xC8, "StateSaving", true)] public Ref<HorseCallRestoreState> HorseCallRestoreState;
+        [RTTI.Member(11, 0xD0, "StateSaving", true)] public Ref<CharacterProgressionSave> CharacterProgression;
+        [RTTI.Member(12, 0xD8, "StateSaving", true)] public Ref<CraftingSave> CrafingSave;
+        [RTTI.Member(13, 0xE0, "StateSaving", true)] public Ref<ContextualSpeechSave> ContextualSpeechSave;
+        [RTTI.Member(14, 0xE8, "StateSaving", true)] public Ref<HUDRestoreState> HUDRestoreState;
+        [RTTI.Member(15, 0xF0, "StateSaving", true)] public StreamingRef<HumanoidBodyVariant> BodyVariant;
     }
 
     [RTTI.Serializable(0xD5DCB46BD9D53802)]
@@ -30246,6 +30583,7 @@ namespace Decima.HZD
     public class PrefabBaseInstance : ParentWorldNode
     {
         [RTTI.Member(0, 0x70, "General")] public Array<PrefabObjectOverrides> Overrides;
+        [RTTI.Member(1, 0x98, "General", true)] public GGUUID OriginalUUID;
     }
 
     [RTTI.Serializable(0x170A6DB0CCD35089)]
@@ -30560,6 +30898,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0x41FC62A6BF66B788)]
     public class PropertyContainer
     {
+        [RTTI.Member(0, 0x8, "StateSaving", true)] public Ptr<PropertyContainerResource> Resource;
+        [RTTI.Member(1, 0x10, "StateSaving", true)] public PropertyContainerData Data;
     }
 
     [RTTI.Serializable(0xCBC0371334E8B207)]
@@ -30986,6 +31326,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x4FA5E8B82BCA09A0)]
     public class QuestItemComponent : EntityComponent
     {
+        [RTTI.Member(0, 0x58, "StateSave", true)] public GGUUID QuestUUID;
     }
 
     [RTTI.Serializable(0x4E3D3F55F5AFE843)]
@@ -31084,6 +31425,11 @@ namespace Decima.HZD
     [RTTI.Serializable(0x8C26D94E566AEE61)]
     public class QuestObjectiveSave : RTTIObject
     {
+        [RTTI.Member(0, 0x10, "StateSaving", true)] public WString StatusText;
+        [RTTI.Member(1, 0x18, "StateSaving", true)] public float StatusValue;
+        [RTTI.Member(2, 0x20, "StateSaving", true)] public Array<GGUUID> UUIDs;
+        [RTTI.Member(3, 0x30, "StateSaving", true)] public Array<int> Values;
+        [RTTI.Member(4, 0x40, "StateSaving", true)] public int TimeStamp;
     }
 
     [RTTI.Serializable(0x5E501D5746BE3AF8)]
@@ -31140,6 +31486,15 @@ namespace Decima.HZD
     [RTTI.Serializable(0x3B616D6260E90151)]
     public class QuestSave : RTTIObject
     {
+        [RTTI.Member(0, 0x10, "StateSaving", true)] public GGUUID QuestResourceUUID;
+        [RTTI.Member(1, 0x20, "StateSaving", true)] public EQuestState State;
+        [RTTI.Member(2, 0x24, "StateSaving", true)] public bool Tracked;
+        [RTTI.Member(3, 0x25, "StateSaving", true)] public bool TrackingEnabled;
+        [RTTI.Member(4, 0x26, "StateSaving", true)] public EQuestRunState RunState;
+        [RTTI.Member(5, 0x28, "StateSaving", true)] public int StartTime;
+        [RTTI.Member(6, 0x2C, "StateSaving", true)] public int LastProgressTime;
+        [RTTI.Member(7, 0x30, "StateSaving", true)] public bool RewindCounter;
+        [RTTI.Member(8, 0x58, "StateSaving", true)] public int Version;
     }
 
     [RTTI.Serializable(0x572FFE2229081FD2)]
@@ -31183,11 +31538,17 @@ namespace Decima.HZD
     [RTTI.Serializable(0x85E7DE0D8178BE5C)]
     public class QuestSectionUpdateQueue : RTTIObject
     {
+        [RTTI.Member(0, 0x50, "StateSave", true)] public Array<GGUUID> AddedQuestSections_Completion;
+        [RTTI.Member(1, 0x60, "StateSave", true)] public Array<GGUUID> AddedQuestSections_Block;
     }
 
     [RTTI.Serializable(0x8856458E7579B20F)]
     public class QuestSystem : RTTIObject
     {
+        [RTTI.Member(0, 0x38, "StateSaving", true)] public Ptr<Story> Story;
+        [RTTI.Member(1, 0x40, "StateSaving", true)] public Ptr<QuestSectionUpdateQueue> UpdateQueue;
+        [RTTI.Member(2, 0x48, "StateSaving", true)] public Ptr<DynamicQuestManager> DynamicQuestManager;
+        [RTTI.Member(3, 0x60, "StateSaving", true)] public Array<GGUUID> TrackedQuestHistory;
     }
 
     [RTTI.Serializable(0xA3BEF2B6072CDC70)]
@@ -31623,10 +31984,15 @@ namespace Decima.HZD
     [RTTI.Serializable(0x96C53EF50E874D62)]
     public class RegularSkinnedMeshResourceBase : SkinnedMeshResource
     {
-        [RTTI.Member(0, 0x90, "Lighting")] public DrawFlags DrawFlags;
-        [RTTI.Member(1, 0x94, "Skinning")] public ESkinningDeformerType DeformerType;
-        [RTTI.Member(2, 0x98, "Skinning")] public Ref<SkinnedMeshBoneBindings> SkinnedMeshBoneBindings;
-        [RTTI.Member(3, 0xA0, "Skinning")] public Ref<SkinnedMeshBoneBoundingBoxes> SkinnedMeshBoneBoundingBoxes;
+        [RTTI.Member(0, 0x0, "Lighting", true)] public EShadowCull ShadowCullMode;
+        [RTTI.Member(1, 0x0, "Lighting", true)] public EViewLayer ViewLayer;
+        [RTTI.Member(2, 0x0, "Lighting", true)] public bool CastShadows;
+        [RTTI.Member(3, 0x0, "Lighting", true)] public bool CastDynamicShadows;
+        [RTTI.Member(4, 0x0, "Lighting", true)] public EDrawPartType RenderType;
+        [RTTI.Member(5, 0x90, "Lighting")] public DrawFlags DrawFlags;
+        [RTTI.Member(6, 0x94, "Skinning")] public ESkinningDeformerType DeformerType;
+        [RTTI.Member(7, 0x98, "Skinning")] public Ref<SkinnedMeshBoneBindings> SkinnedMeshBoneBindings;
+        [RTTI.Member(8, 0xA0, "Skinning")] public Ref<SkinnedMeshBoneBoundingBoxes> SkinnedMeshBoneBoundingBoxes;
     }
 
     [RTTI.Serializable(0x451DBFC72F454971)]
@@ -31878,9 +32244,19 @@ namespace Decima.HZD
     [RTTI.Serializable(0x72869318817B0B97)]
     public class RenderTechniqueState
     {
-        [RTTI.Member(0, 0x0, "General")] public uint16 PackedData;
-        [RTTI.Member(1, 0x2, "General")] public HalfFloat PackedDepthBias;
-        [RTTI.Member(2, 0x4, "General")] public uint32 PackedColorMask;
+        [RTTI.Member(0, 0x0, "General", true)] public bool HasAlphaTest;
+        [RTTI.Member(1, 0x0, "General", true)] public bool EnableDepthClamp;
+        [RTTI.Member(2, 0x0, "General", true)] public uint32 ColorMask;
+        [RTTI.Member(3, 0x0, "General")] public uint16 PackedData;
+        [RTTI.Member(4, 0x0, "General", true)] public EAlphaDepth DepthTestFunc;
+        [RTTI.Member(5, 0x0, "General", true)] public float DepthBias;
+        [RTTI.Member(6, 0x0, "General", true)] public bool WriteDepth;
+        [RTTI.Member(7, 0x0, "General", true)] public bool Wireframe;
+        [RTTI.Member(8, 0x0, "General", true)] public ELayerOperation BlendMode;
+        [RTTI.Member(9, 0x0, "General", true)] public ECull CullMode;
+        [RTTI.Member(10, 0x0, "General", true)] public bool UseStencil;
+        [RTTI.Member(11, 0x2, "General")] public HalfFloat PackedDepthBias;
+        [RTTI.Member(12, 0x4, "General")] public uint32 PackedColorMask;
     }
 
     [RTTI.Serializable(0xCB56261CAB46329F)]
@@ -32114,6 +32490,9 @@ namespace Decima.HZD
     [RTTI.Serializable(0xDCB13D20171DF91C)]
     public class RewardBonusRestoreState : RTTIObject
     {
+        [RTTI.Member(0, 0x28, "StateSaving", true)] public GGUUID RewardUUID;
+        [RTTI.Member(1, 0x38, "StateSaving", true)] public float Probability;
+        [RTTI.Member(2, 0x3C, "StateSaving", true)] public int RollBufferCount;
     }
 
     [RTTI.Serializable(0x61F86C24082B1AE8)]
@@ -32156,6 +32535,10 @@ namespace Decima.HZD
     [RTTI.Serializable(0x6EB73AF078CD9447)]
     public class RewardManagerRestoreState : RTTIObject
     {
+        [RTTI.Member(0, 0x28, "StateSaving", true)] public Array<Ref<LootContainerRestoreState>> LootContainerStates;
+        [RTTI.Member(1, 0x38, "StateSaving", true)] public Array<Ref<RewardBonusRestoreState>> RewardBonusStates;
+        [RTTI.Member(2, 0x48, "StateSaving", true)] public uint RewardComponentSeed;
+        [RTTI.Member(3, 0x4C, "StateSaving", true)] public uint LootPackageSeed;
     }
 
     [RTTI.Serializable(0xD7C86A01F71C50E5)]
@@ -32800,6 +33183,11 @@ namespace Decima.HZD
     [RTTI.Serializable(0x3AE672EAD07A0FA7)]
     public class SPStatistics : StateObject
     {
+        [RTTI.Member(0, 0x0, true)] public int GameStatistics;
+        [RTTI.Member(1, 0xC, true)] public int PlayerStatistics_0;
+        [RTTI.Member(2, 0x10, true)] public int PlayerStatistics_1;
+        [RTTI.Member(3, 0x18, true)] public Array<String> EntityStatClasses;
+        [RTTI.Member(4, 0x28, true)] public Array<EntityStatistic> EntityStatistics;
     }
 
     [RTTI.Serializable(0x196468A4AE1E221B)]
@@ -33240,6 +33628,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0x2D171B14B16F707)]
     public class ScriptGameGlobal
     {
+        [RTTI.Member(0, 0x0, true)] public String Name;
+        [RTTI.Member(1, 0x8, true)] public float Value;
     }
 
     [RTTI.Serializable(0xE231D5411AFA6F5)]
@@ -33250,11 +33640,22 @@ namespace Decima.HZD
     [RTTI.Serializable(0xFF31526A1FED56D7)]
     public class ScriptMessage : RTTIRefObject
     {
+        [RTTI.Member(0, 0x28, "StateSaving", true)] public String ID;
+        [RTTI.Member(1, 0x30, "StateSaving", true)] public Ptr<RTTIObject> Sender;
+        [RTTI.Member(2, 0x38, "StateSaving", true)] public String SenderName;
+        [RTTI.Member(3, 0x40, "StateSaving", true)] public String SenderType;
+        [RTTI.Member(4, 0x48, "StateSaving", true)] public Ptr<RTTIObject> Object;
+        [RTTI.Member(5, 0x50, "StateSaving", true)] public String ObjectName;
+        [RTTI.Member(6, 0x58, "StateSaving", true)] public String ObjectType;
+        [RTTI.Member(7, 0x60, "StateSaving", true)] public String CustomData;
     }
 
     [RTTI.Serializable(0x5757296D86AF4E58)]
     public class ScriptMessageQueue : CoreObject
     {
+        [RTTI.Member(0, 0x30, "StateSaving", true)] public Array<Ref<ScriptMessage>> Messages;
+        [RTTI.Member(1, 0x40, "StateSaving", true)] public Array<Ref<ScriptMessage>> NewMessages;
+        [RTTI.Member(2, 0x50, "StateSaving", true)] public Array<Ref<DelayedScriptMessage>> DelayedMessages;
     }
 
     [RTTI.Serializable(0xE33C05B63006748F)]
@@ -33623,6 +34024,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x6E0167E5EB50F194)]
     public class SequenceComponent : EntityComponent
     {
+        [RTTI.Member(0, 0x58, "Sequence", true)] public Ptr<Sequence> Sequence;
     }
 
     [RTTI.Serializable(0x6DD1C13EE7758CC3)]
@@ -34993,6 +35395,7 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x28)] public Array<OrientationHelper> Helpers;
         [RTTI.Member(1, 0x38)] public Array<uint> NameHashes;
+        [RTTI.Member(2, 0x48, true)] public Array<Ref<SkeletonHelpers>> ReferencedHelpers;
     }
 
     [RTTI.Serializable(0xC388D632C2C36510)]
@@ -35410,16 +35813,21 @@ namespace Decima.HZD
         [RTTI.Member(1, 0x24, "Filtering")] public float TemporalFilterFactor;
         [RTTI.Member(2, 0x28, "Precipitation")] public float SnowRefill;
         [RTTI.Member(3, 0x2C, "Deformation")] public int WorldSize;
-        [RTTI.Member(4, 0x34, "Interaction")] public float InteractionAreaFactor;
-        [RTTI.Member(5, 0x38, "Interaction")] public int MaxNumObjects;
-        [RTTI.Member(6, 0x44, "Interaction")] public float PixelJitterFactor;
-        [RTTI.Member(7, 0x48, "Interaction")] public float NonUniformExponent;
-        [RTTI.Member(8, 0x50, "Interaction")] public Array<ActiveSnowInteractionRegion> ActiveWorldRegions;
+        [RTTI.Member(4, 0x30, "Interaction", true)] public float LodDistance;
+        [RTTI.Member(5, 0x34, "Interaction")] public float InteractionAreaFactor;
+        [RTTI.Member(6, 0x38, "Interaction")] public int MaxNumObjects;
+        [RTTI.Member(7, 0x3C, "Deformation", true)] public int DeformationTextureResolution;
+        [RTTI.Member(8, 0x40, "Interaction", true)] public int InteractionTextureResolution;
+        [RTTI.Member(9, 0x44, "Interaction")] public float PixelJitterFactor;
+        [RTTI.Member(10, 0x48, "Interaction")] public float NonUniformExponent;
+        [RTTI.Member(11, 0x50, "Interaction")] public Array<ActiveSnowInteractionRegion> ActiveWorldRegions;
     }
 
     [RTTI.Serializable(0x645E95E67F9FB99D)]
     public class SocketedModificationItemRestoreState : RTTIObject
     {
+        [RTTI.Member(0, 0x28, "StateSaving", true)] public StreamingRef<EntityResource> ItemResource;
+        [RTTI.Member(1, 0x48, "StateSaving", true)] public Array<StatModification> Modifications;
     }
 
     [RTTI.Serializable(0xFAD61D654F166B52)]
@@ -36103,6 +36511,7 @@ namespace Decima.HZD
         [RTTI.Member(15, 0x108, "Logic")] public Ref<CurveResource> AppearancePositionScoreOverDistance;
         [RTTI.Member(16, 0x130, "Logic")] public Ref<ConditionResource> SpawnCondition;
         [RTTI.Member(17, 0x140, "Logic")] public Ref<GraphProgramResource> SceneScript;
+        [RTTI.Member(18, 0x150, "Logic", true)] public GGUUID OriginalUUID;
     }
 
     [RTTI.Serializable(0xD9A67B7355712BB5)]
@@ -36437,6 +36846,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0x27C9E16EDA623743)]
     public class StatModification : RTTIObject
     {
+        [RTTI.Member(0, 0x10, "StateSaving", true)] public int Rating;
+        [RTTI.Member(1, 0x18, "StateSaving", true)] public Ref<StatModificationTypeResource> Type;
     }
 
     [RTTI.Serializable(0xA7484DA64F7EB4A5)]
@@ -36530,27 +36941,37 @@ namespace Decima.HZD
     [RTTI.Serializable(0x3B945C8073AA4A01)]
     public class StaticMeshInstance : GeometryObject
     {
-        [RTTI.Member(0, 0xC0, "General")] public String Name;
-        [RTTI.Member(1, 0xC8, "General")] public Ref<MeshResourceBase> Resource;
-        [RTTI.Member(2, 0xD0, "General")] public MeshHierachyShaderOverrides MeshShaderOverrides;
-        [RTTI.Member(3, 0x180, "General")] public int MeshInstanceTreeSize;
-        [RTTI.Member(4, 0x184, "General")] public int MeshInstanceTreeDrawableSetupSize;
-        [RTTI.Member(5, 0x1A0, "General")] public Array<uint8> RangedStreamingData;
-        [RTTI.Member(6, 0x1B0, "General")] public uint16 RangedStreamingObjectCount;
-        [RTTI.Member(7, 0x1B2, "General")] public uint16 StreamingResourceCount;
-        [RTTI.Member(8, 0x1B4, "General")] public uint16 StreamingHandleCount;
-        [RTTI.Member(9, 0x1C8, "General")] public uint32 PackedData;
+        [RTTI.Member(0, 0x0, "General", true)] public bool IgnoreLodDistanceMultiplier;
+        [RTTI.Member(1, 0x0, "General", true)] public bool EnableShadows;
+        [RTTI.Member(2, 0x0, "General", true)] public bool EnableSunShadows;
+        [RTTI.Member(3, 0x0, "General", true)] public float EcotopeEffectOverrideValue;
+        [RTTI.Member(4, 0x0, "General", true)] public int8 EcotopeIndexOverrideValue;
+        [RTTI.Member(5, 0xC0, "General")] public String Name;
+        [RTTI.Member(6, 0xC8, "General")] public Ref<MeshResourceBase> Resource;
+        [RTTI.Member(7, 0xD0, "General")] public MeshHierachyShaderOverrides MeshShaderOverrides;
+        [RTTI.Member(8, 0x180, "General")] public int MeshInstanceTreeSize;
+        [RTTI.Member(9, 0x184, "General")] public int MeshInstanceTreeDrawableSetupSize;
+        [RTTI.Member(10, 0x1A0, "General")] public Array<uint8> RangedStreamingData;
+        [RTTI.Member(11, 0x1B0, "General")] public uint16 RangedStreamingObjectCount;
+        [RTTI.Member(12, 0x1B2, "General")] public uint16 StreamingResourceCount;
+        [RTTI.Member(13, 0x1B4, "General")] public uint16 StreamingHandleCount;
+        [RTTI.Member(14, 0x1C8, "General")] public uint32 PackedData;
     }
 
     [RTTI.Serializable(0xEC711C9C5BD00A78)]
     public class StaticMeshResource : MeshResourceBase
     {
-        [RTTI.Member(0, 0x80, "Lighting")] public DrawFlags DrawFlags;
-        [RTTI.Member(1, 0x88, "MeshDescription")] public Array<Ref<PrimitiveResource>> Primitives;
-        [RTTI.Member(2, 0xA8, "MeshDescription")] public Array<Ref<RenderEffectResource>> RenderEffects;
-        [RTTI.Member(3, 0xB8, "MeshDescription")] public Ref<SkeletonHelpers> OrientationHelpers;
-        [RTTI.Member(4, 0xC0, "MeshDescription")] public Ref<StaticMeshSimulationInfo> SimulationInfo;
-        [RTTI.Member(5, 0xD0, "Lighting")] public bool SupportsInstanceRendering;
+        [RTTI.Member(0, 0x0, "Lighting", true)] public EDrawPartType RenderType;
+        [RTTI.Member(1, 0x0, "Lighting", true)] public bool CastDynamicShadows;
+        [RTTI.Member(2, 0x0, "Lighting", true)] public bool CastShadows;
+        [RTTI.Member(3, 0x0, "Lighting", true)] public EShadowCull ShadowCullMode;
+        [RTTI.Member(4, 0x0, "Lighting", true)] public EViewLayer ViewLayer;
+        [RTTI.Member(5, 0x80, "Lighting")] public DrawFlags DrawFlags;
+        [RTTI.Member(6, 0x88, "MeshDescription")] public Array<Ref<PrimitiveResource>> Primitives;
+        [RTTI.Member(7, 0xA8, "MeshDescription")] public Array<Ref<RenderEffectResource>> RenderEffects;
+        [RTTI.Member(8, 0xB8, "MeshDescription")] public Ref<SkeletonHelpers> OrientationHelpers;
+        [RTTI.Member(9, 0xC0, "MeshDescription")] public Ref<StaticMeshSimulationInfo> SimulationInfo;
+        [RTTI.Member(10, 0xD0, "Lighting")] public bool SupportsInstanceRendering;
     }
 
     [RTTI.Serializable(0x736AFE97D3999282)]
@@ -36558,13 +36979,15 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x28)] public Array<StaticMeshSimulationModelPoint> ModelPoints;
         [RTTI.Member(1, 0x38)] public Array<StaticMeshSimulationModelLink> ModelLinks;
-        [RTTI.Member(2, 0x58)] public float WeightInertia;
-        [RTTI.Member(3, 0x5C)] public float WeightStiffness;
-        [RTTI.Member(4, 0x60)] public float WeightCollider;
-        [RTTI.Member(5, 0x64)] public float WeightOldOrientation;
-        [RTTI.Member(6, 0x68)] public float WeightTurnToNeighbours;
-        [RTTI.Member(7, 0x6C)] public float WeightMatchOrientation;
-        [RTTI.Member(8, 0x70)] public float Gravity;
+        [RTTI.Member(2, 0x48, true)] public Ref<Skeleton> SimulationSkeleton;
+        [RTTI.Member(3, 0x50, true)] public Ref<SkinnedMeshBoneBindings> SimulationBindings;
+        [RTTI.Member(4, 0x58)] public float WeightInertia;
+        [RTTI.Member(5, 0x5C)] public float WeightStiffness;
+        [RTTI.Member(6, 0x60)] public float WeightCollider;
+        [RTTI.Member(7, 0x64)] public float WeightOldOrientation;
+        [RTTI.Member(8, 0x68)] public float WeightTurnToNeighbours;
+        [RTTI.Member(9, 0x6C)] public float WeightMatchOrientation;
+        [RTTI.Member(10, 0x70)] public float Gravity;
     }
 
     [RTTI.Serializable(0x597F9A8DA554599A)]
@@ -36728,6 +37151,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0xF0BED228EC4DEF71)]
     public class StreamingRefTarget
     {
+        [RTTI.Member(0, 0x8, "General", true)] public String Location;
     }
 
     [RTTI.Serializable(0x7BE3172218BB86EF)]
@@ -36766,6 +37190,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0x119BADFD4A56C7FF)]
     public class StringProperty : StringPropertyBase
     {
+        [RTTI.Member(0, 0x0, "Flags", true)] public bool Replicated;
+        [RTTI.Member(1, 0x0, "Flags", true)] public bool Persistent;
     }
 
     [RTTI.Serializable(0x64C53340B02F6ABB)]
@@ -37042,33 +37468,41 @@ namespace Decima.HZD
     [RTTI.Serializable(0xA948FBD46C88BD67)]
     public class SunLight : Light
     {
-        [RTTI.Member(0, 0x1B0, "Color")] public SunCascadeSettings CascadeSettings0;
-        [RTTI.Member(1, 0x210, "Color")] public SunCascadeSettings CascadeSettings1;
-        [RTTI.Member(2, 0x270, "Color")] public SunCascadeSettings CascadeSettings2;
-        [RTTI.Member(3, 0x2D0, "Color")] public SunCascadeSettings CascadeSettings3;
-        [RTTI.Member(4, 0x330, "Color")] public SunCascadeSettings CascadeSettings4;
-        [RTTI.Member(5, 0x480, "Color")] public SunCascadeSettings CompartmentSettings;
-        [RTTI.Member(6, 0x4E0, "Color")] public SunCascadeSettings CompartmentSettingsSecondary;
+        [RTTI.Member(0, 0x0, "Color", true)] public Vec4 CascadeRanges;
+        [RTTI.Member(1, 0x0, "Color", true)] public Vec4 CascadeDepthBias;
+        [RTTI.Member(2, 0x0, "Color", true)] public Vec4 CascadeFilterRanges;
+        [RTTI.Member(3, 0x0, "Color", true)] public Vec4 ShadowMapSizeThreshold;
+        [RTTI.Member(4, 0x1B0, "Color")] public SunCascadeSettings CascadeSettings0;
+        [RTTI.Member(5, 0x210, "Color")] public SunCascadeSettings CascadeSettings1;
+        [RTTI.Member(6, 0x270, "Color")] public SunCascadeSettings CascadeSettings2;
+        [RTTI.Member(7, 0x2D0, "Color")] public SunCascadeSettings CascadeSettings3;
+        [RTTI.Member(8, 0x330, "Color")] public SunCascadeSettings CascadeSettings4;
+        [RTTI.Member(9, 0x480, "Color")] public SunCascadeSettings CompartmentSettings;
+        [RTTI.Member(10, 0x4E0, "Color")] public SunCascadeSettings CompartmentSettingsSecondary;
     }
 
     [RTTI.Serializable(0x2F7AFFB2B6AC1299)]
     public class SunLightResource : LightResource
     {
-        [RTTI.Member(0, 0x190, "Color")] public int CascadeCount;
-        [RTTI.Member(1, 0x194, "Color")] public SunCascadeResourceSettings CascadeSettings0;
-        [RTTI.Member(2, 0x1F8, "Color")] public SunCascadeResourceSettings CascadeSettings1;
-        [RTTI.Member(3, 0x25C, "Color")] public SunCascadeResourceSettings CascadeSettings2;
-        [RTTI.Member(4, 0x2C0, "Color")] public SunCascadeResourceSettings CascadeSettings3;
-        [RTTI.Member(5, 0x324, "Color")] public SunCascadeResourceSettings CascadeSettings4;
-        [RTTI.Member(6, 0x388, "Color")] public bool EnableCompartmentShadows;
-        [RTTI.Member(7, 0x38C, "Color")] public int CompartmentCount;
-        [RTTI.Member(8, 0x390, "Color")] public SunCascadeResourceSettings CompartmentSettings;
-        [RTTI.Member(9, 0x3F4, "Color")] public SunCascadeResourceSettings CompartmentSettingsSecondary;
-        [RTTI.Member(10, 0x460, "Color")] public Vec3 SecondaryCompartmentEntityDetectionBoxExtents;
-        [RTTI.Member(11, 0x470, "Color")] public Vec3 MaxSecondaryCompartmentShadowBoundingBoxExtents;
-        [RTTI.Member(12, 0x480, "Color")] public bool UseSecondaryCompartmentShadowBoundingBoxLimit;
-        [RTTI.Member(13, 0x488, "Color")] public SunLongDistanceShadowSettings LongDistanceShadowSettings;
-        [RTTI.Member(14, 0x4A0, "Color")] public Ref<Texture> LongDistanceShadowMap;
+        [RTTI.Member(0, 0x0, "Color", true)] public Vec4 ShadowMapSizeThreshold;
+        [RTTI.Member(1, 0x0, "Color", true)] public Vec4 CascadeRanges;
+        [RTTI.Member(2, 0x0, "Color", true)] public Vec4 CascadeFilterRanges;
+        [RTTI.Member(3, 0x0, "Color", true)] public Vec4 CascadeDepthBias;
+        [RTTI.Member(4, 0x190, "Color")] public int CascadeCount;
+        [RTTI.Member(5, 0x194, "Color")] public SunCascadeResourceSettings CascadeSettings0;
+        [RTTI.Member(6, 0x1F8, "Color")] public SunCascadeResourceSettings CascadeSettings1;
+        [RTTI.Member(7, 0x25C, "Color")] public SunCascadeResourceSettings CascadeSettings2;
+        [RTTI.Member(8, 0x2C0, "Color")] public SunCascadeResourceSettings CascadeSettings3;
+        [RTTI.Member(9, 0x324, "Color")] public SunCascadeResourceSettings CascadeSettings4;
+        [RTTI.Member(10, 0x388, "Color")] public bool EnableCompartmentShadows;
+        [RTTI.Member(11, 0x38C, "Color")] public int CompartmentCount;
+        [RTTI.Member(12, 0x390, "Color")] public SunCascadeResourceSettings CompartmentSettings;
+        [RTTI.Member(13, 0x3F4, "Color")] public SunCascadeResourceSettings CompartmentSettingsSecondary;
+        [RTTI.Member(14, 0x460, "Color")] public Vec3 SecondaryCompartmentEntityDetectionBoxExtents;
+        [RTTI.Member(15, 0x470, "Color")] public Vec3 MaxSecondaryCompartmentShadowBoundingBoxExtents;
+        [RTTI.Member(16, 0x480, "Color")] public bool UseSecondaryCompartmentShadowBoundingBoxLimit;
+        [RTTI.Member(17, 0x488, "Color")] public SunLongDistanceShadowSettings LongDistanceShadowSettings;
+        [RTTI.Member(18, 0x4A0, "Color")] public Ref<Texture> LongDistanceShadowMap;
     }
 
     [RTTI.Serializable(0x546679A70E4042D2)]
@@ -37211,6 +37645,76 @@ namespace Decima.HZD
     [RTTI.Serializable(0x2C2E2FB7B9D988D5)]
     public class SystemParams
     {
+        [RTTI.Member(0, 0x0, true)] public ELanguage SpokenLanguage;
+        [RTTI.Member(1, 0x4, true)] public ELanguage WrittenLanguage;
+        [RTTI.Member(2, 0x8, true)] public bool EULAEnabled;
+        [RTTI.Member(3, 0x9, true)] public bool TelemetryEnabled;
+        [RTTI.Member(4, 0x10, true)] public Array<ScriptGameGlobal> GameGlobals;
+        [RTTI.Member(5, 0x20, true)] public float MusicVolume;
+        [RTTI.Member(6, 0x24, true)] public float SpeechVolume;
+        [RTTI.Member(7, 0x28, true)] public float SFXVolume;
+        [RTTI.Member(8, 0x2C, true)] public bool WantsSystemBGM;
+        [RTTI.Member(9, 0x30, true)] public int SoundMasterType;
+        [RTTI.Member(10, 0x38, true)] public WString AudioOutputDeviceID;
+        [RTTI.Member(11, 0x40, true)] public float GammaCorrection;
+        [RTTI.Member(12, 0x44, true)] public int ColorSchemeID;
+        [RTTI.Member(13, 0x48, true)] public bool StereoscopicEnabled;
+        [RTTI.Member(14, 0x4C, true)] public float Stereoscopic3DScreenFactor;
+        [RTTI.Member(15, 0x50, true)] public float StereoscopicDepthMultiplier;
+        [RTTI.Member(16, 0x54, true)] public float StereoscopicFPDepthMultiplier;
+        [RTTI.Member(17, 0x58, true)] public int Resolution;
+        [RTTI.Member(18, 0x5C, true)] public int FieldOfView;
+        [RTTI.Member(19, 0x60, true)] public int AdaptiveFPS;
+        [RTTI.Member(20, 0x64, true)] public int FPSLimit;
+        [RTTI.Member(21, 0x68, true)] public int FPSLimitIndex;
+        [RTTI.Member(22, 0x6C, true)] public float RenderScale;
+        [RTTI.Member(23, 0x70, true)] public int AspectRatioIndex;
+        [RTTI.Member(24, 0x74, true)] public int ScreenMode;
+        [RTTI.Member(25, 0x78, true)] public int Monitor;
+        [RTTI.Member(26, 0x7C, true)] public int RefreshRate;
+        [RTTI.Member(27, 0x80, true)] public int RefreshRateIndex;
+        [RTTI.Member(28, 0x84, true)] public bool VsyncEnabled;
+        [RTTI.Member(29, 0x88, true)] public int HDRBrightness;
+        [RTTI.Member(30, 0x8C, true)] public int HDRWhitepoint;
+        [RTTI.Member(31, 0x90, true)] public bool HUDToEdgesEnabled;
+        [RTTI.Member(32, 0x94, true)] public float HUDScale;
+        [RTTI.Member(33, 0x98, true)] public IVec2 DesiredResolution;
+        [RTTI.Member(34, 0xA0, true)] public IVec2 DesiredWindowSize;
+        [RTTI.Member(35, 0xA8, true)] public EGraphicsPreset Preset;
+        [RTTI.Member(36, 0xAC, true)] public int Texture;
+        [RTTI.Member(37, 0xB0, true)] public int Model;
+        [RTTI.Member(38, 0xB4, true)] public int AnisotropicFilter;
+        [RTTI.Member(39, 0xBC, true)] public int Shadow;
+        [RTTI.Member(40, 0xC0, true)] public int Clouds;
+        [RTTI.Member(41, 0xC4, true)] public int PPAA;
+        [RTTI.Member(42, 0xC8, true)] public bool MotionBlurEnabled;
+        [RTTI.Member(43, 0xCC, true)] public int AmbientOcclusion;
+        [RTTI.Member(44, 0xD0, true)] public int Reflection;
+        [RTTI.Member(45, 0xD8, true)] public String DisplayImage;
+        [RTTI.Member(46, 0xE0, true)] public int PhotoModeOverlayIndex;
+        [RTTI.Member(47, 0xE4, true)] public int PhotoModeBorderIndex;
+        [RTTI.Member(48, 0xE8, true)] public int PhotoModeSmallLogoIndex;
+        [RTTI.Member(49, 0xEC, true)] public int PhotoModeColorizeIndex;
+        [RTTI.Member(50, 0xF0, true)] public float PhotoModeColorizeIntensity;
+        [RTTI.Member(51, 0xF4, true)] public bool PhotoModeVignetteEnabled;
+        [RTTI.Member(52, 0xF8, true)] public int PhotoModeVignetteSizeIndex;
+        [RTTI.Member(53, 0xFC, true)] public float PhotoModeVignetteIntensity;
+        [RTTI.Member(54, 0x100, true)] public bool PhotoModeDepthOfFieldEnabled;
+        [RTTI.Member(55, 0x104, true)] public int PhotoModeDepthOfFieldFocusDistance;
+        [RTTI.Member(56, 0x108, true)] public float PhotoModeDepthOfFieldAperture;
+        [RTTI.Member(57, 0x10C, true)] public bool PhotoModeGrainEnabled;
+        [RTTI.Member(58, 0x110, true)] public float PhotoModeGrainIntensity;
+        [RTTI.Member(59, 0x114, true)] public float PhotoModeOverExposure;
+        [RTTI.Member(60, 0x118, true)] public bool PhotoModeGreetingsEnabled;
+        [RTTI.Member(61, 0x120, true)] public SPStatistics SPStatistics;
+        [RTTI.Member(62, 0x158, true)] public bool GameFinished;
+        [RTTI.Member(63, 0x15C, true)] public EDifficulty HighestCompletedNewGamePlusDifficulty;
+        [RTTI.Member(64, 0x160, true)] public String ContinueGameState;
+        [RTTI.Member(65, 0x168, true)] public String ContinueGameSettings;
+        [RTTI.Member(66, 0x170, true)] public int ViewportIndex;
+        [RTTI.Member(67, 0x178, true)] public Array<String> AuthenticatedPlaylistID;
+        [RTTI.Member(68, 0x18C, true)] public EPS4ProRenderMode PS4ProRenderMode;
+        [RTTI.Member(69, 0x190, true)] public bool HDREnabled;
     }
 
     [RTTI.Serializable(0x105214CAB14D8AF9)]
@@ -39249,18 +39753,19 @@ namespace Decima.HZD
     [RTTI.Serializable(0x8EAEDD40CB4CD8AE)]
     public class TwoJointIkBendConfig
     {
-        [RTTI.Member(0, 0x10)] public Mat44 BaseBindMatrix;
-        [RTTI.Member(1, 0x50)] public Vec3 FixedVtx0;
-        [RTTI.Member(2, 0x60)] public Vec3 FixedVtx1;
-        [RTTI.Member(3, 0x70)] public Vec3 FixedVtx2;
-        [RTTI.Member(4, 0x80)] public Vec3 FixedVtx3;
-        [RTTI.Member(5, 0x90)] public int16 JointIdx0;
-        [RTTI.Member(6, 0x92)] public int16 JointIdx1;
-        [RTTI.Member(7, 0x94)] public int16 JointIdx2;
-        [RTTI.Member(8, 0x98)] public float RelativeUpperExtent;
-        [RTTI.Member(9, 0x9C)] public float LowerBendRatio;
-        [RTTI.Member(10, 0xA0)] public float MotionDamping;
-        [RTTI.Member(11, 0xA4)] public float Stiffness;
+        [RTTI.Member(0, 0x0, true)] public String EndJoint;
+        [RTTI.Member(1, 0x10)] public Mat44 BaseBindMatrix;
+        [RTTI.Member(2, 0x50)] public Vec3 FixedVtx0;
+        [RTTI.Member(3, 0x60)] public Vec3 FixedVtx1;
+        [RTTI.Member(4, 0x70)] public Vec3 FixedVtx2;
+        [RTTI.Member(5, 0x80)] public Vec3 FixedVtx3;
+        [RTTI.Member(6, 0x90)] public int16 JointIdx0;
+        [RTTI.Member(7, 0x92)] public int16 JointIdx1;
+        [RTTI.Member(8, 0x94)] public int16 JointIdx2;
+        [RTTI.Member(9, 0x98)] public float RelativeUpperExtent;
+        [RTTI.Member(10, 0x9C)] public float LowerBendRatio;
+        [RTTI.Member(11, 0xA0)] public float MotionDamping;
+        [RTTI.Member(12, 0xA4)] public float Stiffness;
     }
 
     [RTTI.Serializable(0x3885AF02C86A71F0)]
@@ -39384,6 +39889,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0x24EEAB700C50B1D3)]
     public class UseLocation : CoreObject
     {
+        [RTTI.Member(0, 0x60, "Private", true)] public Ptr<UseLocationResource> Resource;
+        [RTTI.Member(1, 0x68, "Private", true)] public Ptr<Entity> Entity;
     }
 
     [RTTI.Serializable(0x4441FA418BE132B5)]
@@ -39801,8 +40308,13 @@ namespace Decima.HZD
         [RTTI.Member(5, 0x58, "Logic")] public Ref<VaultSurfaceDetectionSettings> SwimmingVaultSurfaceDetectionSettings;
         [RTTI.Member(6, 0x60, "Logic")] public TagPropertyLink DisallowVaultableTagProperty;
         [RTTI.Member(7, 0x68, "Logic")] public bool AllowVaultingOverDeadControlledEntities;
-        [RTTI.Member(8, 0x78, "Logic")] public Array<MaterialType> DisallowMaterials;
-        [RTTI.Member(9, 0x8B, "Logic")] public bool AllowChainedVaults;
+        [RTTI.Member(8, 0x6C, "Logic", true)] public float MaximumVaultOverDistanceJog;
+        [RTTI.Member(9, 0x70, "Logic", true)] public float MaximumVaultOverDistanceSprint;
+        [RTTI.Member(10, 0x78, "Logic")] public Array<MaterialType> DisallowMaterials;
+        [RTTI.Member(11, 0x88, "Logic", true)] public bool HasVerticalObstacleTransitions;
+        [RTTI.Member(12, 0x89, "Logic", true)] public bool HasHorizontalObstacleTransitions;
+        [RTTI.Member(13, 0x8A, "Logic", true)] public bool HasParkourableObstacleTransitions;
+        [RTTI.Member(14, 0x8B, "Logic")] public bool AllowChainedVaults;
     }
 
     [RTTI.Serializable(0xF4648A55975DD022)]
@@ -39858,6 +40370,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0x40C0A682D38DA690)]
     public class Vec3Property : Vec3PropertyBase
     {
+        [RTTI.Member(0, 0x0, "Flags", true)] public bool Replicated;
+        [RTTI.Member(1, 0x0, "Flags", true)] public bool Persistent;
     }
 
     [RTTI.Serializable(0x90E1D4F93D4496D5)]
@@ -40647,6 +41161,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0xE8EAD34905343F08)]
     public class WeaponRestoreState : ItemRestoreState
     {
+        [RTTI.Member(0, 0xB0, "StateSaving", true)] public int HeavyAmmoAmount;
     }
 
     [RTTI.Serializable(0xD5FAD53DD588ED5F)]
@@ -40956,8 +41471,9 @@ namespace Decima.HZD
     [RTTI.Serializable(0xEEEA1EBEBDA3D8B2)]
     public class WorldDataEcotopeIndexMapEntry : WorldDataGeneratedMapEntry
     {
-        [RTTI.Member(0, 0x40, "InputData")] public Ref<WorldDataMap> EcotopeABCDMap;
-        [RTTI.Member(1, 0x48, "InputData")] public Ref<WorldDataMap> EcotopeEFGHMap;
+        [RTTI.Member(0, 0x38, "InputData", true)] public Ref<WorldDataEcotopeIndexTable> EcotopeIndexMapping;
+        [RTTI.Member(1, 0x40, "InputData")] public Ref<WorldDataMap> EcotopeABCDMap;
+        [RTTI.Member(2, 0x48, "InputData")] public Ref<WorldDataMap> EcotopeEFGHMap;
     }
 
     [RTTI.Serializable(0xE10D08F90D56AA3A)]
@@ -41218,6 +41734,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0xEE48361B489F504B)]
     public class WorldPositionProperty : WorldPositionPropertyBase
     {
+        [RTTI.Member(0, 0x0, "Flags", true)] public bool Replicated;
+        [RTTI.Member(1, 0x0, "Flags", true)] public bool Persistent;
     }
 
     [RTTI.Serializable(0x2B2D2B68AB246D3D)]
