@@ -6,7 +6,7 @@ namespace Decima
     static partial class RTTI
     {
         /// <summary>
-        /// Describes a class, struct, or enum that is serialized as Core binary data
+        /// Describes a class, struct, or enum that is serialized as Core binary data using reflection
         /// </summary>
         [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum, AllowMultiple = false, Inherited = false)]
         public class SerializableAttribute : Attribute

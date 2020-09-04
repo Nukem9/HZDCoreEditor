@@ -7,7 +7,10 @@ using Utility;
 
 namespace Decima
 {
-    // Idx - unused file type. They're present in HZD's data directory but aren't loaded.
+    /// <summary>
+    /// Class for handling packfile index files (".idx"). They're present in HZD's data directory but aren't
+    /// loaded by the game.
+    /// </summary>
     public class PackfileIndex
     {
         public const uint HardcodedMagic = 0x10203040;

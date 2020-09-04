@@ -35,9 +35,17 @@ namespace Decima
             }
         }
 
+        /// <summary>
+        /// Data structure that comes directly after the packfile header.
+        /// </summary>
+        /// <remarks>
+        /// <see cref="PathHash"/> is calculated from the MurmurHash3 of the file path with
+        /// the null terminator included. Entries must be sorted from smallest to largest based
+        /// on <see cref="PathHash"/>.
+        /// </remarks>
         public class FileEntry
         {
-            public ulong PathHash; // MurmurHash3 of the file path w/ null terminator (NOTE: These must be sorted from smallest to largest)
+            public ulong PathHash;
             public ulong DecompressedOffset;
             public uint DecompressedSize;
 
@@ -54,9 +62,16 @@ namespace Decima
             }
         }
 
+        /// <summary>
+        /// Data structure that comes directly after the <see cref="FileEntry"/> array. This describes
+        /// chunks of compressed data.
+        /// </summary>
+        /// <remarks>
+        /// Entries must be sorted from smallest to largest based on <see cref="DecompressedOffset"/>.
+        /// </remarks>
         public class BlockEntry
         {
-            public ulong DecompressedOffset; // NOTE: These must be sorted from smallest to largest
+            public ulong DecompressedOffset;
             public uint DecompressedSize;
             public ulong Offset;
             public uint Size;
