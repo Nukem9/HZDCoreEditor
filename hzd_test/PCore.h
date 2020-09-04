@@ -14,12 +14,14 @@ public:
 
 	String(const char *Value)
 	{
-		((void(__fastcall *)(String *, const char *))(g_ModuleBase + 0x10E330))(this, Value);
+		const static auto addr = XUtil::FindPattern(g_ModuleBase, g_ModuleSize, "48 89 5C 24 10 48 89 6C 24 18 48 89 7C 24 20 41 56 48 83 EC 20 33 FF 48 8B EA 48 89 39 4C 8B F1 48 C7 C3 FF FF FF FF 48 FF C3");
+		((void(__fastcall *)(String *, const char *))(addr))(this, Value);
 	}
 
 	~String()
 	{
-		((void(__fastcall *)(String *))(g_ModuleBase + 0x10EA60))(this);
+		const static auto addr = XUtil::FindPattern(g_ModuleBase, g_ModuleSize, "40 53 48 83 EC 20 48 8B 19 48 85 DB 74 37 48 83 C3 F0");
+		((void(__fastcall *)(String *))(addr))(this);
 	}
 
 	const char *c_str() const

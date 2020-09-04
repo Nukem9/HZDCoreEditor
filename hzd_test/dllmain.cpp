@@ -17,7 +17,8 @@ void hk_RunCoreLibraryInitializer(const String& ImportFunctionName, CoreLibraryI
 
 	//TerminateProcess(GetCurrentProcess(), 0);
 
-	((void(__fastcall *)(const String&, CoreLibraryInitializerPfn))(g_ModuleBase + 0xF8E00))(ImportFunctionName, Callback);
+	const static auto addr = XUtil::FindPattern(g_ModuleBase, g_ModuleSize, "48 8B C2 4C 8D 05 ? ? ? ? 48 8D 15 ? ? ? ? 48 8D 0D ? ? ? ? 48 FF E0");
+	((void(__fastcall *)(const String&, CoreLibraryInitializerPfn))(addr))(ImportFunctionName, Callback);
 }
 
 void RegisterTypeInfoRecursively(const RTTI *Info)
@@ -55,11 +56,11 @@ void RegisterTypeInfoRecursively(const RTTI *Info)
 
 void __fastcall hk_sub_1402EE8D0(__int64 a1, RTTI **TypeInfoList)
 {
-	RegisterTypeInfoRecursively((RTTI *)(g_ModuleBase + 0x2320868));// EDataBufferFormat
-	RegisterTypeInfoRecursively((RTTI *)(g_ModuleBase + 0x2320468));// EIndexFormat
-	RegisterTypeInfoRecursively((RTTI *)(g_ModuleBase + 0x23209C0));// ERenderBufferFormat
-	RegisterTypeInfoRecursively((RTTI *)(g_ModuleBase + 0x231FF78));// ETextureType
-	RegisterTypeInfoRecursively((RTTI *)(g_ModuleBase + 0x23205B8));// EVertexElementStorageType
+	RegisterTypeInfoRecursively((RTTI *)(g_ModuleBase + 0x2328898));// EDataBufferFormat
+	RegisterTypeInfoRecursively((RTTI *)(g_ModuleBase + 0x2328528));// EIndexFormat
+	RegisterTypeInfoRecursively((RTTI *)(g_ModuleBase + 0x23289A8));// ERenderBufferFormat
+	RegisterTypeInfoRecursively((RTTI *)(g_ModuleBase + 0x2327FF0));// ETextureType
+	RegisterTypeInfoRecursively((RTTI *)(g_ModuleBase + 0x2328678));// EVertexElementStorageType
 
 	for (auto i = TypeInfoList; *i != nullptr; i++)
 	{
@@ -69,79 +70,9 @@ void __fastcall hk_sub_1402EE8D0(__int64 a1, RTTI **TypeInfoList)
 	}
 }
 
-thread_local bool IsSpecialClass;
-FILE *f = fopen("C:\\datalog.txt", "w");
-
-__int64 (__fastcall * RTTIBinaryReader__BinaryReaderStream__ReadClass)(__int64 a1, const RTTI *Type, __int64 a3);
-__int64 __fastcall hk_RTTIBinaryReader__BinaryReaderStream__ReadClass(__int64 a1, const RTTI *Type, __int64 a3)
+bool hk_sub_14021BBD0()
 {
-	__int64& readOffset = *(__int64 *)(a1 + 0x20);
-	__int64 oldOffset = readOffset;
-
-	if (Type == (RTTI *)(g_ModuleBase + 0x26C6CA0))
-		IsSpecialClass = true;
-
-	if (IsSpecialClass)
-	{
-		fprintf(f, "Begin reading class type %s -- %llX\n", Type->GetSymbolName().c_str(), readOffset);
-
-		if (Type == (RTTI *)(g_ModuleBase + 0x267ACA0))
-			__debugbreak();
-	}
-
-	auto result = RTTIBinaryReader__BinaryReaderStream__ReadClass(a1, Type, a3);
-
-	if (IsSpecialClass)
-	{
-		fprintf(f, "End reading class type %s -- %llX (%llX)\n", Type->GetSymbolName().c_str(), readOffset, readOffset - oldOffset);
-	}
-
-	if (IsSpecialClass && Type == (RTTI *)(g_ModuleBase + 0x26C6CA0))
-		IsSpecialClass = false;
-
-	return result;
-}
-
-__int64(__fastcall * RTTIBinaryReader__BinaryReaderStream__ReadPrimitive)(__int64 a1, const RTTI *Type, __int64 a3);
-__int64 __fastcall hk_RTTIBinaryReader__BinaryReaderStream__ReadPrimitive(__int64 a1, const RTTI *Type, __int64 a3)
-{
-	__int64& readOffset = *(__int64 *)(a1 + 0x20);
-	__int64 oldOffset = readOffset;
-
-	if (IsSpecialClass)
-	{
-		fprintf(f, "Read primitive %s -- %llX\n", Type->GetSymbolName().c_str(), readOffset);
-	}
-
-	auto result = RTTIBinaryReader__BinaryReaderStream__ReadPrimitive(a1, Type, a3);
-
-	if (IsSpecialClass)
-	{
-		fprintf(f, "End read primitive %s -- %llX (%llX)\n", Type->GetSymbolName().c_str(), readOffset, readOffset - oldOffset);
-	}
-
-	return result;
-}
-
-__int64(__fastcall * RTTIBinaryReader__BinaryReaderStream__ReadContainer)(__int64 a1, const RTTI *Type, __int64 a3);
-__int64 __fastcall hk_RTTIBinaryReader__BinaryReaderStream__ReadContainer(__int64 a1, const RTTI *Type, __int64 a3)
-{
-	__int64& readOffset = *(__int64 *)(a1 + 0x20);
-	__int64 oldOffset = readOffset;
-
-	if (IsSpecialClass)
-	{
-		fprintf(f, "Read container %s -- %llX\n", Type->GetSymbolName().c_str(), readOffset);
-	}
-
-	auto result = RTTIBinaryReader__BinaryReaderStream__ReadContainer(a1, Type, a3);
-
-	if (IsSpecialClass)
-	{
-		fprintf(f, "End read container %s -- %llX (%llX)\n", Type->GetSymbolName().c_str(), readOffset, readOffset - oldOffset);
-	}
-
-	return result;
+	return true;
 }
 
 void ApplyHooks()
@@ -165,12 +96,14 @@ void ApplyHooks()
 
 	MSRTTI::Initialize();
 
-	XUtil::DetourCall(g_ModuleBase + 0x87E3D3, &hk_RunCoreLibraryInitializer);
-	XUtil::DetourJump(g_ModuleBase + 0x2EF010, &hk_sub_1402EE8D0);
+	// Disable shader compilation on startup
+	XUtil::DetourJump(XUtil::FindPattern(g_ModuleBase, g_ModuleSize, "48 89 5C 24 18 48 89 74 24 20 57 48 81 EC 90 00 00 00 48 8D"), &hk_sub_14021BBD0);
 
-	//*(uintptr_t *)&RTTIBinaryReader__BinaryReaderStream__ReadClass = Detours::X64::DetourFunction(g_ModuleBase + 0x48C7C0, (uintptr_t)&hk_RTTIBinaryReader__BinaryReaderStream__ReadClass);
-	//*(uintptr_t *)&RTTIBinaryReader__BinaryReaderStream__ReadPrimitive = Detours::X64::DetourFunction(g_ModuleBase + 0x48BBC0, (uintptr_t)&hk_RTTIBinaryReader__BinaryReaderStream__ReadPrimitive);
-	//*(uintptr_t *)&RTTIBinaryReader__BinaryReaderStream__ReadContainer = Detours::X64::DetourFunction(g_ModuleBase + 0x48C390, (uintptr_t)&hk_RTTIBinaryReader__BinaryReaderStream__ReadContainer);
+	// Intercept all type info registrations
+	XUtil::DetourJump(XUtil::FindPattern(g_ModuleBase, g_ModuleSize, "48 89 5C 24 08 57 48 83 EC 20 48 8B DA 48 8B F9 48 8B 12 48 85 D2 74 1E 0F 1F 84 00 00 00 00 00"), &hk_sub_1402EE8D0);
+
+	// Intercept fullgame load
+	XUtil::DetourCall(XUtil::FindPattern(g_ModuleBase, g_ModuleSize, "E8 ? ? ? ? 48 8D 4C 24 58 B3 01 E8 ? ? ? ? 48 8D 4C 24 50 E8"), &hk_RunCoreLibraryInitializer);
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpReserved)
