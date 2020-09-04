@@ -43,7 +43,7 @@ namespace Decima
                     long currentFilePos = reader.BaseStream.Position;
                     long expectedFilePos = currentFilePos + entry.ChunkSize;
 
-                    if ((ulong)(currentFilePos + entry.ChunkSize) > reader.StreamLength())
+                    if ((currentFilePos + entry.ChunkSize) > reader.StreamRemainder())
                         throw new InvalidDataException($"Invalid chunk size {entry.ChunkSize} was supplied in Core file at offset {currentFilePos:X}");
 
                     // TODO: This needs to be part of Entry

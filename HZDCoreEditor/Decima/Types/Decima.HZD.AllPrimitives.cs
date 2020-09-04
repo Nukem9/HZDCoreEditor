@@ -110,7 +110,7 @@ namespace Decima.HZD
         {
             uint itemCount = reader.ReadUInt32();
 
-            if (itemCount > reader.StreamLength())
+            if (itemCount > reader.StreamRemainder())
                 throw new Exception("Array item count is out of bounds");
 
             if (typeof(T) == typeof(byte))
@@ -167,6 +167,9 @@ namespace Decima.HZD
         {
             uint itemCount = reader.ReadUInt32();
 
+            if (itemCount > reader.StreamRemainder())
+                throw new Exception("HashMap item count is out of bounds");
+
             for (uint i = 0; i < itemCount; i++)
             {
                 uint entryHash = reader.ReadUInt32();
@@ -190,7 +193,7 @@ namespace Decima.HZD
         {
             uint itemCount = reader.ReadUInt32();
 
-            if (itemCount > reader.StreamLength())
+            if (itemCount > reader.StreamRemainder())
                 throw new Exception("HashSet item count is out of bounds");
 
             for (uint i = 0; i < itemCount; i++)
@@ -220,7 +223,7 @@ namespace Decima.HZD
         {
             uint readLength = reader.ReadUInt32() * sizeof(byte);
 
-            if (readLength > reader.StreamLength())
+            if (readLength > reader.StreamRemainder())
                 throw new Exception("String is out of bounds");
 
             if (readLength > 0)
@@ -255,7 +258,7 @@ namespace Decima.HZD
         {
             uint readLength = reader.ReadUInt32() * sizeof(ushort);
 
-            if (readLength > reader.StreamLength())
+            if (readLength > reader.StreamRemainder())
                 throw new Exception("String is out of bounds");
 
             if (readLength > 0)
