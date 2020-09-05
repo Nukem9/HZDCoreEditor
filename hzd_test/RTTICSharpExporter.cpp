@@ -31,7 +31,9 @@ namespace RTTICSharpExporter
 		const char *separatedTypes[] =
 		{
 			"DataBufferResource",
+			"GGUUID",
 			"IndexArrayResource",
+			"IVec2",
 			"LocalizedSimpleSoundResource",
 			"LocalizedTextResource",
 			"MorphemeAnimationResource",
@@ -43,6 +45,7 @@ namespace RTTICSharpExporter
 			"Texture",
 			"TextureList",
 			"UITexture",
+			"Vec2",
 			"VertexArrayResource",
 			"WaveResource",
 		};

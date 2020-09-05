@@ -12,6 +12,115 @@ namespace Decima
         private static readonly Dictionary<ulong, Type> TypeIdLookupMap;
         private static readonly Dictionary<Type, OrderedFieldInfo> TypeFieldInfoCache;
 
+        public class VirtualRTTIList
+        {
+            public readonly Type ClassType;
+            public IReadOnlyCollection<Entry> Members { get { return _members.AsReadOnly(); } }
+            private readonly List<Entry> _members;
+            public readonly List<OrderedFieldInfo.Entry> _resolvedMembers;
+
+            public struct Entry
+            {
+                public string Type;
+                public string Category;
+                public string Name;
+            }
+
+            public VirtualRTTIList(string className, int capacity = 0)
+            {
+                ClassType = GetTypeByName(className);
+                _members = new List<Entry>(capacity);
+                _resolvedMembers = new List<OrderedFieldInfo.Entry>();
+            }
+
+            public void Add(string type, string category, string name)
+            {
+                _members.Add(new Entry
+                {
+                    Type = type,
+                    Category = category,
+                    Name = name,
+                });
+            }
+
+            public void ResolveMembersToFieldInfo()
+            {
+                var info = GetOrderedFieldsForClass(ClassType);
+
+                foreach (var virtualMember in _members)
+                {
+                    bool found = false;
+
+                    foreach (var member in info.Members)
+                    {
+                        var memberAttr = member.Field.GetCustomAttribute<MemberAttribute>();
+
+                        // Classes can have duplicated member names under different categories. In order to support this in C#,
+                        // I had to prefix some variables with "_" or "CATEGORY_". This is a workaround for those names.
+                        if (memberAttr.Category != virtualMember.Category)
+                            continue;
+
+                        if (!FuzzyMatchName(member.Field.Name, virtualMember.Name, memberAttr.Category))
+                            continue;
+
+                        // Similar situation with type names...
+                        if (!FuzzyMatchTypeName(member.Field.FieldType.Name, virtualMember.Type))
+                            continue;
+
+                        if (found)
+                            throw new Exception("Member was found twice...?");
+
+                        found = true;
+                        _resolvedMembers.Add(member);
+                    }
+
+                    if (!found)
+                        System.Diagnostics.Debugger.Break();
+                }
+
+                if (_resolvedMembers.Count != _members.Count)
+                    throw new Exception("A member went unresolved");
+            }
+
+            private static bool FuzzyMatchName(string csName, string rttiName, string category)
+            {
+                if (csName == rttiName)
+                    return true;
+
+                //if (csName[0] == '_' && csName.Substring(1) == rttiName)
+                //    return true;
+
+                if (csName.Replace($"{category}_", "") == rttiName)
+                    return true;
+
+                return false;
+            }
+
+            private static bool FuzzyMatchTypeName(string csName, string rttiName)
+            {
+                if (csName == rttiName)
+                    return true;
+
+                if (csName == typeof(bool).Name && rttiName == "bool")
+                    return true;
+                else if (csName == typeof(float).Name && rttiName == "float")
+                    return true;
+                else if (csName == typeof(int).Name && rttiName == "int")
+                    return true;
+                else if (csName == typeof(int).Name && rttiName == "int32")
+                    return true;
+                else if (csName == typeof(sbyte).Name && rttiName == "int8")
+                    return true;
+                else if (csName == typeof(byte).Name && rttiName == "uint8")
+                    return true;
+
+                if (csName.StartsWith("Array") && rttiName.StartsWith("Array_"))
+                    return true;
+
+                return false;
+            }
+        }
+
         public class OrderedFieldInfo
         {
             public struct Entry
@@ -51,6 +160,15 @@ namespace Decima
                 if (attribute != null)
                     TypeIdLookupMap.Add(attribute.BinaryTypeId, classType);
             }
+        }
+
+        public static Type GetTypeByName(string name)
+        {
+            var type = TypeIdLookupMap.Values
+                .Where(x => x.Name == name)
+                .Single();
+
+            return type;
         }
 
         public static Type GetTypeById(ulong typeId)

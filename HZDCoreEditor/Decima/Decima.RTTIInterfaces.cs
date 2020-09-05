@@ -67,7 +67,17 @@ namespace Decima
         }
 
         /// <summary>
-        /// Interface used for classes that have data appended after the serialized structure (Equivalent to MsgReadBinary)
+        /// Interface identical to <see cref="ISerializable"/> but used exclusively for save game data
+        /// </summary>
+        public interface ISaveSerializable
+        {
+            public void DeserializeStateObject(SaveDataSerializer serializer) => throw new NotImplementedException();
+
+            public void SerializeStateObject(SaveDataSerializer serializer) => throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Interface used for classes that have data appended after the structure fields (Equivalent to MsgReadBinary)
         /// </summary>
         public interface IExtraBinaryDataCallback
         {
@@ -76,6 +86,17 @@ namespace Decima
             }
 
             public void SerializeExtraData(BinaryWriter writer) => throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Interface identical to <see cref="IExtraBinaryDataCallback"/> but used exclusively for save game data
+        public interface ISaveExtraBinaryDataCallback
+        {
+            public void DeserializeStateObjectExtraData(SaveDataSerializer serializer)
+            {
+            }
+
+            public void SerializeStateObjectExtraData(SaveDataSerializer serializer) => throw new NotImplementedException();
         }
     }
 }

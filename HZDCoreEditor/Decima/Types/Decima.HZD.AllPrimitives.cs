@@ -104,7 +104,7 @@ namespace Decima.HZD
     /// UInt32 (+0) Item count
     /// T[]    (+4) (Optional) Array items
     /// </remarks>
-    public class Array<T> : List<T>, RTTI.ISerializable
+    public class Array<T> : List<T>, RTTI.ISerializable, RTTI.ISaveSerializable
     {
         public void Deserialize(BinaryReader reader)
         {
@@ -127,6 +127,18 @@ namespace Decima.HZD
 
                     Add(newObj);
                 }
+            }
+        }
+
+        public void DeserializeStateObject(SaveDataSerializer serializer)
+        {
+            int itemCount = serializer.ReadVariableLengthOffset();
+
+            for (int i = 0; i < itemCount; i++)
+            {
+                var newObj = serializer.DeserializeType<T>();
+
+                Add(newObj);
             }
         }
     }
@@ -214,7 +226,7 @@ namespace Decima.HZD
     /// UInt8[] (+8) String data
     /// </remarks>
     [DebuggerDisplay("{Value}")]
-    public class String : RTTI.ISerializable
+    public class String : RTTI.ISerializable, RTTI.ISaveSerializable
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public string Value;
@@ -234,6 +246,11 @@ namespace Decima.HZD
                 Value = Encoding.UTF8.GetString(data);
             }
         }
+
+        public void DeserializeStateObject(SaveDataSerializer serializer)
+        {
+            Value = serializer.ReadIndexedString();
+        }
     }
 
     /// <summary>
@@ -249,7 +266,7 @@ namespace Decima.HZD
     /// UInt16[] (+4) String data
     /// </remarks>
     [DebuggerDisplay("{Value}")]
-    public class WString : RTTI.ISerializable
+    public class WString : RTTI.ISerializable, RTTI.ISaveSerializable
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public string Value;
@@ -267,6 +284,11 @@ namespace Decima.HZD
 
                 Value = Encoding.Unicode.GetString(data);
             }
+        }
+
+        public void DeserializeStateObject(SaveDataSerializer serializer)
+        {
+            Value = serializer.ReadIndexedWideString();
         }
     }
 
