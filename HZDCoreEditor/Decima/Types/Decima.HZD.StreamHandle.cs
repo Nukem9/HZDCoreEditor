@@ -6,21 +6,23 @@ namespace Decima.HZD
 {
     public class StreamHandle
     {
+        public string ResourcePath;
+        public ulong Unknown1;
+        public ulong Unknown2;
+
         public static StreamHandle FromData(BinaryReader reader)
         {
+            var x = new StreamHandle();
             uint stringLength = reader.ReadUInt32();
 
             if (stringLength > 0)
-            {
-                // Stream resource file path
-                var str = Encoding.UTF8.GetString(reader.ReadBytesStrict(stringLength));
-            }
+                x.ResourcePath = Encoding.UTF8.GetString(reader.ReadBytesStrict(stringLength));
 
             // Likely file offsets or length
-            var unknown1 = reader.ReadUInt64();
-            var unknown2 = reader.ReadUInt64();
+            x.Unknown1 = reader.ReadUInt64();
+            x.Unknown2 = reader.ReadUInt64();
 
-            return new StreamHandle();
+            return x;
         }
     }
 }
