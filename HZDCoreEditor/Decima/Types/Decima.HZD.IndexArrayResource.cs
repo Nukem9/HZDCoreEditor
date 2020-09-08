@@ -7,6 +7,7 @@ namespace Decima.HZD
     public class IndexArrayResource : BaseResource, RTTI.IExtraBinaryDataCallback
     {
         public uint Flags;
+        public GGUUID ResourceGUID;
         public HwBuffer Buffer;
 
         public void DeserializeExtraData(BinaryReader reader)
@@ -22,9 +23,7 @@ namespace Decima.HZD
                 if (isStreaming != 0 && isStreaming != 1)
                     throw new InvalidDataException("Must be true or false");
 
-                // Likely GUID or at least an identifier
-                var resourceGUID = reader.ReadBytesStrict(16);
-
+                ResourceGUID = GGUUID.FromData(reader);
                 Buffer = HwBuffer.FromIndexData(reader, format, isStreaming != 0, indexElementCount);
             }
         }

@@ -18,7 +18,7 @@ namespace Decima.HZD
     public class Ref<T> : RTTI.ISerializable
     {
         public Types Type;
-        public Guid Handle;
+        public GGUUID GUID;
         public Filename ExternalFile;
 
         public enum Types
@@ -42,12 +42,12 @@ namespace Decima.HZD
 
                 case Types.LocalCoreUUID:
                 case Types.UUIDRef:
-                    Handle = new Guid(reader.ReadBytesStrict(16));
+                    GUID = GGUUID.FromData(reader);
                     break;
 
                 case Types.ExternalCoreUUID:
                 case Types.StreamingRef:
-                    Handle = new Guid(reader.ReadBytesStrict(16));
+                    GUID = GGUUID.FromData(reader);
 
                     // This could be a regular String instance - no way to determine the type
                     ExternalFile = new Filename();
@@ -71,11 +71,11 @@ namespace Decima.HZD
 
                     case Types.LocalCoreUUID:
                     case Types.UUIDRef:
-                        return $"Ref<Local> {{{Handle}}}";
+                        return $"Ref<Local> {{{GUID}}}";
 
                     case Types.ExternalCoreUUID:
                     case Types.StreamingRef:
-                        return $"Ref<Extern> {{{ExternalFile.Value}, {Handle}}}";
+                        return $"Ref<Extern> {{{ExternalFile.Value}, {GUID}}}";
                 }
 
                 throw new NotImplementedException();

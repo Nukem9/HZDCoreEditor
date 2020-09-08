@@ -6,6 +6,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0xBBAB0E0254767A94)]
     public class VertexArrayResource : BaseResource, RTTI.IExtraBinaryDataCallback
     {
+        public GGUUID[] ResourceGUIDs;
         public HwBuffer[] Buffers;
 
         public void DeserializeExtraData(BinaryReader reader)
@@ -14,6 +15,7 @@ namespace Decima.HZD
             uint vertexStreamCount = reader.ReadUInt32();
             bool isStreaming = reader.ReadBooleanStrict();
 
+            ResourceGUIDs = new GGUUID[vertexStreamCount];
             Buffers = new HwBuffer[vertexStreamCount];
 
             for (uint i = 0; i < Buffers.Length; i++)
@@ -28,9 +30,7 @@ namespace Decima.HZD
                     var packedData = reader.ReadBytesStrict(4);
                 }
 
-                // Likely GUID or at least an identifier
-                var resourceGUID = reader.ReadBytesStrict(16);
-
+                ResourceGUIDs[i] = GGUUID.FromData(reader);
                 Buffers[i] = HwBuffer.FromVertexData(reader, isStreaming, vertexByteStride, vertexElementCount);
             }
         }

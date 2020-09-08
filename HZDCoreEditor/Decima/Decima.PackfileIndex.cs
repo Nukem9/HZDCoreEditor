@@ -22,7 +22,7 @@ namespace Decima
         {
             public string FilePath;
             public ulong PathHash;
-            public byte[] Guid;
+            public HZD.GGUUID GUID;
 
             public static IndexEntry FromData(BinaryReader reader)
             {
@@ -39,7 +39,7 @@ namespace Decima
                     x.PathHash = hash[0];
                 }
 
-                x.Guid = reader.ReadBytesStrict(16);
+                x.GUID = HZD.GGUUID.FromData(reader);
                 var unknown = reader.ReadBytesStrict(16);
 
                 return x;
