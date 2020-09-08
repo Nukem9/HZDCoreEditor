@@ -171,9 +171,9 @@ namespace RTTIIDAExporter
 		*/
 	}
 
-	void ExportGameSymbolRTTI(FILE * F)
+	void ExportGameSymbolRTTI(FILE *F)
 	{
-		auto& gameSymbolGroups = *reinterpret_cast<Array<ExportedSymbolGroup *> *>(g_ModuleBase + 0x2A27AF0);
+		auto& gameSymbolGroups = *reinterpret_cast<Array<ExportedSymbolGroup *> *>(g_ModuleBase + 0x2A14B70);
 
 		for (auto& group : gameSymbolGroups)
 		{

@@ -56,11 +56,11 @@ void RegisterTypeInfoRecursively(const RTTI *Info)
 
 void __fastcall hk_sub_1402EE8D0(__int64 a1, RTTI **TypeInfoList)
 {
-	RegisterTypeInfoRecursively((RTTI *)(g_ModuleBase + 0x2328898));// EDataBufferFormat
-	RegisterTypeInfoRecursively((RTTI *)(g_ModuleBase + 0x2328528));// EIndexFormat
-	RegisterTypeInfoRecursively((RTTI *)(g_ModuleBase + 0x23289A8));// ERenderBufferFormat
-	RegisterTypeInfoRecursively((RTTI *)(g_ModuleBase + 0x2327FF0));// ETextureType
-	RegisterTypeInfoRecursively((RTTI *)(g_ModuleBase + 0x2328678));// EVertexElementStorageType
+	RegisterTypeInfoRecursively((RTTI *)(g_ModuleBase + 0x23158E0));// EDataBufferFormat
+	RegisterTypeInfoRecursively((RTTI *)(g_ModuleBase + 0x2315528));// EIndexFormat
+	RegisterTypeInfoRecursively((RTTI *)(g_ModuleBase + 0x23159F0));// ERenderBufferFormat
+	RegisterTypeInfoRecursively((RTTI *)(g_ModuleBase + 0x2314FF0));// ETextureType
+	RegisterTypeInfoRecursively((RTTI *)(g_ModuleBase + 0x2315678));// EVertexElementStorageType
 
 	for (auto i = TypeInfoList; *i != nullptr; i++)
 	{
