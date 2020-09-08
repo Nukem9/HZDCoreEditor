@@ -15,7 +15,7 @@ namespace Decima.HZD
     /// String (+17) (Optional) External resource path
     /// </remarks>
     [DebuggerDisplay("{DebugDisplay,nq}")]
-    public class Ref<T> : RTTI.ISerializable
+    public class Ref<T> : RTTI.ISerializable, RTTI.ISaveSerializable
     {
         public Types Type;
         public GGUUID GUID;
@@ -95,7 +95,7 @@ namespace Decima.HZD
     {
     }
 
-    public class WeakPtr<T> : RTTI.ISerializable
+    public class WeakPtr<T> : RTTI.ISerializable, RTTI.ISaveSerializable
     {
     }
 
@@ -173,7 +173,7 @@ namespace Decima.HZD
     /// <UInt32, T>[] (+4) (Optional) Array items
     /// </remarks>
     [DebuggerDisplay("{Value}")]
-    public class HashMap<T> : Dictionary<uint, T>, RTTI.ISerializable
+    public class HashMap<T> : Dictionary<uint, T>, RTTI.ISerializable, RTTI.ISaveSerializable
     {
         public void Deserialize(BinaryReader reader)
         {
@@ -199,7 +199,7 @@ namespace Decima.HZD
     /// <UInt32, T>[] (+4) (Optional) Array items
     /// </remarks>
     [DebuggerDisplay("{Value}")]
-    public class HashSet<T> : Dictionary<uint, T>, RTTI.ISerializable
+    public class HashSet<T> : Dictionary<uint, T>, RTTI.ISerializable, RTTI.ISaveSerializable
     {
         public void Deserialize(BinaryReader reader)
         {
@@ -293,7 +293,7 @@ namespace Decima.HZD
     }
 
     [DebuggerDisplay("{Value}")]
-    public class uint128 : RTTI.ISerializable
+    public class uint128 : RTTI.ISerializable, RTTI.ISaveSerializable
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public BigInteger Value;

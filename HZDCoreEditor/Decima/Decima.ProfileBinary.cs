@@ -32,7 +32,7 @@ namespace Decima
                     SavedDataChunkLength = reader.ReadUInt32();
                     HeaderEndOffset = (uint)reader.BaseStream.Position;
 
-                    BaseSerializer = new SaveDataSerializer(reader);
+                    BaseSerializer = new SaveDataSerializer(reader, 0);
                     BaseSerializer.ReadStringsAndRTTIFields(HeaderEndOffset, SavedDataChunkLength);
 
                     // Handle game version

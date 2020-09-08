@@ -1,5 +1,6 @@
 ﻿using BinaryStreamExtensions;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -11,13 +12,17 @@ namespace Decima
     {
         public BinaryReader Reader { get; private set; }
 
-        private uint FileDataVersion;
+        public uint FileDataVersion { private set; get; }
         private uint FileDataOffset;
         private uint FileDataLength;
 
-        private StringTableContainer[] StringTables;
-        private string[] WideStringTable;
-        private byte[] GUIDTable;
+        private StringTableContainer[] StringTablePool; // Strings/char
+        private string[] WideStringPool;                // Wide strings/wchar_t
+        private HZD.GGUUID[][] GUIDPool;                // GUIDs/16 bytes
+
+        private Dictionary<int, object> LocalSaveObjects;       // Object instances created from this save data (HashMap<int, RTTIObject>)
+        private Dictionary<int, HZD.GGUUID> GameDataObjects;    // Object instances stored in the game files (StreamingManager)
+
         private RTTIContainer[] RTTIContainers;
 
         private class RTTIContainer
@@ -113,9 +118,10 @@ namespace Decima
             }
         }
 
-        public SaveDataSerializer(BinaryReader reader)
+        public SaveDataSerializer(BinaryReader reader, uint version)
         {
             Reader = reader;
+            FileDataVersion = version;
         }
 
         public void ReadStringsAndRTTIFields(uint fileDataOffset, uint fileDataLength)
@@ -132,61 +138,72 @@ namespace Decima
             {
                 // UTF-8 strings
                 int stringTableCount = ReadVariableLengthOffset();
-                StringTables = new StringTableContainer[stringTableCount];
+                StringTablePool = new StringTableContainer[stringTableCount];
 
-                for (int i = 0; i < StringTables.Length; i++)
-                    StringTables[i] = StringTableContainer.FromData(this);
+                for (int i = 0; i < StringTablePool.Length; i++)
+                    StringTablePool[i] = StringTableContainer.FromData(this);
 
                 // UTF-16 strings
                 int wideStringCount = ReadVariableLengthOffset();
-                WideStringTable = new string[wideStringCount];
+                WideStringPool = new string[wideStringCount];
 
-                for (int i = 0; i < WideStringTable.Length; i++)
+                for (int i = 0; i < WideStringPool.Length; i++)
                 {
                     int stringLength = ReadVariableLengthOffset() * sizeof(short);
 
-                    WideStringTable[i] = Encoding.Unicode.GetString(Reader.ReadBytesStrict(stringLength));
+                    WideStringPool[i] = Encoding.Unicode.GetString(Reader.ReadBytesStrict(stringLength));
                 }
 
                 // GUIDs
-                if (FileDataVersion > 26)
+                if (FileDataVersion >= 26)
                 {
-                    int guidCount = ReadVariableLengthOffset();
+                    GUIDPool = new HZD.GGUUID[256][];
 
-                    if (guidCount > 0)
-                        GUIDTable = Reader.ReadBytesStrict(guidCount * 16);
+                    for (int i = 0; i < GUIDPool.Length; i++)
+                    {
+                        int guidCount = ReadVariableLengthOffset();
+                        GUIDPool[i] = new HZD.GGUUID[guidCount];
+
+                        for (int j = 0; j < guidCount; j++)
+                            GUIDPool[i][j] = HZD.GGUUID.FromData(Reader);
+                    }
                 }
             }
 
             // Serialized types
             Reader.BaseStream.Position = FileDataOffset + typeDataChunkOffset;
             {
-                // Create basic objects?
-                int counter1 = ReadVariableLengthOffset();
+                // Create basic objects that are immediately registered with the engine
+                int objectInstanceTypeCount = ReadVariableLengthOffset();
+                LocalSaveObjects = new Dictionary<int, object>();
 
-                if (Reader.BaseStream.Position != 0x5C26)
-                    Debugger.Break();
-
-                for (int i = 0; i < counter1; i++)
+                for (int i = 0; i < objectInstanceTypeCount; i++)
                 {
+                    Type objectType = RTTI.GetTypeByName(ReadIndexedString());
+                    int instanceCount = ReadVariableLengthOffset();
+
+                    for (int j = 0; j < instanceCount; j++)
+                    {
+                        int objectId = ReadVariableLengthOffset();
+
+                        LocalSaveObjects.Add(objectId, RTTI.CreateObjectInstance(objectType));
+                    }
                 }
 
-                // Type GUIDs?
-                int counter2 = ReadVariableLengthOffset();
+                // Handles to game data objects
+                int gameDataObjectCount = ReadVariableLengthOffset();
+                GameDataObjects = new Dictionary<int, HZD.GGUUID>();
 
-                if (Reader.BaseStream.Position != 0x5C27)
-                    Debugger.Break();
-
-                for (int i = 0; i < counter2; i++)
+                for (int i = 0; i < gameDataObjectCount; i++)
                 {
+                    int objectId = ReadVariableLengthOffset();
+                    var guid = HZD.GGUUID.FromData(Reader);
+
+                    GameDataObjects.Add(objectId, guid);
                 }
 
                 // RTTI/class member layouts
                 int rttiContainerCount = ReadVariableLengthOffset();
-
-                if (Reader.BaseStream.Position != 0x5C28)
-                    Debugger.Break();
-
                 RTTIContainers = new RTTIContainer[rttiContainerCount];
 
                 for (int i = 0; i < RTTIContainers.Length; i++)
@@ -195,9 +212,6 @@ namespace Decima
                 // Unknown
                 int counter4 = ReadVariableLengthOffset();
 
-                if (Reader.BaseStream.Position != 0x614D)
-                    Debugger.Break();
-
                 for (int i = 0; i < counter4; i++)
                 {
                     string unknown = ReadIndexedString();
@@ -205,6 +219,36 @@ namespace Decima
             }
 
             Reader.BaseStream.Position = FileDataOffset;
+        }
+
+        public object ReadObjectHandle()
+        {
+            int objectId = ReadVariableLengthInt();
+
+            if (objectId == 0)
+                return null;
+
+            if ((objectId & 1) == 0)
+            {
+                var gameDataGUID = GameDataObjects[objectId];
+
+                // Need core files to be loaded in order to resolve this GUID
+                return new object();
+            }
+
+            var localObject = LocalSaveObjects[objectId];
+            byte loadType = Reader.ReadByte();
+
+            if (loadType == 1)
+            {
+                throw new Exception();
+            }
+            else if (loadType == 2)
+            {
+                throw new Exception();
+            }
+
+            throw new Exception($"Unknown load type {loadType}");
         }
 
         public T DeserializeType<T>()
@@ -333,20 +377,40 @@ namespace Decima
             int index = ReadVariableLengthInt();
             int offset = ReadVariableLengthInt();
 
-            if (index < 0 || index >= StringTables.Length)
+            if (index < 0 || index >= StringTablePool.Length)
                 throw new InvalidDataException();
 
-            return StringTables[index].LookupString(offset);
+            return StringTablePool[index].LookupString(offset);
         }
 
         public string ReadIndexedWideString()
         {
             int index = ReadVariableLengthInt();
 
-            if (index < 0 || index >= WideStringTable.Length)
+            if (index < 0 || index >= WideStringPool.Length)
                 throw new InvalidDataException();
 
-            return WideStringTable[index];
+            return WideStringPool[index];
+        }
+
+        public HZD.GGUUID ReadIndexedGUID()
+        {
+            if (FileDataVersion < 26)
+            {
+                // Inline read of 16 bytes
+                return HZD.GGUUID.FromData(Reader);
+            }
+
+            // GUID pool lookup
+            short value = Reader.ReadInt16();
+
+            if (value == -1)
+                return HZD.GGUUID.Empty;
+
+            int index = (value >> 8) & 0xFF;
+            int offset = value & 0xFF;
+
+            return GUIDPool[index][offset];
         }
     }
 }

@@ -113,8 +113,19 @@ namespace Decima
                     return true;
                 else if (csName == typeof(byte).Name && rttiName == "uint8")
                     return true;
+                else if (csName == typeof(uint).Name && rttiName == "uint")
+                    return true;
 
                 if (csName.StartsWith("Array") && rttiName.StartsWith("Array_"))
+                    return true;
+
+                if (csName.StartsWith("Ptr") && rttiName.StartsWith("cptr_"))
+                    return true;
+
+                if (csName.StartsWith("StreamingRef") && rttiName.StartsWith("StreamingRef_"))
+                    return true;
+
+                if (csName.StartsWith("Ref") && rttiName.StartsWith("Ref_"))
                     return true;
 
                 return false;
@@ -252,6 +263,18 @@ namespace Decima
             TypeFieldInfoCache.Add(type, info);
 
             return info;
+        }
+
+        public static object CreateObjectInstance(Type type)
+        {
+            var objectInstance = Activator.CreateInstance(type);
+            var info = GetOrderedFieldsForClass(type);
+
+            // Instantiate bases
+            foreach (var baseClass in info.MIBases)
+                baseClass.SetValue(objectInstance, Activator.CreateInstance(baseClass.FieldType));
+
+            return objectInstance;
         }
 
         public static T DeserializeType<T>(BinaryReader reader)

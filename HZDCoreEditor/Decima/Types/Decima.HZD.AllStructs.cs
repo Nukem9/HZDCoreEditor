@@ -37126,11 +37126,6 @@ namespace Decima.HZD
         [RTTI.Member(0, 0x8, "General", true)] public String Location;
     }
 
-    [RTTI.Serializable(0x7BE3172218BB86EF)]
-    public class StreamingStrategyInstance : RTTIRefObject
-    {
-    }
-
     [RTTI.Serializable(0x63E59CE81CF859F)]
     public class StreamingStrategyResource : Resource
     {
@@ -39352,11 +39347,6 @@ namespace Decima.HZD
     public class TieRopeAction : EntityAction
     {
         [RTTI.Member(0, 0x30, "Logic")] public Ref<RopeManagerComponentResource> RopeManagerComponentResource;
-    }
-
-    [RTTI.Serializable(0x8FB0349003667A31)]
-    public class TileBasedStreamingStrategyInstance : StreamingStrategyInstance
-    {
     }
 
     [RTTI.Serializable(0x58834E044E7D8AA2)]

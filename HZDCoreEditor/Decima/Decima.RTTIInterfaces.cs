@@ -67,8 +67,31 @@ namespace Decima
         }
 
         /// <summary>
-        /// Interface identical to <see cref="ISerializable"/> but used exclusively for save game data
+        /// Interface identical to <see cref="ISerializable"/>, but used exclusively for save game data
         /// </summary>
+        /// <remarks>
+        /// Ref<>, StreamingRef<>, UUIDRef<>, Ptr<>, WeakPtr<>, Array<>, HashTable<>, HashSet<>, String, WString
+        /// int, uint, int32, uint32
+        /// GGUUID
+        /// RGBAColor
+        /// Mat44
+        /// WorldTransform
+        /// Vec2
+        /// Vec3
+        /// Vec4
+        /// Quat
+        /// Mat34
+        /// RotMatrix
+        /// WorldPosition
+        /// IVec2
+        /// IVec3
+        /// FArc
+        /// FSize
+        /// IRect
+        /// FRect
+        /// FRGBColor
+        /// FRGBAColor
+        /// </remarks>
         public interface ISaveSerializable
         {
             public void DeserializeStateObject(SaveDataSerializer serializer) => throw new NotImplementedException();
@@ -89,7 +112,19 @@ namespace Decima
         }
 
         /// <summary>
-        /// Interface identical to <see cref="IExtraBinaryDataCallback"/> but used exclusively for save game data
+        /// Interface identical to <see cref="IExtraBinaryDataCallback"/>, but used exclusively for save game data
+        /// </summary>
+        /// <remarks>
+        /// CountdownTimerManager
+        /// FactDatabase
+        /// GeneratedQuestSave
+        /// MenuBadgeManager
+        /// QuestSystem
+        /// ScriptMessageQueue
+        /// StateObject
+        /// Story
+        /// WorldEncounterManager
+        /// </remarks>
         public interface ISaveExtraBinaryDataCallback
         {
             public void DeserializeStateObjectExtraData(SaveDataSerializer serializer)
