@@ -19,7 +19,8 @@ namespace Decima.HZD
     {
         public Types Type;
         public GGUUID GUID;
-        public Filename ExternalFile;
+        public String ExternalFile;
+        private object ResolvedObject;
 
         public enum Types
         {
@@ -49,14 +50,24 @@ namespace Decima.HZD
                 case Types.StreamingRef:
                     GUID = GGUUID.FromData(reader);
 
-                    // This could be a regular String instance - no way to determine the type
-                    ExternalFile = new Filename();
+                    // This could be a Filename instance - no way to determine the type
+                    ExternalFile = new String();
                     ExternalFile.Deserialize(reader);
                     break;
 
                 default:
                     throw new NotImplementedException();
             }
+        }
+
+        public virtual void DeserializeStateObject(SaveDataSerializer serializer)
+        {
+            ResolvedObject = serializer.ReadObjectHandle();
+
+            if (ResolvedObject != null)
+                Type = Types.LocalCoreUUID;// Not entirely correct...
+            else
+                Type = Types.Null;
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -85,6 +96,15 @@ namespace Decima.HZD
 
     public class StreamingRef<T> : Ref<T>
     {
+        public override void DeserializeStateObject(SaveDataSerializer serializer)
+        {
+            Type = Types.StreamingRef;
+            ExternalFile = serializer.ReadIndexedString();
+            GUID = serializer.ReadIndexedGUID();
+
+            // if not zero, calls something into the streaming manager
+            byte unknown = serializer.Reader.ReadByte();
+        }
     }
 
     public class UUIDRef<T> : Ref<T>
@@ -106,6 +126,14 @@ namespace Decima.HZD
     /// </remarks>
     public class Array<T> : List<T>, RTTI.ISerializable, RTTI.ISaveSerializable
     {
+        public Array() : base()
+        {
+        }
+
+        public Array(int capacity) : base(capacity)
+        {
+        }
+
         public void Deserialize(BinaryReader reader)
         {
             uint itemCount = reader.ReadUInt32();
@@ -231,6 +259,15 @@ namespace Decima.HZD
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public string Value;
 
+        public String()
+        {
+        }
+
+        public String(string value)
+        {
+            Value = value;
+        }
+
         public void Deserialize(BinaryReader reader)
         {
             uint readLength = reader.ReadUInt32() * sizeof(byte);
@@ -250,6 +287,17 @@ namespace Decima.HZD
         public void DeserializeStateObject(SaveDataSerializer serializer)
         {
             Value = serializer.ReadIndexedString();
+        }
+
+        // TODO: Implicit operators might not be the best idea
+        public static implicit operator string(String value)
+        {
+            return value.Value;
+        }
+
+        public static implicit operator String(string value)
+        {
+            return new String(value);
         }
     }
 

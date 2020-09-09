@@ -8211,11 +8211,6 @@ namespace Decima.HZD
         [RTTI.Member(7, 0x90, "Logic")] public Ref<PlayerNotificationResource> OverrideNotification;
     }
 
-    [RTTI.Serializable(0xD1174F74B8550B27)]
-    public class CollectableManager : RTTIObject
-    {
-    }
-
     [RTTI.Serializable(0xF515CDC6F436A49C)]
     public class CollectableManagerResource : Resource
     {
@@ -9311,11 +9306,6 @@ namespace Decima.HZD
         [RTTI.Member(3, 0x35)] public bool KeepRunningUp;
         [RTTI.Member(4, 0x36)] public bool Save;
         [RTTI.Member(5, 0x38)] public Ref<IntegerFact> DurationFact;
-    }
-
-    [RTTI.Serializable(0xE6A4D10BC69EFF20)]
-    public class CountdownTimerManager : RTTIObject
-    {
     }
 
     [RTTI.Serializable(0xF8596DFD73A58B08)]
@@ -13622,11 +13612,6 @@ namespace Decima.HZD
         [RTTI.Member(2, 0x28, true)] public String Description;
     }
 
-    [RTTI.Serializable(0xC3835A4A06E1473D)]
-    public class FactDatabase : RTTIObject
-    {
-    }
-
     [RTTI.Serializable(0x67D4A915838B87EC)]
     public class FactDatabaseGlobalContext : CoreObject
     {
@@ -14701,11 +14686,6 @@ namespace Decima.HZD
         [RTTI.Member(0, 0x40, "Logic")] public Array<EGameMode> GameModes;
     }
 
-    [RTTI.Serializable(0x3CFC62664867B046)]
-    public class GameModule : Module
-    {
-    }
-
     [RTTI.Serializable(0x6DF02CC6DD205981)]
     public class GameMovie : RTTIObject
     {
@@ -14746,68 +14726,6 @@ namespace Decima.HZD
     [RTTI.Serializable(0xD734459B8E0B143)]
     public class GameScript : CoreScript
     {
-    }
-
-    [RTTI.Serializable(0x4E58751A666F12C7)]
-    public class GameSettings : PlaylistData
-    {
-        [RTTI.Member(0, 0x28)] public int VersionNumber;
-        [RTTI.Member(1, 0x30)] public String Name;
-        [RTTI.Member(2, 0x38)] public String Description;
-        [RTTI.Member(3, 0x40)] public String Creator;
-        [RTTI.Member(4, 0x48)] public int64 CreatedTimestamp;
-        [RTTI.Member(5, 0x50, "PlayerSettings")] public bool LateJoinersAllowed;
-        [RTTI.Member(6, 0x58)] public Array<Ref<GameRoundSettings>> RoundSettings;
-        [RTTI.Member(7, 0x68, "Missions")] public Array<MissionSettings> MissionSetting;
-        [RTTI.Member(8, 0x78, "PlayerSettings")] public bool EndGameWhenWinnerDecided;
-        [RTTI.Member(9, 0x7C, "PlayerSettings")] public int SpawnLives;
-        [RTTI.Member(10, 0x80, "Timers")] public bool UseSpawnWaves;
-        [RTTI.Member(11, 0x84, "Timers")] public float DeathCamTime;
-        [RTTI.Member(12, 0x88, "Timers")] public int RespawnTimer;
-        [RTTI.Member(13, 0x8C, "Timers")] public int GracePeriod;
-        [RTTI.Member(14, 0x90, "Timers")] public int InactivityKickTime;
-        [RTTI.Member(15, 0x94, "Timers")] public int TimeBetweenMissions;
-        [RTTI.Member(16, 0x98, "Missions")] public int BodycountQuota;
-        [RTTI.Member(17, 0x9C, "Missions")] public int CaHCaptureTime;
-        [RTTI.Member(18, 0xA0, "Missions")] public int CaCCaptureTimeInner;
-        [RTTI.Member(19, 0xA4, "Missions")] public int CaCCaptureTimeMiddle;
-        [RTTI.Member(20, 0xA8, "Missions")] public int CaCCaptureTimeOuter;
-        [RTTI.Member(21, 0xAC, "Missions")] public int CaSCaptureTime;
-        [RTTI.Member(22, 0xB0, "Missions")] public int ExplosivePlacing;
-        [RTTI.Member(23, 0xB4, "Missions")] public int ExplosiveDefusing;
-        [RTTI.Member(24, 0xB8, "Missions")] public int ExplosiveDetonationTime;
-        [RTTI.Member(25, 0xBC, "Weapons")] public bool FriendlyFireEnabled;
-        [RTTI.Member(26, 0xC0, "PlayerSettings")] public ECloseCombatSettings CloseCombatSettings;
-        [RTTI.Member(27, 0xC4, "PlayerSettings")] public bool ShowEnemiesOnRadar;
-        [RTTI.Member(28, 0xC5, "PlayerSettings")] public bool ShowAmmoCounter;
-        [RTTI.Member(29, 0xC8, "PlayerSettings")] public EAmmoSettings AmmoSettings;
-        [RTTI.Member(30, 0xCC)] public int MaxPlayerCount;
-        [RTTI.Member(31, 0xD0, "PlayerSettings")] public int MaxPlayerSpectatorCount;
-        [RTTI.Member(32, 0xD4, "PlayerSettings")] public int MaxAdminSpectatorCount;
-        [RTTI.Member(33, 0xD8, "PlayerSettings")] public int MinClientCount;
-        [RTTI.Member(34, 0xDC, "PlayerSettings")] public int ClansMinPlayerCount;
-        [RTTI.Member(35, 0xE0, "PlayerSettings")] public int ClansForfeitTimer;
-        [RTTI.Member(36, 0xE4, "PlayerSettings")] public EPlayerHealthSettings PlayerHealthSettings;
-        [RTTI.Member(37, 0xE8, "PlayerSettings")] public EHealthRegenerationSettings HealthRegenerationSettings;
-        [RTTI.Member(38, 0xEC, "PlayerSettings")] public int MaxBotCount;
-        [RTTI.Member(39, 0xF0, "PlayerSettings")] public EFaction BotFaction;
-        [RTTI.Member(40, 0xF4, "PlayerSettings")] public bool SplitScreenGame;
-        [RTTI.Member(41, 0xF8, "PlayerSettings")] public EGameMode GameMode;
-        [RTTI.Member(42, 0xFC, "PlayerSettings")] public bool BotzoneGame;
-        [RTTI.Member(43, 0xFD, "PlayerSettings")] public bool PracticeGame;
-        [RTTI.Member(44, 0xFE, "PlayerSettings")] public bool ClanGame;
-        [RTTI.Member(45, 0xFF, "PlayerSettings")] public bool IsCustomGame;
-        [RTTI.Member(46, 0x100, "PlayerSettings")] public bool IsAdminCreatedGame;
-        [RTTI.Member(47, 0x101, "PlayerSettings")] public bool CampaignScoringEnabled;
-        [RTTI.Member(48, 0x110, "Careers")] public Array<ECareerSettings> CareerSettings;
-        [RTTI.Member(49, 0x120, "UnlockResources")] public Array<String> DisabledUnlockResources;
-        [RTTI.Member(50, 0x130, "CombatHonors")] public bool CombatHonorsEnabled;
-        [RTTI.Member(51, 0x138, "PlaylistLeaderboardStats")] public Array<String> TrackedLeaderboardStats;
-        [RTTI.Member(52, 0x148, "PlayerSettings")] public String PlaylistPassword;
-        [RTTI.Member(53, 0x150, "PlayerSettings")] public String SelectedChallengeRequirements;
-        [RTTI.Member(54, 0x158, "VoiceChat")] public bool TeamVoiceChat;
-        [RTTI.Member(55, 0x159, "PlayerSettings")] public bool PartiesAllowed;
-        [RTTI.Member(56, 0x15C, "Timers")] public int PreGameLobbyWaitTime;
     }
 
     [RTTI.Serializable(0x9F57C34CE7EEBAC4)]
@@ -15172,25 +15090,6 @@ namespace Decima.HZD
     public class GenerateLootAction : EntityAction
     {
         [RTTI.Member(0, 0x30, "Logic")] public Array<Ref<LootSlot>> LootSlots;
-    }
-
-    [RTTI.Serializable(0x7520F5D9A86D15E3)]
-    public class GeneratedQuestSave : RTTIObject
-    {
-        [RTTI.Member(0, 0x10, "Saving", true)] public GGUUID QuestUUID;
-        [RTTI.Member(1, 0x20, "Saving", true)] public GGUUID StartUUID;
-        [RTTI.Member(2, 0x30, "Saving", true)] public GGUUID EndUUID;
-        [RTTI.Member(3, 0x40, "Saving", true)] public GGUUID SubSectionUUID;
-        [RTTI.Member(4, 0x50, "Saving", true)] public GGUUID MainObjectiveUUID;
-        [RTTI.Member(5, 0x60, "Saving", true)] public GGUUID FinishObjectiveUUID;
-        [RTTI.Member(6, 0x70, "Saving", true)] public GGUUID TriggerUUID;
-        [RTTI.Member(7, 0x90, "Saving", true)] public GGUUID Recipe;
-        [RTTI.Member(8, 0xA0, "Saving", true)] public GGUUID TradingItem;
-        [RTTI.Member(9, 0xB0, "Saving", true)] public StreamingRef<EntityResource> ItemToBuy;
-        [RTTI.Member(10, 0xD0, "Saving", true)] public GGUUID TurnInLocationUUID;
-        [RTTI.Member(11, 0xE0, "Saving", true)] public GGUUID MerchantSpawnSetupUUID;
-        [RTTI.Member(12, 0xF0, "Saving", true)] public Array<StreamingRef<EntityResource>> ItemsToTradeIn;
-        [RTTI.Member(13, 0x100, "Saving", true)] public Array<int> AmountOfItemsToTradeIn;
     }
 
     [RTTI.Serializable(0xA34221D70353BA4)]
@@ -22136,11 +22035,6 @@ namespace Decima.HZD
     {
     }
 
-    [RTTI.Serializable(0x9BECF2413418709C)]
-    public class MapZoneManager : ObjectManager
-    {
-    }
-
     [RTTI.Serializable(0xCA9F00058A38BF8F)]
     public class MapZonePortal : MapZoneBase
     {
@@ -22733,11 +22627,6 @@ namespace Decima.HZD
     public class MenuArrayBinding : MenuDataBinding
     {
         [RTTI.Member(0, 0x20)] public Array<Ref<MenuDataBinding>> Elements;
-    }
-
-    [RTTI.Serializable(0xEB18FAD2ABAD4F96)]
-    public class MenuBadgeManager : StateObject
-    {
     }
 
     [RTTI.Serializable(0x59DB56AA6D033B21)]
@@ -23997,14 +23886,6 @@ namespace Decima.HZD
         [RTTI.Member(5, 0xD4, "Logic")] public float MissionTime;
         [RTTI.Member(6, 0xD8, "TargetArrows")] public Ref<CurveResource> FriendlyTargetArrowFadeCurve;
         [RTTI.Member(7, 0xE0, "TargetArrows")] public Ref<CurveResource> EnemyTargetArrowFadeCurve;
-    }
-
-    [RTTI.Serializable(0x96AAE0EC4A77AB0E)]
-    public class MissionSettings : RTTIObject
-    {
-        [RTTI.Member(0, 0x8)] public EMissionType Type;
-        [RTTI.Member(1, 0xC)] public float TimeLimit;
-        [RTTI.Member(2, 0x10)] public int ObjectiveLimit;
     }
 
     [RTTI.Serializable(0x532A0095526928DD)]
@@ -29969,11 +29850,6 @@ namespace Decima.HZD
         [RTTI.Member(2, 0x18)] public PlayerDamageModifier DamageModifier;
     }
 
-    [RTTI.Serializable(0x96C62803CC5314B)]
-    public class PlayerGame : Player
-    {
-    }
-
     [RTTI.Serializable(0xA1AFAC5C2DE57366)]
     public class PlayerInputQueryComponent : EntityComponent
     {
@@ -31455,20 +31331,6 @@ namespace Decima.HZD
         [RTTI.Member(4, 0x48, "Logic")] public Ref<LocalizedTextResource> SetName;
     }
 
-    [RTTI.Serializable(0x3B616D6260E90151)]
-    public class QuestSave : RTTIObject
-    {
-        [RTTI.Member(0, 0x10, "StateSaving", true)] public GGUUID QuestResourceUUID;
-        [RTTI.Member(1, 0x20, "StateSaving", true)] public EQuestState State;
-        [RTTI.Member(2, 0x24, "StateSaving", true)] public bool Tracked;
-        [RTTI.Member(3, 0x25, "StateSaving", true)] public bool TrackingEnabled;
-        [RTTI.Member(4, 0x26, "StateSaving", true)] public EQuestRunState RunState;
-        [RTTI.Member(5, 0x28, "StateSaving", true)] public int StartTime;
-        [RTTI.Member(6, 0x2C, "StateSaving", true)] public int LastProgressTime;
-        [RTTI.Member(7, 0x30, "StateSaving", true)] public bool RewindCounter;
-        [RTTI.Member(8, 0x58, "StateSaving", true)] public int Version;
-    }
-
     [RTTI.Serializable(0x572FFE2229081FD2)]
     public class QuestSection : Resource
     {
@@ -31512,15 +31374,6 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x50, "StateSave", true)] public Array<GGUUID> AddedQuestSections_Completion;
         [RTTI.Member(1, 0x60, "StateSave", true)] public Array<GGUUID> AddedQuestSections_Block;
-    }
-
-    [RTTI.Serializable(0x8856458E7579B20F)]
-    public class QuestSystem : RTTIObject
-    {
-        [RTTI.Member(0, 0x38, "StateSaving", true)] public Ptr<Story> Story;
-        [RTTI.Member(1, 0x40, "StateSaving", true)] public Ptr<QuestSectionUpdateQueue> UpdateQueue;
-        [RTTI.Member(2, 0x48, "StateSaving", true)] public Ptr<DynamicQuestManager> DynamicQuestManager;
-        [RTTI.Member(3, 0x60, "StateSaving", true)] public Array<GGUUID> TrackedQuestHistory;
     }
 
     [RTTI.Serializable(0xA3BEF2B6072CDC70)]
@@ -37085,11 +36938,6 @@ namespace Decima.HZD
     {
     }
 
-    [RTTI.Serializable(0x70DDECB5743C9A59)]
-    public class Story : RTTIObject
-    {
-    }
-
     [RTTI.Serializable(0x67090F9210738844)]
     public class StoryArc : Resource
     {
@@ -41639,11 +41487,6 @@ namespace Decima.HZD
         [RTTI.Member(4, 0x90, "Encounters")] public Array<Ref<WorldEncounter>> WorldEncounters;
     }
 
-    [RTTI.Serializable(0x1EF6CB2A7BC832CB)]
-    public class WorldEncounterManager : ObjectManager
-    {
-    }
-
     [RTTI.Serializable(0x5A9836D86C7B209A)]
     public class WorldEncounterManagerResource : Resource
     {
@@ -41704,13 +41547,6 @@ namespace Decima.HZD
         [RTTI.Member(0, 0x0)] public Ref<WorldPositionPropertyBase> Property;
     }
 
-    [RTTI.Serializable(0x3723258333B81F86)]
-    public class WorldState : RTTIRefObject
-    {
-        [RTTI.Member(0, 0x98, "TimeOfDay")] public float TimeOfDay;
-        [RTTI.Member(1, 0xA4, "TimeOfDay")] public bool EnableDayNightCycle;
-    }
-
     [RTTI.Serializable(0x463EBB73980462A4)]
     public class WorldStateResource : Resource
     {
@@ -41719,13 +41555,6 @@ namespace Decima.HZD
         [RTTI.Member(2, 0x34, "Time")] public float DurationOfOneDayInSeconds;
         [RTTI.Member(3, 0x38, "Time")] public bool InitialEnableDayNightCycle;
         [RTTI.Member(4, 0x39, "Time")] public bool RandomizeTimeOfDay;
-    }
-
-    [RTTI.Serializable(0x23C32AD4512B105E)]
-    public class WorldTransform
-    {
-        [RTTI.Member(0, 0x0)] public WorldPosition Position;
-        [RTTI.Member(1, 0x18)] public RotMatrix Orientation;
     }
 
     [RTTI.Serializable(0x4DF16A9905F97F44)]

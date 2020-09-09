@@ -241,7 +241,23 @@ namespace Decima
 
             if (loadType == 1)
             {
-                throw new Exception();
+                /*
+                uint unknownOffset = 0;
+
+                if (qword8)
+                {
+                    unknownOffset = Reader.ReadUInt32();
+                }
+
+                if (object present in guid table?)
+                {
+                    if (qword8)
+                        Reader.BaseStream.Position += unknownOffset;
+                }
+                else
+                */
+                ManuallyResolveObject(localObject.GetType(), localObject);
+                return localObject;
             }
             else if (loadType == 2)
             {
@@ -295,32 +311,56 @@ namespace Decima
             }
             else
             {
-                int typeIndex = ReadVariableLengthInt();
-                var container = RTTIContainers[typeIndex];
-
-                if (container.MemberList.ClassType != type)
-                    Debugger.Break();
-
-                var info = RTTI.GetOrderedFieldsForClass(type);
-
-                // Instantiate bases
-                foreach (var baseClass in info.MIBases)
-                    baseClass.SetValue(objectInstance, Activator.CreateInstance(baseClass.FieldType));
-
-                // Read members
-                foreach (var member in container.MemberList._resolvedMembers)
-                {
-                    if (member.MIBase != null)
-                        DeserializeTypeFromField(member.MIBase.GetValue(objectInstance), member.Field);
-                    else
-                        DeserializeTypeFromField(objectInstance, member.Field);
-                }
+                ManuallyResolveClassMembers(type, objectInstance);
             }
 
             if (objectInstance is RTTI.ISaveExtraBinaryDataCallback asExtraBinaryDataCallback)
                 asExtraBinaryDataCallback.DeserializeStateObjectExtraData(this);
 
             return true;
+        }
+
+        public void ManuallyResolveClassMembers(Type type, object objectInstance)
+        {
+            int typeIndex = ReadVariableLengthInt();
+            var container = RTTIContainers[typeIndex];
+
+            if (container.MemberList.ClassType != type)
+                Debugger.Break();
+
+            var info = RTTI.GetOrderedFieldsForClass(type);
+
+            // Instantiate bases
+            foreach (var baseClass in info.MIBases)
+                baseClass.SetValue(objectInstance, Activator.CreateInstance(baseClass.FieldType));
+
+            // Read members
+            foreach (var member in container.MemberList._resolvedMembers)
+            {
+                if (member.MIBase != null)
+                    DeserializeTypeFromField(member.MIBase.GetValue(objectInstance), member.Field);
+                else
+                    DeserializeTypeFromField(objectInstance, member.Field);
+            }
+        }
+
+        public void ManuallyResolveObject(Type type, object objectInstance)
+        {
+            if (!type.IsClass && !type.IsValueType)
+                throw new Exception();
+
+            if (objectInstance is RTTI.ISaveSerializable asSerializable)
+            {
+                // Custom deserialization function implemented. Let the interface do the work.
+                asSerializable.DeserializeStateObject(this);
+            }
+            else
+            {
+                ManuallyResolveClassMembers(type, objectInstance);
+            }
+
+            if (objectInstance is RTTI.ISaveExtraBinaryDataCallback asExtraBinaryDataCallback)
+                asExtraBinaryDataCallback.DeserializeStateObjectExtraData(this);
         }
 
         private bool DeserializeTrivialType(Type type, out object value)

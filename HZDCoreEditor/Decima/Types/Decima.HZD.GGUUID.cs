@@ -7,7 +7,7 @@ namespace Decima.HZD
 {
     using uint8 = System.Byte;
 
-    [DebuggerDisplay("{ToString()}")]
+    [DebuggerDisplay("{ToString(),nq}")]
     [RTTI.Serializable(0x211FDC8FD3395464)]
     public class GGUUID : RTTI.ISaveSerializable
     {

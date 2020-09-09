@@ -100,6 +100,10 @@ namespace Decima
                             var guid = BaseSerializer.ReadIndexedGUID();
                         }
                     }
+
+                    var factDB = BaseSerializer.DeserializeType<HZD.FactDatabase>();
+                    var gameModule = new HZD.GameModule();
+                    gameModule.ReadSave(BaseSerializer);
                 }
             }
             else if (mode == FileMode.Create || mode == FileMode.CreateNew)
