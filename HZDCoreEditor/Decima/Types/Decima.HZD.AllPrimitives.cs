@@ -86,7 +86,7 @@ namespace Decima.HZD
 
                     case Types.ExternalCoreUUID:
                     case Types.StreamingRef:
-                        return $"Ref<Extern> {{{ExternalFile.Value}, {GUID}}}";
+                        return $"Ref<Extern> {{'{ExternalFile.Value}', {GUID}}}";
                 }
 
                 throw new NotImplementedException();

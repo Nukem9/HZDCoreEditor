@@ -16,6 +16,7 @@ namespace Decima.HZD
                 _ = serializer.Reader.ReadBytesStrict(4);
             }
 
+            // Version check due to slow motion bug that was patched?
             if (serializer.FileDataVersion < 28)
             {
                 ulong oldGameTickCounter = serializer.Reader.ReadUInt64();
@@ -77,6 +78,30 @@ namespace Decima.HZD
 
             var playerGame = new PlayerGame();
             playerGame.ReadSave(serializer);
+
+            var locationMarkerManager = new LocationMarkerManager();
+            locationMarkerManager.ReadSave(serializer);
+
+            var explorationSystem = new ExplorationSystem();
+            explorationSystem.ReadSave(serializer);
+
+            var buddyManager = new BuddyManager();
+            buddyManager.ReadSave(serializer);
+
+            var weatherSystem = new WeatherSystem();
+            weatherSystem.ReadSave(serializer);
+
+            // Unknown structure
+            if (serializer.FileDataVersion >= 25)
+            {
+                int count = serializer.Reader.ReadInt32();
+
+                for (int i = 0; i < count; i++)
+                {
+                    var guid = serializer.ReadIndexedGUID();
+                    int unknown = serializer.Reader.ReadInt32();
+                }
+            }
         }
     }
 }

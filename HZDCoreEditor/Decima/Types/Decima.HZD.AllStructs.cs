@@ -6701,11 +6701,6 @@ namespace Decima.HZD
         [RTTI.Member(1, 0xA8, "Logic")] public bool CanBeOverruled;
     }
 
-    [RTTI.Serializable(0x7374806C6ED90678)]
-    public class BuddyManager : RTTIObject
-    {
-    }
-
     [RTTI.Serializable(0x54600FF3BEBFBF9B)]
     public class BuddyModeSwitchAction : EntityAction
     {
@@ -21430,11 +21425,6 @@ namespace Decima.HZD
 
     [RTTI.Serializable(0xD8A42A5E5D5A2DA0)]
     public class LocationMarkerInstanceStack : RTTIRefObject
-    {
-    }
-
-    [RTTI.Serializable(0x34C334F5B7898842)]
-    public class LocationMarkerManager : ObjectManager
     {
     }
 
@@ -41149,17 +41139,6 @@ namespace Decima.HZD
         [RTTI.Member(28, 0x70, "General")] public FRange WindSpeed;
         [RTTI.Member(29, 0x78, "General")] public FRange WindDirectionAngle;
         [RTTI.Member(30, 0x80, "General")] public FRange TemperatureLimits;
-    }
-
-    [RTTI.Serializable(0x72F1332BB459B417)]
-    public class WeatherSystem : CoreObject
-    {
-        [RTTI.Member(0, 0x160, "General")] public Ref<RenderEffectResource> SimulationRenderEffectResource;
-        [RTTI.Member(1, 0x1D8, "General")] public Array<WindSimulationForceField> WindSimulationForceFields;
-        [RTTI.Member(2, 0x230, "General")] public BoundingBox3 WorldBounds;
-        [RTTI.Member(3, 0x250, "General")] public FRange TemperatureRange;
-        [RTTI.Member(4, 0x354, "General")] public float WetnessDryingTime;
-        [RTTI.Member(5, 0x358, "General")] public float WetnessSaturationTime;
     }
 
     [RTTI.Serializable(0x173E0C16E86C8BD0)]

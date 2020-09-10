@@ -275,8 +275,13 @@ namespace Decima
         public object DeserializeType(Type type)
         {
             // Special handling for int32/uint32
-            if (!type.IsEnum && (type == typeof(int) || type == typeof(uint)))
-                return ReadVariableLengthInt();
+            if (!type.IsEnum)
+            {
+                if (type == typeof(int))
+                    return ReadVariableLengthInt();
+                else if (type == typeof(uint))
+                    return (uint)ReadVariableLengthInt();
+            }
 
             // Enums and trivial types
             if (DeserializeTrivialType(type, out object trivialValue))
