@@ -1,5 +1,4 @@
 ﻿using Decima;
-using Decima.HZD;
 using NAudio.Wave;
 using System;
 using System.Collections.Generic;
@@ -11,11 +10,22 @@ namespace HZDCoreEditor
     {
         static void Main(string[] args)
         {
+            DecodeSavesTest();
+            //DecodeArchivesTest();
             //DecodeQuickTest();
             //DecodeAllFilesTest();
             //DecodeLocalizationTest();
             //DecodeAudioTest();
-            DecodeArchivesTest();
+        }
+
+        static void DecodeSavesTest()
+        {
+            var a = new Decima.SaveGameProfile(@"C:\Users\Administrator\Documents\Horizon Zero Dawn\Saved Game\profile\profile.dat");
+            a.ReadProfile();
+
+            var b = new Decima.SaveGameSystem(@"C:\Users\Administrator\Documents\Horizon Zero Dawn\Saved Game\manualsave0\checkpoint.dat");
+
+            var c = new Decima.SaveGameSystem(@"C:\Users\Administrator\Documents\Horizon Zero Dawn\Saved Game\quicksave4\checkpoint.dat");
         }
 
         static void DecodeArchivesTest()
@@ -57,6 +67,8 @@ namespace HZDCoreEditor
         {
             var files = new string[]
             {
+                @"models\weapons\anti_gravity_cannon\model\model.core",
+                @"entities\characters\models\humanoid_player.core",
                 @"models\characters\humans\heads\baby\babyaloy\animation\parts\head_lx.core",
                 @"models\characters\humans\hair\aloy\model\model.core",
                 @"models\animation_managers\characters\animals\blackrat\blackrat_blackrat.core",
@@ -74,7 +86,6 @@ namespace HZDCoreEditor
                 @"textures\detail_textures\buildingblock\buildingblock_detailmap_array.core",
                 @"sounds\effects\dlc1\weapons\firebreather\wav\fire_loop_flames_01_m.core",
                 @"models\building_blocks\nora\dressing\components\dressing_b125_c006_resource.core",
-                @"entities\characters\models\humanoid_player.core",
                 @"telemetry\designtelemetry.core",
                 @"worlddata\worlddatapacking.core",
                 @"entities\weapons\heavy_weapons\heavy_railgun_cables.core",
@@ -130,8 +141,8 @@ namespace HZDCoreEditor
 
                 foreach (var obj in objects)
                 {
-                    if (obj is LocalizedTextResource asResource)
-                        allStrings.Add(asResource.GetStringForLanguage(ELanguage.English));
+                    if (obj is Decima.HZD.LocalizedTextResource asResource)
+                        allStrings.Add(asResource.GetStringForLanguage(Decima.HZD.ELanguage.English));
                 }
             }
 
@@ -150,7 +161,7 @@ namespace HZDCoreEditor
 
                 foreach (var obj in coreObjects)
                 {
-                    var wave = obj as WaveResource;
+                    var wave = obj as Decima.HZD.WaveResource;
 
                     if (wave == null)
                         continue;
@@ -158,16 +169,13 @@ namespace HZDCoreEditor
                     if (wave.IsStreaming)
                         continue;
 
-                    //var data = File.ReadAllBytes(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\sounds\music\loadingmusic\wav\temp.core");
-
                     using (var ms = new System.IO.MemoryStream(wave.WaveData.ToArray()))
-                    //using (var ms = new MemoryStream(data))
                     {
                         RawSourceWaveStream rs = null;
 
-                        if (wave.Encoding == EWaveDataEncoding.MP3)
+                        if (wave.Encoding == Decima.HZD.EWaveDataEncoding.MP3)
                             rs = new RawSourceWaveStream(ms, new Mp3WaveFormat(wave.SampleRate, wave.ChannelCount, wave.FrameSize, (int)wave.BitsPerSecond));
-                        else if (wave.Encoding == EWaveDataEncoding.PCM)
+                        else if (wave.Encoding == Decima.HZD.EWaveDataEncoding.PCM)
                             rs = new RawSourceWaveStream(ms, new WaveFormat(wave.SampleRate, 16, wave.ChannelCount));
 
                         string outFile = Path.Combine(Path.GetDirectoryName(file), wave.Name.Value + ".wav");
