@@ -18,9 +18,9 @@ namespace Decima.HZD
             SkipPosition = 8,
         }
 
-        public void DeserializeStateObject(SaveDataSerializer serializer)
+        public void DeserializeStateObject(SaveState state)
         {
-            var flags = (PackFlags)serializer.Reader.ReadByte();
+            var flags = (PackFlags)state.Reader.ReadByte();
 
             // position = { 0, 0, 0 }
             // orientation = { identity matrix }
@@ -30,19 +30,19 @@ namespace Decima.HZD
             if ((flags & PackFlags.Truncated) == 0)
             {
                 // Read/write directly to memory
-                var pos = serializer.Reader.ReadBytesStrict(24);
-                var rot = serializer.Reader.ReadBytesStrict(36);
+                var pos = state.Reader.ReadBytesStrict(24);
+                var rot = state.Reader.ReadBytesStrict(36);
             }
             else
             {
                 if ((flags & PackFlags.SkipOrientation) == 0)
                 {
-                    var rot = serializer.Reader.ReadBytesStrict(16);
+                    var rot = state.Reader.ReadBytesStrict(16);
                 }
 
                 if ((flags & PackFlags.SkipPosition) == 0)
                 {
-                    var pos = serializer.Reader.ReadBytesStrict(24);
+                    var pos = state.Reader.ReadBytesStrict(24);
                 }
             }
         }

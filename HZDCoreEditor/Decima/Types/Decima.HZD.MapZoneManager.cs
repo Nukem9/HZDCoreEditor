@@ -7,14 +7,14 @@ namespace Decima.HZD
     {
         public List<GGUUID> MapGUIDs;
 
-        public void ReadSave(SaveDataSerializer serializer)
+        public void ReadSave(SaveState state)
         {
-            int guidCount = serializer.Reader.ReadInt32();
+            int guidCount = state.Reader.ReadInt32();
             MapGUIDs = new List<GGUUID>(guidCount);
 
             // TODO: Figure out types
             for (int i = 0; i < guidCount; i++)
-                MapGUIDs.Add(serializer.ReadIndexedGUID());
+                MapGUIDs.Add(state.ReadIndexedGUID());
         }
     }
 }

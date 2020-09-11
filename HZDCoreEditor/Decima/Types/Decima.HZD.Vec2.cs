@@ -6,10 +6,10 @@
         [RTTI.Member(0, 0x0)] public float X;
         [RTTI.Member(1, 0x4)] public float Y;
 
-        public void DeserializeStateObject(SaveDataSerializer serializer)
+        public void DeserializeStateObject(SaveState state)
         {
-            X = serializer.Reader.ReadSingle();
-            Y = serializer.Reader.ReadSingle();
+            X = state.Reader.ReadSingle();
+            Y = state.Reader.ReadSingle();
         }
     }
 }

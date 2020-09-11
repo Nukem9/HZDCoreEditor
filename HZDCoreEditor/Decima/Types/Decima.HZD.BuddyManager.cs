@@ -5,16 +5,16 @@ namespace Decima.HZD
     [RTTI.Serializable(0x7374806C6ED90678)]
     public class BuddyManager : RTTIObject
     {
-        public void ReadSave(SaveDataSerializer serializer)
+        public void ReadSave(SaveState state)
         {
-            int count = serializer.ReadVariableLengthInt();
+            int count = state.ReadVariableLengthInt();
 
             for (int i = 0; i < count; i++)
             {
-                var guid = serializer.ReadIndexedGUID();
-                byte unknown = serializer.Reader.ReadByte();
+                var guid = state.ReadIndexedGUID();
+                byte unknown = state.Reader.ReadByte();
 
-                var unknownData = serializer.Reader.ReadBytesStrict(24);
+                var unknownData = state.Reader.ReadBytesStrict(24);
             }
         }
     }

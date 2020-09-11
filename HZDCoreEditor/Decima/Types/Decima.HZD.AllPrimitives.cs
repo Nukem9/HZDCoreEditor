@@ -60,9 +60,9 @@ namespace Decima.HZD
             }
         }
 
-        public virtual void DeserializeStateObject(SaveDataSerializer serializer)
+        public virtual void DeserializeStateObject(SaveState state)
         {
-            ResolvedObject = serializer.ReadObjectHandle();
+            ResolvedObject = state.ReadObjectHandle();
 
             if (ResolvedObject != null)
                 Type = Types.LocalCoreUUID;// Not entirely correct...
@@ -96,14 +96,14 @@ namespace Decima.HZD
 
     public class StreamingRef<T> : Ref<T>
     {
-        public override void DeserializeStateObject(SaveDataSerializer serializer)
+        public override void DeserializeStateObject(SaveState state)
         {
             Type = Types.StreamingRef;
-            ExternalFile = serializer.ReadIndexedString();
-            GUID = serializer.ReadIndexedGUID();
+            ExternalFile = state.ReadIndexedString();
+            GUID = state.ReadIndexedGUID();
 
             // if not zero, calls something into the streaming manager
-            byte unknown = serializer.Reader.ReadByte();
+            byte unknown = state.Reader.ReadByte();
         }
     }
 
@@ -158,13 +158,13 @@ namespace Decima.HZD
             }
         }
 
-        public void DeserializeStateObject(SaveDataSerializer serializer)
+        public void DeserializeStateObject(SaveState state)
         {
-            int itemCount = serializer.ReadVariableLengthOffset();
+            int itemCount = state.ReadVariableLengthOffset();
 
             for (int i = 0; i < itemCount; i++)
             {
-                var newObj = serializer.DeserializeType<T>();
+                var newObj = state.DeserializeType<T>();
 
                 Add(newObj);
             }
@@ -259,7 +259,7 @@ namespace Decima.HZD
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public string Value;
 
-        public String()
+        public String() : this("")
         {
         }
 
@@ -284,9 +284,9 @@ namespace Decima.HZD
             }
         }
 
-        public void DeserializeStateObject(SaveDataSerializer serializer)
+        public void DeserializeStateObject(SaveState state)
         {
-            Value = serializer.ReadIndexedString();
+            Value = state.ReadIndexedString();
         }
 
         // TODO: Implicit operators might not be the best idea
@@ -334,9 +334,9 @@ namespace Decima.HZD
             }
         }
 
-        public void DeserializeStateObject(SaveDataSerializer serializer)
+        public void DeserializeStateObject(SaveState state)
         {
-            Value = serializer.ReadIndexedWideString();
+            Value = state.ReadIndexedWideString();
         }
     }
 

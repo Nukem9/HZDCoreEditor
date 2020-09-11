@@ -30,9 +30,18 @@ namespace Decima.HZD
         [RTTI.Member(14, 0xE)] public uint8 Data14;
         [RTTI.Member(15, 0xF)] public uint8 Data15;
 
-        public void DeserializeStateObject(SaveDataSerializer serializer)
+        public void DeserializeStateObject(SaveState state)
         {
-            AssignFromOther(serializer.ReadIndexedGUID());
+            AssignFromOther(state.ReadIndexedGUID());
+        }
+
+        public bool IsEmpty()
+        {
+            return
+                Data0 == 0 && Data1 == 0 && Data2 == 0 && Data3 == 0 &&
+                Data4 == 0 && Data5 == 0 && Data6 == 0 && Data7 == 0 &&
+                Data8 == 0 && Data9 == 0 && Data10 == 0 && Data11 == 0 &&
+                Data12 == 0 && Data13 == 0 && Data14 == 0 && Data15 == 0;
         }
 
         public override string ToString()

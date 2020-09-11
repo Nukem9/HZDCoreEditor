@@ -3,9 +3,9 @@
     // No reflection
     public class EntityManagerGame
     {
-        public void ReadSave(SaveDataSerializer serializer)
+        public void ReadSave(SaveState state)
         {
-            ulong timestamp = serializer.Reader.ReadUInt64();
+            ulong timestamp = state.Reader.ReadUInt64();
         }
     }
 }

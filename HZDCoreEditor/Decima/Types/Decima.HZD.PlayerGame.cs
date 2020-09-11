@@ -5,19 +5,21 @@ namespace Decima.HZD
     [RTTI.Serializable(0x96C62803CC5314B)]
     public class PlayerGame : Player
     {
-        public void ReadSave(SaveDataSerializer serializer)
+        string Name;
+        object UnknownObject;
+        PlayerRestoreState RestoreState;
+
+        public void ReadSave(SaveState state)
         {
             // This is part of Player::VFunc25 but I'm too lazy to add it
-            string playerName = serializer.ReadIndexedWideString();
-            var unknownObject = serializer.ReadObjectHandle();
+            Name = state.ReadIndexedWideString();
+            UnknownObject = state.ReadObjectHandle();
             // end
 
-            bool hasRestoreState = serializer.Reader.ReadBooleanStrict();
+            bool hasRestoreState = state.Reader.ReadBooleanStrict();
 
             if (hasRestoreState)
-            {
-                var playerRestoreState = serializer.DeserializeType<PlayerRestoreState>();
-            }
+                RestoreState = state.DeserializeType<PlayerRestoreState>();
         }
     }
 }

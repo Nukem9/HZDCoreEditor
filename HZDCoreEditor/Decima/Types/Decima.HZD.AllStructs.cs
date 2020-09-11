@@ -33182,11 +33182,6 @@ namespace Decima.HZD
     {
     }
 
-    [RTTI.Serializable(0xABE0D6FFA740D4E)]
-    public class SceneManagerGame : SceneManager
-    {
-    }
-
     [RTTI.Serializable(0x4631256C425F8F09)]
     public class SceneMarkerData : RTTIRefObject
     {

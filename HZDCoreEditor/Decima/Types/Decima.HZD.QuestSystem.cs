@@ -10,30 +10,30 @@ namespace Decima.HZD
         [RTTI.Member(2, 0x48, "StateSaving", true)] public Ptr<DynamicQuestManager> DynamicQuestManager;
         [RTTI.Member(3, 0x60, "StateSaving", true)] public Array<GGUUID> TrackedQuestHistory;
 
-        public void DeserializeStateObject(SaveDataSerializer serializer)
+        public void DeserializeStateObject(SaveState state)
         {
             bool skipReading = false;
 
-            if (serializer.FileDataVersion >= 21)
-                skipReading = serializer.Reader.ReadBooleanStrict();
+            if (state.SaveVersion >= 21)
+                skipReading = state.Reader.ReadBooleanStrict();
 
             if (skipReading)
                 return;
 
-            serializer.ManuallyResolveClassMembers(typeof(QuestSystem), this);
+            state.DeserializeObjectClassMembers(typeof(QuestSystem), this);
 
             for (int i = 0; i < 4; i++)
             {
-                int count = serializer.ReadVariableLengthOffset();
+                int count = state.ReadVariableLengthOffset();
 
                 for (int j = 0; j < count; j++)
                 {
-                    var unknownGUID = serializer.ReadIndexedGUID();
-                    int count2 = serializer.ReadVariableLengthInt();
+                    var unknownGUID = state.ReadIndexedGUID();
+                    int count2 = state.ReadVariableLengthInt();
 
                     for (int k = 0; k < count2; k++)
                     {
-                        var unknownGUID2 = serializer.ReadIndexedGUID();
+                        var unknownGUID2 = state.ReadIndexedGUID();
                     }
                 }
             }

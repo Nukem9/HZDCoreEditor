@@ -11,13 +11,13 @@ namespace Decima.HZD
         float Unknown2;// Offset 0xA8
         float Unknown3;// Offset 0xAC
 
-        public void ReadSave(SaveDataSerializer serializer)
+        public void ReadSave(SaveState state)
         {
-            TimeOfDay = serializer.Reader.ReadSingle();
-            Unknown1 = serializer.Reader.ReadInt32();
-            EnableDayNightCycle = serializer.Reader.ReadBooleanStrict();
-            Unknown2 = serializer.Reader.ReadSingle();
-            Unknown3 = serializer.Reader.ReadSingle();
+            TimeOfDay = state.Reader.ReadSingle();
+            Unknown1 = state.Reader.ReadInt32();
+            EnableDayNightCycle = state.Reader.ReadBooleanStrict();
+            Unknown2 = state.Reader.ReadSingle();
+            Unknown3 = state.Reader.ReadSingle();
         }
     }
 }

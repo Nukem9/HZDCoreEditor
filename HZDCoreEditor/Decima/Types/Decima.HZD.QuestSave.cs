@@ -15,21 +15,21 @@ namespace Decima.HZD
         [RTTI.Member(7, 0x30, "StateSaving", true)] public bool RewindCounter;
         [RTTI.Member(8, 0x58, "StateSaving", true)] public int Version;
 
-        public void DeserializeStateObject(SaveDataSerializer serializer)
+        public void DeserializeStateObject(SaveState state)
         {
             // NOTE: There's a flaw in their serialization code. RewindCounter will occasionally have invalid values (non-0/1) which breaks
             // some type checking assumptions. Fields are also out of order. I guess this has to be done manually now.
-            int unusedTypeIndex = serializer.ReadVariableLengthInt();
+            int unusedTypeIndex = state.ReadVariableLengthInt();
 
-            QuestResourceUUID = serializer.ReadIndexedGUID();
-            State = (EQuestState)serializer.Reader.ReadInt32();
-            Tracked = serializer.Reader.ReadBooleanStrict();
-            TrackingEnabled = serializer.Reader.ReadBooleanStrict();
-            StartTime = serializer.ReadVariableLengthInt();
-            LastProgressTime = serializer.ReadVariableLengthInt();
-            RunState = (EQuestRunState)serializer.Reader.ReadSByte();
-            RewindCounter = serializer.Reader.ReadByte() > 0;//RewindCounter = serializer.Reader.ReadBooleanStrict();
-            Version = serializer.ReadVariableLengthInt();
+            QuestResourceUUID = state.ReadIndexedGUID();
+            State = (EQuestState)state.Reader.ReadInt32();
+            Tracked = state.Reader.ReadBooleanStrict();
+            TrackingEnabled = state.Reader.ReadBooleanStrict();
+            StartTime = state.ReadVariableLengthInt();
+            LastProgressTime = state.ReadVariableLengthInt();
+            RunState = (EQuestRunState)state.Reader.ReadSByte();
+            RewindCounter = state.Reader.ReadByte() > 0;//RewindCounter = state.Reader.ReadBooleanStrict();
+            Version = state.ReadVariableLengthInt();
         }
     }
 }

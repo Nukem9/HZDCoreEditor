@@ -5,101 +5,91 @@ namespace Decima.HZD
     [RTTI.Serializable(0x3CFC62664867B046)]
     public class GameModule : Module
     {
-        public void ReadSave(SaveDataSerializer serializer)
+        public void ReadSaveSystem(SaveGameSystem system)
         {
-            // GMNB
-            string unknownGUID = serializer.ReadIndexedString();// Possibly session GUID
+            SaveState state = system.State;
 
-            if (serializer.FileDataVersion < 28)
+            system.GlobalGameSettings = RTTI.CreateObjectInstance<GameSettings>();
+            system.GlobalWorldState = RTTI.CreateObjectInstance<WorldState>();
+            system.GlobalMapZoneManager = RTTI.CreateObjectInstance<MapZoneManager>();
+            system.GlobalPickUpDatabaseGame = RTTI.CreateObjectInstance<PickUpDatabaseGame>();
+            system.GlobalQuestSystem = RTTI.CreateObjectInstance<QuestSystem>();
+            system.GlobalCountdownTimerManager = RTTI.CreateObjectInstance<CountdownTimerManager>();
+            system.GlobalWorldEncounterManager = RTTI.CreateObjectInstance<WorldEncounterManager>();
+            system.GlobalEntityManagerGame = RTTI.CreateObjectInstance<EntityManagerGame>();
+            system.GlobalMenuBadgeManager = RTTI.CreateObjectInstance<MenuBadgeManager>();
+            system.GlobalCollectableManager = RTTI.CreateObjectInstance<CollectableManager>();
+            system.GlobalPlayerGame = RTTI.CreateObjectInstance<PlayerGame>();
+            system.GlobalLocationMarkerManager = RTTI.CreateObjectInstance<LocationMarkerManager>();
+            system.GlobalExplorationSystem = RTTI.CreateObjectInstance<ExplorationSystem>();
+            system.GlobalBuddyManager = RTTI.CreateObjectInstance<BuddyManager>();
+            system.GlobalWeatherSystem = RTTI.CreateObjectInstance<WeatherSystem>();
+
+            // GMNB
+            string unknownGUID = state.ReadIndexedString();// Possibly session GUID
+
+            if (state.SaveVersion < 28)
             {
-                _ = serializer.Reader.ReadBytesStrict(8);
-                _ = serializer.Reader.ReadBytesStrict(4);
+                _ = state.Reader.ReadBytesStrict(8);
+                _ = state.Reader.ReadBytesStrict(4);
             }
 
             // Version check due to slow motion bug that was patched?
-            if (serializer.FileDataVersion < 28)
+            if (state.SaveVersion < 28)
             {
-                ulong oldGameTickCounter = serializer.Reader.ReadUInt64();
+                ulong oldGameTickCounter = state.Reader.ReadUInt64();
             }
             else
             {
-                ulong gameTickCounter = serializer.Reader.ReadUInt64();
+                ulong gameTickCounter = state.Reader.ReadUInt64();
             }
 
-            uint unknown1 = serializer.Reader.ReadUInt32();
-            uint unknown2 = serializer.Reader.ReadUInt32();
+            uint unknown1 = state.Reader.ReadUInt32();
+            uint unknown2 = state.Reader.ReadUInt32();
 
-            if (serializer.FileDataVersion < 28)
+            if (state.SaveVersion < 28)
             {
-                ulong unknownOldTickCounter = serializer.Reader.ReadUInt64();
+                ulong unknownOldTickCounter = state.Reader.ReadUInt64();
             }
             else
             {
-                ulong unknownTickCounter = serializer.Reader.ReadUInt64();
+                ulong unknownTickCounter = state.Reader.ReadUInt64();
             }
 
-            var gameSettings = new GameSettings();
-            gameSettings.ReadSave(serializer);
+            system.GlobalGameSettings.ReadSave(state);
 
-            if (serializer.FileDataVersion >= 22)
+            if (state.SaveVersion >= 22)
             {
-                int difficulty = serializer.ReadVariableLengthInt();
+                int difficulty = state.ReadVariableLengthInt();
 
                 // NOTE: difficulty is adjusted (+/- 1) if version is greater than 23
                 // NOTE: -1 = skipped, otherwise applied to gPlayerProfile->PlayerParams[0].Difficulty
             }
 
-            var worldState = new WorldState();
-            worldState.ReadSave(serializer);
-
-            var mapZoneManager = new MapZoneManager();
-            mapZoneManager.ReadSave(serializer);
-
-            var pickUpDatabase = new PickUpDatabaseGame();
-            pickUpDatabase.ReadSave(serializer);
-
-            var questSystem = new QuestSystem();
-            questSystem.DeserializeStateObject(serializer);
-
-            var countdownTimerManager = new CountdownTimerManager();
-            countdownTimerManager.DeserializeStateObject(serializer);
-
-            var worldEncounterManager = new WorldEncounterManager();
-            worldEncounterManager.DeserializeStateObject(serializer);
-
-            var entityManager = new EntityManagerGame();
-            entityManager.ReadSave(serializer);
-
-            var menuBadgeManager = new MenuBadgeManager();
-            menuBadgeManager.DeserializeStateObject(serializer);
-
-            var collectableManager = new CollectableManager();
-            collectableManager.ReadSave(serializer);
-
-            var playerGame = new PlayerGame();
-            playerGame.ReadSave(serializer);
-
-            var locationMarkerManager = new LocationMarkerManager();
-            locationMarkerManager.ReadSave(serializer);
-
-            var explorationSystem = new ExplorationSystem();
-            explorationSystem.ReadSave(serializer);
-
-            var buddyManager = new BuddyManager();
-            buddyManager.ReadSave(serializer);
-
-            var weatherSystem = new WeatherSystem();
-            weatherSystem.ReadSave(serializer);
+            system.GlobalWorldState.ReadSave(state);
+            system.GlobalMapZoneManager.ReadSave(state);
+            system.GlobalPickUpDatabaseGame.ReadSave(state);
+            system.GlobalQuestSystem.DeserializeStateObject(state);
+            system.GlobalCountdownTimerManager.DeserializeStateObject(state);
+            system.GlobalWorldEncounterManager.DeserializeStateObject(state);
+            system.GlobalEntityManagerGame.ReadSave(state);
+            system.GlobalMenuBadgeManager.DeserializeStateObject(state);
+            system.GlobalCollectableManager.ReadSave(state);
+            system.GlobalPlayerGame.ReadSave(state);
+            system.GlobalLocationMarkerManager.ReadSave(state);
+            system.GlobalExplorationSystem.ReadSave(state);
+            system.GlobalBuddyManager.ReadSave(state);
+            system.GlobalWeatherSystem.ReadSave(state);
 
             // Unknown structure
-            if (serializer.FileDataVersion >= 25)
+            if (state.SaveVersion >= 25)
             {
-                int count = serializer.Reader.ReadInt32();
+                int count = state.Reader.ReadInt32();
 
                 for (int i = 0; i < count; i++)
                 {
-                    var guid = serializer.ReadIndexedGUID();
-                    int unknown = serializer.Reader.ReadInt32();
+                    var guid = state.ReadIndexedGUID();
+                    int unknown = state.Reader.ReadInt32();
                 }
             }
         }

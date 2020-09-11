@@ -1,56 +1,54 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Decima.HZD
+﻿namespace Decima.HZD
 {
     [RTTI.Serializable(0xC3835A4A06E1473D)]
-    public class FactDatabase : RTTIObject, RTTI.ISaveExtraBinaryDataCallback
+    public class FactDatabase : RTTIObject, RTTI.ISaveSerializable
     {
-        public void DeserializeStateObjectExtraData(SaveDataSerializer serializer)
+        public void DeserializeStateObject(SaveState state)
         {
+            state.DeserializeObjectClassMembers(typeof(FactDatabase), this);
+
             // FDBB - Fact DataBase Begin?
-            int counter1 = serializer.ReadVariableLengthOffset();
+            int counter1 = state.ReadVariableLengthOffset();
 
             for (int i = 0; i < counter1; i++)
             {
-                var GUID = serializer.ReadIndexedGUID();
-                byte unknown = serializer.Reader.ReadByte();
+                var GUID = state.ReadIndexedGUID();
+                byte unknown = state.Reader.ReadByte();
             }
 
-            int counter2 = serializer.ReadVariableLengthOffset();
+            int counter2 = state.ReadVariableLengthOffset();
 
             for (int i = 0; i < counter2; i++)
             {
-                var GUID = serializer.ReadIndexedGUID();
+                var GUID = state.ReadIndexedGUID();
 
                 // Float, integer, boolean, enum?
-                int unknown = serializer.Reader.ReadInt32();
+                int unknown = state.Reader.ReadInt32();
                 for (int j = 0; j < unknown; j++)
                 {
-                    var anotherGUID = serializer.ReadIndexedGUID();
-                    int anotherUnknown = serializer.Reader.ReadInt32();
+                    var anotherGUID = state.ReadIndexedGUID();
+                    int anotherUnknown = state.Reader.ReadInt32();
                 }
 
-                unknown = serializer.Reader.ReadInt32();
+                unknown = state.Reader.ReadInt32();
                 for (int j = 0; j < unknown; j++)
                 {
-                    var anotherGUID = serializer.ReadIndexedGUID();
-                    int anotherUnknown = serializer.Reader.ReadInt32();
+                    var anotherGUID = state.ReadIndexedGUID();
+                    int anotherUnknown = state.Reader.ReadInt32();
                 }
 
-                unknown = serializer.Reader.ReadInt32();
+                unknown = state.Reader.ReadInt32();
                 for (int j = 0; j < unknown; j++)
                 {
-                    var anotherGUID = serializer.ReadIndexedGUID();
-                    byte anotherUnknown = serializer.Reader.ReadByte();
+                    var anotherGUID = state.ReadIndexedGUID();
+                    byte anotherUnknown = state.Reader.ReadByte();
                 }
 
-                unknown = serializer.Reader.ReadInt32();
+                unknown = state.Reader.ReadInt32();
                 for (int j = 0; j < unknown; j++)
                 {
-                    var anotherGUID = serializer.ReadIndexedGUID();
-                    var anotherGUID2 = serializer.ReadIndexedGUID();
+                    var anotherGUID = state.ReadIndexedGUID();
+                    var anotherGUID2 = state.ReadIndexedGUID();
                 }
             }
 

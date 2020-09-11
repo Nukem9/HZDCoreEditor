@@ -1,6 +1,6 @@
 ﻿using BinaryStreamExtensions;
+using Decima.HZD;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -8,7 +8,27 @@ namespace Decima
 {
     public class SaveGameSystem
     {
-        private SaveDataSerializer BaseSerializer;
+        public SaveState State { get; private set; }
+
+        public GameModule GlobalGameModule;
+        public StreamingStrategyManagerGame GlobalStreamingStrategyManagerGame;
+        public SceneManagerGame GlobalSceneManagerGame;
+        public FactDatabase GlobalFactDatabase;
+        public GameSettings GlobalGameSettings;
+        public WorldState GlobalWorldState;
+        public MapZoneManager GlobalMapZoneManager;
+        public PickUpDatabaseGame GlobalPickUpDatabaseGame;
+        public QuestSystem GlobalQuestSystem;
+        public CountdownTimerManager GlobalCountdownTimerManager;
+        public WorldEncounterManager GlobalWorldEncounterManager;
+        public EntityManagerGame GlobalEntityManagerGame;
+        public MenuBadgeManager GlobalMenuBadgeManager;
+        public CollectableManager GlobalCollectableManager;
+        public PlayerGame GlobalPlayerGame;
+        public LocationMarkerManager GlobalLocationMarkerManager;
+        public ExplorationSystem GlobalExplorationSystem;
+        public BuddyManager GlobalBuddyManager;
+        public WeatherSystem GlobalWeatherSystem;
 
         public SaveGameSystem(string savePath, FileMode mode = FileMode.Open)
         {
@@ -39,10 +59,10 @@ namespace Decima
                     int unknown1 = reader.ReadInt32();// Sign extended
                     int saveType = reader.ReadInt32();// Sign extended { 1 = manual, 2 = quick, 4 = auto, 8 = NG+ start point }
 
-                    var gameModuleGUID = Decima.HZD.GGUUID.FromData(reader);    // Field from `class GameModule`
-                    var uniqueSaveGUID = Decima.HZD.GGUUID.FromData(reader);    // CoCreateGuid() on save
-                    var gameLoadGUID = Decima.HZD.GGUUID.FromData(reader);      // CoCreateGuid() on game start
-                    var systemTypeGUID = Decima.HZD.GGUUID.FromData(reader);    // Possibly GUID for Win32System or physics
+                    var gameModuleGUID = GGUUID.FromData(reader);    // Field from `class GameModule`
+                    var uniqueSaveGUID = GGUUID.FromData(reader);    // CoCreateGuid() on save
+                    var gameLoadGUID = GGUUID.FromData(reader);      // CoCreateGuid() on game start
+                    var systemTypeGUID = GGUUID.FromData(reader);    // Possibly GUID for Win32System or physics
 
                     double playTimeInSeconds = reader.ReadDouble();
                     _ = reader.ReadBytesStrict(108);
@@ -52,58 +72,33 @@ namespace Decima
                     uint dataBlockLength = reader.ReadUInt32();
 
                     // Parse actual save data
-                    BaseSerializer = new SaveDataSerializer(reader, saveVersion);
-                    BaseSerializer.ReadStringsAndRTTIFields(512, dataBlockLength);
+                    State = new SaveState(reader, saveVersion, (uint)reader.BaseStream.Position, dataBlockLength);
 
-                    var unknownData1 = BaseSerializer.Reader.ReadBytesStrict(24);
-                    var unknownObject1 = BaseSerializer.ReadObjectHandle();
-                    var unknownString1 = BaseSerializer.ReadIndexedString();// Likely entity RTTI name for the player's current mount. Instanced by AIManager.
+                    var unknownData1 = State.Reader.ReadBytesStrict(24);
+                    var unknownObject1 = State.ReadObjectHandle();
+                    var unknownString1 = State.ReadIndexedString();// Likely entity RTTI name for the player's current mount. Instanced by AIManager.
 
-                    var unknownData2 = BaseSerializer.Reader.ReadBytesStrict(24);
-                    var unknownObject2 = BaseSerializer.ReadObjectHandle();
+                    var unknownData2 = State.Reader.ReadBytesStrict(24);
+                    var unknownObject2 = State.ReadObjectHandle();
 
-                    if (BaseSerializer.Reader.BaseStream.Position != 0x234)
-                        Debugger.Break();
+                    GlobalGameModule = RTTI.CreateObjectInstance<GameModule>();
+                    GlobalStreamingStrategyManagerGame = RTTI.CreateObjectInstance<StreamingStrategyManagerGame>();
+                    GlobalSceneManagerGame = RTTI.CreateObjectInstance<SceneManagerGame>();
 
                     // GameModule info
                     {
-                        byte unknownByte = BaseSerializer.Reader.ReadByte();
+                        byte unknownByte = State.Reader.ReadByte();
 
                         if (unknownByte != 0)
                         {
-                            var unknownData = BaseSerializer.Reader.ReadBytesStrict(24);
+                            var unknownData = State.Reader.ReadBytesStrict(24);
                         }
                     }
 
-                    // StreamingStrategyManagerGame
-                    {
-                        int count = BaseSerializer.ReadVariableLengthInt();
-
-                        for (int i = 0; i < count; i++)
-                        {
-                            string objectType = BaseSerializer.ReadIndexedString();
-                            var guid = BaseSerializer.ReadIndexedGUID();
-
-                            // See comments in StreamingStrategyInstance
-                            var obj = RTTI.CreateObjectInstance(RTTI.GetTypeByName(objectType));
-
-                            (obj as RTTI.ISaveSerializable).DeserializeStateObject(BaseSerializer);
-                        }
-                    }
-
-                    // SceneManagerGame
-                    {
-                        int count = BaseSerializer.ReadVariableLengthInt();
-
-                        for (int i = 0; i < count; i++)
-                        {
-                            var guid = BaseSerializer.ReadIndexedGUID();
-                        }
-                    }
-
-                    var factDB = BaseSerializer.DeserializeType<HZD.FactDatabase>();
-                    var gameModule = new HZD.GameModule();
-                    gameModule.ReadSave(BaseSerializer);
+                    GlobalStreamingStrategyManagerGame.ReadSave(State);
+                    GlobalSceneManagerGame.ReadSave(State);
+                    GlobalFactDatabase = State.DeserializeType<FactDatabase>();
+                    GlobalGameModule.ReadSaveSystem(this);
                 }
             }
             else if (mode == FileMode.Create || mode == FileMode.CreateNew)

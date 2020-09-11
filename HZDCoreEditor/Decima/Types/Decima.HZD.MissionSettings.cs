@@ -8,12 +8,12 @@
         [RTTI.Member(2, 0x10)] public int ObjectiveLimit;
         public int Unknown;// Offset 0x14
 
-        public void ReadSave(SaveDataSerializer serializer)
+        public void ReadSave(SaveState state)
         {
-            Type = (EMissionType)serializer.Reader.ReadByte();
-            TimeLimit = serializer.Reader.ReadSingle();
-            ObjectiveLimit = serializer.Reader.ReadInt32();
-            Unknown = serializer.Reader.ReadInt32();
+            Type = (EMissionType)state.Reader.ReadByte();
+            TimeLimit = state.Reader.ReadSingle();
+            ObjectiveLimit = state.Reader.ReadInt32();
+            Unknown = state.Reader.ReadInt32();
         }
     }
 }

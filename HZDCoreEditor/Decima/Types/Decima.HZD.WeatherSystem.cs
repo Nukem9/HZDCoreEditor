@@ -14,11 +14,11 @@ namespace Decima.HZD
         [RTTI.Member(4, 0x354, "General")] public float WetnessDryingTime;
         [RTTI.Member(5, 0x358, "General")] public float WetnessSaturationTime;
 
-        public void ReadSave(SaveDataSerializer serializer)
+        public void ReadSave(SaveState state)
         {
-            if (serializer.FileDataVersion > 15)
+            if (state.SaveVersion > 15)
             {
-                var guid = serializer.ReadIndexedGUID();
+                var guid = state.ReadIndexedGUID();
             }
         }
     }

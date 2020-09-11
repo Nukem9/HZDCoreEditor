@@ -3,16 +3,16 @@
     [RTTI.Serializable(0xE6A4D10BC69EFF20)]
     public class CountdownTimerManager : RTTIObject, RTTI.ISaveSerializable
     {
-        public void DeserializeStateObject(SaveDataSerializer serializer)
+        public void DeserializeStateObject(SaveState state)
         {
-            serializer.ManuallyResolveClassMembers(typeof(CountdownTimerManager), this);
+            state.DeserializeObjectClassMembers(typeof(CountdownTimerManager), this);
 
-            int count = serializer.ReadVariableLengthOffset();
+            int count = state.ReadVariableLengthOffset();
 
             for (int i = 0; i < count; i++)
             {
-                var guid = serializer.ReadIndexedGUID();
-                var timerSaveObject = serializer.ReadObjectHandle();
+                var guid = state.ReadIndexedGUID();
+                var timerSaveObject = state.ReadObjectHandle();
             }
         }
     }

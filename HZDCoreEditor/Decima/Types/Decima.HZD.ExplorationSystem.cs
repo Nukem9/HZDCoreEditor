@@ -5,36 +5,36 @@ namespace Decima.HZD
     // No reflection
     public class ExplorationSystem
     {
-        public void ReadSave(SaveDataSerializer serializer)
+        public void ReadSave(SaveState state)
         {
-            if (serializer.FileDataVersion < 26)
+            if (state.SaveVersion < 26)
             {
-                int count = serializer.ReadVariableLengthOffset();
+                int count = state.ReadVariableLengthOffset();
 
-                var overlayBitmapData = serializer.Reader.ReadBytesStrict(count);
+                var overlayBitmapData = state.Reader.ReadBytesStrict(count);
             }
             else
             {
                 var overlayBitmapData = new byte[65536];
 
-                for (int offset = 0; offset < 65536;)
+                for (int offset = 0; offset < overlayBitmapData.Length;)
                 {
-                    int size = serializer.ReadVariableLengthInt();
-                    byte visible = serializer.Reader.ReadByte();
+                    int size = state.ReadVariableLengthInt();
+                    byte visibility = state.Reader.ReadByte();
 
                     for (int i = offset; i < (offset + size); i++)
-                        overlayBitmapData[i] = visible;
+                        overlayBitmapData[i] = visibility;
 
                     offset += size;
                 }
             }
 
-            bool unknown = serializer.Reader.ReadBooleanStrict();
+            bool unknown = state.Reader.ReadBooleanStrict();
 
             if (unknown)
             {
-                var data = serializer.Reader.ReadBytesStrict(24);
-                var guid = serializer.ReadIndexedGUID();
+                var data = state.Reader.ReadBytesStrict(24);
+                var guid = state.ReadIndexedGUID();
             }
         }
     }

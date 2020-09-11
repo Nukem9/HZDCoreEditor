@@ -3,14 +3,14 @@
     [RTTI.Serializable(0xD1174F74B8550B27)]
     public class CollectableManager : RTTIObject
     {
-        public void ReadSave(SaveDataSerializer serializer)
+        public void ReadSave(SaveState state)
         {
             // CLMB
-            int counter = serializer.ReadVariableLengthInt();
+            int counter = state.ReadVariableLengthInt();
 
             for (int i = 0; i < counter; i++)
             {
-                var guid = serializer.ReadIndexedGUID();
+                var guid = state.ReadIndexedGUID();
             }
 
             // CLME

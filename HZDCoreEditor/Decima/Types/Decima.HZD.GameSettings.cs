@@ -1,7 +1,4 @@
 ﻿using BinaryStreamExtensions;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Decima.HZD
 {
@@ -68,109 +65,101 @@ namespace Decima.HZD
         [RTTI.Member(55, 0x159, "PlayerSettings")] public bool PartiesAllowed;
         [RTTI.Member(56, 0x15C, "Timers")] public int PreGameLobbyWaitTime;
 
-        public void ReadSave(SaveDataSerializer serializer)
+        public void ReadSave(SaveState state)
         {
-            Name = serializer.ReadIndexedString();
-            Description = serializer.ReadIndexedString();
-            LateJoinersAllowed = serializer.Reader.ReadBooleanStrict();
+            Name = state.ReadIndexedString();
+            Description = state.ReadIndexedString();
+            LateJoinersAllowed = state.Reader.ReadBooleanStrict();
 
             // RoundSettings
-            int roundSettingCount = serializer.ReadVariableLengthInt();
+            int roundSettingCount = state.ReadVariableLengthInt();
             RoundSettings = new Array<Ref<GameRoundSettings>>(roundSettingCount);
 
             for (int i = 0; i < roundSettingCount; i++)
             {
-                string settingName = serializer.ReadIndexedString();
+                string settingName = state.ReadIndexedString();
 
-                // Object/resource name is "World" with type "GameRoundSettings" - lookups not currently implemented
+                // TODO: Object/resource name is "World" with type "GameRoundSettings" - lookups not currently implemented
                 RoundSettings.Add(new Ref<GameRoundSettings>());
             }
 
             // MissionSetting
-            int missionSettingCount = serializer.ReadVariableLengthInt();
+            int missionSettingCount = state.ReadVariableLengthInt();
             MissionSetting = new Array<MissionSettings>(missionSettingCount);
 
             for (int i = 0; i < missionSettingCount; i++)
             {
                 var settings = new MissionSettings();
-                settings.ReadSave(serializer);
+                settings.ReadSave(state);
 
                 MissionSetting.Add(settings);
             }
 
             // Let's serialize this entire structure even though reflection is available. Brilliant.
-            EndGameWhenWinnerDecided = serializer.Reader.ReadBooleanStrict();
-            SpawnLives = serializer.ReadVariableLengthInt();
-            UseSpawnWaves = serializer.Reader.ReadBooleanStrict();
-            DeathCamTime = serializer.Reader.ReadSingle();
-            RespawnTimer = serializer.ReadVariableLengthInt();
-            GracePeriod = serializer.ReadVariableLengthInt();
-            InactivityKickTime = serializer.ReadVariableLengthInt();
-            TimeBetweenMissions = serializer.ReadVariableLengthInt();
-            BodycountQuota = serializer.ReadVariableLengthInt();
-            CaHCaptureTime = serializer.ReadVariableLengthInt();
-            CaCCaptureTimeInner = serializer.ReadVariableLengthInt();
-            CaCCaptureTimeMiddle = serializer.ReadVariableLengthInt();
-            CaCCaptureTimeOuter = serializer.ReadVariableLengthInt();
-            CaSCaptureTime = serializer.ReadVariableLengthInt();
-            ExplosivePlacing = serializer.ReadVariableLengthInt();
-            ExplosiveDefusing = serializer.ReadVariableLengthInt();
-            ExplosiveDetonationTime = serializer.ReadVariableLengthInt();
-            FriendlyFireEnabled = serializer.Reader.ReadBooleanStrict();
-            CloseCombatSettings = (ECloseCombatSettings)serializer.Reader.ReadByte();
-            ShowEnemiesOnRadar = serializer.Reader.ReadBooleanStrict();
-            ShowAmmoCounter = serializer.Reader.ReadBooleanStrict();
-            AmmoSettings = (EAmmoSettings)serializer.Reader.ReadByte();
-            MaxPlayerCount = serializer.ReadVariableLengthInt();
-            MaxPlayerSpectatorCount = serializer.ReadVariableLengthInt();
-            MaxAdminSpectatorCount = serializer.ReadVariableLengthInt();
-            MinClientCount = serializer.ReadVariableLengthInt();
-            ClansMinPlayerCount = serializer.ReadVariableLengthInt();
-            ClansForfeitTimer = serializer.Reader.ReadInt32();// !
-            PlayerHealthSettings = (EPlayerHealthSettings)serializer.Reader.ReadByte();
-            HealthRegenerationSettings = (EHealthRegenerationSettings)serializer.Reader.ReadByte();
-            MaxBotCount = serializer.ReadVariableLengthInt();
-            BotFaction = (EFaction)serializer.Reader.ReadByte();
-            SplitScreenGame = serializer.Reader.ReadBooleanStrict();
-            GameMode = (EGameMode)serializer.Reader.ReadByte();
-            BotzoneGame = serializer.Reader.ReadBooleanStrict();
-            PracticeGame = serializer.Reader.ReadBooleanStrict();
-            ClanGame = serializer.Reader.ReadBooleanStrict();
-            IsCustomGame = serializer.Reader.ReadBooleanStrict();
-            IsAdminCreatedGame = serializer.Reader.ReadBooleanStrict();
-            CampaignScoringEnabled = serializer.Reader.ReadBooleanStrict();
-            _ = serializer.Reader.ReadByte();// !
+            EndGameWhenWinnerDecided = state.Reader.ReadBooleanStrict();
+            SpawnLives = state.ReadVariableLengthInt();
+            UseSpawnWaves = state.Reader.ReadBooleanStrict();
+            DeathCamTime = state.Reader.ReadSingle();
+            RespawnTimer = state.ReadVariableLengthInt();
+            GracePeriod = state.ReadVariableLengthInt();
+            InactivityKickTime = state.ReadVariableLengthInt();
+            TimeBetweenMissions = state.ReadVariableLengthInt();
+            BodycountQuota = state.ReadVariableLengthInt();
+            CaHCaptureTime = state.ReadVariableLengthInt();
+            CaCCaptureTimeInner = state.ReadVariableLengthInt();
+            CaCCaptureTimeMiddle = state.ReadVariableLengthInt();
+            CaCCaptureTimeOuter = state.ReadVariableLengthInt();
+            CaSCaptureTime = state.ReadVariableLengthInt();
+            ExplosivePlacing = state.ReadVariableLengthInt();
+            ExplosiveDefusing = state.ReadVariableLengthInt();
+            ExplosiveDetonationTime = state.ReadVariableLengthInt();
+            FriendlyFireEnabled = state.Reader.ReadBooleanStrict();
+            CloseCombatSettings = (ECloseCombatSettings)state.Reader.ReadByte();
+            ShowEnemiesOnRadar = state.Reader.ReadBooleanStrict();
+            ShowAmmoCounter = state.Reader.ReadBooleanStrict();
+            AmmoSettings = (EAmmoSettings)state.Reader.ReadByte();
+            MaxPlayerCount = state.ReadVariableLengthInt();
+            MaxPlayerSpectatorCount = state.ReadVariableLengthInt();
+            MaxAdminSpectatorCount = state.ReadVariableLengthInt();
+            MinClientCount = state.ReadVariableLengthInt();
+            ClansMinPlayerCount = state.ReadVariableLengthInt();
+            ClansForfeitTimer = state.Reader.ReadInt32();// !
+            PlayerHealthSettings = (EPlayerHealthSettings)state.Reader.ReadByte();
+            HealthRegenerationSettings = (EHealthRegenerationSettings)state.Reader.ReadByte();
+            MaxBotCount = state.ReadVariableLengthInt();
+            BotFaction = (EFaction)state.Reader.ReadByte();
+            SplitScreenGame = state.Reader.ReadBooleanStrict();
+            GameMode = (EGameMode)state.Reader.ReadByte();
+            BotzoneGame = state.Reader.ReadBooleanStrict();
+            PracticeGame = state.Reader.ReadBooleanStrict();
+            ClanGame = state.Reader.ReadBooleanStrict();
+            IsCustomGame = state.Reader.ReadBooleanStrict();
+            IsAdminCreatedGame = state.Reader.ReadBooleanStrict();
+            CampaignScoringEnabled = state.Reader.ReadBooleanStrict();
+            _ = state.Reader.ReadByte();// !
 
-            PlaylistPassword = serializer.ReadIndexedString();
-            SelectedChallengeRequirements = serializer.ReadIndexedString();
+            PlaylistPassword = state.ReadIndexedString();
+            SelectedChallengeRequirements = state.ReadIndexedString();
 
             // CareerSettings
-            int careerSettingCount = serializer.ReadVariableLengthInt();
+            int careerSettingCount = state.ReadVariableLengthInt();
             CareerSettings = new Array<ECareerSettings>(careerSettingCount);
 
             for (int i = 0; i < careerSettingCount; i++)
-                CareerSettings.Add((ECareerSettings)serializer.Reader.ReadByte());
+                CareerSettings.Add((ECareerSettings)state.Reader.ReadByte());
 
-            // DisabledUnlockResources
-            int disabledUnlockResourceCount = serializer.ReadVariableLengthInt();
-            DisabledUnlockResources = new Array<String>(disabledUnlockResourceCount);
+            DisabledUnlockResources = new Array<String>();
+            DisabledUnlockResources.DeserializeStateObject(state);
 
-            for (int i = 0; i < disabledUnlockResourceCount; i++)
-                DisabledUnlockResources.Add(serializer.ReadIndexedString());
+            TrackedLeaderboardStats = new Array<String>();
+            TrackedLeaderboardStats.DeserializeStateObject(state);
 
-            // TrackedLeaderboardStats
-            int trackedLeaderboardStatsCount = serializer.ReadVariableLengthInt();
-            TrackedLeaderboardStats = new Array<String>(trackedLeaderboardStatsCount);
-
-            for (int i = 0; i < trackedLeaderboardStatsCount; i++)
-                TrackedLeaderboardStats.Add(serializer.ReadIndexedString());
-
-            CombatHonorsEnabled = serializer.Reader.ReadBooleanStrict();
-            Creator = serializer.ReadIndexedString();
-            CreatedTimestamp = serializer.Reader.ReadInt64();
-            TeamVoiceChat = serializer.Reader.ReadBooleanStrict();
-            PartiesAllowed = serializer.Reader.ReadBooleanStrict();
-            PreGameLobbyWaitTime = serializer.ReadVariableLengthInt();
+            CombatHonorsEnabled = state.Reader.ReadBooleanStrict();
+            Creator = state.ReadIndexedString();
+            CreatedTimestamp = state.Reader.ReadInt64();
+            TeamVoiceChat = state.Reader.ReadBooleanStrict();
+            PartiesAllowed = state.Reader.ReadBooleanStrict();
+            PreGameLobbyWaitTime = state.ReadVariableLengthInt();
         }
     }
 }

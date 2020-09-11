@@ -3,16 +3,16 @@
     // No reflection
     public class PickUpDatabaseGame
     {
-        public void ReadSave(SaveDataSerializer serializer)
+        public void ReadSave(SaveState state)
         {
             // pudb
-            int count = serializer.ReadVariableLengthInt();
+            int count = state.ReadVariableLengthInt();
 
             for (int i = 0; i < count; i++)
             {
-                var unknownGUID = serializer.ReadIndexedGUID();
-                int unknown1 = serializer.ReadVariableLengthInt();
-                int unknown2 = serializer.ReadVariableLengthInt();
+                var unknownGUID = state.ReadIndexedGUID();
+                int unknown1 = state.ReadVariableLengthInt();
+                int unknown2 = state.ReadVariableLengthInt();
             }
         }
     }

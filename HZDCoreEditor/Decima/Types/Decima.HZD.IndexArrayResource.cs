@@ -1,4 +1,3 @@
-using BinaryStreamExtensions;
 using System.IO;
 
 namespace Decima.HZD

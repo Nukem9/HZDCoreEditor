@@ -3,27 +3,27 @@
     [RTTI.Serializable(0xEB18FAD2ABAD4F96)]
     public class MenuBadgeManager : StateObject, RTTI.ISaveSerializable
     {
-        public void DeserializeStateObject(SaveDataSerializer serializer)
+        public void DeserializeStateObject(SaveState state)
         {
-            serializer.ManuallyResolveClassMembers(typeof(MenuBadgeManager), this);
+            state.DeserializeObjectClassMembers(typeof(MenuBadgeManager), this);
 
             // MBMB
-            int counter1 = serializer.ReadVariableLengthOffset();
+            int counter1 = state.ReadVariableLengthOffset();
 
             for (int i = 0; i < counter1; i++)
             {
-                var guid = serializer.ReadIndexedGUID();
+                var guid = state.ReadIndexedGUID();
             }
 
-            int counter2 = serializer.ReadVariableLengthOffset();
+            int counter2 = state.ReadVariableLengthOffset();
 
             for (int i = 0; i < counter2; i++)
             {
-                int counter3 = serializer.ReadVariableLengthOffset();
+                int counter3 = state.ReadVariableLengthOffset();
 
                 for (int j = 0; j < counter3; j++)
                 {
-                    var guid = serializer.ReadIndexedGUID();
+                    var guid = state.ReadIndexedGUID();
                 }
             }
 

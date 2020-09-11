@@ -18,16 +18,16 @@
         [RTTI.Member(12, 0xF0, "Saving", true)] public Array<StreamingRef<EntityResource>> ItemsToTradeIn;
         [RTTI.Member(13, 0x100, "Saving", true)] public Array<int> AmountOfItemsToTradeIn;
 
-        public void DeserializeStateObject(SaveDataSerializer serializer)
+        public void DeserializeStateObject(SaveState state)
         {
-            serializer.ManuallyResolveClassMembers(typeof(GeneratedQuestSave), this);
+            state.DeserializeObjectClassMembers(typeof(GeneratedQuestSave), this);
 
-            int count = serializer.ReadVariableLengthOffset();
+            int count = state.ReadVariableLengthOffset();
 
             for (int i = 0; i < count; i++)
             {
-                var guid1 = serializer.ReadIndexedGUID();
-                var guid2 = serializer.ReadIndexedGUID();
+                var guid1 = state.ReadIndexedGUID();
+                var guid2 = state.ReadIndexedGUID();
             }
         }
     }
