@@ -141,8 +141,7 @@ namespace Decima
             using (var writer = new BinaryWriter(File.Open(destinationPath, allowOverwrite ? FileMode.CreateNew : FileMode.Create, FileAccess.Write)))
             {
                 // Keep a small cache sitting around to avoid excessive allocations
-                byte[] decompressedDataCache = new byte[512 * 1024];
-                Span<byte> decompressedData = decompressedDataCache;
+                Span<byte> decompressedData = new byte[512 * 1024];
 
                 ulong fileDataOffset = fileEntry.DecompressedOffset; // 
                 ulong fileDataLength = fileEntry.DecompressedSize;   // Remainder
@@ -159,7 +158,7 @@ namespace Decima
                     reader.BaseStream.Position = (long)block.Offset;
                     var data = reader.ReadBytes(block.Size);
 
-                    if (!OodleLZ.Decompress(data, decompressedDataCache))
+                    if (!OodleLZ.Decompress(data, decompressedData))
                         throw new InvalidDataException("OodleLZ block decompression failed");
 
                     // Copy data from the adjusted offset within the decompressed buffer. If the file requires another block,
