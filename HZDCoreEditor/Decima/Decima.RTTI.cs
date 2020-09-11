@@ -11,13 +11,15 @@ namespace Decima
     {
         private static readonly Dictionary<ulong, Type> TypeIdLookupMap;
         private static readonly Dictionary<Type, OrderedFieldInfo> TypeFieldInfoCache;
+        private static readonly Dictionary<string, string> DotNetTypeToDecima;
 
         public class VirtualRTTIList
         {
-            public readonly Type ClassType;
-            public IReadOnlyCollection<Entry> Members { get { return _members.AsReadOnly(); } }
-            private readonly List<Entry> _members;
-            public readonly List<OrderedFieldInfo.Entry> _resolvedMembers;
+            public Type ClassType { get; private set; }
+            public IReadOnlyList<OrderedFieldInfo.Entry> ResolvedMembers { get { return _ResolvedMembers.AsReadOnly(); } }
+
+            private readonly List<Entry> Members;
+            private readonly List<OrderedFieldInfo.Entry> _ResolvedMembers;
 
             public struct Entry
             {
@@ -29,13 +31,13 @@ namespace Decima
             public VirtualRTTIList(string className, int capacity = 0)
             {
                 ClassType = GetTypeByName(className);
-                _members = new List<Entry>(capacity);
-                _resolvedMembers = new List<OrderedFieldInfo.Entry>();
+                Members = new List<Entry>(capacity);
+                _ResolvedMembers = new List<OrderedFieldInfo.Entry>();
             }
 
             public void Add(string type, string category, string name)
             {
-                _members.Add(new Entry
+                Members.Add(new Entry
                 {
                     Type = type,
                     Category = category,
@@ -47,88 +49,35 @@ namespace Decima
             {
                 var info = GetOrderedFieldsForClass(ClassType);
 
-                foreach (var virtualMember in _members)
+                foreach (var virtualMember in Members)
                 {
-                    bool found = false;
+                    var resolvedMember = info.Members
+                        .Where(x => MatchField(x.Field, virtualMember.Type, virtualMember.Category, virtualMember.Name))
+                        .Single();
 
-                    foreach (var member in info.Members)
-                    {
-                        var memberAttr = member.Field.GetCustomAttribute<MemberAttribute>();
+                    _ResolvedMembers.Add(resolvedMember);
+                }
+            }
 
-                        // Classes can have duplicated member names under different categories. In order to support this in C#,
-                        // I had to prefix some variables with "_" or "CATEGORY_". This is a workaround for those names.
-                        if (memberAttr.Category != virtualMember.Category)
-                            continue;
+            private static bool MatchField(FieldInfo field, string type, string category, string name)
+            {
+                if (GetFieldCategory(field) != category)
+                    return false;
 
-                        if (!FuzzyMatchName(member.Field.Name, virtualMember.Name, memberAttr.Category))
-                            continue;
+                if (GetFieldName(field) != name)
+                    return false;
 
-                        // Similar situation with type names...
-                        if (!FuzzyMatchTypeName(member.Field.FieldType.Name, virtualMember.Type))
-                            continue;
+                string ftn = GetFieldTypeName(field);
 
-                        if (found)
-                            throw new Exception("Member was found twice...?");
-
-                        found = true;
-                        _resolvedMembers.Add(member);
-                    }
-
-                    if (!found)
-                        System.Diagnostics.Debugger.Break();
+                // TODO: Custom int32 type - C# doesn't support typedefs. I can pretend this isn't a problem until I need
+                // to write fields.
+                if (ftn != "int" && type != "int32")
+                {
+                    if (!ftn.Equals(type, StringComparison.OrdinalIgnoreCase))
+                        return false;
                 }
 
-                if (_resolvedMembers.Count != _members.Count)
-                    throw new Exception("A member went unresolved");
-            }
-
-            private static bool FuzzyMatchName(string csName, string rttiName, string category)
-            {
-                if (csName == rttiName)
-                    return true;
-
-                //if (csName[0] == '_' && csName.Substring(1) == rttiName)
-                //    return true;
-
-                if (csName.Replace($"{category}_", "") == rttiName)
-                    return true;
-
-                return false;
-            }
-
-            private static bool FuzzyMatchTypeName(string csName, string rttiName)
-            {
-                if (csName == rttiName)
-                    return true;
-
-                if (csName == typeof(bool).Name && rttiName == "bool")
-                    return true;
-                else if (csName == typeof(float).Name && rttiName == "float")
-                    return true;
-                else if (csName == typeof(int).Name && rttiName == "int")
-                    return true;
-                else if (csName == typeof(int).Name && rttiName == "int32")
-                    return true;
-                else if (csName == typeof(sbyte).Name && rttiName == "int8")
-                    return true;
-                else if (csName == typeof(byte).Name && rttiName == "uint8")
-                    return true;
-                else if (csName == typeof(uint).Name && rttiName == "uint")
-                    return true;
-
-                if (csName.StartsWith("Array") && rttiName.StartsWith("Array_"))
-                    return true;
-
-                if (csName.StartsWith("Ptr") && rttiName.StartsWith("cptr_"))
-                    return true;
-
-                if (csName.StartsWith("StreamingRef") && rttiName.StartsWith("StreamingRef_"))
-                    return true;
-
-                if (csName.StartsWith("Ref") && rttiName.StartsWith("Ref_"))
-                    return true;
-
-                return false;
+                return true;
             }
         }
 
@@ -171,6 +120,20 @@ namespace Decima
                 if (attribute != null)
                     TypeIdLookupMap.Add(attribute.BinaryTypeId, classType);
             }
+
+            DotNetTypeToDecima = new Dictionary<string, string>()
+            {
+                {"Boolean", "bool"},
+                {"SByte", "int8"},
+                {"Byte", "uint8"},
+                {"Int16", "int16"},
+                {"UInt16", "uint16"},
+                {"Int32", "int"},
+                {"UInt32", "uint"},
+                {"Int64", "int64"},
+                {"UInt64", "uint64"},
+                {"Single", "float"},
+            };
         }
 
         public static Type GetTypeByName(string name)
@@ -190,13 +153,66 @@ namespace Decima
             return null;
         }
 
+        public static string GetFieldCategory(FieldInfo field)
+        {
+            return field.GetCustomAttribute<MemberAttribute>()?.Category;
+        }
+
+        public static string GetFieldName(FieldInfo field)
+        {
+            string name = field.Name;
+            var memberAttr = field.GetCustomAttribute<MemberAttribute>();
+
+            //
+            // Decima classes can have duplicated member names under different categories. In order to support it in C#,
+            // I had to prefix some variables with "_" or "CATEGORY_". So here's a workaround.
+            //
+            // Strip the category prefix or "_" prefix for reserved names.
+            //
+            if (memberAttr?.Category.Length > 0)
+                name = name.Replace($"{memberAttr.Category}_", "");
+            else if (name.IndexOf('_') == 0)
+                name = name.Substring(1);
+
+            return name;
+        }
+
+        public static string GetFieldTypeName(FieldInfo field)
+        {
+            // Array<Ref<PlayerParams>> -> Array`1 -> Array_Ref_PlayerParams
+            static string getGenericTypeString(Type type)
+            {
+                string typeName = type.Name;
+
+                if (!type.IsGenericType)
+                {
+                    if (DotNetTypeToDecima.TryGetValue(typeName, out string translatedName))
+                        return translatedName;
+
+                    return typeName;
+                }
+
+                typeName = typeName.Substring(0, typeName.IndexOf('`'));
+
+                foreach (var argType in type.GetGenericArguments())
+                    typeName += $"_{getGenericTypeString(argType)}";
+
+                return typeName;
+            }
+
+            return getGenericTypeString(field.FieldType);
+        }
+
         public static OrderedFieldInfo GetOrderedFieldsForClass(Type type)
         {
             if (TypeFieldInfoCache.TryGetValue(type, out OrderedFieldInfo info))
                 return info;
 
             if (!type.IsDefined(typeof(SerializableAttribute)))
+            {
+                TypeFieldInfoCache.Add(type, null);
                 return null;
+            }
 
             //
             // This insane code tries to replicate HZD's sorting mechanism. Rebuild the class member hierarchy because of a few reasons:
@@ -265,14 +281,22 @@ namespace Decima
             return info;
         }
 
+        public static T CreateObjectInstance<T>() where T : class
+        {
+            return (T)CreateObjectInstance(typeof(T));
+        }
+
         public static object CreateObjectInstance(Type type)
         {
             var objectInstance = Activator.CreateInstance(type);
             var info = GetOrderedFieldsForClass(type);
 
-            // Instantiate bases
-            foreach (var baseClass in info.MIBases)
-                baseClass.SetValue(objectInstance, Activator.CreateInstance(baseClass.FieldType));
+            if (info != null)
+            {
+                // Instantiate bases
+                foreach (var baseClass in info.MIBases)
+                    baseClass.SetValue(objectInstance, Activator.CreateInstance(baseClass.FieldType));
+            }
 
             return objectInstance;
         }
@@ -295,55 +319,7 @@ namespace Decima
             throw new NotImplementedException($"Unhandled object type '{type.FullName}'");
         }
 
-        private static void DeserializeTypeFromField(BinaryReader reader, object instance, FieldInfo field)
-        {
-            field.SetValue(instance, DeserializeType(reader, field.FieldType));
-        }
-
-        private static bool DeserializeObjectType(BinaryReader reader, Type type, out object objectInstance)
-        {
-            if (!type.IsClass && !type.IsValueType)
-            {
-                objectInstance = null;
-                return false;
-            }
-
-            objectInstance = Activator.CreateInstance(type);
-
-            if (objectInstance is ISerializable asSerializable)
-            {
-                // Custom deserialization function implemented. Let the interface do the work.
-                asSerializable.Deserialize(reader);
-            }
-            else
-            {
-                var info = GetOrderedFieldsForClass(type);
-
-                // Instantiate bases
-                foreach (var baseClass in info.MIBases)
-                    baseClass.SetValue(objectInstance, Activator.CreateInstance(baseClass.FieldType));
-
-                // Read members
-                foreach (var member in info.Members)
-                {
-                    if (member.IgnoreBinarySerialization)
-                        continue;
-
-                    if (member.MIBase != null)
-                        DeserializeTypeFromField(reader, member.MIBase.GetValue(objectInstance), member.Field);
-                    else
-                        DeserializeTypeFromField(reader, objectInstance, member.Field);
-                }
-            }
-
-            // Done reading. Now copy what the engine does and notify MsgReadBinary subscribers.
-            if (objectInstance is IExtraBinaryDataCallback asExtraBinaryDataCallback)
-                asExtraBinaryDataCallback.DeserializeExtraData(reader);
-
-            return true;
-        }
-
-        private static bool DeserializeTrivialType(BinaryReader reader, Type type, out object value)
+        public static bool DeserializeTrivialType(BinaryReader reader, Type type, out object value)
         {
             bool valid = true;
 
@@ -365,6 +341,45 @@ namespace Decima
             };
 
             return valid;
+        }
+
+        private static bool DeserializeObjectType(BinaryReader reader, Type type, out object objectInstance)
+        {
+            if (!type.IsClass && !type.IsValueType)
+            {
+                objectInstance = null;
+                return false;
+            }
+
+            objectInstance = CreateObjectInstance(type);
+
+            if (objectInstance is ISerializable asSerializable)
+            {
+                // Custom deserialization function implemented. Let the interface do the work.
+                asSerializable.Deserialize(reader);
+            }
+            else
+            {
+                var info = GetOrderedFieldsForClass(type);
+
+                // Read members
+                foreach (var member in info.Members)
+                {
+                    if (member.IgnoreBinarySerialization)
+                        continue;
+
+                    // Check if this field needs to be applied to an emulated base class
+                    var baseClass = member.MIBase != null ? member.MIBase.GetValue(objectInstance) : objectInstance;
+
+                    member.Field.SetValue(baseClass, DeserializeType(reader, member.Field.FieldType));
+                }
+            }
+
+            // Done reading. Now copy what the engine does and notify MsgReadBinary subscribers.
+            if (objectInstance is IExtraBinaryDataCallback asExtraBinaryDataCallback)
+                asExtraBinaryDataCallback.DeserializeExtraData(reader);
+
+            return true;
         }
     }
 }

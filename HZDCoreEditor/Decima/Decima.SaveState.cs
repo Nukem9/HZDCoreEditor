@@ -336,7 +336,7 @@ namespace Decima
                 throw new InvalidDataException("Trying to deserialize an object that does not match the binary data type");
 
             // Read members
-            foreach (var member in rtti._resolvedMembers)
+            foreach (var member in rtti.ResolvedMembers)
             {
                 // Check if this field needs to be applied to an emulated base class
                 var baseClass = member.MIBase != null ? member.MIBase.GetValue(objectInstance) : objectInstance;

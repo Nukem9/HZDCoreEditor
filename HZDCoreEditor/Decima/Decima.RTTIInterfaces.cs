@@ -70,33 +70,46 @@ namespace Decima
         /// Interface identical to <see cref="ISerializable"/>, but used exclusively for save game data
         /// </summary>
         /// <remarks>
-        /// Ref<>, StreamingRef<>, UUIDRef<>, Ptr<>, WeakPtr<>, Array<>, HashTable<>, HashSet<>, String, WString
-        /// int, uint, int32, uint32
-        /// GGUUID
-        /// RGBAColor
-        /// Mat44
-        /// WorldTransform
-        /// Vec2
-        /// Vec3
-        /// Vec4
-        /// Quat
-        /// Mat34
-        /// RotMatrix
-        /// WorldPosition
-        /// IVec2
-        /// IVec3
-        /// FArc
-        /// FSize
-        /// IRect
-        /// FRect
-        /// FRGBColor
-        /// FRGBAColor
+        /// [X] Ref<>, StreamingRef<>, UUIDRef<>, Ptr<>, WeakPtr<>, Array<>, HashMap<>, HashSet<>, String, WString
+        /// [X] int, uint, int32, uint32
+        /// [X] GGUUID
+        /// [ ] RGBAColor
+        /// [ ] Mat44
+        /// [X] WorldTransform
+        /// [X] Vec2
+        /// [ ] Vec3
+        /// [ ] Vec4
+        /// [ ] Quat
+        /// [ ] Mat34
+        /// [ ] RotMatrix
+        /// [ ] WorldPosition
+        /// [X] IVec2
+        /// [ ] IVec3
+        /// [ ] FArc
+        /// [ ] FSize
+        /// [ ] IRect
+        /// [ ] FRect
+        /// [ ] FRGBColor
+        /// [ ] FRGBAColor
+        /// 
+        /// [X] CountdownTimerManager
+        /// [X] FactDatabase
+        /// [X] GeneratedQuestSave
+        /// [X] MenuBadgeManager
+        /// [X] QuestSystem
+        /// [ ] ScriptMessageQueue
+        /// [ ] StateObject
+        /// [X] Story
+        /// [X] WorldEncounterManager
+        /// 
+        /// [X] QuestSave - Bug. See comments.
+        /// [X] uint128 - Non-native type in C#
         /// </remarks>
         public interface ISaveSerializable
         {
-            public void DeserializeStateObject(SaveDataSerializer serializer) => throw new NotImplementedException();
+            public void DeserializeStateObject(SaveState state) => throw new NotImplementedException();
 
-            public void SerializeStateObject(SaveDataSerializer serializer) => throw new NotImplementedException();
+            public void SerializeStateObject(SaveState state) => throw new NotImplementedException();
         }
 
         /// <summary>
@@ -109,29 +122,6 @@ namespace Decima
             }
 
             public void SerializeExtraData(BinaryWriter writer) => throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Interface identical to <see cref="IExtraBinaryDataCallback"/>, but used exclusively for save game data
-        /// </summary>
-        /// <remarks>
-        /// CountdownTimerManager
-        /// FactDatabase
-        /// GeneratedQuestSave
-        /// MenuBadgeManager
-        /// QuestSystem
-        /// ScriptMessageQueue
-        /// StateObject
-        /// Story
-        /// WorldEncounterManager
-        /// </remarks>
-        public interface ISaveExtraBinaryDataCallback
-        {
-            public void DeserializeStateObjectExtraData(SaveDataSerializer serializer)
-            {
-            }
-
-            public void SerializeStateObjectExtraData(SaveDataSerializer serializer) => throw new NotImplementedException();
         }
     }
 }
