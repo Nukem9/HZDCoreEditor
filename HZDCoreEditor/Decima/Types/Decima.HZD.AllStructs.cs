@@ -316,7 +316,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0xE8E44387F4A3D5CC)]
     public class AIBodyGoalStowWeapon : AIBodyGoal
     {
-        [RTTI.Member(0, 0x28)] public Ptr<AIBodyInterface> Body;
+        [RTTI.Member(0, 0x28)] public CPtr<AIBodyInterface> Body;
     }
 
     [RTTI.Serializable(0x89342C240793D04B)]
@@ -803,8 +803,8 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x30, "General")] public String ShortName;
         [RTTI.Member(1, 0x40, "General")] public RGBAColor Color;
-        [RTTI.Member(2, 0x48, "General")] public Array<Ptr<AIFaction>> Enemies;
-        [RTTI.Member(3, 0x58, "General")] public Array<Ptr<AIFaction>> FriendlyFactionsExludedForLOFChecks;
+        [RTTI.Member(2, 0x48, "General")] public Array<CPtr<AIFaction>> Enemies;
+        [RTTI.Member(3, 0x58, "General")] public Array<CPtr<AIFaction>> FriendlyFactionsExludedForLOFChecks;
         [RTTI.Member(4, 0x68, "General")] public int ClaimGroup;
     }
 
@@ -3847,7 +3847,7 @@ namespace Decima.HZD
     public class ActivateByReactionToEpulseComponentResource : EntityComponentResource
     {
         [RTTI.Member(0, 0x28, "Logic")] public Ref<DamageTypeResource> DamageTypeForEpulseResource;
-        [RTTI.Member(1, 0x30, "Logic")] public Ptr<EntityAction> Action;
+        [RTTI.Member(1, 0x30, "Logic")] public CPtr<EntityAction> Action;
     }
 
     [RTTI.Serializable(0xBC389A5FDFCA3941)]
@@ -4616,8 +4616,8 @@ namespace Decima.HZD
         [RTTI.Member(61, 0x1AB, "VisualEffects")] public bool EnableLaserBeamForAI;
         [RTTI.Member(62, 0x1AC, "VisualEffects")] public EForcedToggleType PlayerFlashlightToggleType;
         [RTTI.Member(63, 0x1B0, "VisualEffects")] public bool EnableFlashlightForAI;
-        [RTTI.Member(64, 0x1B8, "Logic")] public Ptr<EntityAction> FireStartedAction;
-        [RTTI.Member(65, 0x1C0, "Logic")] public Ptr<EntityAction> FireStoppedAction;
+        [RTTI.Member(64, 0x1B8, "Logic")] public CPtr<EntityAction> FireStartedAction;
+        [RTTI.Member(65, 0x1C0, "Logic")] public CPtr<EntityAction> FireStoppedAction;
     }
 
     [RTTI.Serializable(0x27B95368DF6AAF4)]
@@ -4640,10 +4640,10 @@ namespace Decima.HZD
         [RTTI.Member(4, 0x44, "Logic")] public float AimRaycastLength;
         [RTTI.Member(5, 0x48, "Logic")] public int AnimationId;
         [RTTI.Member(6, 0x4C, "Logic")] public bool IsSilenced;
-        [RTTI.Member(7, 0x50, "Logic")] public Ptr<EntityAction> SelectedAction;
-        [RTTI.Member(8, 0x58, "Logic")] public Ptr<EntityAction> DeselectedAction;
-        [RTTI.Member(9, 0x60, "Logic")] public Ptr<EntityAction> SelectedActionOnUser;
-        [RTTI.Member(10, 0x68, "Logic")] public Ptr<EntityAction> DeselectedActionOnUser;
+        [RTTI.Member(7, 0x50, "Logic")] public CPtr<EntityAction> SelectedAction;
+        [RTTI.Member(8, 0x58, "Logic")] public CPtr<EntityAction> DeselectedAction;
+        [RTTI.Member(9, 0x60, "Logic")] public CPtr<EntityAction> SelectedActionOnUser;
+        [RTTI.Member(10, 0x68, "Logic")] public CPtr<EntityAction> DeselectedActionOnUser;
         [RTTI.Member(11, 0x70, "EjectSettings")] public Array<Ref<EjectLocationResource>> EjectLocations;
         [RTTI.Member(12, 0x80, "EjectSettings")] public bool ForceThirdPersonEjectLocations;
         [RTTI.Member(13, 0x88, "Logic")] public Ref<WeaponAccuracyResource> AccuracyResource;
@@ -4751,7 +4751,7 @@ namespace Decima.HZD
     public class AnimatedLocatorInstance : LocatorInstance
     {
         [RTTI.Member(0, 0x60, "General")] public WorldTransform Orientation;
-        [RTTI.Member(1, 0xE0, "General")] public Ptr<LocatorInstance> ParentLocator;
+        [RTTI.Member(1, 0xE0, "General")] public CPtr<LocatorInstance> ParentLocator;
     }
 
     [RTTI.Serializable(0x86D45CAE02A4A643)]
@@ -5303,7 +5303,7 @@ namespace Decima.HZD
     public class AnnotationInstance : WorldNode
     {
         [RTTI.Member(0, 0x60, "General")] public Ref<AnnotationResource> Resource;
-        [RTTI.Member(1, 0x68, "General")] public Array<Ptr<AnnotationPrimitiveInstance>> PrimitiveInstances;
+        [RTTI.Member(1, 0x68, "General")] public Array<CPtr<AnnotationPrimitiveInstance>> PrimitiveInstances;
         [RTTI.Member(2, 0x80, "Logic")] public bool Enabled;
     }
 
@@ -5329,7 +5329,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0xA7C4A04D254AE36)]
     public class AnnotationPrimitiveInstance : CoreObject
     {
-        [RTTI.Member(0, 0x40, "General")] public Ptr<AnnotationPrimitive> Primitive;
+        [RTTI.Member(0, 0x40, "General")] public CPtr<AnnotationPrimitive> Primitive;
         [RTTI.Member(1, 0x48, "General")] public Ref<AnnotationInstance> Instance;
         [RTTI.Member(2, 0x50, "General")] public BoundingBox3 BoundingBox;
     }
@@ -5795,10 +5795,10 @@ namespace Decima.HZD
         [RTTI.Member(15, 0x198, "Representation")] public String ArmLocalizerTag;
         [RTTI.Member(16, 0x1A0, "Representation")] public String DefuseLocalizerTag;
         [RTTI.Member(17, 0x1A8, "Properties")] public Ref<FloatProperty> ArmPercentageProperty;
-        [RTTI.Member(18, 0x1B0, "Actions")] public Ptr<EntityAction> ExplosiveArmedAction;
-        [RTTI.Member(19, 0x1B8, "Actions")] public Ptr<EntityAction> ExplosiveRemovedAction;
-        [RTTI.Member(20, 0x1C0, "Actions")] public Ptr<EntityAction> EnabledAction;
-        [RTTI.Member(21, 0x1C8, "Actions")] public Ptr<EntityAction> DisabledAction;
+        [RTTI.Member(18, 0x1B0, "Actions")] public CPtr<EntityAction> ExplosiveArmedAction;
+        [RTTI.Member(19, 0x1B8, "Actions")] public CPtr<EntityAction> ExplosiveRemovedAction;
+        [RTTI.Member(20, 0x1C0, "Actions")] public CPtr<EntityAction> EnabledAction;
+        [RTTI.Member(21, 0x1C8, "Actions")] public CPtr<EntityAction> DisabledAction;
     }
 
     [RTTI.Serializable(0xD791D036CA09375E)]
@@ -6340,8 +6340,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0x87986F605B454482)]
     public class BlindableComponentResource : EntityComponentResource
     {
-        [RTTI.Member(0, 0x28, "Logic")] public Ptr<EntityAction> BlindedAction;
-        [RTTI.Member(1, 0x30, "Logic")] public Ptr<EntityAction> UnBlindedAction;
+        [RTTI.Member(0, 0x28, "Logic")] public CPtr<EntityAction> BlindedAction;
+        [RTTI.Member(1, 0x30, "Logic")] public CPtr<EntityAction> UnBlindedAction;
         [RTTI.Member(2, 0x38, "Logic")] public float MaxBlindingAngle;
         [RTTI.Member(3, 0x3C, "Logic")] public float BlindableRadius;
         [RTTI.Member(4, 0x40, "Logic")] public String BlindingHelperName;
@@ -6697,7 +6697,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x358A3DFDD9237AB8)]
     public class BuddyContextualOrderResource : ContextualOrderResource
     {
-        [RTTI.Member(0, 0xA0, "Logic")] public Ptr<EntityAction> ActionOnBuddy;
+        [RTTI.Member(0, 0xA0, "Logic")] public CPtr<EntityAction> ActionOnBuddy;
         [RTTI.Member(1, 0xA8, "Logic")] public bool CanBeOverruled;
     }
 
@@ -6767,7 +6767,7 @@ namespace Decima.HZD
         [RTTI.Member(17, 0x2B0, "Ricochet")] public int MaximumHits;
         [RTTI.Member(18, 0x2B4, "Ricochet")] public float RandomRicochetAngle;
         [RTTI.Member(19, 0x2B8, "Ricochet")] public float ChanceModifier;
-        [RTTI.Member(20, 0x2C0, "Impact")] public Ptr<EntityAction> Impact_BulletImpactAction;
+        [RTTI.Member(20, 0x2C0, "Impact")] public CPtr<EntityAction> Impact_BulletImpactAction;
         [RTTI.Member(21, 0x2C8, "Charged")] public Ref<ChargedValueFloat> DamageMultiplier;
         [RTTI.Member(22, 0x2D0, "Charged")] public Ref<ChargedValueEntityAction> Charged_BulletImpactAction;
     }
@@ -7496,7 +7496,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0xC612BB3CC01B11CF)]
     public class CancelDelayedActionAction : EntityAction
     {
-        [RTTI.Member(0, 0x30, "Logic")] public Ptr<DelayedAction> Action;
+        [RTTI.Member(0, 0x30, "Logic")] public CPtr<DelayedAction> Action;
     }
 
     [RTTI.Serializable(0xBA8F130D56FFF3D2)]
@@ -7526,7 +7526,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0xDC68936AA6E23DA2)]
     public class CaptureAndHoldAreaFactionSettings : Resource
     {
-        [RTTI.Member(0, 0x28, "Logic")] public Ptr<AIFaction> Faction;
+        [RTTI.Member(0, 0x28, "Logic")] public CPtr<AIFaction> Faction;
         [RTTI.Member(1, 0x30, "Logic")] public int CapturePlayerCap;
         [RTTI.Member(2, 0x34, "Logic")] public int RecapturePlayerCap;
         [RTTI.Member(3, 0x38, "Logic")] public bool AllowBlockProgress;
@@ -7855,7 +7855,7 @@ namespace Decima.HZD
         [RTTI.Member(1, 0x38, "Logic")] public Ref<UITexture> UIIconTexture;
         [RTTI.Member(2, 0x40, "Logic")] public Ref<LocalizedTextResource> DisplayName;
         [RTTI.Member(3, 0x48, "Logic")] public Ref<LocalizedTextResource> DisplayDescription;
-        [RTTI.Member(4, 0x50, "Logic")] public Ptr<CharacterUpgradeSet> Set;
+        [RTTI.Member(4, 0x50, "Logic")] public CPtr<CharacterUpgradeSet> Set;
     }
 
     [RTTI.Serializable(0x6B0317ED49BB618)]
@@ -7888,7 +7888,7 @@ namespace Decima.HZD
     public class ChargedThresholdEntityAction
     {
         [RTTI.Member(0, 0x0, "Logic")] public float RequiredMagnitude;
-        [RTTI.Member(1, 0x8, "Logic")] public Ptr<EntityAction> Value;
+        [RTTI.Member(1, 0x8, "Logic")] public CPtr<EntityAction> Value;
     }
 
     [RTTI.Serializable(0x113B054D8CF76A52)]
@@ -8506,8 +8506,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0x1C60F3A8494EA9A7)]
     public class ConditionalAction : EntityAction
     {
-        [RTTI.Member(0, 0x30, "Logic")] public Ptr<EntityAction> Action;
-        [RTTI.Member(1, 0x38, "Logic")] public Ptr<EntityAction> ElseAction;
+        [RTTI.Member(0, 0x30, "Logic")] public CPtr<EntityAction> Action;
+        [RTTI.Member(1, 0x38, "Logic")] public CPtr<EntityAction> ElseAction;
     }
 
     [RTTI.Serializable(0x1E974428FBAFF3C6)]
@@ -8567,10 +8567,10 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x28, "Logic")] public float ConstructionTime;
         [RTTI.Member(1, 0x2C, "Logic")] public float DeconstructionTime;
-        [RTTI.Member(2, 0x30, "Logic")] public Ptr<EntityAction> StartConstructionAction;
-        [RTTI.Member(3, 0x38, "Logic")] public Ptr<EntityAction> FinishedConstructionAction;
-        [RTTI.Member(4, 0x40, "Logic")] public Ptr<EntityAction> StartDeconstructionAction;
-        [RTTI.Member(5, 0x48, "Logic")] public Ptr<EntityAction> FinishedDeconstructionAction;
+        [RTTI.Member(2, 0x30, "Logic")] public CPtr<EntityAction> StartConstructionAction;
+        [RTTI.Member(3, 0x38, "Logic")] public CPtr<EntityAction> FinishedConstructionAction;
+        [RTTI.Member(4, 0x40, "Logic")] public CPtr<EntityAction> StartDeconstructionAction;
+        [RTTI.Member(5, 0x48, "Logic")] public CPtr<EntityAction> FinishedDeconstructionAction;
         [RTTI.Member(6, 0x50, "Sound")] public Ref<SoundResource> ConstructingSoundResource;
         [RTTI.Member(7, 0x58, "Sound")] public Ref<SoundResource> DeconstructingSoundResource;
     }
@@ -8583,7 +8583,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0xE8A6F7CD26EFDF96)]
     public class ContactWithEntityComponentResource : EntityComponentResource
     {
-        [RTTI.Member(0, 0x28, "Logic")] public Ptr<EntityAction> OnContactEntityAction;
+        [RTTI.Member(0, 0x28, "Logic")] public CPtr<EntityAction> OnContactEntityAction;
     }
 
     [RTTI.Serializable(0xBDD4F4A43305BBA4)]
@@ -8813,8 +8813,8 @@ namespace Decima.HZD
         [RTTI.Member(0, 0x28, "Logic")] public Array<Ref<ContextualOrderResource>> EntityOrders;
         [RTTI.Member(1, 0x38, "Logic")] public Array<Ref<ContextualOrderResource>> WorldOrders;
         [RTTI.Member(2, 0x48, "Logic")] public Array<Ref<ContextualOrderResource>> SelfOrders;
-        [RTTI.Member(3, 0x58, "Logic")] public Ptr<EntityAction> ActivateAction;
-        [RTTI.Member(4, 0x60, "Logic")] public Ptr<EntityAction> DeactivateAction;
+        [RTTI.Member(3, 0x58, "Logic")] public CPtr<EntityAction> ActivateAction;
+        [RTTI.Member(4, 0x60, "Logic")] public CPtr<EntityAction> DeactivateAction;
     }
 
     [RTTI.Serializable(0x488E6AAD21E023F1)]
@@ -8830,8 +8830,8 @@ namespace Decima.HZD
         [RTTI.Member(7, 0x78, "Logic")] public bool PreventUseLocations;
         [RTTI.Member(8, 0x80, "Representation")] public Ref<Texture> RadialMenuTexture;
         [RTTI.Member(9, 0x88, "Representation")] public String StatusTextID;
-        [RTTI.Member(10, 0x90, "Logic")] public Ptr<EntityAction> ActionOnPlayer;
-        [RTTI.Member(11, 0x98, "Logic")] public Ptr<EntityAction> ActionOnTarget;
+        [RTTI.Member(10, 0x90, "Logic")] public CPtr<EntityAction> ActionOnPlayer;
+        [RTTI.Member(11, 0x98, "Logic")] public CPtr<EntityAction> ActionOnTarget;
     }
 
     [RTTI.Serializable(0xB954BE4EB3BEC25F)]
@@ -9499,7 +9499,7 @@ namespace Decima.HZD
         [RTTI.Member(14, 0xD0, "Logic")] public float AlignWithReflectionVectorFactor;
         [RTTI.Member(15, 0xD4, "Logic")] public ECreateAsChild CreateAsChild;
         [RTTI.Member(16, 0xD8, "Logic")] public ECreateEntityFactionOverride FactionOverride;
-        [RTTI.Member(17, 0xE0, "Logic")] public Ptr<EntityAction> EntityAction;
+        [RTTI.Member(17, 0xE0, "Logic")] public CPtr<EntityAction> EntityAction;
         [RTTI.Member(18, 0xE8, "Logic")] public ECreateEntityLifetime EntityLifetime;
     }
 
@@ -9802,7 +9802,7 @@ namespace Decima.HZD
         [RTTI.Member(4, 0x330, "Logic")] public float DamagePerSecondOverride;
         [RTTI.Member(5, 0x334, "Logic")] public float RadiusOverride;
         [RTTI.Member(6, 0x360, "AI")] public float DangerAreaRadiusOverride;
-        [RTTI.Member(7, 0x390, "Logic")] public Ptr<DamageTypeResource> DamageTypeResourceOverride;
+        [RTTI.Member(7, 0x390, "Logic")] public CPtr<DamageTypeResource> DamageTypeResourceOverride;
     }
 
     [RTTI.Serializable(0xA617B06C0F166693)]
@@ -10798,7 +10798,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x7E7E4997B8ACAE8A)]
     public class DelayedAction : EntityAction
     {
-        [RTTI.Member(0, 0x30, "Logic")] public Ptr<EntityAction> Action;
+        [RTTI.Member(0, 0x30, "Logic")] public CPtr<EntityAction> Action;
         [RTTI.Member(1, 0x38, "Logic")] public float Delay;
         [RTTI.Member(2, 0x3C, "Logic")] public float RandomDelay;
     }
@@ -10910,7 +10910,7 @@ namespace Decima.HZD
         [RTTI.Member(1, 0x30)] public Ref<DestructibilityPart> PartA;
         [RTTI.Member(2, 0x38)] public Ref<DestructibilityPart> PartB;
         [RTTI.Member(3, 0x40)] public Ref<PhysicsConstraintResource> Resource;
-        [RTTI.Member(4, 0x48)] public Ptr<EntityAction> BrokenAction;
+        [RTTI.Member(4, 0x48)] public CPtr<EntityAction> BrokenAction;
         [RTTI.Member(5, 0x50)] public String ReferenceFrameHelperNode;
     }
 
@@ -10928,10 +10928,10 @@ namespace Decima.HZD
         [RTTI.Member(1, 0x30)] public Ref<DamageTypeGroup> ReactOnDamageTypeGroup;
         [RTTI.Member(2, 0x38)] public float DamageModifier;
         [RTTI.Member(3, 0x3C)] public float CoreDamageModifier;
-        [RTTI.Member(4, 0x40)] public Ptr<EntityAction> HitAction;
+        [RTTI.Member(4, 0x40)] public CPtr<EntityAction> HitAction;
         [RTTI.Member(5, 0x48)] public Ref<GraphProgramResource> HitProgram;
         [RTTI.Member(6, 0x50)] public Ref<OverrideGraphProgramResource> HitOverrideProgram;
-        [RTTI.Member(7, 0x58)] public Ptr<EntityAction> TransitionAction;
+        [RTTI.Member(7, 0x58)] public CPtr<EntityAction> TransitionAction;
         [RTTI.Member(8, 0x60)] public Ref<GraphProgramResource> TransitionProgram;
         [RTTI.Member(9, 0x68)] public Ref<OverrideGraphProgramResource> TransitionOverrideProgram;
         [RTTI.Member(10, 0x70)] public Ref<DestructibilityPartStateResource> TransitionPartState;
@@ -10993,13 +10993,13 @@ namespace Decima.HZD
         [RTTI.Member(13, 0xA4, "PhysicsCollision")] public float AppliedImpulseFactor;
         [RTTI.Member(14, 0xA8, "PhysicsCollision")] public float MinDamagerColliderMass;
         [RTTI.Member(15, 0xAC, "PhysicsCollision")] public float MaxAppliedDamage;
-        [RTTI.Member(16, 0xB0, "State")] public Ptr<EntityAction> ActivateAction;
-        [RTTI.Member(17, 0xB8, "State")] public Ptr<EntityAction> MaximumHealthAction;
+        [RTTI.Member(16, 0xB0, "State")] public CPtr<EntityAction> ActivateAction;
+        [RTTI.Member(17, 0xB8, "State")] public CPtr<EntityAction> MaximumHealthAction;
         [RTTI.Member(18, 0xC0, "State")] public String HealthShaderVariableName;
         [RTTI.Member(19, 0xC8, "State")] public Ref<CurveResource> HealthShaderVariableCurve;
         [RTTI.Member(20, 0xD0, "State")] public bool ApplyHealthShaderOnPart;
         [RTTI.Member(21, 0xD8, "State")] public Array<Vec3> ElectricityConnectionPositions;
-        [RTTI.Member(22, 0xE8, "State")] public Ptr<EntityAction> HealthChangedAction;
+        [RTTI.Member(22, 0xE8, "State")] public CPtr<EntityAction> HealthChangedAction;
     }
 
     [RTTI.Serializable(0x1D5B6FEF9A52CBB2)]
@@ -11035,8 +11035,8 @@ namespace Decima.HZD
         [RTTI.Member(22, 0xC0, "Logic")] public float DamageTickTime;
         [RTTI.Member(23, 0xC4, "Logic")] public float DamagePerTick;
         [RTTI.Member(24, 0xC8, "Logic")] public float SelfDestructHealthLimit;
-        [RTTI.Member(25, 0xD0, "Logic")] public Ptr<EntityAction> DeathAction;
-        [RTTI.Member(26, 0xD8, "Logic")] public Ptr<EntityAction> HealthChangedAction;
+        [RTTI.Member(25, 0xD0, "Logic")] public CPtr<EntityAction> DeathAction;
+        [RTTI.Member(26, 0xD8, "Logic")] public CPtr<EntityAction> HealthChangedAction;
         [RTTI.Member(27, 0xE0, "Network")] public bool UseSimpleNetworkReplication;
         [RTTI.Member(28, 0xE4, "AI")] public float FallDamageRange;
         [RTTI.Member(29, 0xE8, "AI")] public float ExplosionRange;
@@ -11059,7 +11059,7 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x0)] public float Time;
         [RTTI.Member(1, 0x4)] public float RandomTimeOffset;
-        [RTTI.Member(2, 0x8)] public Array<Ptr<EntityAction>> Actions;
+        [RTTI.Member(2, 0x8)] public Array<CPtr<EntityAction>> Actions;
     }
 
     [RTTI.Serializable(0x8AD5F6CC87581E91)]
@@ -11245,7 +11245,7 @@ namespace Decima.HZD
         [RTTI.Member(10, 0x128, "Hover")] public Ref<LaserBeamResource> TargetingLaserResource;
         [RTTI.Member(11, 0x130, "Attack")] public float AttackBuffer;
         [RTTI.Member(12, 0x138, "Attack")] public Ref<CurveResource> AttackSpringSpeed;
-        [RTTI.Member(13, 0x140, "Attack")] public Ptr<EntityAction> AttackAction;
+        [RTTI.Member(13, 0x140, "Attack")] public CPtr<EntityAction> AttackAction;
     }
 
     [RTTI.Serializable(0xA8E9455A448365E3)]
@@ -11367,7 +11367,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x6E5141542811093C)]
     public class DiscreteAmmoEjectorResource : AmmoEjectorResource
     {
-        [RTTI.Member(0, 0x1D0, "Logic")] public Ptr<EntityAction> Logic_EjectAction;
+        [RTTI.Member(0, 0x1D0, "Logic")] public CPtr<EntityAction> Logic_EjectAction;
         [RTTI.Member(1, 0x1D8, "VisualEffects")] public Ref<ParticleSystemResource> CaseEjectParticles;
         [RTTI.Member(2, 0x1E0, "VisualEffects")] public Ref<ParticleSystemResource> FirstPersonCaseEjectParticles;
         [RTTI.Member(3, 0x1E8, "VisualEffects")] public Ref<ParticleSystemResource> FirstPersonZoomedCaseEjectParticles;
@@ -11505,7 +11505,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x31FB5727743986D)]
     public class DynamicHelperLocatorInstance : BoneLocatorInstance
     {
-        [RTTI.Member(0, 0x1C0, "Locator")] public Array<Ptr<LocatorInstance>> DependentLocators;
+        [RTTI.Member(0, 0x1C0, "Locator")] public Array<CPtr<LocatorInstance>> DependentLocators;
     }
 
     [RTTI.Serializable(0xFC590E34DB289228)]
@@ -11523,7 +11523,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x10330CF2842C237)]
     public class DynamicQuestManager : RTTIObject
     {
-        [RTTI.Member(0, 0x30, "Saving", true)] public Array<Ptr<GeneratedQuestSave>> Saves;
+        [RTTI.Member(0, 0x30, "Saving", true)] public Array<CPtr<GeneratedQuestSave>> Saves;
     }
 
     [RTTI.Serializable(0x20A7A5E087E59B87)]
@@ -11723,8 +11723,8 @@ namespace Decima.HZD
         [RTTI.Member(3, 0x38, "Logic")] public float BreakBeamOnDistanceTreshold;
         [RTTI.Member(4, 0x40, "Logic")] public String HelperName;
         [RTTI.Member(5, 0x48, "Logic")] public String TargetHelperName;
-        [RTTI.Member(6, 0x50, "Logic")] public Ptr<EntityAction> OnBeamConnectedTargetAction;
-        [RTTI.Member(7, 0x58, "Logic")] public Ptr<EntityAction> OnBeamBrokenTargetAction;
+        [RTTI.Member(6, 0x50, "Logic")] public CPtr<EntityAction> OnBeamConnectedTargetAction;
+        [RTTI.Member(7, 0x58, "Logic")] public CPtr<EntityAction> OnBeamBrokenTargetAction;
     }
 
     [RTTI.Serializable(0x54A9A89636F8DA91)]
@@ -12128,16 +12128,16 @@ namespace Decima.HZD
     public class Entity : CoreObject
     {
         [RTTI.Member(0, 0x0, "General", true)] public uint32 Flags;
-        [RTTI.Member(1, 0x0, "Hierarchy", true)] public Ptr<Entity> Parent;
+        [RTTI.Member(1, 0x0, "Hierarchy", true)] public CPtr<Entity> Parent;
         [RTTI.Member(2, 0x38, "General")] public String Name;
         [RTTI.Member(3, 0x88, "General", true)] public uint32 UpdateStepTicks;
         [RTTI.Member(4, 0x120, "General")] public WorldTransform Orientation;
         [RTTI.Member(5, 0x180, "General")] public StreamingRef<EntityResource> Resource;
         [RTTI.Member(6, 0x1A0, "General", true)] public Ref<EntityActivationPolicy> ActivationPolicy;
-        [RTTI.Member(7, 0x1E0, "Components", true)] public Ptr<Mover> Mover;
-        [RTTI.Member(8, 0x1E8, "Components", true)] public Ptr<Model> Model;
-        [RTTI.Member(9, 0x1F0, "Components", true)] public Ptr<Destructibility> Destructibility;
-        [RTTI.Member(10, 0x228, "General", true)] public Ptr<AIFaction> Faction;
+        [RTTI.Member(7, 0x1E0, "Components", true)] public CPtr<Mover> Mover;
+        [RTTI.Member(8, 0x1E8, "Components", true)] public CPtr<Model> Model;
+        [RTTI.Member(9, 0x1F0, "Components", true)] public CPtr<Destructibility> Destructibility;
+        [RTTI.Member(10, 0x228, "General", true)] public CPtr<AIFaction> Faction;
         [RTTI.Member(11, 0x288, "Components", true)] public EntityComponentContainer Components;
     }
 
@@ -12305,13 +12305,13 @@ namespace Decima.HZD
     public class EntityComponent : RTTIRefObject
     {
         [RTTI.Member(0, 0x30, "General", true)] public Ref<EntityComponentResource> Resource;
-        [RTTI.Member(1, 0x48, "General", true)] public Ptr<Entity> Entity;
+        [RTTI.Member(1, 0x48, "General", true)] public CPtr<Entity> Entity;
     }
 
     [RTTI.Serializable(0x586A4426CAD07C0B)]
     public class EntityComponentContainer
     {
-        [RTTI.Member(0, 0x0, true)] public Array<Ptr<EntityComponent>> Components;
+        [RTTI.Member(0, 0x0, true)] public Array<CPtr<EntityComponent>> Components;
     }
 
     [RTTI.Serializable(0x268C5ABD3EAEC98E)]
@@ -12592,8 +12592,8 @@ namespace Decima.HZD
         [RTTI.Member(14, 0x98, "LOD")] public bool SkipUpdateWhenRepNotVisible;
         [RTTI.Member(15, 0x9C, "LOD")] public float MaxUpdateDistance;
         [RTTI.Member(16, 0xA0, "Logic")] public bool DisableCollisionWithParent;
-        [RTTI.Member(17, 0xA8, "Logic")] public Ptr<EntityAction> InitialAction;
-        [RTTI.Member(18, 0xB0, "Logic")] public Ptr<EntityAction> ContactAction;
+        [RTTI.Member(17, 0xA8, "Logic")] public CPtr<EntityAction> InitialAction;
+        [RTTI.Member(18, 0xB0, "Logic")] public CPtr<EntityAction> ContactAction;
         [RTTI.Member(19, 0xB8, "Logic")] public Array<Ref<EntityComponentResource>> EntityComponentResources;
         [RTTI.Member(20, 0xC8, "Logic")] public float EcotopeEffectOverrideValue;
         [RTTI.Member(21, 0xCC, "Logic")] public int8 EcotopeIndexOverrideValue;
@@ -12753,15 +12753,15 @@ namespace Decima.HZD
     [RTTI.Serializable(0x5300A41A9B05FC2C)]
     public class EntityState : Resource
     {
-        [RTTI.Member(0, 0x28, "Logic")] public Ptr<EntityAction> EnterStateAction;
-        [RTTI.Member(1, 0x30, "Logic")] public Ptr<EntityAction> ExitStateAction;
+        [RTTI.Member(0, 0x28, "Logic")] public CPtr<EntityAction> EnterStateAction;
+        [RTTI.Member(1, 0x30, "Logic")] public CPtr<EntityAction> ExitStateAction;
     }
 
     [RTTI.Serializable(0x245D8067EEFC5F97)]
     public class EntityStateAction : ConditionalAction
     {
-        [RTTI.Member(0, 0x40, "Logic")] public Ptr<EntityStateMachineResource> StateMachineResource;
-        [RTTI.Member(1, 0x48, "Logic")] public Ptr<EntityState> State;
+        [RTTI.Member(0, 0x40, "Logic")] public CPtr<EntityStateMachineResource> StateMachineResource;
+        [RTTI.Member(1, 0x48, "Logic")] public CPtr<EntityState> State;
     }
 
     [RTTI.Serializable(0x631F31B85B383DC1)]
@@ -12804,8 +12804,8 @@ namespace Decima.HZD
         [RTTI.Member(10, 0x52, "Logic")] public bool ShouldBeDispensableAfterStick;
         [RTTI.Member(11, 0x58, "Logic")] public Ref<DispensableCategoryResource> DispensableCategory;
         [RTTI.Member(12, 0x60, "Representation")] public Ref<SoundResource> StickSoundResource;
-        [RTTI.Member(13, 0x68, "Logic")] public Ptr<EntityAction> StuckAction;
-        [RTTI.Member(14, 0x70, "Logic")] public Ptr<EntityAction> StickIgnoredAction;
+        [RTTI.Member(13, 0x68, "Logic")] public CPtr<EntityAction> StuckAction;
+        [RTTI.Member(14, 0x70, "Logic")] public CPtr<EntityAction> StickIgnoredAction;
         [RTTI.Member(15, 0x78, "Logic")] public Ref<GraphProgramResource> StickConditionProgram;
         [RTTI.Member(16, 0x80, "Logic")] public bool HasCollisionWhileStuck;
         [RTTI.Member(17, 0x88, "Logic")] public Ref<MoverResource> UnstickMoverResource;
@@ -13061,32 +13061,32 @@ namespace Decima.HZD
     [RTTI.Serializable(0x4EA95333E7CEFFB0)]
     public class ExecuteOnActivatorAction : EntityAction
     {
-        [RTTI.Member(0, 0x30, "Logic")] public Ptr<EntityAction> Action;
+        [RTTI.Member(0, 0x30, "Logic")] public CPtr<EntityAction> Action;
     }
 
     [RTTI.Serializable(0x517D35221E1A2A17)]
     public class ExecuteOnChildAction : EntityAction
     {
-        [RTTI.Member(0, 0x30, "Logic")] public Ptr<EntityAction> Action;
+        [RTTI.Member(0, 0x30, "Logic")] public CPtr<EntityAction> Action;
         [RTTI.Member(1, 0x38, "Logic")] public bool Recursive;
     }
 
     [RTTI.Serializable(0xB28BBB7765FC94B9)]
     public class ExecuteOnInstigatorAction : EntityAction
     {
-        [RTTI.Member(0, 0x30, "Logic")] public Ptr<EntityAction> Action;
+        [RTTI.Member(0, 0x30, "Logic")] public CPtr<EntityAction> Action;
     }
 
     [RTTI.Serializable(0xC56B8810D9EB04FA)]
     public class ExecuteOnParentAction : EntityAction
     {
-        [RTTI.Member(0, 0x30, "Logic")] public Ptr<EntityAction> Action;
+        [RTTI.Member(0, 0x30, "Logic")] public CPtr<EntityAction> Action;
     }
 
     [RTTI.Serializable(0x366A9A19F76C0869)]
     public class ExecuteOnSequenceAction : EntityAction
     {
-        [RTTI.Member(0, 0x30, "Logic")] public Ptr<EntityAction> Action;
+        [RTTI.Member(0, 0x30, "Logic")] public CPtr<EntityAction> Action;
     }
 
     [RTTI.Serializable(0x10284AFC8095BA8A)]
@@ -13248,7 +13248,7 @@ namespace Decima.HZD
     public class ExposedEntityActionInfo
     {
         [RTTI.Member(0, 0x0)] public String Identifier;
-        [RTTI.Member(1, 0x8)] public Ptr<EntityAction> EntityAction;
+        [RTTI.Member(1, 0x8)] public CPtr<EntityAction> EntityAction;
     }
 
     [RTTI.Serializable(0x6044E40CAC978735)]
@@ -13372,7 +13372,7 @@ namespace Decima.HZD
         [RTTI.Member(0, 0x28, "Logic")] public float ExtraArmor;
         [RTTI.Member(1, 0x2C, "Logic")] public float DepletionDelay;
         [RTTI.Member(2, 0x30, "Logic")] public float DepletionRate;
-        [RTTI.Member(3, 0x38, "Logic")] public Ptr<EntityAction> DepletedAction;
+        [RTTI.Member(3, 0x38, "Logic")] public CPtr<EntityAction> DepletedAction;
         [RTTI.Member(4, 0x40, "Logic")] public Array<Ref<DamageTypeResource>> ExcludedDamageTypes;
     }
 
@@ -15248,7 +15248,7 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x28, "Logic")] public String GrabHelperName;
         [RTTI.Member(1, 0x30, "Logic")] public int GrabObjectAnimationVariable;
-        [RTTI.Member(2, 0x38, "Logic")] public Ptr<EntityAction> ThrowAction;
+        [RTTI.Member(2, 0x38, "Logic")] public CPtr<EntityAction> ThrowAction;
     }
 
     [RTTI.Serializable(0xF8298F67758EC033)]
@@ -17418,8 +17418,8 @@ namespace Decima.HZD
         [RTTI.Member(6, 0x50, "Logic")] public bool LimitRegenerationWhenLost;
         [RTTI.Member(7, 0x51, "Logic")] public bool ResetRegenerationWhenGained;
         [RTTI.Member(8, 0x54, "Logic")] public float HealthPackRechargeTime;
-        [RTTI.Member(9, 0x58, "Logic")] public Ptr<EntityAction> ActivateAction;
-        [RTTI.Member(10, 0x60, "Logic")] public Ptr<EntityAction> DeactivateAction;
+        [RTTI.Member(9, 0x58, "Logic")] public CPtr<EntityAction> ActivateAction;
+        [RTTI.Member(10, 0x60, "Logic")] public CPtr<EntityAction> DeactivateAction;
         [RTTI.Member(11, 0x68, "Logic")] public Ref<SoundMixStateResource> SoundMixState;
     }
 
@@ -18610,8 +18610,8 @@ namespace Decima.HZD
         [RTTI.Member(6, 0x2E, "Logic")] public bool SupportsLCrouchIdle;
         [RTTI.Member(7, 0x2F, "Logic")] public bool SupportsLCrouchTactical;
         [RTTI.Member(8, 0x30, "Logic")] public bool SupportsLCrouchCombat;
-        [RTTI.Member(9, 0x38, "Logic")] public Ptr<EntityAction> ActivateAction;
-        [RTTI.Member(10, 0x40, "Logic")] public Ptr<EntityAction> DeactivateAction;
+        [RTTI.Member(9, 0x38, "Logic")] public CPtr<EntityAction> ActivateAction;
+        [RTTI.Member(10, 0x40, "Logic")] public CPtr<EntityAction> DeactivateAction;
         [RTTI.Member(11, 0x48, "Logic")] public Ref<SkinnedModelResource> ModelResource;
         [RTTI.Member(12, 0x50, "Logic")] public EFacialExpression FacialExpression;
         [RTTI.Member(13, 0x54, "Logic")] public bool OverrideHumanoidFacialExpression;
@@ -18858,7 +18858,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0xA15BF43D1BDBD5ED)]
     public class IgnoreCollisionWithEntitiesComponentResource : EntityComponentResource
     {
-        [RTTI.Member(0, 0x28, "Logic")] public Array<Ptr<EntityResource>> EntityResourcesToIgnore;
+        [RTTI.Member(0, 0x28, "Logic")] public Array<CPtr<EntityResource>> EntityResourcesToIgnore;
     }
 
     [RTTI.Serializable(0x16AF386833567ADE)]
@@ -19199,7 +19199,7 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x0, "Logic")] public WeakPtr<Player> Player;
         [RTTI.Member(1, 0x18, "Logic")] public WeakPtr<Entity> Entity;
-        [RTTI.Member(2, 0x30, "Logic")] public Ptr<AIFaction> Faction;
+        [RTTI.Member(2, 0x30, "Logic")] public CPtr<AIFaction> Faction;
         [RTTI.Member(3, 0x38, "Logic")] public uint8 Flags;
     }
 
@@ -19335,8 +19335,8 @@ namespace Decima.HZD
         [RTTI.Member(18, 0x270, "Logic")] public bool MustStowWeapons;
         [RTTI.Member(19, 0x271, "Logic")] public bool MustResetLook;
         [RTTI.Member(20, 0x272, "Logic")] public bool CanUserBeMortallyWounded;
-        [RTTI.Member(21, 0x278, "Logic")] public Ptr<EntityAction> StartAttachAction;
-        [RTTI.Member(22, 0x280, "Logic")] public Ptr<EntityAction> StopDetachAction;
+        [RTTI.Member(21, 0x278, "Logic")] public CPtr<EntityAction> StartAttachAction;
+        [RTTI.Member(22, 0x280, "Logic")] public CPtr<EntityAction> StopDetachAction;
         [RTTI.Member(23, 0x288, "Representation")] public bool OverridesUserName;
         [RTTI.Member(24, 0x28C, "Logic")] public EHitResponse HitResponse;
         [RTTI.Member(25, 0x290, "Logic")] public bool UseLocomotion;
@@ -19390,10 +19390,10 @@ namespace Decima.HZD
     [RTTI.Serializable(0xCD5D67CD4B8C9CE9)]
     public class InventoryActionAbilityResource : InventoryEntityResource
     {
-        [RTTI.Member(0, 0x230, "Ability")] public Ptr<EntityAction> UseAction;
-        [RTTI.Member(1, 0x238, "Ability")] public Ptr<EntityAction> DeactivateAction;
-        [RTTI.Member(2, 0x240, "Ability")] public Ptr<EntityAction> OnDamageReceivedAction;
-        [RTTI.Member(3, 0x248, "Ability")] public Ptr<EntityAction> OnPlayerKilledAction;
+        [RTTI.Member(0, 0x230, "Ability")] public CPtr<EntityAction> UseAction;
+        [RTTI.Member(1, 0x238, "Ability")] public CPtr<EntityAction> DeactivateAction;
+        [RTTI.Member(2, 0x240, "Ability")] public CPtr<EntityAction> OnDamageReceivedAction;
+        [RTTI.Member(3, 0x248, "Ability")] public CPtr<EntityAction> OnPlayerKilledAction;
         [RTTI.Member(4, 0x250, "Ability")] public float Duration;
         [RTTI.Member(5, 0x258, "Ability")] public Ref<FloatProperty> EndTimeProperty;
         [RTTI.Member(6, 0x260, "Ability")] public bool AutoUse;
@@ -19430,8 +19430,8 @@ namespace Decima.HZD
         [RTTI.Member(10, 0x380, "FlashLight")] public float BlindingAngle;
         [RTTI.Member(11, 0x384, "FlashLight")] public float BlindingDistance;
         [RTTI.Member(12, 0x388, "FlashLight")] public bool CanBlindFriendlies;
-        [RTTI.Member(13, 0x390, "FlashLight")] public Ptr<EntityAction> UserTurnsFlashLightOnAction;
-        [RTTI.Member(14, 0x398, "FlashLight")] public Ptr<EntityAction> UserTurnsFlashLightOffAction;
+        [RTTI.Member(13, 0x390, "FlashLight")] public CPtr<EntityAction> UserTurnsFlashLightOnAction;
+        [RTTI.Member(14, 0x398, "FlashLight")] public CPtr<EntityAction> UserTurnsFlashLightOffAction;
         [RTTI.Member(15, 0x3A0, "Animation")] public float FireModeSwitchDuration;
         [RTTI.Member(16, 0x3A4, "Logic")] public bool ShouldUnloadWeaponOnModeSwitch;
         [RTTI.Member(17, 0x3A8, "Animation")] public int ScopeAnimationId;
@@ -19676,11 +19676,11 @@ namespace Decima.HZD
         [RTTI.Member(8, 0x17C, "Animation")] public float QuickWieldTime;
         [RTTI.Member(9, 0x180, "Animation")] public String AdditionalWieldAnimation;
         [RTTI.Member(10, 0x188, "Logic")] public float StowedScale;
-        [RTTI.Member(11, 0x190, "Logic")] public Ptr<EntityAction> WieldAction;
-        [RTTI.Member(12, 0x198, "Logic")] public Ptr<EntityAction> StowAction;
-        [RTTI.Member(13, 0x1A0, "Logic")] public Ptr<EntityAction> StartAimingAction;
-        [RTTI.Member(14, 0x1A8, "Logic")] public Ptr<EntityAction> StopAimingAction;
-        [RTTI.Member(15, 0x1B0, "Logic")] public Ptr<EntityAction> RemovedAction;
+        [RTTI.Member(11, 0x190, "Logic")] public CPtr<EntityAction> WieldAction;
+        [RTTI.Member(12, 0x198, "Logic")] public CPtr<EntityAction> StowAction;
+        [RTTI.Member(13, 0x1A0, "Logic")] public CPtr<EntityAction> StartAimingAction;
+        [RTTI.Member(14, 0x1A8, "Logic")] public CPtr<EntityAction> StopAimingAction;
+        [RTTI.Member(15, 0x1B0, "Logic")] public CPtr<EntityAction> RemovedAction;
         [RTTI.Member(16, 0x1B8, "DisabledTimeAfterUse")] public float Time;
         [RTTI.Member(17, 0x1C0, "Handling")] public Vec3 StandAimOffset;
         [RTTI.Member(18, 0x1D0, "Handling")] public Vec3 CrouchAimOffset;
@@ -19888,7 +19888,7 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x230, "Revive")] public Ref<CurveResource> AimShapeCurve;
         [RTTI.Member(1, 0x238, "Revive")] public Ref<EntityResource> ReviveEntity;
-        [RTTI.Member(2, 0x240, "Revive")] public Ptr<EntityAction> OnReviveAcceptedAction;
+        [RTTI.Member(2, 0x240, "Revive")] public CPtr<EntityAction> OnReviveAcceptedAction;
         [RTTI.Member(3, 0x248, "Revive")] public float RemoveReviveEntityTime;
     }
 
@@ -20206,8 +20206,8 @@ namespace Decima.HZD
     public class JoystickActionsPerFunction
     {
         [RTTI.Member(0, 0x0)] public EDeviceFunction Function;
-        [RTTI.Member(1, 0x8)] public Ptr<EntityAction> PressAction;
-        [RTTI.Member(2, 0x10)] public Ptr<EntityAction> ReleaseAction;
+        [RTTI.Member(1, 0x8)] public CPtr<EntityAction> PressAction;
+        [RTTI.Member(2, 0x10)] public CPtr<EntityAction> ReleaseAction;
         [RTTI.Member(3, 0x18)] public ESetFunctionHandled SetHandled;
     }
 
@@ -20400,8 +20400,8 @@ namespace Decima.HZD
         [RTTI.Member(8, 0x60, "Logic")] public Vec3 LaserDirection;
         [RTTI.Member(9, 0x70, "Logic")] public Vec3 LaserOffset;
         [RTTI.Member(10, 0x80, "Logic")] public float SafetyTime;
-        [RTTI.Member(11, 0x88, "Logic")] public Ptr<EntityAction> TriggerAction;
-        [RTTI.Member(12, 0x90, "Logic")] public Ptr<EntityAction> TriggerActionOnTriggerer;
+        [RTTI.Member(11, 0x88, "Logic")] public CPtr<EntityAction> TriggerAction;
+        [RTTI.Member(12, 0x90, "Logic")] public CPtr<EntityAction> TriggerActionOnTriggerer;
         [RTTI.Member(13, 0x98, "Logic")] public bool TriggeredByDeadEntities;
         [RTTI.Member(14, 0x99, "Logic")] public bool OnlyTriggeredByEnemies;
         [RTTI.Member(15, 0xA0, "Logic")] public Array<String> OnlyTriggeredByEntityTypes;
@@ -20611,7 +20611,7 @@ namespace Decima.HZD
     public class LensFlareInstance : WorldNode
     {
         [RTTI.Member(0, 0x68, "General")] public Ref<LensFlareResource> Resource;
-        [RTTI.Member(1, 0x70, "General")] public Ptr<Light> Following;
+        [RTTI.Member(1, 0x70, "General")] public CPtr<Light> Following;
         [RTTI.Member(2, 0x78, "General")] public float Brightness;
         [RTTI.Member(3, 0x7C, "General")] public bool Background;
         [RTTI.Member(4, 0x80, "General")] public Vec3 Offset;
@@ -21673,8 +21673,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0x84935EE838FB8910)]
     public class LookAtEntitiesComponentResource : EntityComponentResource
     {
-        [RTTI.Member(0, 0x28, "Logic")] public Ptr<EntityAction> StartedLookingAtEntityAction;
-        [RTTI.Member(1, 0x30, "Logic")] public Ptr<EntityAction> StoppedLookingAtEntityAction;
+        [RTTI.Member(0, 0x28, "Logic")] public CPtr<EntityAction> StartedLookingAtEntityAction;
+        [RTTI.Member(1, 0x30, "Logic")] public CPtr<EntityAction> StoppedLookingAtEntityAction;
         [RTTI.Member(2, 0x38, "Logic")] public String EntityType;
         [RTTI.Member(3, 0x48, "Logic")] public float Range;
     }
@@ -22370,7 +22370,7 @@ namespace Decima.HZD
         [RTTI.Member(13, 0xD8, "Logic")] public float ImpactAnimationDuration;
         [RTTI.Member(14, 0xDC, "Logic")] public float TargetImpactAnimationSpeed;
         [RTTI.Member(15, 0xE0, "Logic")] public float TargetImpactAnimationDuration;
-        [RTTI.Member(16, 0xE8, "Logic")] public Ptr<EntityAction> DamageAction;
+        [RTTI.Member(16, 0xE8, "Logic")] public CPtr<EntityAction> DamageAction;
         [RTTI.Member(17, 0xF0, "Logic")] public Ref<GraphProgramResource> ModifyDamageGraphResource;
     }
 
@@ -22395,7 +22395,7 @@ namespace Decima.HZD
         [RTTI.Member(9, 0x78, "Logic")] public float ImpactAnimationDuration;
         [RTTI.Member(10, 0x7C, "Logic")] public float TargetImpactAnimationSpeed;
         [RTTI.Member(11, 0x80, "Logic")] public float TargetImpactAnimationDuration;
-        [RTTI.Member(12, 0x88, "Logic")] public Ptr<EntityAction> DamageAction;
+        [RTTI.Member(12, 0x88, "Logic")] public CPtr<EntityAction> DamageAction;
         [RTTI.Member(13, 0x90, "Logic")] public Ref<GraphProgramResource> ModifyDamageGraphResource;
     }
 
@@ -22444,8 +22444,8 @@ namespace Decima.HZD
         [RTTI.Member(11, 0x88, "Animation")] public float InAirMeleeStrikeRadius;
         [RTTI.Member(12, 0x90, "Animation")] public Vec3 InAirMeleeStrikeOffset;
         [RTTI.Member(13, 0xA0, "Animation")] public BoolPropertyLink AllowedPropertyLink;
-        [RTTI.Member(14, 0xA8, "Animation")] public Ptr<EntityAction> StartAttackAction;
-        [RTTI.Member(15, 0xB0, "Animation")] public Ptr<EntityAction> StopAttackAction;
+        [RTTI.Member(14, 0xA8, "Animation")] public CPtr<EntityAction> StartAttackAction;
+        [RTTI.Member(15, 0xB0, "Animation")] public CPtr<EntityAction> StopAttackAction;
         [RTTI.Member(16, 0xB8, "Animation")] public Array<Ref<MeleeWeaponAnimation>> MeleeWeaponAnimations;
         [RTTI.Member(17, 0xC8, "AI")] public Array<Ref<RobotMeleeWeaponExitState>> AnimationExitStates;
         [RTTI.Member(18, 0xD8, "AI")] public Ref<WarpedAnimation> WarpedAnimation;
@@ -22475,8 +22475,8 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x28, "Logic")] public Array<Ref<MeleeWeaponModeResource>> Modes;
         [RTTI.Member(1, 0x38, "Animation")] public float ModeSwitchDuration;
-        [RTTI.Member(2, 0x40, "Logic")] public Ptr<EntityAction> StartBlockAction;
-        [RTTI.Member(3, 0x48, "Logic")] public Ptr<EntityAction> StopBlockAction;
+        [RTTI.Member(2, 0x40, "Logic")] public CPtr<EntityAction> StartBlockAction;
+        [RTTI.Member(3, 0x48, "Logic")] public CPtr<EntityAction> StopBlockAction;
         [RTTI.Member(4, 0x50, "Logic")] public float MeleeMoveMaxTurn;
         [RTTI.Member(5, 0x54, "Logic")] public float HitNoDamageStaggerImpactSeverity;
         [RTTI.Member(6, 0x58, "Logic")] public float HitWorldFloorAngle;
@@ -22537,7 +22537,7 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x20)] public UUIDRef<MenuPageBase> Page;
         [RTTI.Member(1, 0x48)] public Array<OpenMenuParameter> Parameters;
-        [RTTI.Member(2, 0x58)] public Ptr<MenuElementResource> TargetElement;
+        [RTTI.Member(2, 0x58)] public CPtr<MenuElementResource> TargetElement;
     }
 
     [RTTI.Serializable(0xE06614234C9BB106)]
@@ -22562,7 +22562,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x6FB5B5B09684CEB9)]
     public class MenuActionScriptFunction : MenuActionResource
     {
-        [RTTI.Member(0, 0x20)] public Ptr<MenuScriptResource> Script;
+        [RTTI.Member(0, 0x20)] public CPtr<MenuScriptResource> Script;
         [RTTI.Member(1, 0x28)] public String ScriptName;
         [RTTI.Member(2, 0x30)] public String Function;
         [RTTI.Member(3, 0x38)] public Array<String> Arguments;
@@ -22572,7 +22572,7 @@ namespace Decima.HZD
     public class MenuActionSetFocus : MenuActionResource
     {
         [RTTI.Member(0, 0x20)] public EMenuActionFocusType Type;
-        [RTTI.Member(1, 0x28)] public Ptr<MenuVisualResource> TargetElement;
+        [RTTI.Member(1, 0x28)] public CPtr<MenuVisualResource> TargetElement;
         [RTTI.Member(2, 0x30)] public bool FindTargetInChildElements;
     }
 
@@ -22584,7 +22584,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x1F1C65443F513F48)]
     public class MenuActionTagProperty : MenuActionResource
     {
-        [RTTI.Member(0, 0x20)] public Ptr<MenuVisualResource> TargetElement;
+        [RTTI.Member(0, 0x20)] public CPtr<MenuVisualResource> TargetElement;
     }
 
     [RTTI.Serializable(0xF44A1D77CFB1785F)]
@@ -22660,7 +22660,7 @@ namespace Decima.HZD
     public class MenuDataSourceBinding : MenuDataBinding
     {
         [RTTI.Member(0, 0x20)] public String XPath;
-        [RTTI.Member(1, 0x28)] public Ptr<MenuDataResource> DataResource;
+        [RTTI.Member(1, 0x28)] public CPtr<MenuDataResource> DataResource;
     }
 
     [RTTI.Serializable(0x9661FDCBA33DF375)]
@@ -22749,7 +22749,7 @@ namespace Decima.HZD
     public class MenuLayerResource : MenuElementResource
     {
         [RTTI.Member(0, 0x30, "Properties")] public Array<Ref<MenuElementResource>> ChildElements;
-        [RTTI.Member(1, 0x40, "Properties")] public Ptr<MenuElementResource> DefaultFocus;
+        [RTTI.Member(1, 0x40, "Properties")] public CPtr<MenuElementResource> DefaultFocus;
         [RTTI.Member(2, 0x48, "Properties")] public bool ShowLegend;
         [RTTI.Member(3, 0x49, "Properties")] public bool HideMessage;
         [RTTI.Member(4, 0x4C, "Properties")] public float RotationY;
@@ -22760,7 +22760,7 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x20, "Properties")] public ELegendButton Button;
         [RTTI.Member(1, 0x28, "Properties")] public Ref<MenuDataBinding> Text;
-        [RTTI.Member(2, 0x30, "Properties")] public Ptr<MenuLegendResource> TargetLegend;
+        [RTTI.Member(2, 0x30, "Properties")] public CPtr<MenuLegendResource> TargetLegend;
         [RTTI.Member(3, 0x38, "Properties")] public Ref<MenuDataBinding> Enabled;
     }
 
@@ -23328,7 +23328,7 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x108, "Properties")] public Array<Ref<MenuElementResource>> ChildElements;
         [RTTI.Member(1, 0x118, "Properties")] public bool DefaultPane;
-        [RTTI.Member(2, 0x120, "Properties")] public Ptr<MenuVisualResource> DefaultFocus;
+        [RTTI.Member(2, 0x120, "Properties")] public CPtr<MenuVisualResource> DefaultFocus;
     }
 
     [RTTI.Serializable(0x40F2C51C32600B16)]
@@ -23404,11 +23404,11 @@ namespace Decima.HZD
         [RTTI.Member(15, 0x81, "Logic")] public bool EnableMouseHold;
         [RTTI.Member(16, 0x84, "Properties")] public EFloating Align;
         [RTTI.Member(17, 0x88, "Properties")] public EVerticalAlignment Valign;
-        [RTTI.Member(18, 0x90, "Properties")] public Ptr<MenuElementResource> FollowFocus;
+        [RTTI.Member(18, 0x90, "Properties")] public CPtr<MenuElementResource> FollowFocus;
         [RTTI.Member(19, 0x98, "Properties")] public bool EnableTemplateFollow;
-        [RTTI.Member(20, 0xA0, "Properties")] public Array<Ptr<MenuVisualResource>> VisibleOnFocus;
-        [RTTI.Member(21, 0xB0, "Properties")] public Ptr<MenuElementResource> FollowMouseHover;
-        [RTTI.Member(22, 0xB8, "Properties")] public Array<Ptr<MenuVisualResource>> VisibleOnMouseHover;
+        [RTTI.Member(20, 0xA0, "Properties")] public Array<CPtr<MenuVisualResource>> VisibleOnFocus;
+        [RTTI.Member(21, 0xB0, "Properties")] public CPtr<MenuElementResource> FollowMouseHover;
+        [RTTI.Member(22, 0xB8, "Properties")] public Array<CPtr<MenuVisualResource>> VisibleOnMouseHover;
         [RTTI.Member(23, 0xC8, "Properties")] public bool ForceDrawMenuOnTheCenter;
         [RTTI.Member(24, 0xC9, "Properties")] public bool ForceDrawMenuOnTheTop;
         [RTTI.Member(25, 0xD0, "Properties")] public String TemplateParent;
@@ -24156,8 +24156,8 @@ namespace Decima.HZD
         [RTTI.Member(20, 0x99, "Revive")] public bool AutoAcceptsRevive;
         [RTTI.Member(21, 0x9A, "Revive")] public bool IsInvulnerableWhileStandingUp;
         [RTTI.Member(22, 0x9B, "CallForHealth")] public bool PlayAnimation;
-        [RTTI.Member(23, 0xA0, "Logic")] public Ptr<EntityAction> OnMortallyWoundedAction;
-        [RTTI.Member(24, 0xA8, "Revive")] public Ptr<EntityAction> OnReviveAction;
+        [RTTI.Member(23, 0xA0, "Logic")] public CPtr<EntityAction> OnMortallyWoundedAction;
+        [RTTI.Member(24, 0xA8, "Revive")] public CPtr<EntityAction> OnReviveAction;
         [RTTI.Member(25, 0xB0, "Revive")] public float AutoReviveTime;
         [RTTI.Member(26, 0xB4, "Revive")] public float ReviveHealTarget;
         [RTTI.Member(27, 0xB8, "Revive")] public float ReviveRegenTarget;
@@ -24292,7 +24292,7 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x80, true)] public EMountRequest MountRequest;
         [RTTI.Member(1, 0x81, true)] public EMountState MountState;
-        [RTTI.Member(2, 0x88, true)] public Ptr<Entity> Mounter;
+        [RTTI.Member(2, 0x88, true)] public CPtr<Entity> Mounter;
     }
 
     [RTTI.Serializable(0x5960F294AA6410A7)]
@@ -24315,10 +24315,10 @@ namespace Decima.HZD
         [RTTI.Member(14, 0xA0, "Logic")] public Array<Ref<MountMode>> MountModes;
         [RTTI.Member(15, 0xB0, "Logic")] public Array<Ref<DismountMode>> DismountModes;
         [RTTI.Member(16, 0xC0, "Logic")] public Ref<DismountMode> MounterDeathDismountMode;
-        [RTTI.Member(17, 0xC8, "Logic")] public Ptr<EntityAction> StartMountAction;
-        [RTTI.Member(18, 0xD0, "Logic")] public Ptr<EntityAction> StopMountAction;
-        [RTTI.Member(19, 0xD8, "Logic")] public Ptr<EntityAction> StartDismountAction;
-        [RTTI.Member(20, 0xE0, "Logic")] public Ptr<EntityAction> StopDismountAction;
+        [RTTI.Member(17, 0xC8, "Logic")] public CPtr<EntityAction> StartMountAction;
+        [RTTI.Member(18, 0xD0, "Logic")] public CPtr<EntityAction> StopMountAction;
+        [RTTI.Member(19, 0xD8, "Logic")] public CPtr<EntityAction> StartDismountAction;
+        [RTTI.Member(20, 0xE0, "Logic")] public CPtr<EntityAction> StopDismountAction;
         [RTTI.Member(21, 0xE8, "Logic")] public TagPropertyLinkCollection TagProperties;
     }
 
@@ -24338,8 +24338,8 @@ namespace Decima.HZD
         [RTTI.Member(5, 0x2C0, "Logic")] public bool MountDismountAnimation;
         [RTTI.Member(6, 0x2C8, "AI")] public Ref<AISkillManagerResource> MountedUserSkills;
         [RTTI.Member(7, 0x2D0, "Logic")] public bool AllowDismountAlways;
-        [RTTI.Member(8, 0x2D8, "Logic")] public Ptr<EntityAction> StopAttachAction;
-        [RTTI.Member(9, 0x2E0, "Logic")] public Ptr<EntityAction> StartDetachAction;
+        [RTTI.Member(8, 0x2D8, "Logic")] public CPtr<EntityAction> StopAttachAction;
+        [RTTI.Member(9, 0x2E0, "Logic")] public CPtr<EntityAction> StartDetachAction;
         [RTTI.Member(10, 0x2E8, "Logic")] public bool CanSwitchInventoryItem;
         [RTTI.Member(11, 0x2E9, "Logic")] public bool CanUserReload;
         [RTTI.Member(12, 0x2EA, "Logic")] public bool DoCollisionCheckOnMountPositions;
@@ -24353,8 +24353,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0xB71DDB14560B92BD)]
     public class MounterComponent : EntityComponent
     {
-        [RTTI.Member(0, 0x58, true)] public Ptr<MountableComponent> MountableComponent;
-        [RTTI.Member(1, 0x60, true)] public Ptr<MoverResource> PreviousMoverResource;
+        [RTTI.Member(0, 0x58, true)] public CPtr<MountableComponent> MountableComponent;
+        [RTTI.Member(1, 0x60, true)] public CPtr<MoverResource> PreviousMoverResource;
     }
 
     [RTTI.Serializable(0x90677C75DAA75DBD)]
@@ -24374,10 +24374,10 @@ namespace Decima.HZD
     [RTTI.Serializable(0x7858094AF3C4E895)]
     public class MounterComponentResource : EntityComponentResource
     {
-        [RTTI.Member(0, 0x28, "Logic")] public Ptr<EntityAction> StartMountAction;
-        [RTTI.Member(1, 0x30, "Logic")] public Ptr<EntityAction> StopMountAction;
-        [RTTI.Member(2, 0x38, "Logic")] public Ptr<EntityAction> StartDismountAction;
-        [RTTI.Member(3, 0x40, "Logic")] public Ptr<EntityAction> StopDismountAction;
+        [RTTI.Member(0, 0x28, "Logic")] public CPtr<EntityAction> StartMountAction;
+        [RTTI.Member(1, 0x30, "Logic")] public CPtr<EntityAction> StopMountAction;
+        [RTTI.Member(2, 0x38, "Logic")] public CPtr<EntityAction> StartDismountAction;
+        [RTTI.Member(3, 0x40, "Logic")] public CPtr<EntityAction> StopDismountAction;
     }
 
     [RTTI.Serializable(0xB378391BC0268369)]
@@ -24493,7 +24493,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0xCB039A7B8AFECD78)]
     public class MsgAI : MsgScene
     {
-        [RTTI.Member(0, 0x0)] public Ptr<Entity> Sender;
+        [RTTI.Member(0, 0x0)] public CPtr<Entity> Sender;
         [RTTI.Member(1, 0x38)] public String MessageId;
     }
 
@@ -24508,8 +24508,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0x4D740E12D5105E2E)]
     public class MsgAIAttack : MsgScene
     {
-        [RTTI.Member(0, 0x0)] public Ptr<Entity> Sender;
-        [RTTI.Member(1, 0x0)] public Ptr<Entity> Target;
+        [RTTI.Member(0, 0x0)] public CPtr<Entity> Sender;
+        [RTTI.Member(1, 0x0)] public CPtr<Entity> Target;
         [RTTI.Member(2, 0x20)] public EMsgAIAttackState State;
         [RTTI.Member(3, 0x58)] public Ref<AIWeaponPreference> Weapon;
     }
@@ -24570,7 +24570,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x5F1D1B447FEAA4C5)]
     public class MsgAddComponent : MsgBase
     {
-        [RTTI.Member(0, 0x18)] public Ptr<EntityComponent> Component;
+        [RTTI.Member(0, 0x18)] public CPtr<EntityComponent> Component;
     }
 
     [RTTI.Serializable(0xC215F6890BF3D16F)]
@@ -24641,7 +24641,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0xE7FC3387C5A18)]
     public class MsgArcHit : MsgBase
     {
-        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> HitEntity;
+        [RTTI.Member(0, 0x0, true)] public CPtr<Entity> HitEntity;
         [RTTI.Member(1, 0x18)] public WorldPosition To;
         [RTTI.Member(2, 0x30)] public WorldPosition From;
         [RTTI.Member(3, 0x48)] public WorldPosition Current;
@@ -24716,7 +24716,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x6620E8FFA3F188CB)]
     public class MsgBooleanFactChanged : MsgFactChangedBase
     {
-        [RTTI.Member(0, 0x28)] public Ptr<BooleanFact> Fact;
+        [RTTI.Member(0, 0x28)] public CPtr<BooleanFact> Fact;
         [RTTI.Member(1, 0x30)] public bool Value;
     }
 
@@ -24786,7 +24786,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0xC95C34981AFA8C67)]
     public class MsgContactPoint : MsgBase
     {
-        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> Collider;
+        [RTTI.Member(0, 0x0, true)] public CPtr<Entity> Collider;
     }
 
     [RTTI.Serializable(0x90F726CAE205563B)]
@@ -24820,7 +24820,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x2F2D6F8C7B471EDC)]
     public class MsgCountdownTimer : MsgScene
     {
-        [RTTI.Member(0, 0x20)] public Ptr<CountdownTimer> Timer;
+        [RTTI.Member(0, 0x20)] public CPtr<CountdownTimer> Timer;
     }
 
     [RTTI.Serializable(0xC1431C4EC6B0B071)]
@@ -24852,16 +24852,16 @@ namespace Decima.HZD
     [RTTI.Serializable(0xD693CD2D0BD152F5)]
     public class MsgDamage : MsgScene
     {
-        [RTTI.Member(0, 0x0, true)] public Ptr<AttackEventContext> AttackEvent;
-        [RTTI.Member(1, 0x0, true)] public Ptr<Entity> InstigatorEntity;
+        [RTTI.Member(0, 0x0, true)] public CPtr<AttackEventContext> AttackEvent;
+        [RTTI.Member(1, 0x0, true)] public CPtr<Entity> InstigatorEntity;
         [RTTI.Member(2, 0x0, true)] public WorldPosition Position;
         [RTTI.Member(3, 0x0, true)] public int MaterialType;
-        [RTTI.Member(4, 0x0, true)] public Ptr<Entity> Victim;
-        [RTTI.Member(5, 0x0, true)] public Ptr<InstigatorData> Instigator;
-        [RTTI.Member(6, 0x0, true)] public Ptr<DamageTypeResource> DamageTypeResource;
-        [RTTI.Member(7, 0x0, true)] public Ptr<Player> InstigatorPlayer;
+        [RTTI.Member(4, 0x0, true)] public CPtr<Entity> Victim;
+        [RTTI.Member(5, 0x0, true)] public CPtr<InstigatorData> Instigator;
+        [RTTI.Member(6, 0x0, true)] public CPtr<DamageTypeResource> DamageTypeResource;
+        [RTTI.Member(7, 0x0, true)] public CPtr<Player> InstigatorPlayer;
         [RTTI.Member(8, 0x0, true)] public float CoreAmount;
-        [RTTI.Member(9, 0x0, true)] public Ptr<Entity> Damager;
+        [RTTI.Member(9, 0x0, true)] public CPtr<Entity> Damager;
         [RTTI.Member(10, 0x30, true)] public Vec3 Impulse;
         [RTTI.Member(11, 0x44, true)] public float ImpactSeverity;
         [RTTI.Member(12, 0x60, true)] public Vec3 Normal;
@@ -24871,10 +24871,10 @@ namespace Decima.HZD
     [RTTI.Serializable(0x6309E3D5BD0D39A)]
     public class MsgDamageCaused : MsgBase
     {
-        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> Receiver;
-        [RTTI.Member(1, 0x0, true)] public Ptr<AttackEventContext> AttackEvent;
+        [RTTI.Member(0, 0x0, true)] public CPtr<Entity> Receiver;
+        [RTTI.Member(1, 0x0, true)] public CPtr<AttackEventContext> AttackEvent;
         [RTTI.Member(2, 0x0)] public EDamageFlags DamageFlags;
-        [RTTI.Member(3, 0x0, true)] public Ptr<DamageTypeResource> DamageTypeResource;
+        [RTTI.Member(3, 0x0, true)] public CPtr<DamageTypeResource> DamageTypeResource;
         [RTTI.Member(4, 0x40)] public Vec3 ImpactImpulse;
         [RTTI.Member(5, 0x50)] public float ImpactImpulseHumanoidFactor;
         [RTTI.Member(6, 0x54)] public float ImpactSeverity;
@@ -24887,7 +24887,7 @@ namespace Decima.HZD
     public class MsgDamageCausedReport : MsgBase
     {
         [RTTI.Member(0, 0x0, true)] public float DamageDone;
-        [RTTI.Member(1, 0x0, true)] public Ptr<Entity> Receiver;
+        [RTTI.Member(1, 0x0, true)] public CPtr<Entity> Receiver;
     }
 
     [RTTI.Serializable(0x6191F5CF5DE7A245)]
@@ -24959,7 +24959,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x38A9EA7ED1FD000F)]
     public class MsgEnableModelPart : MsgBase
     {
-        [RTTI.Member(0, 0x0, true)] public Ptr<Model> Model;
+        [RTTI.Member(0, 0x0, true)] public CPtr<Model> Model;
         [RTTI.Member(1, 0x30, true)] public int ModelPartIndex;
         [RTTI.Member(2, 0x34, true)] public bool Enabled;
     }
@@ -24988,7 +24988,7 @@ namespace Decima.HZD
     public class MsgEntityAddedToScene : MsgSceneEntityBase
     {
         [RTTI.Member(0, 0x0, true)] public bool EntityWasSpawned;
-        [RTTI.Member(1, 0x38)] public Ptr<WorldNode> Source;
+        [RTTI.Member(1, 0x38)] public CPtr<WorldNode> Source;
     }
 
     [RTTI.Serializable(0x7DAE0EFC4D684633)]
@@ -24999,26 +24999,26 @@ namespace Decima.HZD
     [RTTI.Serializable(0x7D1BBA432A9E8FB6)]
     public class MsgEntityDie : MsgSceneEntityBase
     {
-        [RTTI.Member(0, 0x0, true)] public Ptr<EntityResource> WeaponResource;
-        [RTTI.Member(1, 0x0, true)] public Ptr<InstigatorData> Instigator;
-        [RTTI.Member(2, 0x0, true)] public Ptr<Entity> InstigatorEntity;
+        [RTTI.Member(0, 0x0, true)] public CPtr<EntityResource> WeaponResource;
+        [RTTI.Member(1, 0x0, true)] public CPtr<InstigatorData> Instigator;
+        [RTTI.Member(2, 0x0, true)] public CPtr<Entity> InstigatorEntity;
         [RTTI.Member(3, 0x0, true)] public WorldPosition Position;
         [RTTI.Member(4, 0x0, true)] public Vec3 Normal;
         [RTTI.Member(5, 0x0, true)] public int ModelPartIndex;
         [RTTI.Member(6, 0x0, true)] public MaterialType MaterialType;
-        [RTTI.Member(7, 0x0, true)] public Ptr<Entity> Damager;
-        [RTTI.Member(8, 0x0, true)] public Ptr<DamageTypeResource> DamageTypeResource;
+        [RTTI.Member(7, 0x0, true)] public CPtr<Entity> Damager;
+        [RTTI.Member(8, 0x0, true)] public CPtr<DamageTypeResource> DamageTypeResource;
         [RTTI.Member(9, 0x0, true)] public float CoreAmount;
         [RTTI.Member(10, 0x0, true)] public float ImpactSeverity;
-        [RTTI.Member(11, 0x0, true)] public Ptr<AttackEventContext> AttackEvent;
-        [RTTI.Member(12, 0x0, true)] public Ptr<Player> InstigatorPlayer;
+        [RTTI.Member(11, 0x0, true)] public CPtr<AttackEventContext> AttackEvent;
+        [RTTI.Member(12, 0x0, true)] public CPtr<Player> InstigatorPlayer;
         [RTTI.Member(13, 0x0, true)] public Vec3 Impulse;
     }
 
     [RTTI.Serializable(0xDFE3C6EAF5A2D13D)]
     public class MsgEntityEjected : MsgWeaponModeBase
     {
-        [RTTI.Member(0, 0x20)] public Ptr<Entity> EntityProjectile;
+        [RTTI.Member(0, 0x20)] public CPtr<Entity> EntityProjectile;
     }
 
     [RTTI.Serializable(0x39FD18843D085070)]
@@ -25035,10 +25035,10 @@ namespace Decima.HZD
     [RTTI.Serializable(0x544584E18BAD2023)]
     public class MsgEntityKilled : MsgBase
     {
-        [RTTI.Member(0, 0x0, true)] public Ptr<AttackEventContext> AttackEvent;
-        [RTTI.Member(1, 0x0, true)] public Ptr<Entity> KilledEntity;
+        [RTTI.Member(0, 0x0, true)] public CPtr<AttackEventContext> AttackEvent;
+        [RTTI.Member(1, 0x0, true)] public CPtr<Entity> KilledEntity;
         [RTTI.Member(2, 0x0)] public EDamageFlags DamageFlags;
-        [RTTI.Member(3, 0x0, true)] public Ptr<DamageTypeResource> DamageTypeResource;
+        [RTTI.Member(3, 0x0, true)] public CPtr<DamageTypeResource> DamageTypeResource;
         [RTTI.Member(4, 0x30)] public Vec3 ImpactImpulse;
         [RTTI.Member(5, 0x40)] public float ImpactImpulseHumanoidFactor;
         [RTTI.Member(6, 0x44)] public float ImpactSeverity;
@@ -25099,13 +25099,13 @@ namespace Decima.HZD
     [RTTI.Serializable(0x551F8A8DD70F9CF)]
     public class MsgEntitySpawnCanceled : MsgScene
     {
-        [RTTI.Member(0, 0x0, true)] public Ptr<SpawnpointBase> Spawnpoint;
+        [RTTI.Member(0, 0x0, true)] public CPtr<SpawnpointBase> Spawnpoint;
     }
 
     [RTTI.Serializable(0x8B429EE1A3CFFB26)]
     public class MsgEntitySpotted : MsgBase
     {
-        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> SpottedEntity;
+        [RTTI.Member(0, 0x0, true)] public CPtr<Entity> SpottedEntity;
         [RTTI.Member(1, 0x30)] public UUIDRef<SpottableComponentResource> SpottableComponentResource;
     }
 
@@ -25117,7 +25117,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0xE263DDEA782BC2FB)]
     public class MsgEntityStuckTo : MsgBase
     {
-        [RTTI.Member(0, 0x18)] public Ptr<Entity> StickerEntity;
+        [RTTI.Member(0, 0x18)] public CPtr<Entity> StickerEntity;
         [RTTI.Member(1, 0x20)] public MaterialType MaterialType;
     }
 
@@ -25150,7 +25150,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x2249A2324D7A7838)]
     public class MsgEnumFactChanged : MsgFactChangedBase
     {
-        [RTTI.Member(0, 0x28)] public Ptr<EnumFact> Fact;
+        [RTTI.Member(0, 0x28)] public CPtr<EnumFact> Fact;
         [RTTI.Member(1, 0x30)] public GGUUID Value;
     }
 
@@ -25194,14 +25194,14 @@ namespace Decima.HZD
     [RTTI.Serializable(0x1A01519921DBBD24)]
     public class MsgFloatFactChanged : MsgFactChangedBase
     {
-        [RTTI.Member(0, 0x28)] public Ptr<FloatFact> Fact;
+        [RTTI.Member(0, 0x28)] public CPtr<FloatFact> Fact;
         [RTTI.Member(1, 0x30)] public float Value;
     }
 
     [RTTI.Serializable(0x30F07CB60F5AF8A2)]
     public class MsgFocusAlertSignalScanned : MsgScene
     {
-        [RTTI.Member(0, 0x20)] public Ptr<FocusAlertSignal> FocusAlertSignal;
+        [RTTI.Member(0, 0x20)] public CPtr<FocusAlertSignal> FocusAlertSignal;
         [RTTI.Member(1, 0x28)] public bool FirstTime;
     }
 
@@ -25213,7 +25213,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0xC34697FA60D07CA4)]
     public class MsgFocusHasAlertSignal : MsgScene
     {
-        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> Entity;
+        [RTTI.Member(0, 0x0, true)] public CPtr<Entity> Entity;
         [RTTI.Member(1, 0x38)] public bool HasAlertSignal;
     }
 
@@ -25226,7 +25226,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0xA574F28D4E38C00A)]
     public class MsgFocusScanning : MsgBase
     {
-        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> Entity;
+        [RTTI.Member(0, 0x0, true)] public CPtr<Entity> Entity;
         [RTTI.Member(1, 0x30)] public bool IsScanned;
         [RTTI.Member(2, 0x31)] public bool IsBeingScanned;
     }
@@ -25234,7 +25234,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0xE3BEABD07DF0C7E4)]
     public class MsgFocusStartScanningPart : MsgBase
     {
-        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> Entity;
+        [RTTI.Member(0, 0x0, true)] public CPtr<Entity> Entity;
         [RTTI.Member(1, 0x30)] public bool ModelPartIndex;
     }
 
@@ -25246,22 +25246,22 @@ namespace Decima.HZD
     [RTTI.Serializable(0x586ED3F0A5DF62B0)]
     public class MsgFocusTargetIsBeingScanned : MsgScene
     {
-        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> Entity;
-        [RTTI.Member(1, 0x0, true)] public Ptr<Entity> ScanningEntity;
+        [RTTI.Member(0, 0x0, true)] public CPtr<Entity> Entity;
+        [RTTI.Member(1, 0x0, true)] public CPtr<Entity> ScanningEntity;
         [RTTI.Member(2, 0x50)] public bool IsBeingScanned;
     }
 
     [RTTI.Serializable(0x4B185F07F48D0B5B)]
     public class MsgFocusTargetScanned : MsgScene
     {
-        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> Entity;
+        [RTTI.Member(0, 0x0, true)] public CPtr<Entity> Entity;
         [RTTI.Member(1, 0x38)] public bool IsScanned;
     }
 
     [RTTI.Serializable(0x6E24E53443221231)]
     public class MsgFocusTrackingPathFocused : MsgScene
     {
-        [RTTI.Member(0, 0x20)] public Ptr<TrackingPath> TrackingPath;
+        [RTTI.Member(0, 0x20)] public CPtr<TrackingPath> TrackingPath;
         [RTTI.Member(1, 0x28)] public bool IsFocused;
     }
 
@@ -25403,8 +25403,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0x2CBCBA9545FC38EA)]
     public class MsgGetUsability : MsgBase
     {
-        [RTTI.Member(0, 0x18)] public Ptr<Entity> User;
-        [RTTI.Member(1, 0x20)] public Ptr<UseLocation> UseLocation;
+        [RTTI.Member(0, 0x18)] public CPtr<Entity> User;
+        [RTTI.Member(1, 0x20)] public CPtr<UseLocation> UseLocation;
         [RTTI.Member(2, 0x28)] public bool IsUsable;
     }
 
@@ -25451,8 +25451,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0xC1DD2DB283D40CA8)]
     public class MsgGotPickedUp : MsgBase
     {
-        [RTTI.Member(0, 0x18)] public Ptr<Entity> User;
-        [RTTI.Member(1, 0x20)] public Ptr<PickUpComponentBase> PickUpComponentBase;
+        [RTTI.Member(0, 0x18)] public CPtr<Entity> User;
+        [RTTI.Member(1, 0x20)] public CPtr<PickUpComponentBase> PickUpComponentBase;
     }
 
     [RTTI.Serializable(0x10AE4F6CAF4CCF88)]
@@ -25508,11 +25508,11 @@ namespace Decima.HZD
     [RTTI.Serializable(0x77D3C502F276271A)]
     public class MsgIncomingDelayedDamage : MsgBase
     {
-        [RTTI.Member(0, 0x0)] public Ptr<Entity> Damager;
-        [RTTI.Member(1, 0x0)] public Ptr<DamageTypeResource> DamageTypeResource;
+        [RTTI.Member(0, 0x0)] public CPtr<Entity> Damager;
+        [RTTI.Member(1, 0x0)] public CPtr<DamageTypeResource> DamageTypeResource;
         [RTTI.Member(2, 0x18)] public float Delay;
         [RTTI.Member(3, 0x20)] public WorldPosition Origin;
-        [RTTI.Member(4, 0x68)] public Ptr<AttackEventContext> AttackEvent;
+        [RTTI.Member(4, 0x68)] public CPtr<AttackEventContext> AttackEvent;
     }
 
     [RTTI.Serializable(0xB5A29750053924A1)]
@@ -25553,7 +25553,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x1A160CFB9D02BA53)]
     public class MsgIntegerFactChanged : MsgFactChangedBase
     {
-        [RTTI.Member(0, 0x28)] public Ptr<IntegerFact> Fact;
+        [RTTI.Member(0, 0x28)] public CPtr<IntegerFact> Fact;
         [RTTI.Member(1, 0x30)] public int Value;
     }
 
@@ -25580,7 +25580,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0xA9DA4D808C02B081)]
     public class MsgInventoryItemBase : MsgBase
     {
-        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> Item;
+        [RTTI.Member(0, 0x0, true)] public CPtr<Entity> Item;
     }
 
     [RTTI.Serializable(0x713633B6556A455F)]
@@ -25666,7 +25666,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x9640EE9E59D036FF)]
     public class MsgIsInventoryItemSwitchAllowed : MsgIsAllowedBase
     {
-        [RTTI.Member(0, 0x20)] public Ptr<Entity> Item;
+        [RTTI.Member(0, 0x20)] public CPtr<Entity> Item;
     }
 
     [RTTI.Serializable(0x393E7A778BE39AB6)]
@@ -25775,9 +25775,9 @@ namespace Decima.HZD
     [RTTI.Serializable(0x8466B323EAF8A166)]
     public class MsgItemTransferred : MsgBase
     {
-        [RTTI.Member(0, 0x18)] public Ptr<Entity> Source;
-        [RTTI.Member(1, 0x20)] public Ptr<Entity> Target;
-        [RTTI.Member(2, 0x28)] public Ptr<Entity> Item;
+        [RTTI.Member(0, 0x18)] public CPtr<Entity> Source;
+        [RTTI.Member(1, 0x20)] public CPtr<Entity> Target;
+        [RTTI.Member(2, 0x28)] public CPtr<Entity> Item;
         [RTTI.Member(3, 0x30)] public int Amount;
     }
 
@@ -25836,13 +25836,13 @@ namespace Decima.HZD
     [RTTI.Serializable(0x300D32A4634E0672)]
     public class MsgMeleeDamageHitEffects : MsgBase
     {
-        [RTTI.Member(0, 0x18)] public Ptr<Entity> Entity;
+        [RTTI.Member(0, 0x18)] public CPtr<Entity> Entity;
         [RTTI.Member(1, 0x20)] public WorldPosition HitPosition;
         [RTTI.Member(2, 0x40)] public Vec3 HitDirection;
         [RTTI.Member(3, 0x50)] public Vec3 HitNormal;
         [RTTI.Member(4, 0x60)] public int HitMaterialType;
         [RTTI.Member(5, 0x64)] public float DamageAmount;
-        [RTTI.Member(6, 0x68)] public Ptr<DamageTypeResource> DamageTypeResource;
+        [RTTI.Member(6, 0x68)] public CPtr<DamageTypeResource> DamageTypeResource;
     }
 
     [RTTI.Serializable(0x7200A3770951DC92)]
@@ -25902,7 +25902,7 @@ namespace Decima.HZD
         [RTTI.Member(0, 0x20)] public Vec3 Movement;
         [RTTI.Member(1, 0x30)] public float TurnSpeed;
         [RTTI.Member(2, 0x34)] public bool ResetVerticalVelocity;
-        [RTTI.Member(3, 0x38)] public Ptr<Humanoid> Humanoid;
+        [RTTI.Member(3, 0x38)] public CPtr<Humanoid> Humanoid;
         [RTTI.Member(4, 0x40)] public float DeltaTime;
     }
 
@@ -25928,7 +25928,7 @@ namespace Decima.HZD
         [RTTI.Member(1, 0x1C)] public float SprintSpeed;
         [RTTI.Member(2, 0x20)] public float BackwardSpeed;
         [RTTI.Member(3, 0x24)] public float StrafeSpeed;
-        [RTTI.Member(4, 0x28)] public Ptr<Entity> Entity;
+        [RTTI.Member(4, 0x28)] public CPtr<Entity> Entity;
     }
 
     [RTTI.Serializable(0xB4465B461E8B3BCD)]
@@ -25946,7 +25946,7 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x18)] public float HeadingSpeed;
         [RTTI.Member(1, 0x1C)] public float PitchSpeed;
-        [RTTI.Member(2, 0x20)] public Ptr<Entity> Entity;
+        [RTTI.Member(2, 0x20)] public CPtr<Entity> Entity;
     }
 
     [RTTI.Serializable(0x62787B3B643EE45A)]
@@ -25958,14 +25958,14 @@ namespace Decima.HZD
     [RTTI.Serializable(0x7E22E7687DF19452)]
     public class MsgMountBase : MsgSceneEntityBase
     {
-        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> Mounter;
+        [RTTI.Member(0, 0x0, true)] public CPtr<Entity> Mounter;
     }
 
     [RTTI.Serializable(0x47F4FE9D9575A372)]
     public class MsgMountBlockedFromArea : MsgBase
     {
-        [RTTI.Member(0, 0x18)] public Ptr<Entity> Rider;
-        [RTTI.Member(1, 0x20)] public Ptr<Entity> Mount;
+        [RTTI.Member(0, 0x18)] public CPtr<Entity> Rider;
+        [RTTI.Member(1, 0x20)] public CPtr<Entity> Mount;
     }
 
     [RTTI.Serializable(0x6CC824042DB23A97)]
@@ -25977,7 +25977,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x76E9F526A1DF33BB)]
     public class MsgMounterBase : MsgSceneEntityBase
     {
-        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> MountableObject;
+        [RTTI.Member(0, 0x0, true)] public CPtr<Entity> MountableObject;
     }
 
     [RTTI.Serializable(0x2229E58CDDCEFE6B)]
@@ -25988,25 +25988,25 @@ namespace Decima.HZD
     [RTTI.Serializable(0xE19C2407675228F6)]
     public class MsgMounterStartDismount : MsgMounterBase
     {
-        [RTTI.Member(0, 0x50, true)] public Ptr<DismountMode> DismountMode;
+        [RTTI.Member(0, 0x50, true)] public CPtr<DismountMode> DismountMode;
     }
 
     [RTTI.Serializable(0x7E6709793E42FDD)]
     public class MsgMounterStartMount : MsgMounterBase
     {
-        [RTTI.Member(0, 0x50, true)] public Ptr<MountMode> MountMode;
+        [RTTI.Member(0, 0x50, true)] public CPtr<MountMode> MountMode;
     }
 
     [RTTI.Serializable(0xC5137E413C76815)]
     public class MsgMounterStopDismount : MsgMounterBase
     {
-        [RTTI.Member(0, 0x50, true)] public Ptr<DismountMode> DismountMode;
+        [RTTI.Member(0, 0x50, true)] public CPtr<DismountMode> DismountMode;
     }
 
     [RTTI.Serializable(0x9E8A880D28D4765E)]
     public class MsgMounterStopMount : MsgMounterBase
     {
-        [RTTI.Member(0, 0x50, true)] public Ptr<MountMode> MountMode;
+        [RTTI.Member(0, 0x50, true)] public CPtr<MountMode> MountMode;
     }
 
     [RTTI.Serializable(0xAAD71A8B38875F3B)]
@@ -26022,7 +26022,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x3765F49072024416)]
     public class MsgNoAmmoWarning : MsgBase
     {
-        [RTTI.Member(0, 0x18)] public Ptr<AmmoResource> AmmoResource;
+        [RTTI.Member(0, 0x18)] public CPtr<AmmoResource> AmmoResource;
         [RTTI.Member(1, 0x20)] public bool CanCraftAmmo;
     }
 
@@ -26034,7 +26034,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x1F8F483E90175F05)]
     public class MsgOnCraft : MsgBase
     {
-        [RTTI.Member(0, 0x18)] public Ptr<CraftingRecipe> Recipe;
+        [RTTI.Member(0, 0x18)] public CPtr<CraftingRecipe> Recipe;
         [RTTI.Member(1, 0x20)] public int Amount;
         [RTTI.Member(2, 0x24)] public bool Succeeded;
     }
@@ -26080,7 +26080,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x21A375B05A52D864)]
     public class MsgPerkLevelUnlocked : MsgBase
     {
-        [RTTI.Member(0, 0x18)] public Ptr<PerkLevel> Perk;
+        [RTTI.Member(0, 0x18)] public CPtr<PerkLevel> Perk;
     }
 
     [RTTI.Serializable(0xDE4799796A4FA499)]
@@ -26091,8 +26091,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0x22FA09B2AB26DE87)]
     public class MsgPickedUpEntity : MsgBase
     {
-        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> PickedUpEntity;
-        [RTTI.Member(1, 0x18)] public Ptr<PickUpComponentBase> PickUpComponentBase;
+        [RTTI.Member(0, 0x0, true)] public CPtr<Entity> PickedUpEntity;
+        [RTTI.Member(1, 0x18)] public CPtr<PickUpComponentBase> PickUpComponentBase;
     }
 
     [RTTI.Serializable(0x1D5A31F9203755BA)]
@@ -26108,8 +26108,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0x65148D07BBC7BCBC)]
     public class MsgPlayerFactionChanged : MsgBase
     {
-        [RTTI.Member(0, 0x18)] public Ptr<Player> Player;
-        [RTTI.Member(1, 0x20)] public Ptr<AIFaction> OldFaction;
+        [RTTI.Member(0, 0x18)] public CPtr<Player> Player;
+        [RTTI.Member(1, 0x20)] public CPtr<AIFaction> OldFaction;
     }
 
     [RTTI.Serializable(0xDDAF08476D21607F)]
@@ -26120,7 +26120,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0xCBD1C6E7BFD1F820)]
     public class MsgPlayerSpawned : MsgBase
     {
-        [RTTI.Member(0, 0x18)] public Ptr<Entity> SpawnedEntity;
+        [RTTI.Member(0, 0x18)] public CPtr<Entity> SpawnedEntity;
         [RTTI.Member(1, 0x20)] public int Wave;
         [RTTI.Member(2, 0x24)] public bool IsFirstSpawn;
     }
@@ -26189,7 +26189,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x1B98A5D178BC1959)]
     public class MsgRemoveComponent : MsgBase
     {
-        [RTTI.Member(0, 0x18)] public Ptr<EntityComponent> Component;
+        [RTTI.Member(0, 0x18)] public CPtr<EntityComponent> Component;
     }
 
     [RTTI.Serializable(0xC3B7B6D9A4A6BA05)]
@@ -26280,7 +26280,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0xA74DB5151F29B9A)]
     public class MsgRopeAnchorBase : MsgBase
     {
-        [RTTI.Member(0, 0x18)] public Ptr<Entity> Anchor;
+        [RTTI.Member(0, 0x18)] public CPtr<Entity> Anchor;
     }
 
     [RTTI.Serializable(0x5BB4A1772FD0434D)]
@@ -26369,7 +26369,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x88C7D90E31AF6FD9)]
     public class MsgSceneCustom : MsgScene
     {
-        [RTTI.Member(0, 0x20)] public Ptr<SceneInstance> Sender;
+        [RTTI.Member(0, 0x20)] public CPtr<SceneInstance> Sender;
         [RTTI.Member(1, 0x28)] public String ID;
     }
 
@@ -26386,14 +26386,14 @@ namespace Decima.HZD
     [RTTI.Serializable(0xA70297EB71A83824)]
     public class MsgSceneEntityBase : MsgScene
     {
-        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> Entity;
+        [RTTI.Member(0, 0x0, true)] public CPtr<Entity> Entity;
     }
 
     [RTTI.Serializable(0x48EF3253C4A84DAC)]
     public class MsgSceneEntitySpotted : MsgScene
     {
-        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> SpotterEntity;
-        [RTTI.Member(1, 0x0, true)] public Ptr<Entity> SpottedEntity;
+        [RTTI.Member(0, 0x0, true)] public CPtr<Entity> SpotterEntity;
+        [RTTI.Member(1, 0x0, true)] public CPtr<Entity> SpottedEntity;
     }
 
     [RTTI.Serializable(0xA7F3CEAE06FA1CF5)]
@@ -26404,8 +26404,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0xE71F918DDF7815C)]
     public class MsgSceneInventoryItemBase : MsgScene
     {
-        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> Item;
-        [RTTI.Member(1, 0x0, true)] public Ptr<Entity> Entity;
+        [RTTI.Member(0, 0x0, true)] public CPtr<Entity> Item;
+        [RTTI.Member(1, 0x0, true)] public CPtr<Entity> Entity;
     }
 
     [RTTI.Serializable(0x34E07207FCECE3CA)]
@@ -26454,7 +26454,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0xFCBF2979C393E7C4)]
     public class MsgSequenceNetworkNodeBase : MsgBase
     {
-        [RTTI.Member(0, 0x18)] public Ptr<SequenceNetworkNodeInstance> Node;
+        [RTTI.Member(0, 0x18)] public CPtr<SequenceNetworkNodeInstance> Node;
     }
 
     [RTTI.Serializable(0x322050FBA4AAC8CD)]
@@ -26515,7 +26515,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x7D1264F979F48479)]
     public class MsgShieldDeactivated : MsgBase
     {
-        [RTTI.Member(0, 0x18)] public Ptr<DamageTypeResource> LastReceivedDamageTypeResource;
+        [RTTI.Member(0, 0x18)] public CPtr<DamageTypeResource> LastReceivedDamageTypeResource;
     }
 
     [RTTI.Serializable(0x97D07C33B230EC82)]
@@ -26541,9 +26541,9 @@ namespace Decima.HZD
     [RTTI.Serializable(0x1373FD09784B629F)]
     public class MsgSpotAndMarkDetectedEntity : MsgBase
     {
-        [RTTI.Member(0, 0x18)] public Ptr<Entity> DetectedEntity;
-        [RTTI.Member(1, 0x20)] public Ptr<SpottableComponent> DetectedSpottableComponent;
-        [RTTI.Member(2, 0x28)] public Ptr<Entity> SpotterEntity;
+        [RTTI.Member(0, 0x18)] public CPtr<Entity> DetectedEntity;
+        [RTTI.Member(1, 0x20)] public CPtr<SpottableComponent> DetectedSpottableComponent;
+        [RTTI.Member(2, 0x28)] public CPtr<Entity> SpotterEntity;
         [RTTI.Member(3, 0x30)] public float MaxDistance;
     }
 
@@ -26570,13 +26570,13 @@ namespace Decima.HZD
     [RTTI.Serializable(0x89AB7C2E68317B24)]
     public class MsgStartDismount : MsgMountBase
     {
-        [RTTI.Member(0, 0x50, true)] public Ptr<DismountMode> DismountMode;
+        [RTTI.Member(0, 0x50, true)] public CPtr<DismountMode> DismountMode;
     }
 
     [RTTI.Serializable(0x5F431749E8457A62)]
     public class MsgStartMount : MsgMountBase
     {
-        [RTTI.Member(0, 0x50, true)] public Ptr<MountMode> MountMode;
+        [RTTI.Member(0, 0x50, true)] public CPtr<MountMode> MountMode;
     }
 
     [RTTI.Serializable(0xF855AAB0F5875A4)]
@@ -26592,7 +26592,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x83C312A472E045F9)]
     public class MsgStartedLooting : MsgSceneEntityBase
     {
-        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> LootingEntity;
+        [RTTI.Member(0, 0x0, true)] public CPtr<Entity> LootingEntity;
         [RTTI.Member(1, 0x50)] public ELootItemRarity ItemRarity;
     }
 
@@ -26619,7 +26619,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0xAFF9A3CCE03B9A8A)]
     public class MsgStick : MsgBase
     {
-        [RTTI.Member(0, 0x20)] public Ptr<Entity> ContactEntity;
+        [RTTI.Member(0, 0x20)] public CPtr<Entity> ContactEntity;
         [RTTI.Member(1, 0x28)] public MaterialType MaterialType;
         [RTTI.Member(2, 0x30)] public WorldTransform WorldTransform;
         [RTTI.Member(3, 0x70)] public Vec3 Normal;
@@ -26628,7 +26628,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x4C9E09508F14D161)]
     public class MsgStickIgnored : MsgBase
     {
-        [RTTI.Member(0, 0x18)] public Ptr<Entity> IgnoredEntity;
+        [RTTI.Member(0, 0x18)] public CPtr<Entity> IgnoredEntity;
         [RTTI.Member(1, 0x20)] public MaterialType MaterialType;
     }
 
@@ -26640,13 +26640,13 @@ namespace Decima.HZD
     [RTTI.Serializable(0xF9142C3FB40438C5)]
     public class MsgStopDismount : MsgMountBase
     {
-        [RTTI.Member(0, 0x50, true)] public Ptr<DismountMode> DismountMode;
+        [RTTI.Member(0, 0x50, true)] public CPtr<DismountMode> DismountMode;
     }
 
     [RTTI.Serializable(0x65186560939BEB6A)]
     public class MsgStopMount : MsgMountBase
     {
-        [RTTI.Member(0, 0x50, true)] public Ptr<MountMode> MountMode;
+        [RTTI.Member(0, 0x50, true)] public CPtr<MountMode> MountMode;
     }
 
     [RTTI.Serializable(0x152C7EE2518DC6A8)]
@@ -26668,7 +26668,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x95F72BC93EF7C09A)]
     public class MsgTagged : MsgBase
     {
-        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> Entity;
+        [RTTI.Member(0, 0x0, true)] public CPtr<Entity> Entity;
         [RTTI.Member(1, 0x30)] public bool IsTagged;
         [RTTI.Member(2, 0x31)] public bool IsTaggedByFocusMode;
     }
@@ -26676,7 +26676,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x58AFA99D239993EF)]
     public class MsgThreat : MsgBase
     {
-        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> Observer;
+        [RTTI.Member(0, 0x0, true)] public CPtr<Entity> Observer;
     }
 
     [RTTI.Serializable(0xB72040AFCD3448FB)]
@@ -26779,7 +26779,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0xDAAE7D9AE96C167C)]
     public class MsgUse : MsgBase
     {
-        [RTTI.Member(0, 0x18)] public Ptr<Entity> User;
+        [RTTI.Member(0, 0x18)] public CPtr<Entity> User;
         [RTTI.Member(1, 0x29)] public bool IsUsed;
     }
 
@@ -26811,7 +26811,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0xD9B5CC472BD8B0EC)]
     public class MsgUseLocationClaimed : MsgSceneEntityBase
     {
-        [RTTI.Member(0, 0x0)] public Ptr<Entity> User;
+        [RTTI.Member(0, 0x0)] public CPtr<Entity> User;
     }
 
     [RTTI.Serializable(0x96A09B4328EFA00D)]
@@ -26837,14 +26837,14 @@ namespace Decima.HZD
     [RTTI.Serializable(0x1593F1B87BC90466)]
     public class MsgUseSmartObjectBase : MsgScene
     {
-        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> SmartObject;
-        [RTTI.Member(1, 0x0, true)] public Ptr<Entity> User;
+        [RTTI.Member(0, 0x0, true)] public CPtr<Entity> SmartObject;
+        [RTTI.Member(1, 0x0, true)] public CPtr<Entity> User;
     }
 
     [RTTI.Serializable(0xCAA76C6F772923C8)]
     public class MsgUsedEntity : MsgBase
     {
-        [RTTI.Member(0, 0x0, true)] public Ptr<Entity> UsedEntity;
+        [RTTI.Member(0, 0x0, true)] public CPtr<Entity> UsedEntity;
     }
 
     [RTTI.Serializable(0x7975E373FCCAF1DB)]
@@ -26870,7 +26870,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0xA14A34E78BF04287)]
     public class MsgWeaponFired : MsgBase
     {
-        [RTTI.Member(0, 0x18)] public Ptr<Entity> Weapon;
+        [RTTI.Member(0, 0x18)] public CPtr<Entity> Weapon;
         [RTTI.Member(1, 0x20)] public bool Silenced;
     }
 
@@ -26894,7 +26894,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x20D06AAD59600257)]
     public class MultiAction : EntityAction
     {
-        [RTTI.Member(0, 0x30, "Logic")] public Array<Ptr<EntityAction>> Actions;
+        [RTTI.Member(0, 0x30, "Logic")] public Array<CPtr<EntityAction>> Actions;
     }
 
     [RTTI.Serializable(0x8B6BFAEAEC9A86D7)]
@@ -27004,8 +27004,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0x61131A40106D38F0)]
     public class NPCScheduleActivityResource : Resource
     {
-        [RTTI.Member(0, 0x28)] public Ptr<EntityAction> StartAction;
-        [RTTI.Member(1, 0x30)] public Ptr<EntityAction> StopAction;
+        [RTTI.Member(0, 0x28)] public CPtr<EntityAction> StartAction;
+        [RTTI.Member(1, 0x30)] public CPtr<EntityAction> StopAction;
         [RTTI.Member(2, 0x38)] public bool IsImmediateAction;
         [RTTI.Member(3, 0x40)] public Ref<SmartObjectDesireComponentResource> SmartObjectDesireComponent;
     }
@@ -27162,8 +27162,8 @@ namespace Decima.HZD
         [RTTI.Member(0, 0x28, "Logic")] public float Duration;
         [RTTI.Member(1, 0x2C, "Logic")] public float HealthThreshold;
         [RTTI.Member(2, 0x30, "Logic")] public float TimeScale;
-        [RTTI.Member(3, 0x38, "Logic")] public Ptr<EntityAction> ActivateAction;
-        [RTTI.Member(4, 0x40, "Logic")] public Ptr<EntityAction> DeactivateAction;
+        [RTTI.Member(3, 0x38, "Logic")] public CPtr<EntityAction> ActivateAction;
+        [RTTI.Member(4, 0x40, "Logic")] public CPtr<EntityAction> DeactivateAction;
         [RTTI.Member(5, 0x48, "Logic")] public Ref<CameraPropertiesSetResource> CameraOverride;
         [RTTI.Member(6, 0x50, "Logic")] public float CameraInterpolationDuration;
     }
@@ -27961,7 +27961,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0xE90D340F3C32CB65)]
     public class OverrideInventoryMainItemAction : EntityAction
     {
-        [RTTI.Member(0, 0x30, "Logic")] public Ptr<InventoryEntityResource> InventoryEntity;
+        [RTTI.Member(0, 0x30, "Logic")] public CPtr<InventoryEntityResource> InventoryEntity;
     }
 
     [RTTI.Serializable(0x51197D9790B4BE75)]
@@ -28790,7 +28790,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0xC65CD85E7DA9EA62)]
     public class PerkRewardGroup : Resource
     {
-        [RTTI.Member(0, 0x28, "Logic")] public Array<Ptr<PerkSet>> PerkSets;
+        [RTTI.Member(0, 0x28, "Logic")] public Array<CPtr<PerkSet>> PerkSets;
     }
 
     [RTTI.Serializable(0x8D195DD329FF7055)]
@@ -29446,9 +29446,9 @@ namespace Decima.HZD
         [RTTI.Member(0, 0x28, "Logic")] public float CombinedAnchorStrengthToPin;
         [RTTI.Member(1, 0x30, "Logic")] public Array<Ref<CurveResource>> RequiredAnchorStrengthToPinCurves;
         [RTTI.Member(2, 0x40, "Logic")] public float AnchorStrengthThreshold;
-        [RTTI.Member(3, 0x48, "Logic")] public Ptr<EntityAction> AnchorAddedAction;
-        [RTTI.Member(4, 0x50, "Logic")] public Ptr<EntityAction> TieDownAction;
-        [RTTI.Member(5, 0x58, "Logic")] public Ptr<EntityAction> TieDownReleaseAction;
+        [RTTI.Member(3, 0x48, "Logic")] public CPtr<EntityAction> AnchorAddedAction;
+        [RTTI.Member(4, 0x50, "Logic")] public CPtr<EntityAction> TieDownAction;
+        [RTTI.Member(5, 0x58, "Logic")] public CPtr<EntityAction> TieDownReleaseAction;
         [RTTI.Member(6, 0x60, "Logic")] public String DelayTiedownAnimationTag;
         [RTTI.Member(7, 0x68, "Logic")] public String PinnedControlParameter;
         [RTTI.Member(8, 0x70, "Logic")] public String PinnedAnimationTag;
@@ -29855,7 +29855,7 @@ namespace Decima.HZD
     public class PlayerInputQueryOption
     {
         [RTTI.Member(0, 0x0)] public String Description;
-        [RTTI.Member(1, 0x8)] public Ptr<EntityAction> Action;
+        [RTTI.Member(1, 0x8)] public CPtr<EntityAction> Action;
     }
 
     [RTTI.Serializable(0x64F6B911D2F6CD41)]
@@ -30256,8 +30256,8 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x20, "PortalDescription")] public SimplePolygon Polygon;
         [RTTI.Member(1, 0x70, "PortalDescription")] public float CullingDistance;
-        [RTTI.Member(2, 0x78, "PortalDescription")] public Ptr<Zone> FrontZone;
-        [RTTI.Member(3, 0x80, "PortalDescription")] public Ptr<Zone> BackZone;
+        [RTTI.Member(2, 0x78, "PortalDescription")] public CPtr<Zone> FrontZone;
+        [RTTI.Member(3, 0x80, "PortalDescription")] public CPtr<Zone> BackZone;
     }
 
     [RTTI.Serializable(0x91B21498B7B65AD6)]
@@ -30736,7 +30736,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x41FC62A6BF66B788)]
     public class PropertyContainer
     {
-        [RTTI.Member(0, 0x8, "StateSaving", true)] public Ptr<PropertyContainerResource> Resource;
+        [RTTI.Member(0, 0x8, "StateSaving", true)] public CPtr<PropertyContainerResource> Resource;
         [RTTI.Member(1, 0x10, "StateSaving", true)] public PropertyContainerData Data;
     }
 
@@ -31025,12 +31025,12 @@ namespace Decima.HZD
         [RTTI.Member(0, 0x80, "Filter")] public OrientedBox OrientedBox;
         [RTTI.Member(1, 0xD0, "Filter")] public bool AlignToWorld;
         [RTTI.Member(2, 0xD1, "Filter")] public bool IsSpherical;
-        [RTTI.Member(3, 0xD8, "Logic")] public Ptr<EntityAction> EnterAction;
-        [RTTI.Member(4, 0xE0, "Logic")] public Ptr<EntityAction> ExitAction;
+        [RTTI.Member(3, 0xD8, "Logic")] public CPtr<EntityAction> EnterAction;
+        [RTTI.Member(4, 0xE0, "Logic")] public CPtr<EntityAction> ExitAction;
         [RTTI.Member(5, 0xE8, "Filter")] public bool ExcludeAI;
         [RTTI.Member(6, 0xE9, "Filter")] public bool ExcludePlayer;
-        [RTTI.Member(7, 0xF0, "Logic")] public Ptr<EntityAction> EnterActionOnTriggerer;
-        [RTTI.Member(8, 0xF8, "Logic")] public Ptr<EntityAction> ExitActionOnTriggerer;
+        [RTTI.Member(7, 0xF0, "Logic")] public CPtr<EntityAction> EnterActionOnTriggerer;
+        [RTTI.Member(8, 0xF8, "Logic")] public CPtr<EntityAction> ExitActionOnTriggerer;
         [RTTI.Member(9, 0x100, "Filter")] public bool TriggerAlways;
         [RTTI.Member(10, 0x108, "Filter")] public String EntityType;
     }
@@ -31247,8 +31247,8 @@ namespace Decima.HZD
         [RTTI.Member(11, 0x68, "Logic")] public Ref<GraphProgramResource> ShowCondition;
         [RTTI.Member(12, 0x70, "Logic")] public EObjectiveCompleteFailLogic CompleteFailLogic;
         [RTTI.Member(13, 0x74, "Logic")] public EParentObjectiveVisibilityLogic ParentObjectiveLogic;
-        [RTTI.Member(14, 0x78, "Logic")] public Array<Ptr<QuestSection>> QuestSections;
-        [RTTI.Member(15, 0x88, "Logic")] public Array<Ptr<QuestObjective>> SubObjectives;
+        [RTTI.Member(14, 0x78, "Logic")] public Array<CPtr<QuestSection>> QuestSections;
+        [RTTI.Member(15, 0x88, "Logic")] public Array<CPtr<QuestObjective>> SubObjectives;
         [RTTI.Member(16, 0x98, "Logic")] public int Index;
         [RTTI.Member(17, 0x9C, "Logic")] public int SectionIndex;
         [RTTI.Member(18, 0xA0, "Logic")] public Array<FactMapping> ParserFacts;
@@ -31326,7 +31326,7 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x28, "QuestFlow")] public Ref<QuestTrigger> Trigger;
         [RTTI.Member(1, 0x30, "QuestFlow")] public Array<Ref<QuestSection>> NextSections;
-        [RTTI.Member(2, 0x40, "QuestFlow")] public Array<Ptr<QuestSection>> BlockSections;
+        [RTTI.Member(2, 0x40, "QuestFlow")] public Array<CPtr<QuestSection>> BlockSections;
         [RTTI.Member(3, 0x50, "QuestFlow")] public Array<Ref<QuestSection>> SubSections;
         [RTTI.Member(4, 0x60, "Logic")] public EQuestSectionCompletionType CompleteLogic;
         [RTTI.Member(5, 0x64, "Logic")] public EQuestSectionCompletionType BlockLogic;
@@ -31345,7 +31345,7 @@ namespace Decima.HZD
         [RTTI.Member(18, 0xD0, "Goals")] public Ref<LocalizedTextResource> UIQuestGoalDescription;
         [RTTI.Member(19, 0xD8, "Goals")] public Array<Ref<QuestObjective>> Objectives;
         [RTTI.Member(20, 0xE8, "Logic")] public Ref<EnumFact> QuestSectionStateFact;
-        [RTTI.Member(21, 0xF0, "Data")] public Ptr<QuestResource> Quest;
+        [RTTI.Member(21, 0xF0, "Data")] public CPtr<QuestResource> Quest;
         [RTTI.Member(22, 0xF8, "Logic")] public bool SaveOnComplete;
         [RTTI.Member(23, 0xF9, "Logic")] public bool ReuseLastSaveLocation;
         [RTTI.Member(24, 0x100, "Logic")] public Ref<AIMarker> RespawnMarker;
@@ -31510,9 +31510,9 @@ namespace Decima.HZD
         [RTTI.Member(0, 0x28, "Logic")] public float MinimumButtonPressesPerSecond;
         [RTTI.Member(1, 0x2C, "Logic")] public float MaximumButtonPressesPerSecond;
         [RTTI.Member(2, 0x30, "Logic")] public int NumDesiredPresses;
-        [RTTI.Member(3, 0x38, "Logic")] public Ptr<EntityAction> SucceedAction;
-        [RTTI.Member(4, 0x40, "Logic")] public Ptr<EntityAction> FailAction;
-        [RTTI.Member(5, 0x48, "Logic")] public Ptr<EntityAction> ButtonPressedAction;
+        [RTTI.Member(3, 0x38, "Logic")] public CPtr<EntityAction> SucceedAction;
+        [RTTI.Member(4, 0x40, "Logic")] public CPtr<EntityAction> FailAction;
+        [RTTI.Member(5, 0x48, "Logic")] public CPtr<EntityAction> ButtonPressedAction;
     }
 
     [RTTI.Serializable(0xC1DABEE5BA19826)]
@@ -31617,7 +31617,7 @@ namespace Decima.HZD
     public class RadarDomeComponentResource : EntityComponentResource
     {
         [RTTI.Member(0, 0x28, "Logic")] public float PulseLength;
-        [RTTI.Member(1, 0x30, "Logic")] public Ptr<EntityAction> ActivatedAction;
+        [RTTI.Member(1, 0x30, "Logic")] public CPtr<EntityAction> ActivatedAction;
     }
 
     [RTTI.Serializable(0xE537C1418E7F21F2)]
@@ -31681,7 +31681,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0xB0A61DDA9BFDE4E5)]
     public class RandomAction : EntityAction
     {
-        [RTTI.Member(0, 0x30, "Logic")] public Array<Ptr<EntityAction>> ActionsToChooseFrom;
+        [RTTI.Member(0, 0x30, "Logic")] public Array<CPtr<EntityAction>> ActionsToChooseFrom;
     }
 
     [RTTI.Serializable(0x9F88A0AC6BF70D2D)]
@@ -32130,7 +32130,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x5BC20068B324214C)]
     public class ResetDelayedActionAction : EntityAction
     {
-        [RTTI.Member(0, 0x30, "Logic")] public Ptr<DelayedAction> Action;
+        [RTTI.Member(0, 0x30, "Logic")] public CPtr<DelayedAction> Action;
     }
 
     [RTTI.Serializable(0x38CE3651C24FFDF)]
@@ -32533,11 +32533,11 @@ namespace Decima.HZD
         [RTTI.Member(10, 0x88, "Logic")] public String DirectionAnimationVariable;
         [RTTI.Member(11, 0x90, "Logic")] public String DistanceAnimationVariable;
         [RTTI.Member(12, 0x98, "Logic")] public String MovingEnterAnimationVariable;
-        [RTTI.Member(13, 0xA0, "Logic")] public Ptr<EntityAction> StartAction;
-        [RTTI.Member(14, 0xA8, "Logic")] public Ptr<EntityAction> StopAction;
-        [RTTI.Member(15, 0xB0, "Logic")] public Ptr<EntityAction> StartActionOnTarget;
-        [RTTI.Member(16, 0xB8, "Logic")] public Ptr<EntityAction> StopActionOnTarget;
-        [RTTI.Member(17, 0xC0, "Logic")] public Ptr<EntityAction> HitAction;
+        [RTTI.Member(13, 0xA0, "Logic")] public CPtr<EntityAction> StartAction;
+        [RTTI.Member(14, 0xA8, "Logic")] public CPtr<EntityAction> StopAction;
+        [RTTI.Member(15, 0xB0, "Logic")] public CPtr<EntityAction> StartActionOnTarget;
+        [RTTI.Member(16, 0xB8, "Logic")] public CPtr<EntityAction> StopActionOnTarget;
+        [RTTI.Member(17, 0xC0, "Logic")] public CPtr<EntityAction> HitAction;
         [RTTI.Member(18, 0xC8, "Logic")] public Array<Ref<RobotMeleeWeaponDamageEvent>> DamageEvents;
         [RTTI.Member(19, 0xD8, "Logic")] public float DamageClamp;
         [RTTI.Member(20, 0xDC, "Logic")] public float DurationOverride;
@@ -32563,8 +32563,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0x8556B850ED35363A)]
     public class RobotMeleeWeaponDamageEvent : Resource
     {
-        [RTTI.Member(0, 0x28, "Logic")] public Ptr<EntityAction> StartDamageAction;
-        [RTTI.Member(1, 0x30, "Logic")] public Ptr<EntityAction> StopDamageAction;
+        [RTTI.Member(0, 0x28, "Logic")] public CPtr<EntityAction> StartDamageAction;
+        [RTTI.Member(1, 0x30, "Logic")] public CPtr<EntityAction> StopDamageAction;
         [RTTI.Member(2, 0x38, "Logic")] public Array<Ref<EntityComponentResource>> DamageComponents;
         [RTTI.Member(3, 0x48, "Animation")] public String AnimationEvent;
     }
@@ -32856,8 +32856,8 @@ namespace Decima.HZD
         [RTTI.Member(6, 0x4C, "Logic")] public float DamageStretchLength;
         [RTTI.Member(7, 0x50, "Logic")] public float DamageAmount;
         [RTTI.Member(8, 0x58, "Logic")] public Ref<DamageTypeResource> DamageTypeResource;
-        [RTTI.Member(9, 0x60, "Logic")] public Ptr<EntityAction> FirstRopeEndContactAction;
-        [RTTI.Member(10, 0x68, "Logic")] public Ptr<EntityAction> SecondRopeEndContactAction;
+        [RTTI.Member(9, 0x60, "Logic")] public CPtr<EntityAction> FirstRopeEndContactAction;
+        [RTTI.Member(10, 0x68, "Logic")] public CPtr<EntityAction> SecondRopeEndContactAction;
         [RTTI.Member(11, 0x70, "Logic")] public Ref<GraphProgramResource> FirstRopeEndBreakProgram;
         [RTTI.Member(12, 0x78, "Logic")] public Ref<GraphProgramResource> SecondRopeEndBreakProgram;
         [RTTI.Member(13, 0x80, "Logic")] public Ref<GraphProgramResource> FirstRopeEndRemoveProgram;
@@ -33451,10 +33451,10 @@ namespace Decima.HZD
     public class ScriptMessage : RTTIRefObject
     {
         [RTTI.Member(0, 0x28, "StateSaving", true)] public String ID;
-        [RTTI.Member(1, 0x30, "StateSaving", true)] public Ptr<RTTIObject> Sender;
+        [RTTI.Member(1, 0x30, "StateSaving", true)] public CPtr<RTTIObject> Sender;
         [RTTI.Member(2, 0x38, "StateSaving", true)] public String SenderName;
         [RTTI.Member(3, 0x40, "StateSaving", true)] public String SenderType;
-        [RTTI.Member(4, 0x48, "StateSaving", true)] public Ptr<RTTIObject> Object;
+        [RTTI.Member(4, 0x48, "StateSaving", true)] public CPtr<RTTIObject> Object;
         [RTTI.Member(5, 0x50, "StateSaving", true)] public String ObjectName;
         [RTTI.Member(6, 0x58, "StateSaving", true)] public String ObjectType;
         [RTTI.Member(7, 0x60, "StateSaving", true)] public String CustomData;
@@ -33834,7 +33834,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x6E0167E5EB50F194)]
     public class SequenceComponent : EntityComponent
     {
-        [RTTI.Member(0, 0x58, "Sequence", true)] public Ptr<Sequence> Sequence;
+        [RTTI.Member(0, 0x58, "Sequence", true)] public CPtr<Sequence> Sequence;
     }
 
     [RTTI.Serializable(0x6DD1C13EE7758CC3)]
@@ -33925,7 +33925,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x9E4550372AF212CC)]
     public class SequenceNetworkBranch : SequenceNetworkNode
     {
-        [RTTI.Member(0, 0x20)] public Array<Ptr<SequenceNetworkNode>> Nodes;
+        [RTTI.Member(0, 0x20)] public Array<CPtr<SequenceNetworkNode>> Nodes;
         [RTTI.Member(1, 0x30)] public ESequenceNetworkBranchSelectionMode NodeSelectionMode;
     }
 
@@ -33948,14 +33948,14 @@ namespace Decima.HZD
     [RTTI.Serializable(0xC9B76C33E60BB634)]
     public class SequenceNetworkCondition : SequenceNetworkConditionBase
     {
-        [RTTI.Member(0, 0x30)] public Ptr<GraphProgramResource> Condition;
+        [RTTI.Member(0, 0x30)] public CPtr<GraphProgramResource> Condition;
     }
 
     [RTTI.Serializable(0x65D2A04856117249)]
     public class SequenceNetworkConditionBase : SequenceNetworkNode
     {
-        [RTTI.Member(0, 0x20)] public Ptr<SequenceNetworkNode> True;
-        [RTTI.Member(1, 0x28)] public Ptr<SequenceNetworkNode> False;
+        [RTTI.Member(0, 0x20)] public CPtr<SequenceNetworkNode> True;
+        [RTTI.Member(1, 0x28)] public CPtr<SequenceNetworkNode> False;
     }
 
     [RTTI.Serializable(0x612ED5B314822B18)]
@@ -34016,14 +34016,14 @@ namespace Decima.HZD
     [RTTI.Serializable(0xB30A6DF7782C5B81)]
     public class SequenceNetworkInstance : RTTIRefObject
     {
-        [RTTI.Member(0, 0x50, "General")] public Ptr<SequenceNetworkResource> Resource;
+        [RTTI.Member(0, 0x50, "General")] public CPtr<SequenceNetworkResource> Resource;
     }
 
     [RTTI.Serializable(0x9E8DCB60203290EA)]
     public class SequenceNetworkInterruptHandler : Resource
     {
         [RTTI.Member(0, 0x28)] public Ref<InterruptEventResource> InterruptEvent;
-        [RTTI.Member(1, 0x30)] public Ptr<SequenceNetworkNode> Node;
+        [RTTI.Member(1, 0x30)] public CPtr<SequenceNetworkNode> Node;
     }
 
     [RTTI.Serializable(0xFD172170165C02B0)]
@@ -34035,7 +34035,7 @@ namespace Decima.HZD
     public class SequenceNetworkNodeGraphNode : SequenceNetworkNode
     {
         [RTTI.Member(0, 0x20)] public Ref<GraphProgramResource> GraphProgramResource;
-        [RTTI.Member(1, 0x28)] public Ptr<SequenceNetworkNode> NextNode;
+        [RTTI.Member(1, 0x28)] public CPtr<SequenceNetworkNode> NextNode;
     }
 
     [RTTI.Serializable(0xAA82AA12869D3D18)]
@@ -34062,7 +34062,7 @@ namespace Decima.HZD
     public class SequenceNetworkPlayerChoiceEntry : RTTIRefObject
     {
         [RTTI.Member(0, 0x20)] public Ref<LocalizedTextResource> DisplayLabel;
-        [RTTI.Member(1, 0x28)] public Ptr<SequenceNetworkNode> Node;
+        [RTTI.Member(1, 0x28)] public CPtr<SequenceNetworkNode> Node;
         [RTTI.Member(2, 0x30)] public bool MarkWhenChosen;
         [RTTI.Member(3, 0x31)] public EPlayerChoiceLocation Location;
     }
@@ -34126,7 +34126,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x35BD8359FB6AAD06)]
     public class SequenceNetworkSequenceNode : SequenceNetworkSequenceNodeBase
     {
-        [RTTI.Member(0, 0x70)] public Ptr<SequenceNetworkNode> NextNode;
+        [RTTI.Member(0, 0x70)] public CPtr<SequenceNetworkNode> NextNode;
     }
 
     [RTTI.Serializable(0x90ADCBA0BD4C5F8D)]
@@ -34138,7 +34138,7 @@ namespace Decima.HZD
         [RTTI.Member(3, 0x2C)] public float CameraPredictionDistance;
         [RTTI.Member(4, 0x30)] public Ref<BooleanFact> Fact;
         [RTTI.Member(5, 0x38)] public Ref<GraphProgramResource> GraphProgramResource;
-        [RTTI.Member(6, 0x40)] public Ptr<SequenceNetworkNode> InterruptNode;
+        [RTTI.Member(6, 0x40)] public CPtr<SequenceNetworkNode> InterruptNode;
         [RTTI.Member(7, 0x48)] public Array<Ref<SequenceNetworkInterruptHandler>> InterruptHandlers;
         [RTTI.Member(8, 0x58)] public Array<Ref<SequenceNetworkTransition>> Transitions;
         [RTTI.Member(9, 0x68)] public bool NeedSequenceAdaptionHandle;
@@ -34158,7 +34158,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x6323B42607322607)]
     public class SequenceNetworkTeleportPlayerNode : SequenceNetworkNode
     {
-        [RTTI.Member(0, 0x20)] public Ptr<SequenceNetworkNode> NextNode;
+        [RTTI.Member(0, 0x20)] public CPtr<SequenceNetworkNode> NextNode;
         [RTTI.Member(1, 0x28)] public Ref<WorldNode> TeleportLocation;
     }
 
@@ -34194,8 +34194,8 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x20)] public Ref<UseLocationResource> UseLocationResource;
         [RTTI.Member(1, 0x30)] public Mat44 LocalMatrix;
-        [RTTI.Member(2, 0x70)] public Ptr<SequenceNetworkNode> Node;
-        [RTTI.Member(3, 0x78)] public Ptr<SequenceNetworkNode> ImmediateNode;
+        [RTTI.Member(2, 0x70)] public CPtr<SequenceNetworkNode> Node;
+        [RTTI.Member(3, 0x78)] public CPtr<SequenceNetworkNode> ImmediateNode;
         [RTTI.Member(4, 0x80)] public Ref<SequenceEntityVariable> UserEntityVariable;
         [RTTI.Member(5, 0x88)] public Ref<SequenceEntityVariable> Owner;
         [RTTI.Member(6, 0x90)] public bool PlaceOnOwner;
@@ -34261,8 +34261,8 @@ namespace Decima.HZD
         [RTTI.Member(8, 0x168)] public ExposedEventAttributeList ExposedEventAttributeList;
         [RTTI.Member(9, 0x178, "Private")] public int StopFrame;
         [RTTI.Member(10, 0x180, "Private")] public Array<Ref<SortedEvent>> SortedEvents;
-        [RTTI.Member(11, 0x1B0, "Private")] public Array<Ptr<SetGlobalLodBiasEventResource>> GlobalLodEvents;
-        [RTTI.Member(12, 0x1C0, "Private")] public Array<Ptr<SortedEvent>> EntityActorEvents;
+        [RTTI.Member(11, 0x1B0, "Private")] public Array<CPtr<SetGlobalLodBiasEventResource>> GlobalLodEvents;
+        [RTTI.Member(12, 0x1C0, "Private")] public Array<CPtr<SortedEvent>> EntityActorEvents;
         [RTTI.Member(13, 0x1D1, "Logic")] public bool SuppressUpdates;
         [RTTI.Member(14, 0x1D8, "Logic")] public Array<InitialTemplateVariable> InitialTemplateVariable;
         [RTTI.Member(15, 0x1E8, "Logic")] public Array<Ref<SequenceEntityVariable>> EntityVariables;
@@ -35474,7 +35474,7 @@ namespace Decima.HZD
     public class SmartObjectComponentResource : EntityComponentResource
     {
         [RTTI.Member(0, 0x28, "Logic")] public float Radius;
-        [RTTI.Member(1, 0x30, "Logic")] public Array<Ptr<SmartObjectDesireInfluence>> DesireInfluences;
+        [RTTI.Member(1, 0x30, "Logic")] public Array<CPtr<SmartObjectDesireInfluence>> DesireInfluences;
         [RTTI.Member(2, 0x40, "Logic")] public float UseTime;
         [RTTI.Member(3, 0x44, "Logic")] public float CooldownTime;
         [RTTI.Member(4, 0x48, "Logic")] public TagPropertyLinkCollection RequiredTags;
@@ -35714,9 +35714,9 @@ namespace Decima.HZD
         [RTTI.Member(1, 0x2C)] public bool Participate;
         [RTTI.Member(2, 0x30)] public Ref<EventResource> EventResource;
         [RTTI.Member(3, 0x38)] public GGUUID OriginalUUID;
-        [RTTI.Member(4, 0x48)] public Array<Ptr<SortedEvent>> DependentOn;
-        [RTTI.Member(5, 0x58)] public Array<Ptr<SortedEvent>> DependentBy;
-        [RTTI.Member(6, 0x68)] public Array<Ptr<SortedEvent>> DependentByHideEvents;
+        [RTTI.Member(4, 0x48)] public Array<CPtr<SortedEvent>> DependentOn;
+        [RTTI.Member(5, 0x58)] public Array<CPtr<SortedEvent>> DependentBy;
+        [RTTI.Member(6, 0x68)] public Array<CPtr<SortedEvent>> DependentByHideEvents;
     }
 
     [RTTI.Serializable(0x58333E1A58CC01A)]
@@ -37351,7 +37351,7 @@ namespace Decima.HZD
     public class SusceptibleToDamageComponentResource : EntityComponentResource
     {
         [RTTI.Member(0, 0x28, "Logic")] public Array<Ref<DamageTypeResource>> DamageTypeResources;
-        [RTTI.Member(1, 0x38, "Logic")] public Ptr<EntityAction> Action;
+        [RTTI.Member(1, 0x38, "Logic")] public CPtr<EntityAction> Action;
         [RTTI.Member(2, 0x40, "Logic")] public bool OnlyFromEnemies;
         [RTTI.Member(3, 0x41, "Logic")] public bool OnlyFromPlayer;
         [RTTI.Member(4, 0x42, "Logic")] public bool SendTelemetry;
@@ -37399,7 +37399,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x28522102D7329142)]
     public class SwitchInventoryEntityAction : EntityAction
     {
-        [RTTI.Member(0, 0x30, "Logic")] public Ptr<InventoryEntityResource> InventoryEntity;
+        [RTTI.Member(0, 0x30, "Logic")] public CPtr<InventoryEntityResource> InventoryEntity;
         [RTTI.Member(1, 0x38, "Logic")] public bool Immediate;
         [RTTI.Member(2, 0x39, "Logic")] public bool ForceSwitch;
     }
@@ -37428,7 +37428,7 @@ namespace Decima.HZD
         [RTTI.Member(7, 0x310, "Logic")] public bool AwardPoints;
         [RTTI.Member(8, 0x311, "Logic")] public bool DisableAfterUse;
         [RTTI.Member(9, 0x318, "Logic")] public Ref<ElectricityEmitSettings> ElectricityEmitSettings;
-        [RTTI.Member(10, 0x320, "Logic")] public Ptr<EntityAction> SwitchOnAction;
+        [RTTI.Member(10, 0x320, "Logic")] public CPtr<EntityAction> SwitchOnAction;
     }
 
     [RTTI.Serializable(0x7ECC3C6767F87062)]
@@ -37770,8 +37770,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0xEF8D42D6167F50A3)]
     public class TargetableTargetArrowComponentResource : TargetArrowComponentResource
     {
-        [RTTI.Member(0, 0x38, "Logic")] public Ptr<EntityAction> TargetedAction;
-        [RTTI.Member(1, 0x40, "Logic")] public Ptr<EntityAction> EndTargetedAction;
+        [RTTI.Member(0, 0x38, "Logic")] public CPtr<EntityAction> TargetedAction;
+        [RTTI.Member(1, 0x40, "Logic")] public CPtr<EntityAction> EndTargetedAction;
         [RTTI.Member(2, 0x48, "Logic")] public float TargetingDuration;
     }
 
@@ -39168,7 +39168,7 @@ namespace Decima.HZD
         [RTTI.Member(35, 0x1DC, "Representation")] public float VisualPathOffsetBlendTime;
         [RTTI.Member(36, 0x1E0, "Representation")] public Ref<SoundResource> FlySoundResource;
         [RTTI.Member(37, 0x1E8, "Logic")] public bool RequiresContactPointValidate;
-        [RTTI.Member(38, 0x1F0, "Logic")] public Ptr<EntityAction> ActionWhenExplode;
+        [RTTI.Member(38, 0x1F0, "Logic")] public CPtr<EntityAction> ActionWhenExplode;
         [RTTI.Member(39, 0x1F8, "Logic")] public bool ExplodeOnLastCollisionPosition;
         [RTTI.Member(40, 0x1FC, "Logic")] public float BounceSpeedLimiter;
         [RTTI.Member(41, 0x200, "Logic")] public bool BounceFromHumanoids;
@@ -39264,7 +39264,7 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x28, "Logic")] public float Time;
         [RTTI.Member(1, 0x2C, "Logic")] public float Damage;
-        [RTTI.Member(2, 0x30, "Logic")] public Ptr<EntityAction> ExceededAction;
+        [RTTI.Member(2, 0x30, "Logic")] public CPtr<EntityAction> ExceededAction;
         [RTTI.Member(3, 0x38, "Logic")] public Array<Ref<DamageTypeResource>> IgnoredDamageTypes;
     }
 
@@ -39684,8 +39684,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0x24EEAB700C50B1D3)]
     public class UseLocation : CoreObject
     {
-        [RTTI.Member(0, 0x60, "Private", true)] public Ptr<UseLocationResource> Resource;
-        [RTTI.Member(1, 0x68, "Private", true)] public Ptr<Entity> Entity;
+        [RTTI.Member(0, 0x60, "Private", true)] public CPtr<UseLocationResource> Resource;
+        [RTTI.Member(1, 0x68, "Private", true)] public CPtr<Entity> Entity;
     }
 
     [RTTI.Serializable(0x4441FA418BE132B5)]
@@ -39701,11 +39701,11 @@ namespace Decima.HZD
         [RTTI.Member(2, 0x30, "Logic")] public Ref<UseLocationResource> UseLocationResource;
         [RTTI.Member(3, 0x38, "Logic")] public String HelperName;
         [RTTI.Member(4, 0x40, "Logic")] public Ref<UseLocationConditionSet> UseLocationConditionSet;
-        [RTTI.Member(5, 0x48, "Logic")] public Ptr<EntityAction> UseAction;
-        [RTTI.Member(6, 0x50, "Logic")] public Ptr<EntityAction> UseActionOnUser;
-        [RTTI.Member(7, 0x58, "Logic")] public Ptr<EntityAction> OnClaimedAction;
-        [RTTI.Member(8, 0x60, "Logic")] public Ptr<EntityAction> OnClaimedActionOnUser;
-        [RTTI.Member(9, 0x68, "Logic")] public Ptr<EntityAction> OnReleaseClaimAction;
+        [RTTI.Member(5, 0x48, "Logic")] public CPtr<EntityAction> UseAction;
+        [RTTI.Member(6, 0x50, "Logic")] public CPtr<EntityAction> UseActionOnUser;
+        [RTTI.Member(7, 0x58, "Logic")] public CPtr<EntityAction> OnClaimedAction;
+        [RTTI.Member(8, 0x60, "Logic")] public CPtr<EntityAction> OnClaimedActionOnUser;
+        [RTTI.Member(9, 0x68, "Logic")] public CPtr<EntityAction> OnReleaseClaimAction;
     }
 
     [RTTI.Serializable(0xA0F039EB2C51454C)]
@@ -39744,7 +39744,7 @@ namespace Decima.HZD
     public class UseLocationConditionHasInventoryItem : UseLocationCondition
     {
         [RTTI.Member(0, 0x30)] public String Name;
-        [RTTI.Member(1, 0x38)] public Ptr<InventoryEntityResource> Resource;
+        [RTTI.Member(1, 0x38)] public CPtr<InventoryEntityResource> Resource;
         [RTTI.Member(2, 0x40)] public ECheckQuestItems CheckQuestItems;
     }
 
@@ -39874,8 +39874,8 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x0)] public String Name;
         [RTTI.Member(1, 0x10)] public Ref<UseLocationConditionSet> ConditionSet;
-        [RTTI.Member(2, 0x18)] public Ptr<EntityAction> UseAction;
-        [RTTI.Member(3, 0x20)] public Ptr<EntityAction> UseActionOnUser;
+        [RTTI.Member(2, 0x18)] public CPtr<EntityAction> UseAction;
+        [RTTI.Member(3, 0x20)] public CPtr<EntityAction> UseActionOnUser;
         [RTTI.Member(4, 0x28)] public Ref<UseLocationResource> Resource;
         [RTTI.Member(5, 0x30)] public ERelativeUseLocationPosition RelativePosition;
         [RTTI.Member(6, 0x40)] public Vec3 Offset;
@@ -40220,8 +40220,8 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x28, "Logic")] public bool DisableFootstepStimuliWhenHidden;
         [RTTI.Member(1, 0x29, "Logic")] public bool DisableBodyVisualStimuliWhenHidden;
-        [RTTI.Member(2, 0x30, "Logic")] public Ptr<EntityAction> OnActivateStealthAction;
-        [RTTI.Member(3, 0x38, "Logic")] public Ptr<EntityAction> OnDeactivateStealthAction;
+        [RTTI.Member(2, 0x30, "Logic")] public CPtr<EntityAction> OnActivateStealthAction;
+        [RTTI.Member(3, 0x38, "Logic")] public CPtr<EntityAction> OnDeactivateStealthAction;
         [RTTI.Member(4, 0x40, "Logic")] public Ref<GraphProgramResource> StealthCondition;
         [RTTI.Member(5, 0x48, "Logic")] public float EnterStealthAtmosphereRadius;
         [RTTI.Member(6, 0x4C, "Logic")] public float ExitStealthAtmosphereRadius;
@@ -41600,7 +41600,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0x83C66C736757EE67)]
     public class Zone
     {
-        [RTTI.Member(0, 0x48, "ZoneDescription")] public Array<Ptr<Zone>> ExcludedZones;
+        [RTTI.Member(0, 0x48, "ZoneDescription")] public Array<CPtr<Zone>> ExcludedZones;
         [RTTI.Member(1, 0x60, "ZoneDescription")] public OrientedBox Volume;
         [RTTI.Member(2, 0xB0, "ZoneDescription")] public BoundingBox3 Boundingbox;
         [RTTI.Member(3, 0xD0, "ZoneDescription")] public int Priority;

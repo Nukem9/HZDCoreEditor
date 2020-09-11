@@ -111,7 +111,7 @@ namespace Decima.HZD
     {
     }
 
-    public class Ptr<T> : Ref<T>
+    public class CPtr<T> : Ref<T>
     {
     }
 

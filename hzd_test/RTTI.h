@@ -207,7 +207,7 @@ public:
 			char refType[1024];
 
 			if (!strcmp(*ContainerRef.m_ContainerName, "cptr"))
-				sprintf_s(refType, "Ptr<%s>", ContainerRef.m_Type->GetSymbolName().c_str());
+				sprintf_s(refType, "CPtr<%s>", ContainerRef.m_Type->GetSymbolName().c_str());
 			else
 				sprintf_s(refType, "%s<%s>", *ContainerRef.m_ContainerName, ContainerRef.m_Type->GetSymbolName().c_str());
 
