@@ -4,9 +4,9 @@ namespace BinaryStreamExtensions
 {
     public static class IShouldntHaveToAddThese
     {
-        public static ulong StreamLength(this BinaryReader reader)
+        public static long StreamLength(this BinaryReader reader)
         {
-            return (ulong)reader.BaseStream.Length;
+            return reader.BaseStream.Length;
         }
 
         public static long StreamRemainder(this BinaryReader reader)
