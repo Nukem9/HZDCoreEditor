@@ -49,6 +49,26 @@ namespace Decima.HZD
             return $"{{{Data3:X2}{Data2:X2}{Data1:X2}{Data0:X2}-{Data5:X2}{Data4:X2}-{Data7:X2}{Data6:X2}-{Data8:X2}{Data9:X2}-{Data10:X2}{Data11:X2}{Data12:X2}{Data13:X2}{Data14:X2}{Data15:X2}}}";
         }
 
+        public void ToData(BinaryWriter writer)
+        {
+            writer.Write(Data0);
+            writer.Write(Data1);
+            writer.Write(Data2);
+            writer.Write(Data3);
+            writer.Write(Data4);
+            writer.Write(Data5);
+            writer.Write(Data6);
+            writer.Write(Data7);
+            writer.Write(Data8);
+            writer.Write(Data9);
+            writer.Write(Data10);
+            writer.Write(Data11);
+            writer.Write(Data12);
+            writer.Write(Data13);
+            writer.Write(Data14);
+            writer.Write(Data15);
+        }
+
         public static GGUUID FromData(BinaryReader reader)
         {
             return FromData(reader.ReadBytesStrict(16));

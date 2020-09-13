@@ -16,15 +16,23 @@ namespace Decima
         public class Entry : RTTI.ISerializable
         {
             public ulong TypeId;
-            public ulong ChunkOffset;
+            public long ChunkOffset;
             public uint ChunkSize;
 
             public void Deserialize(BinaryReader reader)
             {
-                ChunkOffset = (ulong)reader.BaseStream.Position;
+                ChunkOffset = reader.BaseStream.Position;
 
                 TypeId = reader.ReadUInt64();
                 ChunkSize = reader.ReadUInt32();
+            }
+
+            public void Serialize(BinaryWriter writer)
+            {
+                ChunkOffset = writer.BaseStream.Position;
+
+                writer.Write(TypeId);
+                writer.Write(ChunkSize);
             }
         }
 
@@ -74,6 +82,38 @@ namespace Decima
             }
 
             return coreFileObjects;
+        }
+
+        public static void Save(string filePath, List<object> objects)
+        {
+            using (var writer = new BinaryWriter(File.Open(filePath, FileMode.Create, FileAccess.Write, FileShare.None)))
+            {
+                foreach (var topLevelObject in objects)
+                {
+                    // Allocate file space for a fake entry with all zeros
+                    var entry = new Entry();
+                    RTTI.SerializeType(writer, entry);
+
+                    if (topLevelObject is byte[] asBytes)
+                    {
+                        // Handle unsupported (raw data) object types
+                        writer.Write(asBytes);
+                    }
+                    else
+                    {
+                        RTTI.SerializeType(writer, topLevelObject);
+                    }
+
+                    entry.TypeId = RTTI.GetIdByType(topLevelObject.GetType());
+                    entry.ChunkSize = (uint)(writer.BaseStream.Position - entry.ChunkOffset - 12);
+
+                    // Now rewrite it with the updated fields
+                    long oldPosition = writer.BaseStream.Position;
+                    writer.BaseStream.Position = entry.ChunkOffset;
+                    RTTI.SerializeType(writer, entry);
+                    writer.BaseStream.Position = oldPosition;
+                }
+            }
         }
     }
 }

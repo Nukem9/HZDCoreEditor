@@ -40,6 +40,12 @@ namespace Decima.HZD
                 StreamInfo = StreamHandle.FromData(reader);
         }
 
+        public void SerializeExtraData(BinaryWriter writer)
+        {
+            if (IsStreaming)
+                StreamInfo.ToData(writer);
+        }
+
         public byte EncodeFlags()
         {
             byte flags = 0;

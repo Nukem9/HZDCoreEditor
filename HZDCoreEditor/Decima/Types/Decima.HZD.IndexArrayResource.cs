@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 
 namespace Decima.HZD
@@ -24,6 +25,28 @@ namespace Decima.HZD
 
                 ResourceGUID = GGUUID.FromData(reader);
                 Buffer = HwBuffer.FromIndexData(reader, format, isStreaming != 0, indexElementCount);
+            }
+        }
+
+        public void SerializeExtraData(BinaryWriter writer)
+        {
+            var dataFormat = Buffer.Format switch
+            {
+                EDataBufferFormat.R_UINT_16 => EIndexFormat.Index16,
+                EDataBufferFormat.R_UINT_32 => EIndexFormat.Index32,
+                _ => throw new NotSupportedException("Unknown index buffer type"),
+            };
+
+            uint elementCount = Buffer?.ElementCount ?? 1;
+            writer.Write(elementCount);
+
+            if (elementCount > 0)
+            {
+                writer.Write(Flags);
+                writer.Write((uint)dataFormat);
+                writer.Write((uint)(Buffer.IsStreamed() ? 1 : 0));
+                ResourceGUID.ToData(writer);
+                Buffer.ToData(writer);
             }
         }
     }

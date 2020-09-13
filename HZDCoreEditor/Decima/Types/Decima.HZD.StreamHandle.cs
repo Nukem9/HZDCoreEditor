@@ -10,6 +10,17 @@ namespace Decima.HZD
         public ulong Unknown1;
         public ulong Unknown2;
 
+        public void ToData(BinaryWriter writer)
+        {
+            writer.Write((uint)ResourcePath.Length);
+
+            if (ResourcePath.Length > 0)
+                writer.Write(Encoding.UTF8.GetBytes(ResourcePath));
+
+            writer.Write(Unknown1);
+            writer.Write(Unknown2);
+        }
+
         public static StreamHandle FromData(BinaryReader reader)
         {
             var x = new StreamHandle();

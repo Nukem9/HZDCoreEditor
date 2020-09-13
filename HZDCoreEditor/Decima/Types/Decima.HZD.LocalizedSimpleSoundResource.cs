@@ -1,5 +1,6 @@
 ﻿using BinaryStreamExtensions;
 using System.IO;
+using System.Numerics;
 using System.Text;
 
 namespace Decima.HZD
@@ -10,7 +11,10 @@ namespace Decima.HZD
         [RTTI.Member(0, 0x100, "General")] public Ref<SoundMixStateResource> SoundMixState;
         [RTTI.Member(1, 0x108, "General")] public Ref<LocalizedSoundPreset> Preset;
         public string SoundDataFilePath;
+        public ushort LanguageBits;
+        public byte DataLength;
         public WaveResource SoundFormat;
+        public byte[][] UnknownData;
 
         public void DeserializeExtraData(BinaryReader reader)
         {
@@ -19,8 +23,8 @@ namespace Decima.HZD
             if (stringLength > 0)
                 SoundDataFilePath = Encoding.UTF8.GetString(reader.ReadBytesStrict(stringLength));
 
-            ushort languageBits = reader.ReadUInt16();
-            byte dataLength = reader.ReadByte();
+            LanguageBits = reader.ReadUInt16();
+            DataLength = reader.ReadByte();
 
             // Yes, they really did this manually
             SoundFormat = new WaveResource();
@@ -34,19 +38,52 @@ namespace Decima.HZD
             SoundFormat.BlockAlignment = reader.ReadUInt16();
             SoundFormat.FormatTag = reader.ReadUInt16();
 
+            UnknownData = new byte[22][];
             uint currentLanguageBit = 1;
             for (uint i = 1; i < 22; i++)
             {
                 if ((GetLanguageSpecificFlags((ELanguage)i) & 2) == 0)
                     continue;
 
-                if ((currentLanguageBit & languageBits) != 0)
+                if ((currentLanguageBit & LanguageBits) != 0)
                 {
-                    var unknownData = reader.ReadBytesStrict(dataLength);
+                    UnknownData[i] = reader.ReadBytesStrict(DataLength);
                 }
 
-                // Bit rotate left
-                currentLanguageBit = (currentLanguageBit << 1) | (currentLanguageBit >> 31);
+                currentLanguageBit = BitOperations.RotateLeft(currentLanguageBit, 1);
+            }
+        }
+
+        public void SerializeExtraData(BinaryWriter writer)
+        {
+            writer.Write((uint)SoundDataFilePath.Length);
+
+            if (SoundDataFilePath.Length > 0)
+                writer.Write(Encoding.UTF8.GetBytes(SoundDataFilePath));
+
+            writer.Write(LanguageBits);
+            writer.Write(DataLength);
+
+            writer.Write(SoundFormat.EncodeFlags());
+            writer.Write(SoundFormat.FrameSize);
+            writer.Write((byte)SoundFormat.Encoding);
+            writer.Write(SoundFormat.ChannelCount);
+            writer.Write(SoundFormat.SampleRate);
+            writer.Write(SoundFormat.BitsPerSample);
+            writer.Write(SoundFormat.BitsPerSecond);
+            writer.Write(SoundFormat.BlockAlignment);
+            writer.Write(SoundFormat.FormatTag);
+
+            uint currentLanguageBit = 1;
+            for (uint i = 1; i < 22; i++)
+            {
+                if ((GetLanguageSpecificFlags((ELanguage)i) & 2) == 0)
+                    continue;
+
+                if ((currentLanguageBit & LanguageBits) != 0)
+                    writer.Write(UnknownData[i]);
+
+                currentLanguageBit = BitOperations.RotateLeft(currentLanguageBit, 1);
             }
         }
 

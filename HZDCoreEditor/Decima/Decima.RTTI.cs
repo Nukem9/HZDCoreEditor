@@ -153,6 +153,11 @@ namespace Decima
             return null;
         }
 
+        public static ulong GetIdByType(Type type)
+        {
+            return type.GetCustomAttribute<SerializableAttribute>().BinaryTypeId;
+        }
+
         public static string GetFieldCategory(FieldInfo field)
         {
             return field.GetCustomAttribute<MemberAttribute>()?.Category;
@@ -378,6 +383,77 @@ namespace Decima
             // Done reading. Now copy what the engine does and notify MsgReadBinary subscribers.
             if (objectInstance is IExtraBinaryDataCallback asExtraBinaryDataCallback)
                 asExtraBinaryDataCallback.DeserializeExtraData(reader);
+
+            return true;
+        }
+
+        public static void SerializeType(BinaryWriter writer, object objectInstance)
+        {
+            Type type = objectInstance.GetType();
+
+            // Enums and trivial types
+            if (SerializeTrivialType(writer, type, objectInstance))
+                return;
+
+            // Classes and structs
+            if (SerializeObjectType(writer, type, objectInstance))
+                return;
+
+            throw new NotImplementedException($"Unhandled object type '{type.FullName}'");
+        }
+
+        public static bool SerializeTrivialType(BinaryWriter writer, Type type, object value)
+        {
+            // TODO: Switch is probably not needed with BinaryWriter.Write() overload
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.Boolean: writer.Write((bool)value); break;
+                case TypeCode.SByte: writer.Write((sbyte)value); break;
+                case TypeCode.Byte: writer.Write((byte)value); break;
+                case TypeCode.Int16: writer.Write((short)value); break;
+                case TypeCode.UInt16: writer.Write((ushort)value); break;
+                case TypeCode.Int32: writer.Write((int)value); break;
+                case TypeCode.UInt32: writer.Write((uint)value); break;
+                case TypeCode.Int64: writer.Write((long)value); break;
+                case TypeCode.UInt64: writer.Write((ulong)value); break;
+                case TypeCode.Single: writer.Write((float)value); break;
+                case TypeCode.Double: writer.Write((double)value); break;
+                default: return false;
+            }
+
+            return true;
+        }
+
+        private static bool SerializeObjectType(BinaryWriter writer, Type type, object objectInstance)
+        {
+            if (!type.IsClass && !type.IsValueType)
+                return false;
+
+            if (objectInstance is ISerializable asSerializable)
+            {
+                // Custom writer function implemented. Let the interface do the work.
+                asSerializable.Serialize(writer);
+            }
+            else
+            {
+                var info = GetOrderedFieldsForClass(type);
+
+                // Write members
+                foreach (var member in info.Members)
+                {
+                    if (member.IgnoreBinarySerialization)
+                        continue;
+
+                    // If using a base class: pull the value out separately, then write it
+                    var baseClass = member.MIBase != null ? member.MIBase.GetValue(objectInstance) : objectInstance;
+
+                    SerializeType(writer, member.Field.GetValue(baseClass));
+                }
+            }
+
+            // Done reading. Now copy what the engine does and notify MsgReadBinary subscribers.
+            if (objectInstance is IExtraBinaryDataCallback asExtraBinaryDataCallback)
+                asExtraBinaryDataCallback.SerializeExtraData(writer);
 
             return true;
         }

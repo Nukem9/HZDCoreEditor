@@ -60,6 +60,32 @@ namespace Decima.HZD
             }
         }
 
+        public void Serialize(BinaryWriter writer)
+        {
+            writer.Write((byte)Type);
+
+            switch (Type)
+            {
+                case Types.Null:
+                    break;
+
+                case Types.LocalCoreUUID:
+                case Types.UUIDRef:
+                    GUID.ToData(writer);
+                    break;
+
+                case Types.ExternalCoreUUID:
+                case Types.StreamingRef:
+                    GUID.ToData(writer);
+
+                    ExternalFile.Serialize(writer);
+                    break;
+
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
         public virtual void DeserializeStateObject(SaveState state)
         {
             ResolvedObject = state.ReadObjectHandle();
@@ -158,6 +184,14 @@ namespace Decima.HZD
             }
         }
 
+        public void Serialize(BinaryWriter writer)
+        {
+            writer.Write((uint)Count);
+
+            foreach (var element in this)
+                RTTI.SerializeType(writer, element);
+        }
+
         public void DeserializeStateObject(SaveState state)
         {
             int itemCount = state.ReadVariableLengthOffset();
@@ -215,8 +249,19 @@ namespace Decima.HZD
                 uint entryHash = reader.ReadUInt32();
                 var newObj = RTTI.DeserializeType<T>(reader);
 
-                // TODO: is unknown actually a hash?
+                // TODO: is entryHash actually a hash?
                 Add(entryHash, newObj);
+            }
+        }
+
+        public void Serialize(BinaryWriter writer)
+        {
+            writer.Write((uint)Count);
+
+            foreach (var element in this)
+            {
+                writer.Write(element.Key);
+                RTTI.SerializeType(writer, element.Value);
             }
         }
     }
@@ -245,12 +290,23 @@ namespace Decima.HZD
                 Add(entryHash, newObj);
             }
         }
+
+        public void Serialize(BinaryWriter writer)
+        {
+            writer.Write((uint)Count);
+
+            foreach (var element in this)
+            {
+                writer.Write(element.Key);
+                RTTI.SerializeType(writer, element.Value);
+            }
+        }
     }
 
     /// <remarks>
     /// File data format:
     /// UInt32  (+0) String length
-    /// UInt32  (+4) Case sensitive CRC32-C hash
+    /// UInt32  (+4) Case sensitive CRC32-C hash with the most significant bit set to 0
     /// UInt8[] (+8) String data
     /// </remarks>
     [DebuggerDisplay("{Value}")]
@@ -281,6 +337,19 @@ namespace Decima.HZD
                 byte[] data = reader.ReadBytesStrict(readLength);
 
                 Value = Encoding.UTF8.GetString(data);
+            }
+        }
+
+        public void Serialize(BinaryWriter writer)
+        {
+            writer.Write((uint)Value.Length);
+
+            if (Value.Length > 0)
+            {
+                byte[] data = Encoding.UTF8.GetBytes(Value);
+
+                writer.Write(Util.CRC32C.Checksum(data) & ~0x80000000u);
+                writer.Write(data);
             }
         }
 
@@ -332,6 +401,14 @@ namespace Decima.HZD
 
                 Value = Encoding.Unicode.GetString(data);
             }
+        }
+
+        public void Serialize(BinaryWriter writer)
+        {
+            writer.Write((uint)Value.Length);
+
+            if (Value.Length > 0)
+                writer.Write(Encoding.Unicode.GetBytes(Value));
         }
 
         public void DeserializeStateObject(SaveState state)

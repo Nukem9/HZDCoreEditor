@@ -29,5 +29,16 @@ namespace Decima.HZD
             for (uint i = 0; i < StreamInfo.Length; i++)
                 StreamInfo[i] = StreamHandle.FromData(reader);
         }
+
+        public void SerializeExtraData(BinaryWriter writer)
+        {
+            writer.Write((uint)MusicData.Length);
+
+            if (MusicData.Length > 0)
+                writer.Write(MusicData);
+
+            for (uint i = 0; i < StreamInfo.Length; i++)
+                StreamInfo[i].ToData(writer);
+        }
     }
 }

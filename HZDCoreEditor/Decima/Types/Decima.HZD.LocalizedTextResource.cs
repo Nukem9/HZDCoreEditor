@@ -20,9 +20,18 @@ namespace Decima.HZD
             for (uint i = 0; i < TextData.Length; i++)
             {
                 ushort stringLength = reader.ReadUInt16();
+                TextData[i] = reader.ReadBytesStrict(stringLength);
+            }
+        }
 
-                if (stringLength > 0)
-                    TextData[i] = reader.ReadBytesStrict(stringLength);
+        public void SerializeExtraData(BinaryWriter writer)
+        {
+            for (uint i = 0; i < TextData.Length; i++)
+            {
+                writer.Write((ushort)TextData[i].Length);
+
+                if (TextData[i].Length > 0)
+                    writer.Write(TextData[i]);
             }
         }
 

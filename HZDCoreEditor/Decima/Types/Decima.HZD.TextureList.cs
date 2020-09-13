@@ -22,5 +22,16 @@ namespace Decima.HZD
                 }
             }
         }
+
+        public void SerializeExtraData(BinaryWriter writer)
+        {
+            writer.Write((uint)Textures.Length);
+
+            if (Textures.Length > 0)
+            {
+                for (uint i = 0; i < Textures.Length; i++)
+                    Textures[i].SerializeExtraData(writer);
+            }
+        }
     }
 }

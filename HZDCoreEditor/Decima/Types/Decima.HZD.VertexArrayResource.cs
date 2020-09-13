@@ -6,32 +6,63 @@ namespace Decima.HZD
     [RTTI.Serializable(0xBBAB0E0254767A94)]
     public class VertexArrayResource : BaseResource, RTTI.IExtraBinaryDataCallback
     {
-        public GGUUID[] ResourceGUIDs;
-        public HwBuffer[] Buffers;
+        public uint VertexElementCount; // TODO: Determine from HwBuffer entries (what happens if there's none?)
+        public VertexStream[] Streams;
+        public bool IsStreaming;        // TODO: Determine from HwBuffer entries (what happens if there's none?)
+
+        public class VertexStream
+        {
+            public uint Flags;
+            public byte[][] UnknownData;
+            public GGUUID GUID;
+            public HwBuffer Buffer;
+        }
 
         public void DeserializeExtraData(BinaryReader reader)
         {
-            uint vertexElementCount = reader.ReadUInt32();
+            VertexElementCount = reader.ReadUInt32();
             uint vertexStreamCount = reader.ReadUInt32();
-            bool isStreaming = reader.ReadBooleanStrict();
+            IsStreaming = reader.ReadBooleanStrict();
 
-            ResourceGUIDs = new GGUUID[vertexStreamCount];
-            Buffers = new HwBuffer[vertexStreamCount];
+            Streams = new VertexStream[vertexStreamCount];
 
-            for (uint i = 0; i < Buffers.Length; i++)
+            for (int i = 0; i < Streams.Length; i++)
             {
-                uint unknownFlags = reader.ReadUInt32();
-                uint vertexByteStride = reader.ReadUInt32();
-                uint unknownCounter = reader.ReadUInt32();
+                var stream = new VertexStream();
+                Streams[i] = stream;
 
-                for (uint j = 0; j < unknownCounter; j++)
+                stream.Flags = reader.ReadUInt32();
+                uint vertexByteStride = reader.ReadUInt32();
+                stream.UnknownData = new byte[reader.ReadUInt32()][];
+
+                for (uint j = 0; j < stream.UnknownData.Length; j++)
                 {
                     // 4 bytes read separately
-                    var packedData = reader.ReadBytesStrict(4);
+                    stream.UnknownData[j] = reader.ReadBytesStrict(4);
                 }
 
-                ResourceGUIDs[i] = GGUUID.FromData(reader);
-                Buffers[i] = HwBuffer.FromVertexData(reader, isStreaming, vertexByteStride, vertexElementCount);
+                stream.GUID = GGUUID.FromData(reader);
+                stream.Buffer = HwBuffer.FromVertexData(reader, IsStreaming, vertexByteStride, VertexElementCount);
+            }
+        }
+
+        public void SerializeExtraData(BinaryWriter writer)
+        {
+            writer.Write(VertexElementCount);
+            writer.Write((uint)Streams.Length);
+            writer.Write(IsStreaming);
+
+            foreach (VertexStream stream in Streams)
+            {
+                writer.Write(stream.Flags);
+                writer.Write(stream.Buffer.ElementStride);
+                writer.Write((uint)stream.UnknownData.Length);
+
+                foreach (var bytes in stream.UnknownData)
+                    writer.Write(bytes);
+
+                stream.GUID.ToData(writer);
+                stream.Buffer.ToData(writer);
             }
         }
     }

@@ -11,9 +11,13 @@ namespace Decima.HZD
         public void DeserializeExtraData(BinaryReader reader)
         {
             uint morphemeDataLength = reader.ReadUInt32();
+            MorphemeData = reader.ReadBytesStrict(morphemeDataLength);
+        }
 
-            if (morphemeDataLength > 0)
-                MorphemeData = reader.ReadBytesStrict(morphemeDataLength);
+        public void SerializeExtraData(BinaryWriter writer)
+        {
+            writer.Write((uint)MorphemeData.Length);
+            writer.Write(MorphemeData);
         }
     }
 }

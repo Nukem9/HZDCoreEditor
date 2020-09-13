@@ -6,15 +6,40 @@ namespace Decima.HZD
 {
     public class HwBuffer
     {
-        public byte[] Data;
+        public EDataBufferFormat Format;
+        public uint ElementStride;
+        public uint ElementCount;
         public StreamHandle StreamInfo;
+        public byte[] Data;
+
+        public bool IsStreamed()
+        {
+            return StreamInfo != null;
+        }
+
+        public void ToData(BinaryWriter writer)
+        {
+            if (IsStreamed())
+                StreamInfo.ToData(writer);
+            else
+                writer.Write(Data);
+        }
 
         public static HwBuffer FromData(BinaryReader reader, EDataBufferFormat format, bool streaming, uint byteStride, uint elementCount)
         {
+            var buffer = new HwBuffer
+            {
+                Format = format,
+                ElementStride = byteStride,
+                ElementCount = elementCount,
+            };
+
             if (streaming)
-                return new HwBuffer { StreamInfo = StreamHandle.FromData(reader) };
+                buffer.StreamInfo = StreamHandle.FromData(reader);
             else
-                return new HwBuffer { Data = reader.ReadBytesStrict(elementCount * byteStride) };
+                buffer.Data = reader.ReadBytesStrict(elementCount * byteStride);
+
+            return buffer;
         }
 
         public static HwBuffer FromVertexData(BinaryReader reader, bool streaming, uint ByteStride, uint ElementCount)

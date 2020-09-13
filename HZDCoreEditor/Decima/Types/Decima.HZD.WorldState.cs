@@ -7,9 +7,9 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x98, "TimeOfDay")] public float TimeOfDay;
         [RTTI.Member(1, 0xA4, "TimeOfDay")] public bool EnableDayNightCycle;
-        int Unknown1;// Offset 0xA0
-        float Unknown2;// Offset 0xA8
-        float Unknown3;// Offset 0xAC
+        public int Unknown1;// Offset 0xA0
+        public float Unknown2;// Offset 0xA8
+        public float Unknown3;// Offset 0xAC
 
         public void ReadSave(SaveState state)
         {
