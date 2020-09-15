@@ -37,7 +37,7 @@ namespace Decima.HZD
                 _ => throw new NotSupportedException("Unknown index buffer type"),
             };
 
-            uint elementCount = Buffer?.ElementCount ?? 1;
+            uint elementCount = Buffer?.ElementCount ?? 0;
             writer.Write(elementCount);
 
             if (elementCount > 0)

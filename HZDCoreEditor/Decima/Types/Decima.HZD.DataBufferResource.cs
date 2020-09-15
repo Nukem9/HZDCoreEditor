@@ -31,7 +31,7 @@ namespace Decima.HZD
 
         public void SerializeExtraData(BinaryWriter writer)
         {
-            uint elementCount = Buffer?.ElementCount ?? 1;
+            uint elementCount = Buffer?.ElementCount ?? 0;
             writer.Write(elementCount);
 
             if (elementCount > 0)
