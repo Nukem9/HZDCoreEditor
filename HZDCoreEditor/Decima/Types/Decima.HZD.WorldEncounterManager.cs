@@ -1,31 +1,32 @@
 ﻿using BinaryStreamExtensions;
+using System.Collections.Generic;
 
 namespace Decima.HZD
 {
     [RTTI.Serializable(0x1EF6CB2A7BC832CB)]
     public class WorldEncounterManager : ObjectManager, RTTI.ISaveSerializable
     {
+        public byte[] UnknownData;
+        public List<GGUUID> UnknownGUIDs;
+        public List<(GGUUID GUID, ulong Timestamp)> UnknownList;
+
         public void DeserializeStateObject(SaveState state)
         {
             state.DeserializeObjectClassMembers(typeof(WorldEncounterManager), this);
 
             // WEMB
-            var unknownData = state.Reader.ReadBytesStrict(24);
-            int counter1 = state.ReadVariableLengthOffset();
+            UnknownData = state.Reader.ReadBytesStrict(24);
 
-            for (int i = 0; i < counter1; i++)
+            UnknownGUIDs = state.ReadVariableItemList((int i, ref GGUUID guid) =>
             {
-                var guid = state.ReadIndexedGUID();
-            }
+                guid = state.ReadIndexedGUID();
+            });
 
-            int counter2 = state.ReadVariableLengthOffset();
-
-            for (int i = 0; i < counter2; i++)
+            UnknownList = state.ReadVariableItemList((int i, ref (GGUUID GUID, ulong Timestamp) e) =>
             {
-                var guid = state.ReadIndexedGUID();
-                ulong timestamp = state.Reader.ReadUInt64();// Guessed
-            }
-
+                e.GUID = state.ReadIndexedGUID();
+                e.Timestamp = state.Reader.ReadUInt64();// Guessed, probably last encounter time
+            });
             // WEME
         }
     }

@@ -5,25 +5,29 @@ namespace Decima.HZD
     // No reflection
     public class ExplorationSystem
     {
+        public byte[] OverlayBitmapData;
+        public byte[] UnknownData;
+        public GGUUID UnknownGUID;
+
         public void ReadSave(SaveState state)
         {
             if (state.SaveVersion < 26)
             {
                 int count = state.ReadVariableLengthOffset();
 
-                var overlayBitmapData = state.Reader.ReadBytesStrict(count);
+                OverlayBitmapData = state.Reader.ReadBytesStrict(count);
             }
             else
             {
-                var overlayBitmapData = new byte[65536];
+                OverlayBitmapData = new byte[65536];
 
-                for (int offset = 0; offset < overlayBitmapData.Length;)
+                for (int offset = 0; offset < OverlayBitmapData.Length;)
                 {
                     int size = state.ReadVariableLengthInt();
                     byte visibility = state.Reader.ReadByte();
 
                     for (int i = offset; i < (offset + size); i++)
-                        overlayBitmapData[i] = visibility;
+                        OverlayBitmapData[i] = visibility;
 
                     offset += size;
                 }
@@ -33,8 +37,8 @@ namespace Decima.HZD
 
             if (unknown)
             {
-                var data = state.Reader.ReadBytesStrict(24);
-                var guid = state.ReadIndexedGUID();
+                UnknownData = state.Reader.ReadBytesStrict(24);
+                UnknownGUID = state.ReadIndexedGUID();
             }
         }
     }

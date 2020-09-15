@@ -1,4 +1,6 @@
-﻿namespace Decima.HZD
+﻿using BinaryStreamExtensions;
+
+namespace Decima.HZD
 {
     [RTTI.Serializable(0xC3835A4A06E1473D)]
     public class FactDatabase : RTTIObject, RTTI.ISaveSerializable
@@ -7,7 +9,7 @@
         {
             state.DeserializeObjectClassMembers(typeof(FactDatabase), this);
 
-            // FDBB - Fact DataBase Begin?
+            // FDBB - Fact DataBase Begin
             int counter1 = state.ReadVariableLengthOffset();
 
             for (int i = 0; i < counter1; i++)
@@ -27,31 +29,30 @@
                 for (int j = 0; j < unknown; j++)
                 {
                     var anotherGUID = state.ReadIndexedGUID();
-                    int anotherUnknown = state.Reader.ReadInt32();
+                    float value = state.Reader.ReadSingle();
                 }
 
                 unknown = state.Reader.ReadInt32();
                 for (int j = 0; j < unknown; j++)
                 {
                     var anotherGUID = state.ReadIndexedGUID();
-                    int anotherUnknown = state.Reader.ReadInt32();
+                    int value = state.Reader.ReadInt32();
                 }
 
                 unknown = state.Reader.ReadInt32();
                 for (int j = 0; j < unknown; j++)
                 {
                     var anotherGUID = state.ReadIndexedGUID();
-                    byte anotherUnknown = state.Reader.ReadByte();
+                    bool value = state.Reader.ReadBooleanStrict();
                 }
 
                 unknown = state.Reader.ReadInt32();
                 for (int j = 0; j < unknown; j++)
                 {
                     var anotherGUID = state.ReadIndexedGUID();
-                    var anotherGUID2 = state.ReadIndexedGUID();
+                    var value = state.ReadIndexedGUID();
                 }
             }
-
             // FDBE
         }
     }

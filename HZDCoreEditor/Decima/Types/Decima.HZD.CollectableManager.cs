@@ -1,18 +1,19 @@
-﻿namespace Decima.HZD
+﻿using System.Collections.Generic;
+
+namespace Decima.HZD
 {
     [RTTI.Serializable(0xD1174F74B8550B27)]
     public class CollectableManager : RTTIObject
     {
+        public List<GGUUID> CollectableGUIDs;
+
         public void ReadSave(SaveState state)
         {
             // CLMB
-            int counter = state.ReadVariableLengthInt();
-
-            for (int i = 0; i < counter; i++)
+            CollectableGUIDs = state.ReadVariableItemList((int i, ref GGUUID GUID) =>
             {
-                var guid = state.ReadIndexedGUID();
-            }
-
+                GUID = state.ReadIndexedGUID();
+            });
             // CLME
         }
     }

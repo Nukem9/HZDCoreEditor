@@ -1,22 +1,23 @@
-﻿namespace Decima.HZD
+﻿using System.Collections.Generic;
+
+namespace Decima.HZD
 {
     // No reflection
     public class StreamingStrategyManagerGame
     {
+        public List<(GGUUID, StreamingStrategyInstance)> UnknownList1;
+
         public void ReadSave(SaveState state)
         {
-            int count = state.ReadVariableLengthInt();
-
-            for (int i = 0; i < count; i++)
+            UnknownList1 = state.ReadVariableItemList((int i, ref (GGUUID GUID, StreamingStrategyInstance Instance) e) =>
             {
                 string objectType = state.ReadIndexedString();
-                var guid = state.ReadIndexedGUID();
+                e.GUID = state.ReadIndexedGUID();
 
                 // See comments in StreamingStrategyInstance
-                var obj = RTTI.CreateObjectInstance(RTTI.GetTypeByName(objectType)) as StreamingStrategyInstance;
-
-                obj.ReadSave(state);
-            }
+                e.Instance = RTTI.CreateObjectInstance(RTTI.GetTypeByName(objectType)) as StreamingStrategyInstance;
+                e.Instance.ReadSave(state);
+            });
         }
     }
 }

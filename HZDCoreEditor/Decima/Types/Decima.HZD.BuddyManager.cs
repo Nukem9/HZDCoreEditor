@@ -1,21 +1,21 @@
 ﻿using BinaryStreamExtensions;
+using System.Collections.Generic;
 
 namespace Decima.HZD
 {
     [RTTI.Serializable(0x7374806C6ED90678)]
     public class BuddyManager : RTTIObject
     {
+        public List<(GGUUID, byte, byte[])> UnknownList;
+
         public void ReadSave(SaveState state)
         {
-            int count = state.ReadVariableLengthInt();
-
-            for (int i = 0; i < count; i++)
+            UnknownList = state.ReadVariableItemList((int i, ref (GGUUID GUID, byte, byte[]) e) =>
             {
-                var guid = state.ReadIndexedGUID();
-                byte unknown = state.Reader.ReadByte();
-
-                var unknownData = state.Reader.ReadBytesStrict(24);
-            }
+                e.GUID = state.ReadIndexedGUID();
+                e.Item2 = state.Reader.ReadByte();
+                e.Item3 = state.Reader.ReadBytesStrict(24);
+            });
         }
     }
 }

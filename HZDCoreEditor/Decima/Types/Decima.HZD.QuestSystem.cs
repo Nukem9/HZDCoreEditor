@@ -1,4 +1,5 @@
 ﻿using BinaryStreamExtensions;
+using System.Collections.Generic;
 
 namespace Decima.HZD
 {
@@ -9,6 +10,12 @@ namespace Decima.HZD
         [RTTI.Member(1, 0x40, "StateSaving", true)] public CPtr<QuestSectionUpdateQueue> UpdateQueue;
         [RTTI.Member(2, 0x48, "StateSaving", true)] public CPtr<DynamicQuestManager> DynamicQuestManager;
         [RTTI.Member(3, 0x60, "StateSaving", true)] public Array<GGUUID> TrackedQuestHistory;
+        public UnknownEntry[] UnknownArray;
+
+        public class UnknownEntry
+        {
+            public List<(GGUUID, List<GGUUID>)> UnknownList;
+        }
 
         public void DeserializeStateObject(SaveState state)
         {
@@ -22,20 +29,21 @@ namespace Decima.HZD
 
             state.DeserializeObjectClassMembers(typeof(QuestSystem), this);
 
-            for (int i = 0; i < 4; i++)
+            // Hardcoded number of entries
+            UnknownArray = new UnknownEntry[4];
+
+            for (int i = 0; i < UnknownArray.Length; i++)
             {
-                int count = state.ReadVariableLengthOffset();
+                UnknownArray[i] = new UnknownEntry();
 
-                for (int j = 0; j < count; j++)
+                UnknownArray[i].UnknownList = state.ReadVariableItemList((int i, ref (GGUUID GUID, List<GGUUID> GUIDList) e) =>
                 {
-                    var unknownGUID = state.ReadIndexedGUID();
-                    int count2 = state.ReadVariableLengthInt();
-
-                    for (int k = 0; k < count2; k++)
+                    e.GUID = state.ReadIndexedGUID();
+                    e.GUIDList = state.ReadVariableItemList((int i, ref GGUUID GUID) =>
                     {
-                        var unknownGUID2 = state.ReadIndexedGUID();
-                    }
-                }
+                        GUID = state.ReadIndexedGUID();
+                    });
+                });
             }
         }
     }

@@ -1,19 +1,21 @@
-﻿namespace Decima.HZD
+﻿using System.Collections.Generic;
+
+namespace Decima.HZD
 {
     // No reflection
     public class PickUpDatabaseGame
     {
+        public List<(GGUUID, int, int)> UnknownList;
+
         public void ReadSave(SaveState state)
         {
             // pudb
-            int count = state.ReadVariableLengthInt();
-
-            for (int i = 0; i < count; i++)
+            UnknownList = state.ReadVariableItemList((int i, ref (GGUUID GUID, int, int) e) =>
             {
-                var unknownGUID = state.ReadIndexedGUID();
-                int unknown1 = state.ReadVariableLengthInt();
-                int unknown2 = state.ReadVariableLengthInt();
-            }
+                e.GUID = state.ReadIndexedGUID();
+                e.Item2 = state.ReadVariableLengthInt();
+                e.Item3 = state.ReadVariableLengthInt();
+            });
         }
     }
 }

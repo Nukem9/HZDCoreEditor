@@ -1,41 +1,60 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Decima.HZD
 {
     [RTTI.Serializable(0x70DDECB5743C9A59)]
     public class Story : RTTIObject, RTTI.ISaveSerializable
     {
+        public List<QuestSaveInstance> QuestSaveInstances;
+
+        public class QuestSaveInstance
+        {
+            public QuestSave SaveObject;
+            public List<UnknownEntry1> UnknownList1;
+            public List<UnknownEntry2> UnknownList2;
+
+            public class UnknownEntry1
+            {
+                public GGUUID GUID1;
+                public GGUUID GUID2;
+                public int Unknown1;
+                public int Unknown2;
+            }
+
+            public class UnknownEntry2
+            {
+                public GGUUID GUID;
+                public QuestObjectiveSave ObjectiveSaveObject;
+            }
+        }
+
         public void DeserializeStateObject(SaveState state)
         {
             state.DeserializeObjectClassMembers(typeof(Story), this);
 
-            int questSaveCount = state.ReadVariableLengthOffset();
-
-            for (int i = 0; i < questSaveCount; i++)
+            QuestSaveInstances = state.ReadVariableItemList((int i, ref QuestSaveInstance instance) =>
             {
-                var questSaveObject = state.ReadObjectHandle();
-                int counter1 = state.ReadVariableLengthOffset();
+                instance.SaveObject = state.ReadObjectHandle() as QuestSave;
 
-                for (int j = 0; j < counter1; j++)
+                instance.UnknownList1 = state.ReadVariableItemList((int i, ref QuestSaveInstance.UnknownEntry1 e) =>
                 {
-                    var guid1 = state.ReadIndexedGUID();
-                    int unknown = state.ReadVariableLengthInt();
+                    e.GUID1 = state.ReadIndexedGUID();
+                    e.Unknown1 = state.ReadVariableLengthInt();// EQuestSectionState?
 
-                    if (unknown > 3)
+                    if (e.Unknown1 > 3)
                         throw new Exception();
 
-                    var guid2 = state.ReadIndexedGUID();
-                    int unknown2 = state.Reader.ReadInt32();
-                }
+                    e.GUID2 = state.ReadIndexedGUID();
+                    e.Unknown2 = state.Reader.ReadInt32();
+                });
 
-                int counter2 = state.ReadVariableLengthOffset();
-
-                for (int j = 0; j < counter2; j++)
+                instance.UnknownList2 = state.ReadVariableItemList((int i, ref QuestSaveInstance.UnknownEntry2 e) =>
                 {
-                    var guid1 = state.ReadIndexedGUID();
-                    var questObjectiveSave = state.ReadObjectHandle();
-                }
-            }
+                    e.GUID = state.ReadIndexedGUID();
+                    e.ObjectiveSaveObject = state.ReadObjectHandle() as QuestObjectiveSave;
+                });
+            });
         }
     }
 }

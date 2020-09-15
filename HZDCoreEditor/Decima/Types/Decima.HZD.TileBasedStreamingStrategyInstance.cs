@@ -1,30 +1,29 @@
-﻿namespace Decima.HZD
+﻿using System.Collections.Generic;
+
+namespace Decima.HZD
 {
     [RTTI.Serializable(0x8FB0349003667A31)]
     public class TileBasedStreamingStrategyInstance : StreamingStrategyInstance
     {
+        public List<(GGUUID, GGUUID)> UnknownList1;
+        public List<(GGUUID, GGUUID, byte)> UnknownList2;
+
         public override void ReadSave(SaveState state)
         {
-            int count1 = state.ReadVariableLengthInt();
-
-            for (int i = 0; i < count1; i++)
+            UnknownList1 = state.ReadVariableItemList((int i, ref (GGUUID Link1, GGUUID Link2) e) =>
             {
-                var guidLink1 = state.ReadIndexedGUID();
-                var guidLink2 = state.ReadIndexedGUID();
-            }
+                e.Link1 = state.ReadIndexedGUID();// ?
+                e.Link2 = state.ReadIndexedGUID();// ?
+            });
 
-            int count2 = state.ReadVariableLengthInt();
-
-            for (int i = 0; i < count2; i++)
+            UnknownList2 = state.ReadVariableItemList((int i, ref (GGUUID Link1, GGUUID Link2, byte) e) =>
             {
-                var guidLink1 = state.ReadIndexedGUID();
-                byte unknown = state.Reader.ReadByte();
+                e.Link1 = state.ReadIndexedGUID();// ?
+                e.Item3 = state.Reader.ReadByte();// ?
 
                 if (state.SaveVersion > 17)
-                {
-                    var guidLink2 = state.ReadIndexedGUID();
-                }
-            }
+                    e.Link2 = state.ReadIndexedGUID();// ?
+            });
         }
     }
 }

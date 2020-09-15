@@ -1,4 +1,6 @@
-﻿namespace Decima.HZD
+﻿using System.Collections.Generic;
+
+namespace Decima.HZD
 {
     [RTTI.Serializable(0x7520F5D9A86D15E3)]
     public class GeneratedQuestSave : RTTIObject, RTTI.ISaveSerializable
@@ -17,18 +19,17 @@
         [RTTI.Member(11, 0xE0, "Saving", true)] public GGUUID MerchantSpawnSetupUUID;
         [RTTI.Member(12, 0xF0, "Saving", true)] public Array<StreamingRef<EntityResource>> ItemsToTradeIn;
         [RTTI.Member(13, 0x100, "Saving", true)] public Array<int> AmountOfItemsToTradeIn;
+        public List<(GGUUID, GGUUID)> UnknownList;
 
         public void DeserializeStateObject(SaveState state)
         {
             state.DeserializeObjectClassMembers(typeof(GeneratedQuestSave), this);
 
-            int count = state.ReadVariableLengthOffset();
-
-            for (int i = 0; i < count; i++)
+            UnknownList = state.ReadVariableItemList((int i, ref (GGUUID, GGUUID) e) =>
             {
-                var guid1 = state.ReadIndexedGUID();
-                var guid2 = state.ReadIndexedGUID();
-            }
+                e.Item1 = state.ReadIndexedGUID();
+                e.Item2 = state.ReadIndexedGUID();
+            });
         }
     }
 }

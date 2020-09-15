@@ -1,16 +1,18 @@
-﻿namespace Decima.HZD
+﻿using System.Collections.Generic;
+
+namespace Decima.HZD
 {
     [RTTI.Serializable(0xABE0D6FFA740D4E)]
     public class SceneManagerGame : SceneManager
     {
+        public List<GGUUID> UnknownGUIDs;
+
         public void ReadSave(SaveState state)
         {
-            int count = state.ReadVariableLengthInt();
-
-            for (int i = 0; i < count; i++)
+            UnknownGUIDs = state.ReadVariableItemList((int i, ref GGUUID GUID) =>
             {
-                var guid = state.ReadIndexedGUID();
-            }
+                GUID = state.ReadIndexedGUID();
+            });
         }
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Decima.HZD
+﻿namespace Decima.HZD
 {
     [RTTI.Serializable(0x72F1332BB459B417)]
     public class WeatherSystem : CoreObject
@@ -13,13 +9,12 @@ namespace Decima.HZD
         [RTTI.Member(3, 0x250, "General")] public FRange TemperatureRange;
         [RTTI.Member(4, 0x354, "General")] public float WetnessDryingTime;
         [RTTI.Member(5, 0x358, "General")] public float WetnessSaturationTime;
+        public GGUUID UnknownSaveGUID;
 
         public void ReadSave(SaveState state)
         {
             if (state.SaveVersion > 15)
-            {
-                var guid = state.ReadIndexedGUID();
-            }
+                UnknownSaveGUID = state.ReadIndexedGUID();
         }
     }
 }

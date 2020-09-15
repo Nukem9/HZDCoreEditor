@@ -5,9 +5,9 @@ namespace Decima.HZD
     [RTTI.Serializable(0x96C62803CC5314B)]
     public class PlayerGame : Player
     {
-        string Name;
-        object UnknownObject;
-        PlayerRestoreState RestoreState;
+        public string Name;
+        public object UnknownObject;
+        public PlayerRestoreState RestoreState;
 
         public void ReadSave(SaveState state)
         {

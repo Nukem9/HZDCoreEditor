@@ -1,32 +1,30 @@
-﻿namespace Decima.HZD
+﻿using System.Collections.Generic;
+
+namespace Decima.HZD
 {
     [RTTI.Serializable(0xEB18FAD2ABAD4F96)]
     public class MenuBadgeManager : StateObject, RTTI.ISaveSerializable
     {
+        public List<GGUUID> UnknownList1;
+        public List<List<GGUUID>> UnknownList2;
+
         public void DeserializeStateObject(SaveState state)
         {
             state.DeserializeObjectClassMembers(typeof(MenuBadgeManager), this);
 
             // MBMB
-            int counter1 = state.ReadVariableLengthOffset();
-
-            for (int i = 0; i < counter1; i++)
+            UnknownList1 = state.ReadVariableItemList((int i, ref GGUUID GUID) =>
             {
-                var guid = state.ReadIndexedGUID();
-            }
+                GUID = state.ReadIndexedGUID();
+            });
 
-            int counter2 = state.ReadVariableLengthOffset();
-
-            for (int i = 0; i < counter2; i++)
+            UnknownList2 = state.ReadVariableItemList((int i, ref List<GGUUID> list) =>
             {
-                int counter3 = state.ReadVariableLengthOffset();
-
-                for (int j = 0; j < counter3; j++)
+                list = state.ReadVariableItemList((int i, ref GGUUID GUID) =>
                 {
-                    var guid = state.ReadIndexedGUID();
-                }
-            }
-
+                    GUID = state.ReadIndexedGUID();
+                });
+            });
             // MBME
         }
     }

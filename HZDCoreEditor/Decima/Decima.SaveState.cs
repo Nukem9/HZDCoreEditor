@@ -370,6 +370,25 @@ namespace Decima
             return value;
         }
 
+        public delegate void ItemReaderAction<T>(int index, ref T item);
+
+        public List<T> ReadVariableItemList<T>(ItemReaderAction<T> action)
+        {
+            // Not part of the game code. Added for convenience.
+            int counter = ReadVariableLengthOffset();
+            var items = new List<T>(counter);
+
+            for (int i = 0; i < counter; i++)
+            {
+                T item = Activator.CreateInstance<T>();
+                action(i, ref item);
+
+                items.Add(item);
+            }
+
+            return items;
+        }
+
         public string ReadIndexedString()
         {
             int index = ReadVariableLengthInt();
