@@ -32911,14 +32911,6 @@ namespace Decima.HZD
     {
     }
 
-    [RTTI.Serializable(0xC0E251CE6C81D04D)]
-    public class RotMatrix
-    {
-        [RTTI.Member(0, 0x0)] public Vec3Pack Col0;
-        [RTTI.Member(1, 0xC)] public Vec3Pack Col1;
-        [RTTI.Member(2, 0x18)] public Vec3Pack Col2;
-    }
-
     [RTTI.Serializable(0xDD0904F997A91048)]
     public class Route : WorldDataShape
     {
@@ -40139,14 +40131,6 @@ namespace Decima.HZD
         [RTTI.Member(1, 0x4)] public float Y;
     }
 
-    [RTTI.Serializable(0x4760E98FA8545BCF)]
-    public class Vec3
-    {
-        [RTTI.Member(0, 0x0)] public float X;
-        [RTTI.Member(1, 0x4)] public float Y;
-        [RTTI.Member(2, 0x8)] public float Z;
-    }
-
     [RTTI.Serializable(0x96958ADF649DC40C)]
     public class Vec3Pack
     {
@@ -41493,14 +41477,6 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x0)] public WorldTransform WorldTransform;
         [RTTI.Member(1, 0x40)] public Vec3 Extents;
-    }
-
-    [RTTI.Serializable(0xB7FA97B1A5E636C9)]
-    public class WorldPosition
-    {
-        [RTTI.Member(0, 0x0)] public double X;
-        [RTTI.Member(1, 0x8)] public double Y;
-        [RTTI.Member(2, 0x10)] public double Z;
     }
 
     [RTTI.Serializable(0xEE48361B489F504B)]

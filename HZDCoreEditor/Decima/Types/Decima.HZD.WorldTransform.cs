@@ -24,26 +24,29 @@ namespace Decima.HZD
 
             // position = { 0, 0, 0 }
             // orientation = { identity matrix }
+            Position = new WorldPosition();
+            Orientation = new RotMatrix();
+
             if ((flags & PackFlags.ZeroAll) != 0)
                 return;
 
             if ((flags & PackFlags.Truncated) == 0)
             {
                 // Read/write directly to memory
-                var pos = state.Reader.ReadBytesStrict(24);
-                var rot = state.Reader.ReadBytesStrict(36);
+                Position.DeserializeStateObject(state);
+                Orientation.DeserializeStateObject(state);
             }
             else
             {
                 if ((flags & PackFlags.SkipOrientation) == 0)
                 {
                     var rot = state.Reader.ReadBytesStrict(16);
+
+                    throw new NotImplementedException("TODO: Need to figure out how data is packed");
                 }
 
                 if ((flags & PackFlags.SkipPosition) == 0)
-                {
-                    var pos = state.Reader.ReadBytesStrict(24);
-                }
+                    Position.DeserializeStateObject(state);
             }
         }
     }
