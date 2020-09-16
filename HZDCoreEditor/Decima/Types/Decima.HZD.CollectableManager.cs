@@ -10,7 +10,7 @@ namespace Decima.HZD
         public void ReadSave(SaveState state)
         {
             // CLMB
-            CollectableGUIDs = state.ReadVariableItemList((int i, ref GGUUID GUID) =>
+            CollectableGUIDs = state.ReadVariableItemList((ref GGUUID GUID) =>
             {
                 GUID = state.ReadIndexedGUID();
             });

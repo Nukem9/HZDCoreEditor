@@ -10,13 +10,13 @@ namespace Decima.HZD
 
         public override void ReadSave(SaveState state)
         {
-            UnknownList1 = state.ReadVariableItemList((int i, ref (GGUUID Link1, GGUUID Link2) e) =>
+            UnknownList1 = state.ReadVariableItemList((ref (GGUUID Link1, GGUUID Link2) e) =>
             {
                 e.Link1 = state.ReadIndexedGUID();// ?
                 e.Link2 = state.ReadIndexedGUID();// ?
             });
 
-            UnknownList2 = state.ReadVariableItemList((int i, ref (GGUUID Link1, GGUUID Link2, byte) e) =>
+            UnknownList2 = state.ReadVariableItemList((ref (GGUUID Link1, GGUUID Link2, byte) e) =>
             {
                 e.Link1 = state.ReadIndexedGUID();// ?
                 e.Item3 = state.Reader.ReadByte();// ?

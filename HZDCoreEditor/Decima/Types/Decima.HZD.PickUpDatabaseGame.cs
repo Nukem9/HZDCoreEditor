@@ -10,7 +10,7 @@ namespace Decima.HZD
         public void ReadSave(SaveState state)
         {
             // pudb
-            UnknownList = state.ReadVariableItemList((int i, ref (GGUUID GUID, int, int) e) =>
+            UnknownList = state.ReadVariableItemList((ref (GGUUID GUID, int, int) e) =>
             {
                 e.GUID = state.ReadIndexedGUID();
                 e.Item2 = state.ReadVariableLengthInt();

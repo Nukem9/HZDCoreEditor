@@ -13,14 +13,14 @@ namespace Decima.HZD
             state.DeserializeObjectClassMembers(typeof(MenuBadgeManager), this);
 
             // MBMB
-            UnknownList1 = state.ReadVariableItemList((int i, ref GGUUID GUID) =>
+            UnknownList1 = state.ReadVariableItemList((ref GGUUID GUID) =>
             {
                 GUID = state.ReadIndexedGUID();
             });
 
-            UnknownList2 = state.ReadVariableItemList((int i, ref List<GGUUID> list) =>
+            UnknownList2 = state.ReadVariableItemList((ref List<GGUUID> list) =>
             {
-                list = state.ReadVariableItemList((int i, ref GGUUID GUID) =>
+                list = state.ReadVariableItemList((ref GGUUID GUID) =>
                 {
                     GUID = state.ReadIndexedGUID();
                 });

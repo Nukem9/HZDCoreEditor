@@ -9,7 +9,7 @@ namespace Decima.HZD
 
         public void ReadSave(SaveState state)
         {
-            UnknownList1 = state.ReadVariableItemList((int i, ref (GGUUID GUID, StreamingStrategyInstance Instance) e) =>
+            UnknownList1 = state.ReadVariableItemList((ref (GGUUID GUID, StreamingStrategyInstance Instance) e) =>
             {
                 string objectType = state.ReadIndexedString();
                 e.GUID = state.ReadIndexedGUID();

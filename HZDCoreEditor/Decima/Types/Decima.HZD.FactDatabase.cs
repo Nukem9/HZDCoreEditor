@@ -23,14 +23,14 @@ namespace Decima.HZD
             state.DeserializeObjectClassMembers(typeof(FactDatabase), this);
 
             // FDBB - Fact DataBase Begin
-            FactLifetimes = state.ReadVariableItemList((int i, ref (GGUUID, byte) e) =>
+            FactLifetimes = state.ReadVariableItemList((ref (GGUUID, byte) e) =>
             {
                 // Code refers to this as "lifetimes" near TelemetryCorruptedFactDatabase events
                 e.Item1 = state.ReadIndexedGUID();
                 e.Item2 = state.Reader.ReadByte();
             });
 
-            FactList = state.ReadVariableItemList((int i, ref FactContainer e) =>
+            FactList = state.ReadVariableItemList((ref FactContainer e) =>
             {
                 e.GUID = state.ReadIndexedGUID();
 
@@ -38,28 +38,28 @@ namespace Decima.HZD
                 int floatCount = state.Reader.ReadInt32();
                 e.FloatFacts = new List<(GGUUID, float)>(floatCount);
 
-                for (int j = 0; j < floatCount; j++)
+                for (int i = 0; i < floatCount; i++)
                     e.FloatFacts.Add((state.ReadIndexedGUID(), state.Reader.ReadSingle()));
 
                 // Integer
                 int intCount = state.Reader.ReadInt32();
                 e.IntegerFacts = new List<(GGUUID, int)>(intCount);
 
-                for (int j = 0; j < intCount; j++)
+                for (int i = 0; i < intCount; i++)
                     e.IntegerFacts.Add((state.ReadIndexedGUID(), state.Reader.ReadInt32()));
 
                 // Boolean
                 int boolCount = state.Reader.ReadInt32();
                 e.BooleanFacts = new List<(GGUUID, bool)>(boolCount);
 
-                for (int j = 0; j < boolCount; j++)
+                for (int i = 0; i < boolCount; i++)
                     e.BooleanFacts.Add((state.ReadIndexedGUID(), state.Reader.ReadBooleanStrict()));
 
                 // Enum
                 int enumCount = state.Reader.ReadInt32();
                 e.EnumFacts = new List<(GGUUID, GGUUID)>(enumCount);
 
-                for (int j = 0; j < enumCount; j++)
+                for (int i = 0; i < enumCount; i++)
                     e.EnumFacts.Add((state.ReadIndexedGUID(), state.ReadIndexedGUID()));
             });
             // FDBE

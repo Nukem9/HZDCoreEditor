@@ -36,10 +36,10 @@ namespace Decima.HZD
             {
                 UnknownArray[i] = new UnknownEntry();
 
-                UnknownArray[i].UnknownList = state.ReadVariableItemList((int i, ref (GGUUID GUID, List<GGUUID> GUIDList) e) =>
+                UnknownArray[i].UnknownList = state.ReadVariableItemList((ref (GGUUID GUID, List<GGUUID> GUIDList) e) =>
                 {
                     e.GUID = state.ReadIndexedGUID();
-                    e.GUIDList = state.ReadVariableItemList((int i, ref GGUUID GUID) =>
+                    e.GUIDList = state.ReadVariableItemList((ref GGUUID GUID) =>
                     {
                         GUID = state.ReadIndexedGUID();
                     });

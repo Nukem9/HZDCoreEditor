@@ -10,7 +10,7 @@ namespace Decima.HZD
 
         public void ReadSave(SaveState state)
         {
-            UnknownList = state.ReadVariableItemList((int i, ref (GGUUID GUID, byte, byte[]) e) =>
+            UnknownList = state.ReadVariableItemList((ref (GGUUID GUID, byte, byte[]) e) =>
             {
                 e.GUID = state.ReadIndexedGUID();
                 e.Item2 = state.Reader.ReadByte();

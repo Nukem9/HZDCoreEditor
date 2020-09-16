@@ -25,7 +25,7 @@ namespace Decima.HZD
         {
             state.DeserializeObjectClassMembers(typeof(GeneratedQuestSave), this);
 
-            UnknownList = state.ReadVariableItemList((int i, ref (GGUUID, GGUUID) e) =>
+            UnknownList = state.ReadVariableItemList((ref (GGUUID, GGUUID) e) =>
             {
                 e.Item1 = state.ReadIndexedGUID();
                 e.Item2 = state.ReadIndexedGUID();

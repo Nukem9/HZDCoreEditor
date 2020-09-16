@@ -370,7 +370,7 @@ namespace Decima
             return value;
         }
 
-        public delegate void ItemReaderAction<T>(int index, ref T item);
+        public delegate void ItemReaderAction<T>(ref T item);
 
         public List<T> ReadVariableItemList<T>(ItemReaderAction<T> action)
         {
@@ -381,7 +381,7 @@ namespace Decima
             for (int i = 0; i < counter; i++)
             {
                 T item = Activator.CreateInstance<T>();
-                action(i, ref item);
+                action(ref item);
 
                 items.Add(item);
             }

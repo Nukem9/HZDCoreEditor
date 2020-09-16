@@ -33,11 +33,11 @@ namespace Decima.HZD
         {
             state.DeserializeObjectClassMembers(typeof(Story), this);
 
-            QuestSaveInstances = state.ReadVariableItemList((int i, ref QuestSaveInstance instance) =>
+            QuestSaveInstances = state.ReadVariableItemList((ref QuestSaveInstance instance) =>
             {
                 instance.SaveObject = state.ReadObjectHandle() as QuestSave;
 
-                instance.UnknownList1 = state.ReadVariableItemList((int i, ref QuestSaveInstance.UnknownEntry1 e) =>
+                instance.UnknownList1 = state.ReadVariableItemList((ref QuestSaveInstance.UnknownEntry1 e) =>
                 {
                     e.GUID1 = state.ReadIndexedGUID();
                     e.Unknown1 = state.ReadVariableLengthInt();// EQuestSectionState?
@@ -49,7 +49,7 @@ namespace Decima.HZD
                     e.Unknown2 = state.Reader.ReadInt32();
                 });
 
-                instance.UnknownList2 = state.ReadVariableItemList((int i, ref QuestSaveInstance.UnknownEntry2 e) =>
+                instance.UnknownList2 = state.ReadVariableItemList((ref QuestSaveInstance.UnknownEntry2 e) =>
                 {
                     e.GUID = state.ReadIndexedGUID();
                     e.ObjectiveSaveObject = state.ReadObjectHandle() as QuestObjectiveSave;

@@ -11,7 +11,7 @@ namespace Decima.HZD
         {
             state.DeserializeObjectClassMembers(typeof(CountdownTimerManager), this);
 
-            TimerObjects = state.ReadVariableItemList((int i, ref (GGUUID GUID, CountdownTimerSave) e) =>
+            TimerObjects = state.ReadVariableItemList((ref (GGUUID GUID, CountdownTimerSave) e) =>
             {
                 e.GUID = state.ReadIndexedGUID();
                 e.Item2 = state.ReadObjectHandle() as CountdownTimerSave;
