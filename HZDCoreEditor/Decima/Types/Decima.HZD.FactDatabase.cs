@@ -1,58 +1,67 @@
 ﻿using BinaryStreamExtensions;
+using System.Collections.Generic;
 
 namespace Decima.HZD
 {
     [RTTI.Serializable(0xC3835A4A06E1473D)]
     public class FactDatabase : RTTIObject, RTTI.ISaveSerializable
     {
+        public List<(GGUUID, byte)> FactLifetimes;
+        public List<FactContainer> FactList;
+
+        public class FactContainer
+        {
+            public GGUUID GUID;
+            public List<(GGUUID, float)> FloatFacts;
+            public List<(GGUUID, int)> IntegerFacts;
+            public List<(GGUUID, bool)> BooleanFacts;
+            public List<(GGUUID, GGUUID)> EnumFacts;
+        }
+
         public void DeserializeStateObject(SaveState state)
         {
             state.DeserializeObjectClassMembers(typeof(FactDatabase), this);
 
             // FDBB - Fact DataBase Begin
-            int counter1 = state.ReadVariableLengthOffset();
-
-            for (int i = 0; i < counter1; i++)
+            FactLifetimes = state.ReadVariableItemList((int i, ref (GGUUID, byte) e) =>
             {
-                var GUID = state.ReadIndexedGUID();
-                byte unknown = state.Reader.ReadByte();
-            }
+                // Code refers to this as "lifetimes" near TelemetryCorruptedFactDatabase events
+                e.Item1 = state.ReadIndexedGUID();
+                e.Item2 = state.Reader.ReadByte();
+            });
 
-            int counter2 = state.ReadVariableLengthOffset();
-
-            for (int i = 0; i < counter2; i++)
+            FactList = state.ReadVariableItemList((int i, ref FactContainer e) =>
             {
-                var GUID = state.ReadIndexedGUID();
+                e.GUID = state.ReadIndexedGUID();
 
-                // Float, integer, boolean, enum?
-                int unknown = state.Reader.ReadInt32();
-                for (int j = 0; j < unknown; j++)
-                {
-                    var anotherGUID = state.ReadIndexedGUID();
-                    float value = state.Reader.ReadSingle();
-                }
+                // Float
+                int floatCount = state.Reader.ReadInt32();
+                e.FloatFacts = new List<(GGUUID, float)>(floatCount);
 
-                unknown = state.Reader.ReadInt32();
-                for (int j = 0; j < unknown; j++)
-                {
-                    var anotherGUID = state.ReadIndexedGUID();
-                    int value = state.Reader.ReadInt32();
-                }
+                for (int j = 0; j < floatCount; j++)
+                    e.FloatFacts.Add((state.ReadIndexedGUID(), state.Reader.ReadSingle()));
 
-                unknown = state.Reader.ReadInt32();
-                for (int j = 0; j < unknown; j++)
-                {
-                    var anotherGUID = state.ReadIndexedGUID();
-                    bool value = state.Reader.ReadBooleanStrict();
-                }
+                // Integer
+                int intCount = state.Reader.ReadInt32();
+                e.IntegerFacts = new List<(GGUUID, int)>(intCount);
 
-                unknown = state.Reader.ReadInt32();
-                for (int j = 0; j < unknown; j++)
-                {
-                    var anotherGUID = state.ReadIndexedGUID();
-                    var value = state.ReadIndexedGUID();
-                }
-            }
+                for (int j = 0; j < intCount; j++)
+                    e.IntegerFacts.Add((state.ReadIndexedGUID(), state.Reader.ReadInt32()));
+
+                // Boolean
+                int boolCount = state.Reader.ReadInt32();
+                e.BooleanFacts = new List<(GGUUID, bool)>(boolCount);
+
+                for (int j = 0; j < boolCount; j++)
+                    e.BooleanFacts.Add((state.ReadIndexedGUID(), state.Reader.ReadBooleanStrict()));
+
+                // Enum
+                int enumCount = state.Reader.ReadInt32();
+                e.EnumFacts = new List<(GGUUID, GGUUID)>(enumCount);
+
+                for (int j = 0; j < enumCount; j++)
+                    e.EnumFacts.Add((state.ReadIndexedGUID(), state.ReadIndexedGUID()));
+            });
             // FDBE
         }
     }

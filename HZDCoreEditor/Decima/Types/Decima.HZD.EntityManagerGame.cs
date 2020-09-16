@@ -3,7 +3,7 @@
     // No reflection
     public class EntityManagerGame
     {
-        ulong Timestamp;
+        public ulong Timestamp;
 
         public void ReadSave(SaveState state)
         {

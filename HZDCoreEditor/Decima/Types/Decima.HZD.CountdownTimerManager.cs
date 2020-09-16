@@ -1,19 +1,21 @@
-﻿namespace Decima.HZD
+﻿using System.Collections.Generic;
+
+namespace Decima.HZD
 {
     [RTTI.Serializable(0xE6A4D10BC69EFF20)]
     public class CountdownTimerManager : RTTIObject, RTTI.ISaveSerializable
     {
+        public List<(GGUUID, CountdownTimerSave)> TimerObjects;
+
         public void DeserializeStateObject(SaveState state)
         {
             state.DeserializeObjectClassMembers(typeof(CountdownTimerManager), this);
 
-            int count = state.ReadVariableLengthOffset();
-
-            for (int i = 0; i < count; i++)
+            TimerObjects = state.ReadVariableItemList((int i, ref (GGUUID GUID, CountdownTimerSave) e) =>
             {
-                var guid = state.ReadIndexedGUID();
-                var timerSaveObject = state.ReadObjectHandle();
-            }
+                e.GUID = state.ReadIndexedGUID();
+                e.Item2 = state.ReadObjectHandle() as CountdownTimerSave;
+            });
         }
     }
 }
