@@ -14,7 +14,7 @@ namespace Decima.HZD
     /// GGUUID (+1)  (Optional) UUID
     /// String (+17) (Optional) External resource path
     /// </remarks>
-    [DebuggerDisplay("{DebugDisplay,nq}")]
+    [DebuggerDisplay("{ToString(),nq}")]
     public class Ref<T> : RTTI.ISerializable, RTTI.ISaveSerializable
     {
         public Types Type;
@@ -96,27 +96,23 @@ namespace Decima.HZD
                 Type = Types.Null;
         }
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private string DebugDisplay
+        public override string ToString()
         {
-            get
+            switch (Type)
             {
-                switch (Type)
-                {
-                    case Types.Null:
-                        return "Ref<Null>";
+                case Types.Null:
+                    return "Ref<Null>";
 
-                    case Types.LocalCoreUUID:
-                    case Types.UUIDRef:
-                        return $"Ref<Local> {{{GUID}}}";
+                case Types.LocalCoreUUID:
+                case Types.UUIDRef:
+                    return $"Ref<Local> {{{GUID}}}";
 
-                    case Types.ExternalCoreUUID:
-                    case Types.StreamingRef:
-                        return $"Ref<Extern> {{'{ExternalFile.Value}', {GUID}}}";
-                }
-
-                throw new NotImplementedException();
+                case Types.ExternalCoreUUID:
+                case Types.StreamingRef:
+                    return $"Ref<Extern> {{'{ExternalFile.Value}', {GUID}}}";
             }
+
+            throw new NotImplementedException();
         }
     }
 
@@ -309,7 +305,7 @@ namespace Decima.HZD
     /// UInt32  (+4) Case sensitive CRC32-C hash with the most significant bit set to 0
     /// UInt8[] (+8) String data
     /// </remarks>
-    [DebuggerDisplay("{Value}")]
+    [DebuggerDisplay("{ToString()}")]
     public class String : RTTI.ISerializable, RTTI.ISaveSerializable
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -358,6 +354,11 @@ namespace Decima.HZD
             Value = state.ReadIndexedString();
         }
 
+        public override string ToString()
+        {
+            return Value;
+        }
+
         // TODO: Implicit operators might not be the best idea
         public static implicit operator string(String value)
         {
@@ -382,7 +383,7 @@ namespace Decima.HZD
     /// UInt32   (+0) String length
     /// UInt16[] (+4) String data
     /// </remarks>
-    [DebuggerDisplay("{Value}")]
+    [DebuggerDisplay("{ToString()}")]
     public class WString : RTTI.ISerializable, RTTI.ISaveSerializable
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -414,6 +415,11 @@ namespace Decima.HZD
         public void DeserializeStateObject(SaveState state)
         {
             Value = state.ReadIndexedWideString();
+        }
+
+        public override string ToString()
+        {
+            return Value;
         }
     }
 
