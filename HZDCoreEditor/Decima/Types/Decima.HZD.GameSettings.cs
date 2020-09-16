@@ -1,4 +1,4 @@
-﻿using BinaryStreamExtensions;
+﻿using Utility;
 
 namespace Decima.HZD
 {

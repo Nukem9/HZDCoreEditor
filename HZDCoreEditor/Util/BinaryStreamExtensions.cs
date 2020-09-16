@@ -1,8 +1,8 @@
 ﻿using System.IO;
 
-namespace BinaryStreamExtensions
+namespace Utility
 {
-    public static class IShouldntHaveToAddThese
+    public static class BinaryStreamExtensions
     {
         public static long StreamLength(this BinaryReader reader)
         {

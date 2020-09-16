@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Util
+namespace Utility
 {
     static class CRC32C
     {

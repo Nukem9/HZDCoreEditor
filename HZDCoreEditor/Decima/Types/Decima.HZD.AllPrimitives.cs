@@ -1,4 +1,4 @@
-﻿using BinaryStreamExtensions;
+﻿using Utility;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -348,7 +348,7 @@ namespace Decima.HZD
             {
                 byte[] data = Encoding.UTF8.GetBytes(Value);
 
-                writer.Write(Util.CRC32C.Checksum(data) & ~0x80000000u);
+                writer.Write(CRC32C.Checksum(data) & ~0x80000000u);
                 writer.Write(data);
             }
         }

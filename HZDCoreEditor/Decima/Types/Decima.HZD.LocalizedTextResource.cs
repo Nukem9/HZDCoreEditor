@@ -1,4 +1,4 @@
-using BinaryStreamExtensions;
+using Utility;
 using System;
 using System.IO;
 using System.Text;
