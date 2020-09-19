@@ -1,4 +1,4 @@
-﻿namespace HZDCoreEditor
+﻿namespace HZDCoreEditor.UI
 {
     partial class FormCoreView
     {
