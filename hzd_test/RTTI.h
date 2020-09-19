@@ -234,7 +234,12 @@ public:
 	{
 		uint64_t hashedData[2] = {};
 
+#if HORIZON_ZERO_DAWN
 		const static auto addr = XUtil::FindPattern(g_ModuleBase, g_ModuleSize, "48 8B C4 44 89 40 18 48 89 50 10 48 89 48 08 55 53 56 41 56 48 8D 68 A1 48 81 EC 98 00 00 00 4C 89 60 D0");
+#elif DEATH_STRANDING
+		const static auto addr = XUtil::FindPattern(g_ModuleBase, g_ModuleSize, "4C 8B DC 55 53 56 41 56 49 8D 6B A1 48 81 EC C8 00 00 00");
+#endif
+
 		((void(__fastcall *)(uint64_t *, const RTTI *, __int64))(addr))(hashedData, this, 2);
 
 		return hashedData[0];

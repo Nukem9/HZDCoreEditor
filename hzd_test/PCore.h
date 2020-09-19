@@ -14,13 +14,23 @@ public:
 
 	String(const char *Value)
 	{
+#if HORIZON_ZERO_DAWN
 		const static auto addr = XUtil::FindPattern(g_ModuleBase, g_ModuleSize, "48 89 5C 24 10 48 89 6C 24 18 48 89 7C 24 20 41 56 48 83 EC 20 33 FF 48 8B EA 48 89 39 4C 8B F1 48 C7 C3 FF FF FF FF 48 FF C3");
+#elif DEATH_STRANDING
+		const static auto addr = XUtil::FindPattern(g_ModuleBase, g_ModuleSize, "40 53 48 83 EC 20 48 8B D9 48 C7 01 00 00 00 00 49 C7 C0 FF FF FF FF");
+#endif
+
 		((void(__fastcall *)(String *, const char *))(addr))(this, Value);
 	}
 
 	~String()
 	{
+#if HORIZON_ZERO_DAWN
 		const static auto addr = XUtil::FindPattern(g_ModuleBase, g_ModuleSize, "40 53 48 83 EC 20 48 8B 19 48 85 DB 74 37 48 83 C3 F0");
+#elif DEATH_STRANDING
+		const static auto addr = XUtil::FindPattern(g_ModuleBase, g_ModuleSize, "40 53 48 83 EC 20 48 8B 19 48 8D 05 ? ? ? ? 48 83 EB 10");
+#endif
+
 		((void(__fastcall *)(String *))(addr))(this);
 	}
 

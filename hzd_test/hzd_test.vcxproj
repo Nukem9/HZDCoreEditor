@@ -78,13 +78,13 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <TargetName>version</TargetName>
+    <TargetName>winhttp</TargetName>
     <IncludePath>$(SolutionDir)Dependencies\detours;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <LibraryPath>$(OutDir);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <TargetName>version</TargetName>
+    <TargetName>winhttp</TargetName>
     <IncludePath>$(SolutionDir)Dependencies\detours;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <LibraryPath>$(OutDir);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
@@ -165,7 +165,7 @@
     <ClCompile Include="MSRTTI.cpp" />
     <ClCompile Include="RTTICSharpExporter.cpp" />
     <ClCompile Include="RTTIIDAExporter.cpp" />
-    <ClCompile Include="version_exports.cpp" />
+    <ClCompile Include="winhttp_exports.cpp" />
     <ClCompile Include="XUtil.cpp" />
   </ItemGroup>
   <ItemGroup>

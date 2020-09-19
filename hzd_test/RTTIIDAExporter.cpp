@@ -11,8 +11,10 @@ namespace RTTIIDAExporter
 {
 	void ExportAll(const char *Directory)
 	{
+		CreateDirectoryA(Directory, nullptr);
+
 		char outputFilePath[MAX_PATH];
-		sprintf_s(outputFilePath, "%s\\HZD_IDA_TYPEINFO.idc", Directory);
+		sprintf_s(outputFilePath, "%s\\IDA_TYPEINFO.idc", Directory);
 
 		if (FILE *f; fopen_s(&f, outputFilePath, "w") == 0)
 		{
@@ -59,11 +61,11 @@ namespace RTTIIDAExporter
 			for (uint64_t i = 0; i < rtti->VFunctionCount; i++)
 			{
 				uintptr_t vfuncPointer = rtti->VTableAddress + (i * sizeof(uintptr_t));
-				uint8_t *vfunc = *reinterpret_cast<uint8_t **>(vfuncPointer);
-				uint8_t *vfuncDBAddress = vfunc - g_ModuleBase + 0x140000000;
+				uintptr_t vfunc = *reinterpret_cast<uintptr_t *>(vfuncPointer);
+				uintptr_t vfuncDBAddress = vfunc - g_ModuleBase + 0x140000000;
 
 				// Make sure it's not a pure virtual function
-				if (vfunc[0] == 0xFF && vfunc[1] == 0x25)
+				if (*reinterpret_cast<uint8_t *>(vfunc + 0) == 0xFF && *reinterpret_cast<uint8_t *>(vfunc + 1) == 0x25)
 					fprintf(F, "set_name(0x%llX, \"_purecall\");\n", vfuncDBAddress);
 				else
 					fprintf(F, "set_name(0x%llX, \"%s::VFunc%02lld_%llX\");\n", vfuncDBAddress, className.c_str(), i, vfuncDBAddress);
@@ -113,7 +115,6 @@ namespace RTTIIDAExporter
 			}
 		}
 
-		/*
 		// Enum and class members
 		for (auto typeInfo : AllRegisteredTypeInfo)
 		{
@@ -129,19 +130,22 @@ namespace RTTIIDAExporter
 			}
 			else if (typeInfo->m_InfoType == RTTI::INFO_TYPE_CLASS)
 			{
+				auto inheritanceInfo = typeInfo->ClassInheritance();
 				char inheritanceDecl[1024] = {};
 
-				if (typeInfo->m_ClassInheritanceCount)
+				if (!inheritanceInfo.empty())
 				{
 					strcat_s(inheritanceDecl, " : ");
 
-					for (int i = 0; i < typeInfo->m_ClassInheritanceCount; i++)
+					for (auto inherited : inheritanceInfo)
 					{
-						strcat_s(inheritanceDecl, typeInfo->Class.m_InheritanceData[i].m_Type->GetSymbolName().c_str());
+						strcat_s(inheritanceDecl, inherited.m_Type->GetSymbolName().c_str());
+						strcat_s(inheritanceDecl, ", ");
 
-						if (i < (typeInfo->m_ClassInheritanceCount - 1))
-							strcat_s(inheritanceDecl, ", ");
+						fprintf(F, "// Base %s = 0x%X\n", inherited.m_Type->GetSymbolName().c_str(), inherited.m_Offset);
 					}
+
+					*strrchr(inheritanceDecl, ',') = '\0';
 				}
 
 				fprintf(F, "// Binary type = 0x%llX\n", typeInfo->GetCoreBinaryTypeId_UNSAFE());
@@ -168,11 +172,15 @@ namespace RTTIIDAExporter
 
 				fprintf(F, "};\n\n");
 			}
-		*/
+		}
 	}
 
 	void ExportGameSymbolRTTI(FILE *F)
 	{
+#if DEATH_STRANDING
+		return;
+#endif
+
 		auto& gameSymbolGroups = *reinterpret_cast<Array<ExportedSymbolGroup *> *>(g_ModuleBase + 0x2A14B70);
 
 		for (auto& group : gameSymbolGroups)

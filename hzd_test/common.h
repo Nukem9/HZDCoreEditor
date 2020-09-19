@@ -1,5 +1,8 @@
 #pragma once
 
+#define HORIZON_ZERO_DAWN 1
+#define DEATH_STRANDING 0
+
 #define WIN32_LEAN_AND_MEAN
 
 #include <windows.h>

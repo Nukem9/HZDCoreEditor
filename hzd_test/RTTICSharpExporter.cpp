@@ -7,6 +7,8 @@ namespace RTTICSharpExporter
 {
 	void ExportAll(const char *Directory)
 	{
+		CreateDirectoryA(Directory, nullptr);
+
 		// Build a list of all {classes|enums}, sorted by name
 		std::vector<const RTTI *> sortedTypes;
 
@@ -423,6 +425,7 @@ namespace RTTICSharpExporter
 			auto end = &sortedEntries.data()[sortedEntries.size() - 1];
 			uint32_t temp = 0;
 
+			// Signature is valid across both games. I'm amazed. 9/19/2020.
 			const static auto addr = XUtil::FindPattern(g_ModuleBase, g_ModuleSize, "48 89 6C 24 20 56 41 56 41 57 48 83 EC 20 48 8B 02 4D 8B F9 49 8B E8 48 8B F2 4C 8B F1 48 39 01 0F 83 56 01 00 00 45 69 11 0D 66 19 00 48 B8 39 8E E3 38 8E E3 38 0E");
 			((void(__fastcall *)(SorterEntry **, SorterEntry **, bool(__fastcall *)(const SorterEntry *, const SorterEntry *), uint32_t *))(addr))(&start, &end, sortCompare, &temp);
 		}
