@@ -37,7 +37,7 @@ public:
 
 	enum Flags : uint8_t
 	{
-		IGNORE_BINARY_SERIALIZE = 2,
+		SAVE_STATE_ONLY = 2,
 	};
 
 	RTTI *m_Type;
@@ -53,9 +53,9 @@ public:
 		return m_Type == nullptr;
 	}
 
-	bool IgnoreBinarySerialization() const
+	bool IsSaveStateOnly() const
 	{
-		return IsGroupMarker() || (m_Flags & IGNORE_BINARY_SERIALIZE) != 0;
+		return IsGroupMarker() || (m_Flags & SAVE_STATE_ONLY) != 0;
 	}
 };
 static_assert(sizeof(RTTIMemberTypeInfo) == 0x38);

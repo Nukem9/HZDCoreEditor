@@ -30,17 +30,17 @@ namespace Decima
             public readonly uint Order;
             public readonly uint RuntimeOffset;
             public readonly string Category;
-            public readonly bool IgnoreBinarySerialization;
+            public readonly bool SaveStateOnly;
 
-            public MemberAttribute(uint order, uint runtimeOffset, string category = "", bool ignoreBinarySerialization = false)
+            public MemberAttribute(uint order, uint runtimeOffset, string category = "", bool saveStateOnly = false)
             {
                 Order = order;
                 RuntimeOffset = runtimeOffset;
                 Category = category;
-                IgnoreBinarySerialization = ignoreBinarySerialization;
+                SaveStateOnly = saveStateOnly;
             }
 
-            public MemberAttribute(uint order, uint runtimeOffset, bool ignoreBinarySerialization) : this(order, runtimeOffset, "", ignoreBinarySerialization)
+            public MemberAttribute(uint order, uint runtimeOffset, bool saveStateOnly) : this(order, runtimeOffset, "", saveStateOnly)
             {
             }
         }
@@ -77,12 +77,12 @@ namespace Decima
         /// [ ] Mat44
         /// [X] WorldTransform
         /// [X] Vec2
-        /// [ ] Vec3
+        /// [X] Vec3
         /// [ ] Vec4
         /// [ ] Quat
         /// [ ] Mat34
         /// [ ] RotMatrix
-        /// [ ] WorldPosition
+        /// [X] WorldPosition
         /// [X] IVec2
         /// [ ] IVec3
         /// [ ] FArc

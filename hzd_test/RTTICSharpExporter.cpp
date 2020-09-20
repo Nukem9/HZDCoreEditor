@@ -279,7 +279,7 @@ namespace RTTICSharpExporter
 			else
 				sprintf_s(attributeDecl, "[RTTI.Member(%d, 0x%X", index, member->m_Offset);
 
-			if (member->IgnoreBinarySerialization())
+			if (member->IsSaveStateOnly())
 				strcat_s(attributeDecl, ", true)]");
 			else
 				strcat_s(attributeDecl, ")]");
@@ -329,7 +329,7 @@ namespace RTTICSharpExporter
 
 		for (auto& member : Type->ClassMembers())
 		{
-			if (!member.IgnoreBinarySerialization())
+			if (!member.IsGroupMarker())
 				return false;
 		}
 
@@ -374,7 +374,7 @@ namespace RTTICSharpExporter
 
 		for (auto& member : Type->ClassMembers())
 		{
-			if (&member == MemberInfo || member.IgnoreBinarySerialization())
+			if (&member == MemberInfo || member.IsSaveStateOnly())
 				continue;
 
 			if (!strcmp(member.m_Name, MemberInfo->m_Name))

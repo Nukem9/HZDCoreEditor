@@ -87,13 +87,13 @@ namespace Decima
             {
                 public readonly FieldInfo MIBase;
                 public readonly FieldInfo Field;
-                public readonly bool IgnoreBinarySerialization;
+                public readonly bool SaveStateOnly;
 
-                public Entry(FieldInfo miBase, FieldInfo field, bool ignoreBinarySerialization)
+                public Entry(FieldInfo miBase, FieldInfo field, bool saveStateOnly)
                 {
                     MIBase = miBase;
                     Field = field;
-                    IgnoreBinarySerialization = ignoreBinarySerialization;
+                    SaveStateOnly = saveStateOnly;
                 }
             }
 
@@ -277,7 +277,7 @@ namespace Decima
 
             // All members
             var members = sortedHierarchy
-                .Select(x => new OrderedFieldInfo.Entry(x.MIBase, x.Field, x.Attr.IgnoreBinarySerialization))
+                .Select(x => new OrderedFieldInfo.Entry(x.MIBase, x.Field, x.Attr.SaveStateOnly))
                 .ToArray();
 
             info = new OrderedFieldInfo(miBases, members);
@@ -370,7 +370,7 @@ namespace Decima
                 // Read members
                 foreach (var member in info.Members)
                 {
-                    if (member.IgnoreBinarySerialization)
+                    if (member.SaveStateOnly)
                         continue;
 
                     // Check if this field needs to be applied to an emulated base class
@@ -441,7 +441,7 @@ namespace Decima
                 // Write members
                 foreach (var member in info.Members)
                 {
-                    if (member.IgnoreBinarySerialization)
+                    if (member.SaveStateOnly)
                         continue;
 
                     // If using a base class: pull the value out separately, then write it
