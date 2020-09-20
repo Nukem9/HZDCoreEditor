@@ -29,6 +29,30 @@ namespace HZDCoreEditor
             var c = new Decima.SaveGameSystem(@"C:\Users\Administrator\Documents\Horizon Zero Dawn\Saved Game\quicksave4\checkpoint.dat");
         }
 
+        static void DecodeDeathStrandingArchivesTest()
+        {
+            string basePath = @"C:\Program Files (x86)\Steam\steamapps\common\Death Stranding\data";
+
+            var archiveList = new string[]
+            {
+                "7017f9bb9d52fc1c4433599203cc51b1.bin",
+            };
+
+            foreach (var file in archiveList)
+            {
+                var archive = new Packfile(Path.Combine(basePath, file));
+
+                foreach (var entry in archive.FileEntries)
+                {
+                    var physicalPath = Path.Combine(basePath, "extracted", $"{entry.PathHash}.bin");
+                    var physicalDir = Path.GetDirectoryName(physicalPath);
+
+                    Directory.CreateDirectory(physicalDir);
+                    archive.ExtractFile(entry.PathHash, physicalPath);
+                }
+            }
+        }
+
         static void DecodeArchivesTest()
         {
             string basePath = @"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\";
