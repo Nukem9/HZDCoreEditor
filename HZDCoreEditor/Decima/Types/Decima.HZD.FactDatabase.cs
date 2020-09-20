@@ -6,7 +6,7 @@ namespace Decima.HZD
     [RTTI.Serializable(0xC3835A4A06E1473D)]
     public class FactDatabase : RTTIObject, RTTI.ISaveSerializable
     {
-        public List<(GGUUID, byte)> FactLifetimes;
+        public List<(GGUUID, bool)> FactLifetimes;
         public List<FactContainer> FactList;
 
         public class FactContainer
@@ -23,11 +23,11 @@ namespace Decima.HZD
             state.DeserializeObjectClassMembers(typeof(FactDatabase), this);
 
             // FDBB - Fact DataBase Begin
-            FactLifetimes = state.ReadVariableItemList((ref (GGUUID, byte) e) =>
+            FactLifetimes = state.ReadVariableItemList((ref (GGUUID GUID, bool persistent) e) =>
             {
                 // Code refers to this as "lifetimes" near TelemetryCorruptedFactDatabase events
-                e.Item1 = state.ReadIndexedGUID();
-                e.Item2 = state.Reader.ReadByte();
+                e.GUID = state.ReadIndexedGUID();
+                e.persistent = state.Reader.ReadBooleanStrict();
             });
 
             FactList = state.ReadVariableItemList((ref FactContainer e) =>
