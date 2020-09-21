@@ -1,7 +1,8 @@
-﻿using Utility;
-using System;
+﻿using System;
 using System.IO;
+using System.Numerics;
 using System.Text;
+using Utility;
 
 namespace Decima
 {
@@ -65,16 +66,16 @@ namespace Decima
             public byte[] BuildXorKey(ReadOnlySpan<byte> mixData)
             {
                 // Seed value was pulled from ds.exe
-                var key = new byte[] { 0x43, 0x94, 0x3A, 0xFA, 0x62, 0xAB, 0x1C, 0xF4, 0x1C, 0x81, 0x76, 0xF3, 0x3E, 0x9E, 0xA8, 0xD2 };
+                Span<byte> key = new byte[] { 0x43, 0x94, 0x3A, 0xFA, 0x62, 0xAB, 0x1C, 0xF4, 0x1C, 0x81, 0x76, 0xF3, 0x3E, 0x9E, 0xA8, 0xD2 };
 
                 for (int i = 0; i < mixData.Length; i++)
                     key[i] = mixData[i];
 
                 SMHasher.MurmurHash3_x64_128(key, 42, out ulong[] hash);
-                Buffer.BlockCopy(BitConverter.GetBytes(hash[0]), 0, key, 0, 8);
-                Buffer.BlockCopy(BitConverter.GetBytes(hash[1]), 0, key, 8, 8);
+                BitConverter.TryWriteBytes(key.Slice(0), hash[0]);
+                BitConverter.TryWriteBytes(key.Slice(8), hash[1]);
 
-                return key;
+                return key.ToArray();
             }
         }
 
@@ -170,6 +171,27 @@ namespace Decima
 
                 return x;
             }
+
+            public byte[] BuildXorKey()
+            {
+                // Murmurhash3 of the first 16 bytes of the BlockEntry header as stored in the file. No type casting = very ugly in C#.
+                Span<byte> seed = stackalloc byte[16];
+                BitConverter.TryWriteBytes(seed.Slice(0), DecompressedOffset);
+                BitConverter.TryWriteBytes(seed.Slice(8), DecompressedSize);
+                BitConverter.TryWriteBytes(seed.Slice(12), XorKey1);
+
+                SMHasher.MurmurHash3_x64_128(seed, 42, out ulong[] hash);
+                BitConverter.TryWriteBytes(seed.Slice(0), hash[0]);
+                BitConverter.TryWriteBytes(seed.Slice(8), hash[1]);
+
+                // XOR the seed with the data key
+                var key = new byte[] { 0x37, 0x4A, 0x08, 0x6C, 0x95, 0x9D, 0x15, 0x7E, 0xE8, 0xF7, 0x5A, 0x3D, 0x3F, 0x7D, 0xAA, 0x18 };
+
+                for (int i = 0; i < key.Length; i++)
+                    key[i] ^= seed[i];
+
+                return key;
+            }
         }
 
         public Packfile(string archivePath, FileMode mode = FileMode.Open)
@@ -244,28 +266,41 @@ namespace Decima
 
                     if (Header.IsEncrypted)
                     {
-                        // Murmurhash3 of the first 16 bytes of the BlockEntry header as stored in the file. No type casting = very ugly in C#.
-                        var seed = new byte[16];
-                        Buffer.BlockCopy(BitConverter.GetBytes(block.DecompressedOffset), 0, seed, 0, 8);
-                        Buffer.BlockCopy(BitConverter.GetBytes(block.DecompressedSize), 0, seed, 8, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(block.XorKey1), 0, seed, 12, 4);
+                        // Raw data is XOR'd with a 16-byte MD5 of the block entry key
+                        var key = md5.ComputeHash(block.BuildXorKey());
 
-                        SMHasher.MurmurHash3_x64_128(seed, 42, out ulong[] hash);
-                        Buffer.BlockCopy(BitConverter.GetBytes(hash[0]), 0, seed, 0, 8);
-                        Buffer.BlockCopy(BitConverter.GetBytes(hash[1]), 0, seed, 8, 8);
+                        // If possible, do the XOR in a vectorized loop
+                        int vectorRegisterSize = Vector<byte>.Count;
+                        int vectorizedLoopCount = data.Length / vectorRegisterSize;
+                        int byteIndex = 0;
 
-                        // XOR the seed with the data key
-                        var key = new byte[] { 0x37, 0x4A, 0x08, 0x6C, 0x95, 0x9D, 0x15, 0x7E, 0xE8, 0xF7, 0x5A, 0x3D, 0x3F, 0x7D, 0xAA, 0x18 };
+                        if (key.Length > vectorRegisterSize)
+                            vectorizedLoopCount = 0;
 
-                        for (int i = 0; i < key.Length; i++)
-                            key[i] ^= seed[i];
+                        if (vectorizedLoopCount > 0)
+                        {
+                            // Key length has to match register size, so replicate necessary values
+                            Span<byte> temp = stackalloc byte[vectorRegisterSize];
 
-                        // Key is now the MD5 result of the XOR'd key and seed
-                        key = md5.ComputeHash(key);
+                            for (int i = 0; i < vectorRegisterSize; i++)
+                                temp[i] = key[i & 15];
 
-                        // XOR all of the raw data
-                        for (int i = 0; i < data.Length; i++)
-                            data[i] ^= key[i % 16];
+                            var keyVector = new Vector<byte>(temp);
+
+                            // XOR operation
+                            for (int i = 0; i < vectorizedLoopCount; i++)
+                            {
+                                var inputVector = new Vector<byte>(data, byteIndex);
+                                var outputVector = inputVector ^ keyVector;
+
+                                outputVector.CopyTo(data, byteIndex);
+                                byteIndex += vectorRegisterSize;
+                            }
+                        }
+
+                        // Remainder
+                        for (; byteIndex < data.Length; byteIndex++)
+                            data[byteIndex] ^= key[byteIndex & 15];
                     }
 
                     if (!OodleLZ.Decompress(data, decompressedData))
@@ -289,6 +324,11 @@ namespace Decima
             throw new NotImplementedException();
         }
 
+        public bool FileExists(string path)
+        {
+            return GetFileEntryIndex(path) != uint.MaxValue;
+        }
+
         private ulong GetHashForPath(string path)
         {
             SMHasher.MurmurHash3_x64_128(Encoding.UTF8.GetBytes(path + char.MinValue), 42, out ulong[] hash);
@@ -302,16 +342,16 @@ namespace Decima
 
         private uint GetFileEntryIndex(ulong pathId)
         {
-            uint l = 0;
-            uint r = (uint)FileEntries.Length;
+            int l = 0;
+            int r = FileEntries.Length - 1;
 
             // Binary search
             while (l <= r)
             {
-                uint mid = l + (r - l) / 2;
+                int mid = l + (r - l) / 2;
 
                 if (FileEntries[mid].PathHash == pathId)
-                    return mid;
+                    return (uint)mid;
                 else if (FileEntries[mid].PathHash < pathId)
                     l = mid + 1;
                 else
