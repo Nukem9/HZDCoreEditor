@@ -274,7 +274,7 @@ namespace Decima
                         int vectorizedLoopCount = data.Length / vectorRegisterSize;
                         int byteIndex = 0;
 
-                        if (key.Length > vectorRegisterSize)
+                        if (vectorRegisterSize % key.Length != 0)
                             vectorizedLoopCount = 0;
 
                         if (vectorizedLoopCount > 0)
@@ -290,10 +290,10 @@ namespace Decima
                             // XOR operation
                             for (int i = 0; i < vectorizedLoopCount; i++)
                             {
-                                var inputVector = new Vector<byte>(data, byteIndex);
-                                var outputVector = inputVector ^ keyVector;
+                                var encData = new Vector<byte>(data, byteIndex);
+                                var decData = encData ^ keyVector;
 
-                                outputVector.CopyTo(data, byteIndex);
+                                decData.CopyTo(data, byteIndex);
                                 byteIndex += vectorRegisterSize;
                             }
                         }
