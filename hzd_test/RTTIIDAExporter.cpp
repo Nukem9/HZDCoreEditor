@@ -115,12 +115,15 @@ namespace RTTIIDAExporter
 			}
 		}
 
+		fprintf(F, "/*\n");
+
 		// Enum and class members
 		for (auto typeInfo : AllRegisteredTypeInfo)
 		{
 			if (typeInfo->m_InfoType == RTTI::INFO_TYPE_ENUM || typeInfo->m_InfoType == RTTI::INFO_TYPE_ENUM_2)
 			{
 				fprintf(F, "// Binary type = 0x%llX\n", typeInfo->GetCoreBinaryTypeId_UNSAFE());
+				fprintf(F, "// sizeof() = 0x%X\n", typeInfo->m_EnumUnderlyingTypeSize);
 				fprintf(F, "enum %s\n{\n", typeInfo->GetSymbolName().c_str());
 
 				for (auto& member : typeInfo->EnumMembers())
@@ -133,6 +136,9 @@ namespace RTTIIDAExporter
 				auto inheritanceInfo = typeInfo->ClassInheritance();
 				char inheritanceDecl[1024] = {};
 
+				fprintf(F, "// Binary type = 0x%llX\n", typeInfo->GetCoreBinaryTypeId_UNSAFE());
+				fprintf(F, "// sizeof() = 0x%X\n", typeInfo->Class.m_Size);
+
 				if (!inheritanceInfo.empty())
 				{
 					strcat_s(inheritanceDecl, " : ");
@@ -142,37 +148,42 @@ namespace RTTIIDAExporter
 						strcat_s(inheritanceDecl, inherited.m_Type->GetSymbolName().c_str());
 						strcat_s(inheritanceDecl, ", ");
 
-						fprintf(F, "// Base %s = 0x%X\n", inherited.m_Type->GetSymbolName().c_str(), inherited.m_Offset);
+						fprintf(F, "// Base: %s = 0x%X\n", inherited.m_Type->GetSymbolName().c_str(), inherited.m_Offset);
 					}
 
 					*strrchr(inheritanceDecl, ',') = '\0';
 				}
 
-				fprintf(F, "// Binary type = 0x%llX\n", typeInfo->GetCoreBinaryTypeId_UNSAFE());
-				fprintf(F, "// sizeof() = 0x%X\n", typeInfo->Class.m_Size);
-
 				for (auto& event : typeInfo->ClassEventSubscriptions())
-					fprintf(F, "// Event callback: %s = 0x%llX\n", event.m_Type->GetSymbolName().c_str(), (uintptr_t)event.m_Callback - g_ModuleBase + 0x140000000);
+					fprintf(F, "// Event callback: %s = 0x%llX\n", event.m_Type->GetSymbolName().c_str(), reinterpret_cast<uintptr_t>(event.m_Callback) - g_ModuleBase + 0x140000000);
 
 				fprintf(F, "class %s%s\n{\npublic:\n", typeInfo->GetSymbolName().c_str(), inheritanceDecl);
 
-				for (auto& member : typeInfo->ClassMembers())
+				// Dump all class members
+				auto members = typeInfo->GetSortedClassMembers();
+
+				for (auto& [member, category] : members)
 				{
-					if (member.m_Type)
-					{
-						// Regular data member
-						fprintf(F, "\t%s %s;// 0x%X\n", member.m_Type->GetSymbolName().c_str(), member.m_Name, member.m_Offset);
-					}
-					else
-					{
-						// Internal marker
-						fprintf(F, "\t// Category: %s\n", member.m_Name);
-					}
+					if (member->IsGroupMarker())
+						continue;
+
+					// Regular data member
+					fprintf(F, "\t%s %s;// 0x%X", member->m_Type->GetSymbolName().c_str(), member->m_Name, member->m_Offset);
+
+					if (member->m_PropertyGetter || member->m_PropertySetter)
+						fprintf(F, " (Property)");
+
+					if (member->IsSaveStateOnly())
+						fprintf(F, " (SAVE_STATE_ONLY)");
+
+					fprintf(F, "\n");
 				}
 
 				fprintf(F, "};\n\n");
 			}
 		}
+
+		fprintf(F, "*/\n");
 	}
 
 	void ExportGameSymbolRTTI(FILE *F)

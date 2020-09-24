@@ -32,24 +32,55 @@ namespace RTTICSharpExporter
 		// Dump these types into their own separate files
 		const char *separatedTypes[] =
 		{
+			"BuddyManager",
+			"CollectableManager",
+			"CountdownTimerManager",
 			"DataBufferResource",
+			"EntityManagerGame",
+			"ExplorationSystem",
+			"FactDatabase",
+			"GameModule",
+			"GameSettings",
+			"GeneratedQuestSave",
 			"GGUUID",
+			"HwBuffer",
 			"IndexArrayResource",
 			"IVec2",
 			"LocalizedSimpleSoundResource",
 			"LocalizedTextResource",
+			"LocationMarkerManager",
+			"MapZoneManager",
+			"MenuBadgeManager",
+			"MissionSettings",
 			"MorphemeAnimationResource",
 			"MusicResource",
 			"PhysicsRagdollResource",
 			"PhysicsShapeResource",
+			"PickUpDatabaseGame",
+			"PlayerGame",
 			"Pose",
+			"QuestSave",
+			"QuestSystem",
+			"RotMatrix",
+			"SceneManagerGame",
 			"ShaderResource",
+			"Story",
+			"StreamHandle",
+			"StreamingStrategyInstance",
+			"StreamingStrategyManagerGame",
 			"Texture",
 			"TextureList",
+			"TileBasedStreamingStrategyInstance",
 			"UITexture",
 			"Vec2",
+			"Vec3",
 			"VertexArrayResource",
 			"WaveResource",
+			"WeatherSystem",
+			"WorldEncounterManager",
+			"WorldPosition",
+			"WorldState",
+			"WorldTransform",
 		};
 
 		sortedTypes.erase(std::remove_if(sortedTypes.begin(), sortedTypes.end(), [Directory, separatedTypes](const RTTI *Type)
@@ -191,7 +222,7 @@ namespace RTTICSharpExporter
 		// C# doesn't support multiple base classes, so pick one based on the order in RTTI data and treat the others as members (manual composition)
 		char inheritanceDecl[1024] = {};
 		auto inheritance = Type->ClassInheritance();
-		bool postLoadCallback = IsPostLoadCallbackEnabled(Type);
+		bool postLoadCallback = Type->IsPostLoadCallbackEnabled();
 
 		if (!inheritance.empty())
 		{
@@ -251,7 +282,7 @@ namespace RTTICSharpExporter
 		}
 
 		// Insert real members sorted by offset
-		auto members = GetSortedClassMembers(Type);
+		auto members = Type->GetSortedClassMembers();
 
 		for (auto& [member, category] : members)
 		{
@@ -353,20 +384,6 @@ namespace RTTICSharpExporter
 			Name = "_" + Name;
 	}
 
-	bool IsPostLoadCallbackEnabled(const RTTI *Type)
-	{
-		if (Type->m_InfoType != RTTI::INFO_TYPE_CLASS)
-			__debugbreak();
-
-		for (auto& event : Type->ClassEventSubscriptions())
-		{
-			if (event.m_Type->GetSymbolName() == "MsgReadBinary")
-				return true;
-		}
-
-		return false;
-	}
-
 	bool IsMemberNameDuplicated(const RTTI *Type, const RTTIMemberTypeInfo *MemberInfo)
 	{
 		if (Type->m_InfoType != RTTI::INFO_TYPE_CLASS)
@@ -374,7 +391,7 @@ namespace RTTICSharpExporter
 
 		for (auto& member : Type->ClassMembers())
 		{
-			if (&member == MemberInfo || member.IsSaveStateOnly())
+			if (&member == MemberInfo || member.IsGroupMarker())
 				continue;
 
 			if (!strcmp(member.m_Name, MemberInfo->m_Name))
@@ -382,63 +399,5 @@ namespace RTTICSharpExporter
 		}
 
 		return false;
-	}
-
-	void BuildFullClassMemberLayout(const RTTI *Type, std::vector<SorterEntry>& Members, uint32_t Offset, bool TopLevel)
-	{
-		const char *activeCategory = "";
-
-		for (auto& base : Type->ClassInheritance())
-			BuildFullClassMemberLayout(base.m_Type, Members, Offset + base.m_Offset, false);
-
-		for (auto& member : Type->ClassMembers())
-		{
-			if (!member.m_Type)
-				activeCategory = member.m_Name;
-
-			SorterEntry entry
-			{
-				.m_Type = &member,
-				.m_Category = activeCategory,
-				.m_Offset = member.m_Offset + Offset,
-				.m_TopLevel = TopLevel,
-			};
-
-			Members.emplace_back(entry);
-		}
-	}
-
-	std::vector<std::pair<const RTTIMemberTypeInfo *, const char *>> GetSortedClassMembers(const RTTI *Type)
-	{
-		// Nasty hack: I don't know how sorting order works with multiple properties at offset 0. Let the game determine it.
-		std::vector<SorterEntry> sortedEntries;
-		BuildFullClassMemberLayout(Type, sortedEntries, 0, true);
-
-		auto sortCompare = [](const SorterEntry *A, const SorterEntry *B)
-		{
-			return A->m_Offset < B->m_Offset;
-		};
-
-		if (sortedEntries.size() > 1)
-		{
-			auto start = &sortedEntries.data()[0];
-			auto end = &sortedEntries.data()[sortedEntries.size() - 1];
-			uint32_t temp = 0;
-
-			// Signature is valid across both games. I'm amazed. 9/19/2020.
-			const static auto addr = XUtil::FindPattern(g_ModuleBase, g_ModuleSize, "48 89 6C 24 20 56 41 56 41 57 48 83 EC 20 48 8B 02 4D 8B F9 49 8B E8 48 8B F2 4C 8B F1 48 39 01 0F 83 56 01 00 00 45 69 11 0D 66 19 00 48 B8 39 8E E3 38 8E E3 38 0E");
-			((void(__fastcall *)(SorterEntry **, SorterEntry **, bool(__fastcall *)(const SorterEntry *, const SorterEntry *), uint32_t *))(addr))(&start, &end, sortCompare, &temp);
-		}
-
-		// We only care about the top-level fields here
-		std::vector<std::pair<const RTTIMemberTypeInfo *, const char *>> out;
-
-		for (auto& entry : sortedEntries)
-		{
-			if (entry.m_TopLevel)
-				out.emplace_back(entry.m_Type, entry.m_Category);
-		}
-
-		return out;
 	}
 }

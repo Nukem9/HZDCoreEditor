@@ -244,6 +244,91 @@ public:
 
 		return hashedData[0];
 	}
+
+	bool IsPostLoadCallbackEnabled() const
+	{
+		if (m_InfoType != RTTI::INFO_TYPE_CLASS)
+			__debugbreak();
+
+		for (auto& event : ClassEventSubscriptions())
+		{
+			if (event.m_Type->GetSymbolName() == "MsgReadBinary")
+				return true;
+		}
+
+		return false;
+	}
+
+private:
+	// This struct DOESN'T match the game, it just needs to be 72 bytes in size
+	struct SorterEntry
+	{
+		const RTTIMemberTypeInfo *m_Type;
+		const char *m_Category;
+		uint32_t m_Offset;
+		bool m_TopLevel;
+		char _pad0[0x31];
+	};
+	static_assert(sizeof(SorterEntry) == 0x48);
+
+	static void BuildFullClassMemberLayout(const RTTI *Type, std::vector<SorterEntry>& Members, uint32_t Offset, bool TopLevel)
+	{
+		const char *activeCategory = "";
+
+		for (auto& base : Type->ClassInheritance())
+			BuildFullClassMemberLayout(base.m_Type, Members, Offset + base.m_Offset, false);
+
+		for (auto& member : Type->ClassMembers())
+		{
+			if (!member.m_Type)
+				activeCategory = member.m_Name;
+
+			SorterEntry entry
+			{
+				.m_Type = &member,
+				.m_Category = activeCategory,
+				.m_Offset = member.m_Offset + Offset,
+				.m_TopLevel = TopLevel,
+			};
+
+			Members.emplace_back(entry);
+		}
+	}
+
+public:
+	std::vector<std::pair<const RTTIMemberTypeInfo *, const char *>> GetSortedClassMembers() const
+	{
+		// Nasty hack: I don't know how sorting order works with multiple properties at offset 0. Let the game determine it.
+		std::vector<SorterEntry> sortedEntries;
+		BuildFullClassMemberLayout(this, sortedEntries, 0, true);
+
+		auto sortCompare = [](const SorterEntry *A, const SorterEntry *B)
+		{
+			return A->m_Offset < B->m_Offset;
+		};
+
+		if (sortedEntries.size() > 1)
+		{
+			auto start = &sortedEntries.data()[0];
+			auto end = &sortedEntries.data()[sortedEntries.size() - 1];
+			uint32_t temp = 0;
+
+			// Signature is valid across both games. I'm amazed. 9/19/2020.
+			const static auto addr = XUtil::FindPattern(g_ModuleBase, g_ModuleSize, "48 89 6C 24 20 56 41 56 41 57 48 83 EC 20 48 8B 02 4D 8B F9 49 8B E8 48 8B F2 4C 8B F1 48 39 01 0F 83 56 01 00 00 45 69 11 0D 66 19 00 48 B8 39 8E E3 38 8E E3 38 0E");
+			((void(__fastcall *)(SorterEntry **, SorterEntry **, bool(__fastcall *)(const SorterEntry *, const SorterEntry *), uint32_t *))(addr))(&start, &end, sortCompare, &temp);
+		}
+
+		// We only care about the top-level fields here
+		std::vector<std::pair<const RTTIMemberTypeInfo *, const char *>> out;
+
+		for (auto& entry : sortedEntries)
+		{
+			if (entry.m_TopLevel)
+				out.emplace_back(entry.m_Type, entry.m_Category);
+		}
+
+		return out;
+	}
 };
 static_assert_offset(RTTI, m_InfoType, 0x4);
 static_assert_offset(RTTI, m_EnumUnderlyingTypeSize, 0x5);
