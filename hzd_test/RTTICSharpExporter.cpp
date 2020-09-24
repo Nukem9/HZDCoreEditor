@@ -1,7 +1,7 @@
 #include "common.h"
 #include "RTTICSharpExporter.h"
 
-extern std::unordered_set<const RTTI *> AllRegisteredTypeInfo;
+extern std::unordered_set<const GGRTTI *> AllRegisteredTypeInfo;
 
 namespace RTTICSharpExporter
 {
@@ -10,21 +10,21 @@ namespace RTTICSharpExporter
 		CreateDirectoryA(Directory, nullptr);
 
 		// Build a list of all {classes|enums}, sorted by name
-		std::vector<const RTTI *> sortedTypes;
+		std::vector<const GGRTTI *> sortedTypes;
 
 		for (auto& type : AllRegisteredTypeInfo)
 		{
 			switch (type->m_InfoType)
 			{
-			case RTTI::INFO_TYPE_CLASS:
-			case RTTI::INFO_TYPE_ENUM:
-			case RTTI::INFO_TYPE_ENUM_2:
+			case GGRTTI::INFO_TYPE_CLASS:
+			case GGRTTI::INFO_TYPE_ENUM:
+			case GGRTTI::INFO_TYPE_ENUM_2:
 				sortedTypes.emplace_back(type);
 				break;
 			}
 		}
 
-		std::sort(sortedTypes.begin(), sortedTypes.end(), [](const RTTI *A, const RTTI *B)
+		std::sort(sortedTypes.begin(), sortedTypes.end(), [](const GGRTTI *A, const GGRTTI *B)
 		{
 			return A->GetSymbolName() < B->GetSymbolName();
 		});
@@ -83,19 +83,19 @@ namespace RTTICSharpExporter
 			"WorldTransform",
 		};
 
-		sortedTypes.erase(std::remove_if(sortedTypes.begin(), sortedTypes.end(), [Directory, separatedTypes](const RTTI *Type)
+		sortedTypes.erase(std::remove_if(sortedTypes.begin(), sortedTypes.end(), [Directory, separatedTypes](const GGRTTI *Type)
 		{
 			for (auto name : separatedTypes)
 			{
 				if (Type->GetSymbolName() == name)
 				{
 					char outputFilePath[MAX_PATH];
-					sprintf_s(outputFilePath, "%s\\Decima.HZD.%s.cs", Directory, name);
+					sprintf_s(outputFilePath, "%s\\Decima.DS.%s.cs", Directory, name);
 
 					if (FILE *f; fopen_s(&f, outputFilePath, "w") == 0)
 					{
 						ExportFileHeader(f);
-						ExportRTTIClass(f, Type);
+						ExportRTTIClass(f, Type->AsClass());
 						ExportFileFooter(f);
 						fclose(f);
 					}
@@ -109,7 +109,7 @@ namespace RTTICSharpExporter
 
 		// TODO: Split classes into separate files if they all reference a common base (i.e > 30 instances per)
 		char outputFilePath[MAX_PATH];
-		sprintf_s(outputFilePath, "%s\\Decima.HZD.AllStructs.cs", Directory);
+		sprintf_s(outputFilePath, "%s\\Decima.DS.AllStructs.cs", Directory);
 
 		if (FILE *f; fopen_s(&f, outputFilePath, "w") == 0)
 		{
@@ -117,15 +117,15 @@ namespace RTTICSharpExporter
 
 			for (auto& type : sortedTypes)
 			{
-				if (type->m_InfoType == RTTI::INFO_TYPE_CLASS)
-					ExportRTTIClass(f, type);
+				if (type->AsClass())
+					ExportRTTIClass(f, type->AsClass());
 			}
 
 			ExportFileFooter(f);
 			fclose(f);
 		}
 
-		sprintf_s(outputFilePath, "%s\\Decima.HZD.AllEnums.cs", Directory);
+		sprintf_s(outputFilePath, "%s\\Decima.DS.AllEnums.cs", Directory);
 
 		if (FILE *f; fopen_s(&f, outputFilePath, "w") == 0)
 		{
@@ -133,8 +133,8 @@ namespace RTTICSharpExporter
 
 			for (auto& type : sortedTypes)
 			{
-				if (type->m_InfoType == RTTI::INFO_TYPE_ENUM || type->m_InfoType == RTTI::INFO_TYPE_ENUM_2)
-					ExportRTTIEnum(f, type);
+				if (type->AsEnum())
+					ExportRTTIEnum(f, type->AsEnum());
 			}
 
 			ExportFileFooter(f);
@@ -180,10 +180,10 @@ namespace RTTICSharpExporter
 		fputs(data, F);
 	}
 
-	void ExportRTTIEnum(FILE *F, const RTTI *Type)
+	void ExportRTTIEnum(FILE *F, const GGRTTIEnum *Type)
 	{
 		// Attributes/decl
-		fprintf(F, "[RTTI.Serializable(0x%llX)]\n", Type->GetCoreBinaryTypeId_UNSAFE());
+		fprintf(F, "[RTTI.Serializable(0x%llX)]\n", Type->GetCoreBinaryTypeId());
 		fprintf(F, "public enum %s : %s\n{\n", Type->GetSymbolName().c_str(), EnumTypeToString(Type));
 
 		// Members
@@ -217,7 +217,7 @@ namespace RTTICSharpExporter
 		fprintf(F, "}\n\n");
 	}
 
-	void ExportRTTIClass(FILE *F, const RTTI *Type)
+	void ExportRTTIClass(FILE *F, const GGRTTIClass *Type)
 	{
 		// C# doesn't support multiple base classes, so pick one based on the order in RTTI data and treat the others as members (manual composition)
 		char inheritanceDecl[1024] = {};
@@ -254,7 +254,7 @@ namespace RTTICSharpExporter
 		//
 		// [RTTI.Serializable(0xDC3D43D192F22E9B)]
 		//
-		fprintf(F, "[RTTI.Serializable(0x%llX)]\n", Type->GetCoreBinaryTypeId_UNSAFE());
+		fprintf(F, "[RTTI.Serializable(0x%llX)]\n", Type->GetCoreBinaryTypeId());
 		fprintf(F, "%s\n{\n", fullDecl);
 
 		//
@@ -274,7 +274,7 @@ namespace RTTICSharpExporter
 		{
 			auto name = inheritance[i].m_Type->GetSymbolName();
 
-			if (IsBaseClassSuperfluous(inheritance[i].m_Type))
+			if (IsBaseClassSuperfluous(inheritance[i].m_Type->AsClass()))
 				continue;
 
 			fprintf(F, "\t[RTTI.BaseClass(0x%X)] public %s @%s;\n", inheritance[i].m_Offset, name.c_str(), name.c_str());
@@ -322,11 +322,40 @@ namespace RTTICSharpExporter
 		fprintf(F, "}\n\n");
 	}
 
-	const char *EnumTypeToString(const RTTI *Type)
+	bool IsBaseClassSuperfluous(const GGRTTIClass *Type)
 	{
-		if (Type->m_InfoType != RTTI::INFO_TYPE_ENUM && Type->m_InfoType != RTTI::INFO_TYPE_ENUM_2)
-			__debugbreak();
+		// Returns true if this type and all subtypes have no members listed in the binary format
+		for (auto& base : Type->ClassInheritance())
+		{
+			if (!IsBaseClassSuperfluous(base.m_Type->AsClass()))
+				return false;
+		}
 
+		for (auto& member : Type->ClassMembers())
+		{
+			if (!member.IsGroupMarker())
+				return false;
+		}
+
+		return true;
+	}
+
+	bool IsMemberNameDuplicated(const GGRTTIClass *Type, const GGRTTIClass::MemberEntry *MemberInfo)
+	{
+		for (auto& member : Type->ClassMembers())
+		{
+			if (&member == MemberInfo || member.IsGroupMarker())
+				continue;
+
+			if (!strcmp(member.m_Name, MemberInfo->m_Name))
+				return true;
+		}
+
+		return false;
+	}
+
+	const char *EnumTypeToString(const GGRTTIEnum *Type)
+	{
 		switch (Type->m_EnumUnderlyingTypeSize)
 		{
 		case 1:
@@ -346,27 +375,6 @@ namespace RTTICSharpExporter
 		return "<INVALID>";
 	}
 
-	bool IsBaseClassSuperfluous(const RTTI *Type)
-	{
-		// Returns true if this type and all subtypes have no members listed in the binary format
-		if (Type->m_InfoType != RTTI::INFO_TYPE_CLASS)
-			__debugbreak();
-
-		for (auto& base : Type->ClassInheritance())
-		{
-			if (!IsBaseClassSuperfluous(base.m_Type))
-				return false;
-		}
-
-		for (auto& member : Type->ClassMembers())
-		{
-			if (!member.IsGroupMarker())
-				return false;
-		}
-
-		return true;
-	}
-
 	void FilterMemberNameString(std::string& Name)
 	{
 		// Member names can't start with numbers or be reserved identifiers. Slowwwwwwwwww.
@@ -382,22 +390,5 @@ namespace RTTICSharpExporter
 			Name == "RGBAColorRev" ||
 			Name == "FRGBAColor")
 			Name = "_" + Name;
-	}
-
-	bool IsMemberNameDuplicated(const RTTI *Type, const RTTIMemberTypeInfo *MemberInfo)
-	{
-		if (Type->m_InfoType != RTTI::INFO_TYPE_CLASS)
-			__debugbreak();
-
-		for (auto& member : Type->ClassMembers())
-		{
-			if (&member == MemberInfo || member.IsGroupMarker())
-				continue;
-
-			if (!strcmp(member.m_Name, MemberInfo->m_Name))
-				return true;
-		}
-
-		return false;
 	}
 }

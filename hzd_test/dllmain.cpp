@@ -6,7 +6,7 @@
 #include "RTTICSharpExporter.h"
 #include "RTTIIDAExporter.h"
 
-std::unordered_set<const RTTI *> AllRegisteredTypeInfo;
+std::unordered_set<const GGRTTI *> AllRegisteredTypeInfo;
 
 using CoreLibraryInitializerPfn = void(*)(void *, void *, void *);
 
@@ -18,22 +18,22 @@ void hk_RunCoreLibraryInitializer(const String& ImportFunctionName, CoreLibraryI
 #endif
 }
 
-void RegisterTypeInfoRecursively(const RTTI *Info)
+void RegisterTypeInfoRecursively(const GGRTTI *Info)
 {
 	if (AllRegisteredTypeInfo.count(Info))
 		return;
 
 	AllRegisteredTypeInfo.emplace(Info);
 
-	if (Info->m_InfoType == RTTI::INFO_TYPE_CLASS)
+	if (auto asClass = Info->AsClass(); asClass)
 	{
 		// Register base classes
-		for (auto& base : Info->ClassInheritance())
+		for (auto& base : asClass->ClassInheritance())
 			RegisterTypeInfoRecursively(base.m_Type);
 
-		for (auto& member : Info->ClassMembers())
+		for (auto& member : asClass->ClassMembers())
 		{
-			const RTTI *memberType = member.m_Type;
+			const GGRTTI *memberType = member.m_Type;
 
 			// Drill down to the basic type for containers and references
 			while (memberType)
@@ -51,7 +51,7 @@ void RegisterTypeInfoRecursively(const RTTI *Info)
 	}
 }
 
-void __fastcall hk_sub_1402EE8D0(__int64 a1, RTTI **TypeInfoList)
+void __fastcall hk_sub_1402EE8D0(__int64 a1, GGRTTI **TypeInfoList)
 {
 	static std::atomic<uint32_t> listIndex;
 
@@ -59,7 +59,7 @@ void __fastcall hk_sub_1402EE8D0(__int64 a1, RTTI **TypeInfoList)
 	{
 		RegisterTypeInfoRecursively(*i);
 
-		(*(__int64(__fastcall **)(__int64, RTTI *))(*(__int64 *)a1 + 8))(a1, *i);
+		(*(__int64(__fastcall **)(__int64, GGRTTI *))(*(__int64 *)a1 + 8))(a1, *i);
 	}
 
 	listIndex++;
@@ -67,11 +67,11 @@ void __fastcall hk_sub_1402EE8D0(__int64 a1, RTTI **TypeInfoList)
 #if HORIZON_ZERO_DAWN
 	if (listIndex == 59)
 	{
-		RegisterTypeInfoRecursively((RTTI *)(g_ModuleBase + 0x23158E0));// EDataBufferFormat
-		RegisterTypeInfoRecursively((RTTI *)(g_ModuleBase + 0x2315528));// EIndexFormat
-		RegisterTypeInfoRecursively((RTTI *)(g_ModuleBase + 0x23159F0));// ERenderBufferFormat
-		RegisterTypeInfoRecursively((RTTI *)(g_ModuleBase + 0x2314FF0));// ETextureType
-		RegisterTypeInfoRecursively((RTTI *)(g_ModuleBase + 0x2315678));// EVertexElementStorageType
+		RegisterTypeInfoRecursively((GGRTTI *)(g_ModuleBase + 0x23158E0));// EDataBufferFormat
+		RegisterTypeInfoRecursively((GGRTTI *)(g_ModuleBase + 0x2315528));// EIndexFormat
+		RegisterTypeInfoRecursively((GGRTTI *)(g_ModuleBase + 0x23159F0));// ERenderBufferFormat
+		RegisterTypeInfoRecursively((GGRTTI *)(g_ModuleBase + 0x2314FF0));// ETextureType
+		RegisterTypeInfoRecursively((GGRTTI *)(g_ModuleBase + 0x2315678));// EVertexElementStorageType
 
 		RTTIIDAExporter::ExportAll("C:\\export_hzd");
 		RTTICSharpExporter::ExportAll("C:\\export_hzd");

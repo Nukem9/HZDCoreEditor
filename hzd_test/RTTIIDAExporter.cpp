@@ -5,7 +5,7 @@
 #include "ExportedSymbol.h"
 #include "RTTIIDAExporter.h"
 
-extern std::unordered_set<const RTTI *> AllRegisteredTypeInfo;
+extern std::unordered_set<const GGRTTI *> AllRegisteredTypeInfo;
 
 namespace RTTIIDAExporter
 {
@@ -88,17 +88,17 @@ namespace RTTIIDAExporter
 			};
 
 			printDBOffset(type, "set_name(0x%llX, \"GGRTTI_%s_%llX\");", symbolName.c_str());
-			fprintf(F, "// 0x%llX\n", type->GetCoreBinaryTypeId_UNSAFE());
+			fprintf(F, "// 0x%llX\n", type->GetCoreBinaryTypeId());
 
-			if (type->m_InfoType == RTTI::INFO_TYPE_CLASS)
+			if (auto asClass = type->AsClass(); asClass)
 			{
-				for (auto& event : type->ClassEventSubscriptions())
+				for (auto& event : asClass->ClassEventSubscriptions())
 				{
 					auto formatStr = symbolName + "::" + event.m_Type->GetSymbolName();
 					printDBOffset(event.m_Callback, "set_name(0x%llX, \"%sCallback_%llX\");\n", formatStr.c_str());
 				}
 
-				for (auto& member : type->ClassMembers())
+				for (auto& member : asClass->ClassMembers())
 				{
 					if (!member.m_Type)
 						continue;
@@ -108,10 +108,10 @@ namespace RTTIIDAExporter
 					printDBOffset(member.m_PropertySetter, "set_name(0x%llX, \"%sSetter_%llX\");\n", formatStr.c_str());
 				}
 
-				printDBOffset(type->Class.m_Constructor, "set_name(0x%llX, \"%s::RTTIConstructor_%llX\");\n", symbolName.c_str());
-				printDBOffset(type->Class.m_Destructor, "set_name(0x%llX, \"%s::RTTIDestructor_%llX\");\n", symbolName.c_str());
-				printDBOffset(type->Class.m_Deserialize, "set_name(0x%llX, \"%s::RTTIDeserializeText_%llX\");\n", symbolName.c_str());
-				printDBOffset(type->Class.m_Serialize, "set_name(0x%llX, \"%s::RTTISerializeText_%llX\");\n", symbolName.c_str());
+				printDBOffset(asClass->m_Constructor, "set_name(0x%llX, \"%s::RTTIConstructor_%llX\");\n", symbolName.c_str());
+				printDBOffset(asClass->m_Destructor, "set_name(0x%llX, \"%s::RTTIDestructor_%llX\");\n", symbolName.c_str());
+				printDBOffset(asClass->m_Deserialize, "set_name(0x%llX, \"%s::RTTIDeserializeText_%llX\");\n", symbolName.c_str());
+				printDBOffset(asClass->m_Serialize, "set_name(0x%llX, \"%s::RTTISerializeText_%llX\");\n", symbolName.c_str());
 			}
 		}
 
@@ -120,24 +120,24 @@ namespace RTTIIDAExporter
 		// Enum and class members
 		for (auto typeInfo : AllRegisteredTypeInfo)
 		{
-			if (typeInfo->m_InfoType == RTTI::INFO_TYPE_ENUM || typeInfo->m_InfoType == RTTI::INFO_TYPE_ENUM_2)
+			if (auto asEnum = typeInfo->AsEnum(); asEnum)
 			{
-				fprintf(F, "// Binary type = 0x%llX\n", typeInfo->GetCoreBinaryTypeId_UNSAFE());
-				fprintf(F, "// sizeof() = 0x%X\n", typeInfo->m_EnumUnderlyingTypeSize);
-				fprintf(F, "enum %s\n{\n", typeInfo->GetSymbolName().c_str());
+				fprintf(F, "// Binary type = 0x%llX\n", asEnum->GetCoreBinaryTypeId());
+				fprintf(F, "// sizeof() = 0x%X\n", asEnum->m_EnumUnderlyingTypeSize);
+				fprintf(F, "enum %s\n{\n", asEnum->GetSymbolName().c_str());
 
-				for (auto& member : typeInfo->EnumMembers())
+				for (auto& member : asEnum->EnumMembers())
 					fprintf(F, "\t%s = %d,\n", member.m_Name, member.m_Value);
 
 				fprintf(F, "};\n\n");
 			}
-			else if (typeInfo->m_InfoType == RTTI::INFO_TYPE_CLASS)
+			else if (auto asClass = typeInfo->AsClass(); asClass)
 			{
-				auto inheritanceInfo = typeInfo->ClassInheritance();
+				auto inheritanceInfo = asClass->ClassInheritance();
 				char inheritanceDecl[1024] = {};
 
-				fprintf(F, "// Binary type = 0x%llX\n", typeInfo->GetCoreBinaryTypeId_UNSAFE());
-				fprintf(F, "// sizeof() = 0x%X\n", typeInfo->Class.m_Size);
+				fprintf(F, "// Binary type = 0x%llX\n", asClass->GetCoreBinaryTypeId());
+				fprintf(F, "// sizeof() = 0x%X\n", asClass->m_Size);
 
 				if (!inheritanceInfo.empty())
 				{
@@ -154,13 +154,13 @@ namespace RTTIIDAExporter
 					*strrchr(inheritanceDecl, ',') = '\0';
 				}
 
-				for (auto& event : typeInfo->ClassEventSubscriptions())
+				for (auto& event : asClass->ClassEventSubscriptions())
 					fprintf(F, "// Event callback: %s = 0x%llX\n", event.m_Type->GetSymbolName().c_str(), reinterpret_cast<uintptr_t>(event.m_Callback) - g_ModuleBase + 0x140000000);
 
-				fprintf(F, "class %s%s\n{\npublic:\n", typeInfo->GetSymbolName().c_str(), inheritanceDecl);
+				fprintf(F, "class %s%s\n{\npublic:\n", asClass->GetSymbolName().c_str(), inheritanceDecl);
 
 				// Dump all class members
-				auto members = typeInfo->GetSortedClassMembers();
+				auto members = asClass->GetSortedClassMembers();
 
 				for (auto& [member, category] : members)
 				{

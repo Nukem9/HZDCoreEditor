@@ -40,7 +40,7 @@ public:
 
 	MemberType m_Type;
 	char _pad0[0x4];
-	RTTI *m_TypeInfo;
+	GGRTTI *m_TypeInfo;
 	const char *m_SymbolNamespace;
 	const char *m_SymbolName;
 	char _pad1[0x8];
@@ -63,14 +63,14 @@ static_assert(sizeof(ExportedSymbolMember) == 0x178);
 class ExportedSymbolGroup
 {
 public:
-	virtual RTTI *GetRTTI();
+	virtual GGRTTI *GetRTTI();
 	virtual ~ExportedSymbolGroup();
 	virtual void RegisterSymbols() = 0;
 
 	bool m_AlwaysExport;
 	const char *m_Namespace;
 	Array<ExportedSymbolMember> m_Members;
-	Array<RTTI *> m_Dependents;
+	Array<GGRTTI *> m_Dependents;
 };
 static_assert_offset(ExportedSymbolGroup, m_AlwaysExport, 0x8);
 static_assert_offset(ExportedSymbolGroup, m_Namespace, 0x10);
