@@ -52,7 +52,7 @@ void RegisterTypeInfoRecursively(const GGRTTI *Info)
 
 void __fastcall hk_sub_1402EE8D0(__int64 a1, GGRTTI **TypeInfoList)
 {
-	static std::atomic<uint32_t> listIndex;
+	static std::atomic_uint32_t listIndex;
 	listIndex++;
 
 	for (auto i = TypeInfoList; *i != nullptr; i++)
@@ -62,19 +62,21 @@ void __fastcall hk_sub_1402EE8D0(__int64 a1, GGRTTI **TypeInfoList)
 		(*(__int64(__fastcall **)(__int64, GGRTTI *))(*(__int64 *)a1 + 8))(a1, *i);
 	}
 
-	// Extract all info once the final list is registered
+	// If the final list is registered, dump everything to disk
 	if (g_GameType == GameType::DeathStranding && listIndex == 117)
 	{
+		RegisterTypeInfoRecursively(reinterpret_cast<GGRTTI *>(g_OffsetMap["GGRTTI_EVertexElementStorageType"]));
+
 		RTTIIDAExporter::ExportAll("C:\\ggrtti_export");
 		RTTICSharpExporter::ExportAll("C:\\ggrtti_export");
 	}
 	else if (g_GameType == GameType::HorizonZeroDawn && listIndex == 59)
 	{
-		//RegisterTypeInfoRecursively((GGRTTI *)(g_ModuleBase + 0x23158E0));// EDataBufferFormat
-		//RegisterTypeInfoRecursively((GGRTTI *)(g_ModuleBase + 0x2315528));// EIndexFormat
-		//RegisterTypeInfoRecursively((GGRTTI *)(g_ModuleBase + 0x23159F0));// ERenderBufferFormat
-		//RegisterTypeInfoRecursively((GGRTTI *)(g_ModuleBase + 0x2314FF0));// ETextureType
-		//RegisterTypeInfoRecursively((GGRTTI *)(g_ModuleBase + 0x2315678));// EVertexElementStorageType
+		RegisterTypeInfoRecursively(reinterpret_cast<GGRTTI *>(g_OffsetMap["GGRTTI_EDataBufferFormat"]));
+		RegisterTypeInfoRecursively(reinterpret_cast<GGRTTI *>(g_OffsetMap["GGRTTI_EIndexFormat"]));
+		RegisterTypeInfoRecursively(reinterpret_cast<GGRTTI *>(g_OffsetMap["GGRTTI_ERenderBufferFormat"]));
+		RegisterTypeInfoRecursively(reinterpret_cast<GGRTTI *>(g_OffsetMap["GGRTTI_ETextureType"]));
+		RegisterTypeInfoRecursively(reinterpret_cast<GGRTTI *>(g_OffsetMap["GGRTTI_EVertexElementStorageType"]));
 
 		RTTIIDAExporter::ExportAll("C:\\ggrtti_export");
 		RTTICSharpExporter::ExportAll("C:\\ggrtti_export");
@@ -104,17 +106,22 @@ void LoadSignatures()
 
 	if (g_GameType == GameType::DeathStranding)
 	{
-		strcpy_s(g_GamePreix, "DS");
+		strcpy_s(g_GamePrefix, "DS");
 
 		g_OffsetMap["String::String"] = scan("40 53 48 83 EC 20 48 8B D9 48 C7 01 00 00 00 00 49 C7 C0 FF FF FF FF");
 		g_OffsetMap["String::~String"] = scan("40 53 48 83 EC 20 48 8B 19 48 8D 05 ? ? ? ? 48 83 EB 10");
 		g_OffsetMap["GGRTTI::GetCoreBinaryTypeId"] = scan("4C 8B DC 55 53 56 41 56 49 8D 6B A1 48 81 EC C8 00 00 00");
 		g_OffsetMap["GGRTTIClass::GetSortedClassMembers"] = scan("48 89 6C 24 20 56 41 56 41 57 48 83 EC 20 48 8B 02 4D 8B F9 49 8B E8 48 8B F2 4C 8B F1 48 39 01 0F 83 56 01 00 00 45 69 11 0D 66 19 00 48 B8 39 8E E3 38 8E E3 38 0E");
 		g_OffsetMap["sub_1402EE8D0"] = scan("48 89 5C 24 08 57 48 83 EC 20 48 8B DA 48 8B F9 48 8B 12 48 85 D2 74 1D 0F 1F 84 00 00 00 00 00 48");
+
+		// 1.04
+		g_OffsetMap["GGRTTI_EVertexElementStorageType"] = g_ModuleBase + 0x3ED1728;
+
+		g_OffsetMap["ExportedSymbolGroupArray"] = g_ModuleBase + 0x4870440;
 	}
 	else if (g_GameType == GameType::HorizonZeroDawn)
 	{
-		strcpy_s(g_GamePreix, "HZD");
+		strcpy_s(g_GamePrefix, "HZD");
 
 		g_OffsetMap["String::String"] = scan("48 89 5C 24 10 48 89 6C 24 18 48 89 7C 24 20 41 56 48 83 EC 20 33 FF 48 8B EA 48 89 39 4C 8B F1 48 C7 C3 FF FF FF FF 48 FF C3");
 		g_OffsetMap["String::~String"] = scan("40 53 48 83 EC 20 48 8B 19 48 85 DB 74 37 48 83 C3 F0");
@@ -124,6 +131,15 @@ void LoadSignatures()
 		g_OffsetMap["hk_RunCoreLibraryInitializer"] = scan("E8 ? ? ? ? 48 8D 4C 24 58 B3 01 E8 ? ? ? ? 48 8D 4C 24 50 E8");
 		g_OffsetMap["RunCoreLibraryInitializer"] = scan("48 8B C2 4C 8D 05 ? ? ? ? 48 8D 15 ? ? ? ? 48 8D 0D ? ? ? ? 48 FF E0");
 		g_OffsetMap["ShaderCachePresent"] = scan("48 89 5C 24 18 48 89 74 24 20 57 48 81 EC 90 00 00 00 48 8D");
+
+		// 1.05
+		g_OffsetMap["GGRTTI_EDataBufferFormat"] = g_ModuleBase + 0x2317898;
+		g_OffsetMap["GGRTTI_EIndexFormat"] = g_ModuleBase + 0x2317528;
+		g_OffsetMap["GGRTTI_ERenderBufferFormat"] = g_ModuleBase + 0x23179A8;
+		g_OffsetMap["GGRTTI_ETextureType"] = g_ModuleBase + 0x2316FA0;
+		g_OffsetMap["GGRTTI_EVertexElementStorageType"] = g_ModuleBase + 0x2317678;
+
+		g_OffsetMap["ExportedSymbolGroupArray"] = g_ModuleBase + 0x2A16CF0;
 	}
 }
 

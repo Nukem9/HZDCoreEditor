@@ -32,5 +32,5 @@ enum class GameType
 };
 
 extern GameType g_GameType;
-extern char g_GamePreix[64];
+extern char g_GamePrefix[64];
 extern std::unordered_map<std::string, uintptr_t> g_OffsetMap;

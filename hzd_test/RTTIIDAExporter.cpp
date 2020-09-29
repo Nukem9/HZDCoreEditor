@@ -14,7 +14,7 @@ namespace RTTIIDAExporter
 		CreateDirectoryA(Directory, nullptr);
 
 		char outputFilePath[MAX_PATH];
-		sprintf_s(outputFilePath, "%s\\IDA_TYPEINFO.idc", Directory);
+		sprintf_s(outputFilePath, "%s\\IDA_%s_Typeinfo.idc", Directory, g_GamePrefix);
 
 		if (FILE *f; fopen_s(&f, outputFilePath, "w") == 0)
 		{
@@ -188,11 +188,7 @@ namespace RTTIIDAExporter
 
 	void ExportGameSymbolRTTI(FILE *F)
 	{
-		if (g_GameType != GameType::HorizonZeroDawn)
-			return;
-
-		return;
-		auto& gameSymbolGroups = *reinterpret_cast<Array<ExportedSymbolGroup *> *>(g_ModuleBase + 0x2A14B70);
+		auto& gameSymbolGroups = *reinterpret_cast<Array<ExportedSymbolGroup *> *>(g_OffsetMap["ExportedSymbolGroupArray"]);
 
 		for (auto& group : gameSymbolGroups)
 		{

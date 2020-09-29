@@ -90,7 +90,7 @@ namespace RTTICSharpExporter
 				if (Type->GetSymbolName() == name)
 				{
 					char outputFilePath[MAX_PATH];
-					sprintf_s(outputFilePath, "%s\\Decima.%s.%s.cs", Directory, g_GamePreix, name);
+					sprintf_s(outputFilePath, "%s\\Decima.%s.%s.cs", Directory, g_GamePrefix, name);
 
 					if (FILE *f; fopen_s(&f, outputFilePath, "w") == 0)
 					{
@@ -109,7 +109,7 @@ namespace RTTICSharpExporter
 
 		// TODO: Split classes into separate files if they all reference a common base (i.e > 30 instances per)
 		char outputFilePath[MAX_PATH];
-		sprintf_s(outputFilePath, "%s\\Decima.%s.AllStructs.cs", Directory, g_GamePreix);
+		sprintf_s(outputFilePath, "%s\\Decima.%s.AllStructs.cs", Directory, g_GamePrefix);
 
 		if (FILE *f; fopen_s(&f, outputFilePath, "w") == 0)
 		{
@@ -125,7 +125,7 @@ namespace RTTICSharpExporter
 			fclose(f);
 		}
 
-		sprintf_s(outputFilePath, "%s\\Decima.%s.AllEnums.cs", Directory, g_GamePreix);
+		sprintf_s(outputFilePath, "%s\\Decima.%s.AllEnums.cs", Directory, g_GamePrefix);
 
 		if (FILE *f; fopen_s(&f, outputFilePath, "w") == 0)
 		{
@@ -145,10 +145,6 @@ namespace RTTICSharpExporter
 	void ExportFileHeader(FILE *F)
 	{
 		const char *data =
-			"#pragma warning disable CS0649 // warning CS0649: 'member' is never assigned to, and will always have its default value 'value'.\n"
-			"#pragma warning disable CS0108 // warning CS0108: 'class' hides inherited member 'member'. Use the new keyword if hiding was intended.\n"
-			"\n"
-			"namespace Decima.HZD\n"
 			"{\n"
 			"    using int8 = System.SByte;\n"
 			"    using uint8 = System.Byte;\n"
@@ -160,15 +156,25 @@ namespace RTTICSharpExporter
 			"    using uint64 = System.UInt64;\n"
 			"\n"
 			"    using wchar = System.Int16;\n"
+			"    using ucs4 = System.Int32;\n"
+			"\n"
 			"    using HalfFloat = System.UInt16;\n"
+			"    using LinearGainFloat = System.Single;\n"
+			"    using MusicTime = System.UInt64;\n"
 			"\n"
 			"    using MaterialType = System.UInt16;\n"
+			"    using AnimationNodeID = System.UInt16;\n"
 			"    using AnimationTagID = System.UInt32;\n"
+			"    using AnimationSet = System.UInt32;\n"
 			"    using AnimationStateID = System.UInt32;\n"
 			"    using AnimationEventID = System.UInt32;\n"
 			"    using PhysicsCollisionFilterInfo = System.UInt32;\n"
 			"\n";
 
+		fputs("#pragma warning disable CS0649 // warning CS0649: 'member' is never assigned to, and will always have its default value 'value'.\n", F);
+		fputs("#pragma warning disable CS0108 // warning CS0108: 'class' hides inherited member 'member'. Use the new keyword if hiding was intended.\n", F);
+		fputs("\n", F);
+		fprintf(F, "namespace Decima.%s\n", g_GamePrefix);
 		fputs(data, F);
 	}
 
