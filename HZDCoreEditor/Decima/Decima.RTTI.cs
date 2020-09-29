@@ -1,85 +1,23 @@
-﻿using Utility;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Utility;
 
 namespace Decima
 {
+    public enum GameType
+    {
+        DS,     // Death Stranding
+        HZD,    // Horizon Zero Dawn
+    }
+
     static partial class RTTI
     {
-        private static readonly Dictionary<ulong, Type> TypeIdLookupMap;
-        private static readonly Dictionary<Type, OrderedFieldInfo> TypeFieldInfoCache;
+        private static Dictionary<ulong, Type> TypeIdLookupMap;
+        private static Dictionary<Type, OrderedFieldInfo> TypeFieldInfoCache;
         private static readonly Dictionary<string, string> DotNetTypeToDecima;
-
-        public class VirtualRTTIList
-        {
-            public Type ClassType { get; private set; }
-            public IReadOnlyList<OrderedFieldInfo.Entry> ResolvedMembers { get { return _ResolvedMembers.AsReadOnly(); } }
-
-            private readonly List<Entry> Members;
-            private readonly List<OrderedFieldInfo.Entry> _ResolvedMembers;
-
-            public struct Entry
-            {
-                public string Type;
-                public string Category;
-                public string Name;
-            }
-
-            public VirtualRTTIList(string className, int capacity = 0)
-            {
-                ClassType = GetTypeByName(className);
-                Members = new List<Entry>(capacity);
-                _ResolvedMembers = new List<OrderedFieldInfo.Entry>();
-            }
-
-            public void Add(string type, string category, string name)
-            {
-                Members.Add(new Entry
-                {
-                    Type = type,
-                    Category = category,
-                    Name = name,
-                });
-            }
-
-            public void ResolveMembersToFieldInfo()
-            {
-                var info = GetOrderedFieldsForClass(ClassType);
-
-                foreach (var virtualMember in Members)
-                {
-                    var resolvedMember = info.Members
-                        .Where(x => MatchField(x.Field, virtualMember.Type, virtualMember.Category, virtualMember.Name))
-                        .Single();
-
-                    _ResolvedMembers.Add(resolvedMember);
-                }
-            }
-
-            private static bool MatchField(FieldInfo field, string type, string category, string name)
-            {
-                if (GetFieldCategory(field) != category)
-                    return false;
-
-                if (GetFieldName(field) != name)
-                    return false;
-
-                string ftn = GetFieldTypeName(field);
-
-                // TODO: Custom int32 type - C# doesn't support typedefs. I can pretend this isn't a problem until I need
-                // to write fields.
-                if (ftn != "int" && type != "int32")
-                {
-                    if (!ftn.Equals(type, StringComparison.OrdinalIgnoreCase))
-                        return false;
-                }
-
-                return true;
-            }
-        }
 
         public class OrderedFieldInfo
         {
@@ -109,18 +47,6 @@ namespace Decima
 
         static RTTI()
         {
-            // Build a cache of the 64-bit type IDs to actual C# types
-            TypeIdLookupMap = new Dictionary<ulong, Type>();
-            TypeFieldInfoCache = new Dictionary<Type, OrderedFieldInfo>();
-
-            foreach (var classType in typeof(SerializableAttribute).Assembly.GetTypes())
-            {
-                var attribute = classType.GetCustomAttribute<SerializableAttribute>();
-
-                if (attribute != null)
-                    TypeIdLookupMap.Add(attribute.BinaryTypeId, classType);
-            }
-
             DotNetTypeToDecima = new Dictionary<string, string>()
             {
                 {"Boolean", "bool"},
@@ -134,6 +60,26 @@ namespace Decima
                 {"UInt64", "uint64"},
                 {"Single", "float"},
             };
+        }
+
+        public static void SetGameMode(GameType game)
+        {
+            // Build a cache of the 64-bit type IDs to actual C# types. Previous values are erased.
+            TypeIdLookupMap = new Dictionary<ulong, Type>();
+            TypeFieldInfoCache = new Dictionary<Type, OrderedFieldInfo>();
+
+            foreach (var classType in typeof(SerializableAttribute).Assembly.GetTypes())
+            {
+                var attribute = classType.GetCustomAttribute<SerializableAttribute>();
+
+                if (attribute != null)
+                {
+                    if (attribute.Game != game)
+                        continue;
+
+                    TypeIdLookupMap.Add(attribute.BinaryTypeId, classType);
+                }
+            }
         }
 
         public static Type GetTypeByName(string name)

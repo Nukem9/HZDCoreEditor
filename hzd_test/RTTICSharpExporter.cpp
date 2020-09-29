@@ -189,7 +189,7 @@ namespace RTTICSharpExporter
 	void ExportRTTIEnum(FILE *F, const GGRTTIEnum *Type)
 	{
 		// Attributes/decl
-		fprintf(F, "[RTTI.Serializable(0x%llX)]\n", Type->GetCoreBinaryTypeId());
+		fprintf(F, "[RTTI.Serializable(0x%llX, GameType.%s)]\n", Type->GetCoreBinaryTypeId(), g_GamePrefix);
 		fprintf(F, "public enum %s : %s\n{\n", Type->GetSymbolName().c_str(), EnumTypeToString(Type));
 
 		// Members
@@ -258,9 +258,9 @@ namespace RTTICSharpExporter
 		//
 		// Possible attributes:
 		//
-		// [RTTI.Serializable(0xDC3D43D192F22E9B)]
+		// [RTTI.Serializable(0xDC3D43D192F22E9B, GameType.HZD)]
 		//
-		fprintf(F, "[RTTI.Serializable(0x%llX)]\n", Type->GetCoreBinaryTypeId());
+		fprintf(F, "[RTTI.Serializable(0x%llX, GameType.%s)]\n", Type->GetCoreBinaryTypeId(), g_GamePrefix);
 		fprintf(F, "%s\n{\n", fullDecl);
 
 		//

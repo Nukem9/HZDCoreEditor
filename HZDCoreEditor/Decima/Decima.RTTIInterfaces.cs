@@ -12,12 +12,12 @@ namespace Decima
         public class SerializableAttribute : Attribute
         {
             public readonly ulong BinaryTypeId;
-            public readonly bool IsPrimitiveType;
+            public readonly GameType Game;
 
-            public SerializableAttribute(ulong binaryTypeId, bool isPrimitiveType = false)
+            public SerializableAttribute(ulong binaryTypeId, GameType game)
             {
                 BinaryTypeId = binaryTypeId;
-                IsPrimitiveType = isPrimitiveType;
+                Game = game;
             }
         }
 
