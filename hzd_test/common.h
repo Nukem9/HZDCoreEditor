@@ -1,8 +1,5 @@
 #pragma once
 
-#define HORIZON_ZERO_DAWN 1
-#define DEATH_STRANDING 0
-
 #define WIN32_LEAN_AND_MEAN
 
 #include <windows.h>
@@ -27,3 +24,13 @@ extern uintptr_t g_RdataBase;	// .rdata
 extern uintptr_t g_RdataEnd;
 extern uintptr_t g_DataBase;	// .data
 extern uintptr_t g_DataEnd;
+
+enum class GameType
+{
+	DeathStranding = 0,
+	HorizonZeroDawn = 1,
+};
+
+extern GameType g_GameType;
+extern char g_GamePreix[64];
+extern std::unordered_map<std::string, uintptr_t> g_OffsetMap;

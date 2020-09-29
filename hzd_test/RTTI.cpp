@@ -78,12 +78,7 @@ uint64_t GGRTTI::GetCoreBinaryTypeId() const
 {
 	uint64_t hashedData[2] = {};
 
-#if HORIZON_ZERO_DAWN
-	const static auto addr = XUtil::FindPattern(g_ModuleBase, g_ModuleSize, "48 8B C4 44 89 40 18 48 89 50 10 48 89 48 08 55 53 56 41 56 48 8D 68 A1 48 81 EC 98 00 00 00 4C 89 60 D0");
-#elif DEATH_STRANDING
-	const static auto addr = XUtil::FindPattern(g_ModuleBase, g_ModuleSize, "4C 8B DC 55 53 56 41 56 49 8D 6B A1 48 81 EC C8 00 00 00");
-#endif
-
+	const static auto addr = g_OffsetMap["GGRTTI::GetCoreBinaryTypeId"];
 	((void(__fastcall *)(uint64_t *, const GGRTTI *, __int64))(addr))(hashedData, this, 2);
 
 	return hashedData[0];
@@ -128,7 +123,7 @@ std::vector<std::pair<const GGRTTIClass::MemberEntry *, const char *>> GGRTTICla
 		uint32_t temp = 0;
 
 		// Signature is valid across both games. I'm amazed. 9/19/2020.
-		const static auto addr = XUtil::FindPattern(g_ModuleBase, g_ModuleSize, "48 89 6C 24 20 56 41 56 41 57 48 83 EC 20 48 8B 02 4D 8B F9 49 8B E8 48 8B F2 4C 8B F1 48 39 01 0F 83 56 01 00 00 45 69 11 0D 66 19 00 48 B8 39 8E E3 38 8E E3 38 0E");
+		const static auto addr = g_OffsetMap["GGRTTIClass::GetSortedClassMembers"];
 		((void(__fastcall *)(SorterEntry **, SorterEntry **, bool(__fastcall *)(const SorterEntry *, const SorterEntry *), uint32_t *))(addr))(&start, &end, sortCompare, &temp);
 	}
 

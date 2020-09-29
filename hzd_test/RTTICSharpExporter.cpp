@@ -90,7 +90,7 @@ namespace RTTICSharpExporter
 				if (Type->GetSymbolName() == name)
 				{
 					char outputFilePath[MAX_PATH];
-					sprintf_s(outputFilePath, "%s\\Decima.DS.%s.cs", Directory, name);
+					sprintf_s(outputFilePath, "%s\\Decima.%s.%s.cs", Directory, g_GamePreix, name);
 
 					if (FILE *f; fopen_s(&f, outputFilePath, "w") == 0)
 					{
@@ -109,7 +109,7 @@ namespace RTTICSharpExporter
 
 		// TODO: Split classes into separate files if they all reference a common base (i.e > 30 instances per)
 		char outputFilePath[MAX_PATH];
-		sprintf_s(outputFilePath, "%s\\Decima.DS.AllStructs.cs", Directory);
+		sprintf_s(outputFilePath, "%s\\Decima.%s.AllStructs.cs", Directory, g_GamePreix);
 
 		if (FILE *f; fopen_s(&f, outputFilePath, "w") == 0)
 		{
@@ -125,7 +125,7 @@ namespace RTTICSharpExporter
 			fclose(f);
 		}
 
-		sprintf_s(outputFilePath, "%s\\Decima.DS.AllEnums.cs", Directory);
+		sprintf_s(outputFilePath, "%s\\Decima.%s.AllEnums.cs", Directory, g_GamePreix);
 
 		if (FILE *f; fopen_s(&f, outputFilePath, "w") == 0)
 		{

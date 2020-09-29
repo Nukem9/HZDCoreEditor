@@ -188,10 +188,10 @@ namespace RTTIIDAExporter
 
 	void ExportGameSymbolRTTI(FILE *F)
 	{
-#if DEATH_STRANDING
-		return;
-#endif
+		if (g_GameType != GameType::HorizonZeroDawn)
+			return;
 
+		return;
 		auto& gameSymbolGroups = *reinterpret_cast<Array<ExportedSymbolGroup *> *>(g_ModuleBase + 0x2A14B70);
 
 		for (auto& group : gameSymbolGroups)
