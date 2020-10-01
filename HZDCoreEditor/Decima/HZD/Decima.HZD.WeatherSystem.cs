@@ -9,7 +9,7 @@
         [RTTI.Member(3, 0x250, "General")] public FRange TemperatureRange;
         [RTTI.Member(4, 0x354, "General")] public float WetnessDryingTime;
         [RTTI.Member(5, 0x358, "General")] public float WetnessSaturationTime;
-        public GGUUID UnknownSaveGUID;
+        public BaseGGUUID UnknownSaveGUID;
 
         public void ReadSave(SaveState state)
         {

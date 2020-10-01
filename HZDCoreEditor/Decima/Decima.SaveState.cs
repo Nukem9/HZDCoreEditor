@@ -18,7 +18,7 @@ namespace Decima
         private GUIDTableContainer GUIDPool;                    // GUIDs/16 bytes
 
         private Dictionary<int, object> LocalSaveObjects;       // Object instances created from this save data (HashMap<int, RTTIObject>)
-        private Dictionary<int, HZD.GGUUID> GameDataObjects;    // Object instances stored in the game files (StreamingManager)
+        private Dictionary<int, BaseGGUUID> GameDataObjects;  // Object instances stored in the game files (StreamingManager)
         private RTTIMapContainer RTTIContainer;                 // Stored class layouts
         private List<string> PrefetchFilePaths;                 // Preload/cache core files that will be needed soon
 
@@ -133,15 +133,15 @@ namespace Decima
         private class GUIDTableContainer
         {
             private const int HardcodedTableCount = 256;
-            private readonly List<HZD.GGUUID>[] Tables = new List<HZD.GGUUID>[HardcodedTableCount];
+            private readonly List<BaseGGUUID>[] Tables = new List<BaseGGUUID>[HardcodedTableCount];
 
             public GUIDTableContainer()
             {
                 for (int i = 0; i < Tables.Length; i++)
-                    Tables[i] = new List<HZD.GGUUID>();
+                    Tables[i] = new List<BaseGGUUID>();
             }
 
-            public HZD.GGUUID LookupGUID(int index, int offset)
+            public BaseGGUUID LookupGUID(int index, int offset)
             {
                 return Tables[index][offset];
             }
@@ -156,7 +156,7 @@ namespace Decima
                     int guidCount = state.ReadVariableLengthOffset();
 
                     for (int j = 0; j < guidCount; j++)
-                        container.Tables[i].Add(HZD.GGUUID.FromData(state.Reader));
+                        container.Tables[i].Add(BaseGGUUID.FromData(state.Reader));
                 }
 
                 return container;
@@ -253,12 +253,12 @@ namespace Decima
 
                 // Handles to game data objects
                 int gameDataObjectCount = ReadVariableLengthOffset();
-                GameDataObjects = new Dictionary<int, HZD.GGUUID>();
+                GameDataObjects = new Dictionary<int, BaseGGUUID>();
 
                 for (int i = 0; i < gameDataObjectCount; i++)
                 {
                     int objectId = ReadVariableLengthOffset();
-                    var guid = HZD.GGUUID.FromData(Reader);
+                    var guid = BaseGGUUID.FromData(Reader);
 
                     GameDataObjects.Add(objectId, guid);
                 }
@@ -404,19 +404,19 @@ namespace Decima
             return WideStringPool.LookupString(index);
         }
 
-        public HZD.GGUUID ReadIndexedGUID()
+        public BaseGGUUID ReadIndexedGUID()
         {
             if (SaveVersion < 26)
             {
                 // Inline read of 16 bytes
-                return HZD.GGUUID.FromData(Reader);
+                return BaseGGUUID.FromData(Reader);
             }
 
             // GUID pool lookup
             short value = Reader.ReadInt16();
 
             if (value == -1)
-                return HZD.GGUUID.Empty;
+                return BaseGGUUID.Empty;
 
             int index = (value >> 8) & 0xFF;
             int offset = value & 0xFF;

@@ -14,7 +14,7 @@ namespace Decima.HZD
 
         public class UnknownEntry
         {
-            public List<(GGUUID, List<GGUUID>)> UnknownList;
+            public List<(BaseGGUUID, List<BaseGGUUID>)> UnknownList;
         }
 
         public void DeserializeStateObject(SaveState state)
@@ -36,10 +36,10 @@ namespace Decima.HZD
             {
                 UnknownArray[i] = new UnknownEntry();
 
-                UnknownArray[i].UnknownList = state.ReadVariableItemList((ref (GGUUID GUID, List<GGUUID> GUIDList) e) =>
+                UnknownArray[i].UnknownList = state.ReadVariableItemList((ref (BaseGGUUID GUID, List<BaseGGUUID> GUIDList) e) =>
                 {
                     e.GUID = state.ReadIndexedGUID();
-                    e.GUIDList = state.ReadVariableItemList((ref GGUUID GUID) =>
+                    e.GUIDList = state.ReadVariableItemList((ref BaseGGUUID GUID) =>
                     {
                         GUID = state.ReadIndexedGUID();
                     });

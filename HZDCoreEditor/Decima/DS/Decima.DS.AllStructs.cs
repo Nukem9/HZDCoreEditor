@@ -4791,19 +4791,6 @@ namespace Decima.DS
     {
     }
 
-    [RTTI.Serializable(0x8DFB7682791AD065, GameType.DS)]
-    public class AnimationStreamingEventResource : TimedEventResource, RTTI.IExtraBinaryDataCallback
-    {
-        [RTTI.Member(0, 0x30)] public Array<Ref<AnimationStreamingActorResource>> Actors;
-        [RTTI.Member(1, 0x40)] public Array<AnimationStreamingSkipBlockInfo> SkipBlockInfo;
-        [RTTI.Member(2, 0x50)] public uint32 BlockFrameLength;
-        [RTTI.Member(3, 0x54)] public uint32 MaxBlockSize;
-        [RTTI.Member(4, 0x58)] public uint32 TotalBlockSize;
-        [RTTI.Member(5, 0x5C, "AnimationCompression")] public uint32 RotationPrecision;
-        [RTTI.Member(6, 0x60)] public Ref<AnimationStreamingBlockResource> FirstBlock;
-        [RTTI.Member(7, 0x70, "AnimationCompression")] public bool DebugFullKey;
-    }
-
     [RTTI.Serializable(0x2958D802A1D8464D, GameType.DS)]
     public class AnimationStreamingFullBodyActorResource : AnimationStreamingActorResource
     {

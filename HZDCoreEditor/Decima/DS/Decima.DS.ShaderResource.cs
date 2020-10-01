@@ -1,35 +1,40 @@
-#pragma warning disable CS0649 // warning CS0649: 'member' is never assigned to, and will always have its default value 'value'.
-#pragma warning disable CS0108 // warning CS0108: 'class' hides inherited member 'member'. Use the new keyword if hiding was intended.
+using Utility;
+using System.IO;
 
 namespace Decima.DS
 {
-    using int8 = System.SByte;
-    using uint8 = System.Byte;
-    using int16 = System.Int16;
-    using uint16 = System.UInt16;
-    using int32 = System.Int32;
-    using uint32 = System.UInt32;
-    using int64 = System.Int64;
-    using uint64 = System.UInt64;
+    [RTTI.Serializable(0x16BB69A9E5AA0D9E, GameType.DS)]
+    public class ShaderResource : Resource, RTTI.IExtraBinaryDataCallback
+    {
+        // Identical impl to HZD
+        public uint Unknown1;
+        public uint Unknown2;
+        public uint Unknown3;
+        public uint Unknown4;
+        public byte[] ShaderData;
 
-    using wchar = System.Int16;
-    using ucs4 = System.Int32;
+        public void DeserializeExtraData(BinaryReader reader)
+        {
+            uint shaderDataLength = reader.ReadUInt32();
 
-    using HalfFloat = System.UInt16;
-    using LinearGainFloat = System.Single;
-    using MusicTime = System.UInt64;
+            Unknown1 = reader.ReadUInt32();
+            Unknown2 = reader.ReadUInt32();
+            Unknown3 = reader.ReadUInt32();
+            Unknown4 = reader.ReadUInt32();
 
-    using MaterialType = System.UInt16;
-    using AnimationNodeID = System.UInt16;
-    using AnimationTagID = System.UInt32;
-    using AnimationSet = System.UInt32;
-    using AnimationStateID = System.UInt32;
-    using AnimationEventID = System.UInt32;
-    using PhysicsCollisionFilterInfo = System.UInt32;
+            ShaderData = reader.ReadBytesStrict(shaderDataLength);
+        }
 
-[RTTI.Serializable(0x16BB69A9E5AA0D9E, GameType.DS)]
-public class ShaderResource : Resource, RTTI.IExtraBinaryDataCallback
-{
-}
+        public void SerializeExtraData(BinaryWriter writer)
+        {
+            writer.Write((uint)ShaderData.Length);
 
+            writer.Write(Unknown1);
+            writer.Write(Unknown2);
+            writer.Write(Unknown3);
+            writer.Write(Unknown4);
+
+            writer.Write(ShaderData);
+        }
+    }
 }

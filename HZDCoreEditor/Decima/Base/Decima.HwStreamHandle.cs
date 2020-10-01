@@ -2,9 +2,9 @@
 using System.IO;
 using System.Text;
 
-namespace Decima.HZD
+namespace Decima
 {
-    public class StreamHandle
+    public class HwStreamHandle
     {
         public string ResourcePath;
         public ulong Unknown1;
@@ -21,9 +21,9 @@ namespace Decima.HZD
             writer.Write(Unknown2);
         }
 
-        public static StreamHandle FromData(BinaryReader reader)
+        public static HwStreamHandle FromData(BinaryReader reader)
         {
-            var x = new StreamHandle();
+            var x = new HwStreamHandle();
             uint stringLength = reader.ReadUInt32();
 
             if (stringLength > 0)

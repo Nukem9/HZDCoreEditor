@@ -21,7 +21,7 @@ namespace Decima.HZD
             // some type checking assumptions. Fields are also out of order. I guess this has to be done manually now.
             int unusedTypeIndex = state.ReadVariableLengthInt();
 
-            QuestResourceUUID = state.ReadIndexedGUID();
+            QuestResourceUUID = new GGUUID(state.ReadIndexedGUID());
             State = (EQuestState)state.Reader.ReadInt32();
             Tracked = state.Reader.ReadBooleanStrict();
             TrackingEnabled = state.Reader.ReadBooleanStrict();

@@ -16,15 +16,15 @@ namespace Decima.HZD
 
             public class UnknownEntry1
             {
-                public GGUUID GUID1;
-                public GGUUID GUID2;
+                public BaseGGUUID GUID1;
+                public BaseGGUUID GUID2;
                 public int Unknown1;
                 public int Unknown2;
             }
 
             public class UnknownEntry2
             {
-                public GGUUID GUID;
+                public BaseGGUUID GUID;
                 public QuestObjectiveSave ObjectiveSaveObject;
             }
         }

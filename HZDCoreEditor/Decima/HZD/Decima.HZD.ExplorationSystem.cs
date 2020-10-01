@@ -7,7 +7,7 @@ namespace Decima.HZD
     {
         public byte[] OverlayBitmapData;
         public byte[] UnknownData;
-        public GGUUID UnknownGUID;
+        public BaseGGUUID UnknownGUID;
 
         public void ReadSave(SaveState state)
         {

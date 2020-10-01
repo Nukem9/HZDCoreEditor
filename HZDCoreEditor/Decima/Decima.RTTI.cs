@@ -187,9 +187,6 @@ namespace Decima
                 // Drill down until System.Object is hit
                 for (; classType != null; classType = classType.BaseType)
                 {
-                    if (!classType.IsDefined(typeof(SerializableAttribute)))
-                        continue;
-
                     classIndex++;
                     var fields = classType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
 

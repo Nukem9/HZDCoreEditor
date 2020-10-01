@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 
 namespace Decima.HZD
@@ -5,33 +6,28 @@ namespace Decima.HZD
     [RTTI.Serializable(0x321F4B133D40A266, GameType.HZD)]
     public class TextureList : Resource, RTTI.IExtraBinaryDataCallback
     {
-        public Texture[] Textures;
+        public List<Texture> Textures;
 
         public void DeserializeExtraData(BinaryReader reader)
         {
             uint textureCount = reader.ReadUInt32();
+            Textures = new List<Texture>((int)textureCount);
 
-            if (textureCount > 0)
+            for (uint i = 0; i < textureCount; i++)
             {
-                Textures = new Texture[textureCount];
+                var x = new Texture();
+                x.DeserializeExtraData(reader);
 
-                for (uint i = 0; i < Textures.Length; i++)
-                {
-                    Textures[i] = new Texture();
-                    Textures[i].DeserializeExtraData(reader);
-                }
+                Textures.Add(x);
             }
         }
 
         public void SerializeExtraData(BinaryWriter writer)
         {
-            writer.Write((uint)Textures.Length);
+            writer.Write((uint)Textures.Count);
 
-            if (Textures.Length > 0)
-            {
-                for (uint i = 0; i < Textures.Length; i++)
-                    Textures[i].SerializeExtraData(writer);
-            }
+            foreach (var texture in Textures)
+                texture.SerializeExtraData(writer);
         }
     }
 }

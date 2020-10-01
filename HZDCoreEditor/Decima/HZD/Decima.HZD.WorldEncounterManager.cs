@@ -7,8 +7,8 @@ namespace Decima.HZD
     public class WorldEncounterManager : ObjectManager, RTTI.ISaveSerializable
     {
         public byte[] UnknownData;
-        public List<GGUUID> UnknownGUIDs;
-        public List<(GGUUID GUID, ulong Timestamp)> UnknownList;
+        public List<BaseGGUUID> UnknownGUIDs;
+        public List<(BaseGGUUID GUID, ulong Timestamp)> UnknownList;
 
         public void DeserializeStateObject(SaveState state)
         {
@@ -17,12 +17,12 @@ namespace Decima.HZD
             // WEMB
             UnknownData = state.Reader.ReadBytesStrict(24);
 
-            UnknownGUIDs = state.ReadVariableItemList((ref GGUUID guid) =>
+            UnknownGUIDs = state.ReadVariableItemList((ref BaseGGUUID GUID) =>
             {
-                guid = state.ReadIndexedGUID();
+                GUID = state.ReadIndexedGUID();
             });
 
-            UnknownList = state.ReadVariableItemList((ref (GGUUID GUID, ulong Timestamp) e) =>
+            UnknownList = state.ReadVariableItemList((ref (BaseGGUUID GUID, ulong Timestamp) e) =>
             {
                 e.GUID = state.ReadIndexedGUID();
                 e.Timestamp = state.Reader.ReadUInt64();// Guessed, probably last encounter time
