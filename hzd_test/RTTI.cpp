@@ -1,4 +1,5 @@
 #include "RTTI.h"
+#include "PCore.h"
 
 const GGRTTIContainer *GGRTTI::AsContainer() const
 {
@@ -107,25 +108,14 @@ bool GGRTTIClass::IsPostLoadCallbackEnabled() const
 
 std::vector<std::pair<const GGRTTIClass::MemberEntry *, const char *>> GGRTTIClass::GetSortedClassMembers() const
 {
-	// Nasty hack: I don't know how sorting order works with multiple properties at offset 0. Let the game determine it.
 	std::vector<SorterEntry> sortedEntries;
 	BuildFullClassMemberLayout(this, sortedEntries, 0, true);
 
-	auto sortCompare = [](const SorterEntry *A, const SorterEntry *B)
+	// Decima's specific quicksort algorithm is mandatory
+	PCore_Quicksort<SorterEntry>(sortedEntries, [](const SorterEntry *A, const SorterEntry *B)
 	{
 		return A->m_Offset < B->m_Offset;
-	};
-
-	if (sortedEntries.size() > 1)
-	{
-		auto start = &sortedEntries.data()[0];
-		auto end = &sortedEntries.data()[sortedEntries.size() - 1];
-		uint32_t temp = 0;
-
-		// Signature is valid across both games. I'm amazed. 9/19/2020.
-		const static auto addr = g_OffsetMap["GGRTTIClass::GetSortedClassMembers"];
-		((void(__fastcall *)(SorterEntry **, SorterEntry **, bool(__fastcall *)(const SorterEntry *, const SorterEntry *), uint32_t *))(addr))(&start, &end, sortCompare, &temp);
-	}
+	});
 
 	// We only care about the top-level fields
 	std::vector<std::pair<const MemberEntry *, const char *>> out;
