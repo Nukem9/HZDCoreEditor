@@ -9,7 +9,7 @@ namespace Decima.DS
 
         public void DeserializeExtraData(BinaryReader reader)
         {
-            Buffer = HwDataBuffer.FromData(reader);
+            Buffer = HwDataBuffer.FromData(reader, GameType.DS);
         }
 
         public void SerializeExtraData(BinaryWriter writer)

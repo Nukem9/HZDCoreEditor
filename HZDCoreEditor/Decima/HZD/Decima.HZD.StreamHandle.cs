@@ -1,16 +1,15 @@
-﻿using Utility;
-using System.IO;
+﻿using System.IO;
 using System.Text;
+using Utility;
 
-namespace Decima
+namespace Decima.HZD
 {
-    public class HwStreamHandle
+    public class StreamHandle : BaseStreamHandle
     {
-        public string ResourcePath;
         public ulong Unknown1;
         public ulong Unknown2;
 
-        public void ToData(BinaryWriter writer)
+        public override void ToData(BinaryWriter writer)
         {
             writer.Write((uint)ResourcePath.Length);
 
@@ -21,15 +20,14 @@ namespace Decima
             writer.Write(Unknown2);
         }
 
-        public static HwStreamHandle FromData(BinaryReader reader)
+        public static StreamHandle FromData(BinaryReader reader)
         {
-            var x = new HwStreamHandle();
+            var x = new StreamHandle();
             uint stringLength = reader.ReadUInt32();
 
             if (stringLength > 0)
                 x.ResourcePath = Encoding.UTF8.GetString(reader.ReadBytesStrict(stringLength));
 
-            // Likely file offsets or length
             x.Unknown1 = reader.ReadUInt64();
             x.Unknown2 = reader.ReadUInt64();
 

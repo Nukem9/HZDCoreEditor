@@ -31,7 +31,7 @@ namespace Decima
             }
         }
 
-        public static HwIndexArray FromData(BinaryReader reader)
+        public static HwIndexArray FromData(BinaryReader reader, GameType gameType)
         {
             var x = new HwIndexArray();
             uint indexElementCount = reader.ReadUInt32();
@@ -46,7 +46,7 @@ namespace Decima
                     throw new InvalidDataException("Must be true or false");
 
                 x.ResourceGUID = BaseGGUUID.FromData(reader);
-                x.Buffer = HwBuffer.FromIndexData(reader, format, isStreaming != 0, indexElementCount);
+                x.Buffer = HwBuffer.FromIndexData(reader, gameType, format, isStreaming != 0, indexElementCount);
             }
 
             return x;

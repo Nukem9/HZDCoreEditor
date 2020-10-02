@@ -24,7 +24,7 @@ namespace Decima.HZD
         [RTTI.Member(11, 0x5E, "Format")] public uint16 FormatTag;
         [RTTI.Member(12, 0x62, "Format")] public uint16 FrameSize;
         [RTTI.Member(13, 0x64, "Format")] public int SampleCount;
-        public HwStreamHandle StreamInfo;
+        public StreamHandle StreamInfo;
 
         [Flags]
         private enum Flags : byte
@@ -37,7 +37,7 @@ namespace Decima.HZD
         public void DeserializeExtraData(BinaryReader reader)
         {
             if (IsStreaming)
-                StreamInfo = HwStreamHandle.FromData(reader);
+                StreamInfo = StreamHandle.FromData(reader);
         }
 
         public void SerializeExtraData(BinaryWriter writer)

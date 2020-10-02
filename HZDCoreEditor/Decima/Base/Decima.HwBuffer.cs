@@ -9,7 +9,7 @@ namespace Decima
         public BaseDataBufferFormat Format;
         public uint ElementStride;
         public uint ElementCount;
-        public HwStreamHandle StreamInfo;
+        public BaseStreamHandle StreamInfo;
         public byte[] Data;
 
         public bool IsStreamed()
@@ -25,7 +25,7 @@ namespace Decima
                 writer.Write(Data);
         }
 
-        public static HwBuffer FromData(BinaryReader reader, BaseDataBufferFormat format, bool streaming, uint byteStride, uint elementCount)
+        public static HwBuffer FromData(BinaryReader reader, GameType gameType, BaseDataBufferFormat format, bool streaming, uint byteStride, uint elementCount)
         {
             var buffer = new HwBuffer
             {
@@ -35,19 +35,19 @@ namespace Decima
             };
 
             if (streaming)
-                buffer.StreamInfo = HwStreamHandle.FromData(reader);
+                buffer.StreamInfo = BaseStreamHandle.FromData(reader, gameType);
             else
                 buffer.Data = reader.ReadBytesStrict(elementCount * byteStride);
 
             return buffer;
         }
 
-        public static HwBuffer FromVertexData(BinaryReader reader, bool streaming, uint ByteStride, uint ElementCount)
+        public static HwBuffer FromVertexData(BinaryReader reader, GameType gameType, bool streaming, uint ByteStride, uint ElementCount)
         {
-            return FromData(reader, BaseDataBufferFormat.Structured, streaming, ByteStride, ElementCount);
+            return FromData(reader, gameType, BaseDataBufferFormat.Structured, streaming, ByteStride, ElementCount);
         }
 
-        public static HwBuffer FromIndexData(BinaryReader reader, BaseIndexFormat format, bool streaming, uint elementCount)
+        public static HwBuffer FromIndexData(BinaryReader reader, GameType gameType, BaseIndexFormat format, bool streaming, uint elementCount)
         {
             var dataFormat = format switch
             {
@@ -56,7 +56,7 @@ namespace Decima
                 _ => throw new NotSupportedException("Unknown index buffer type"),
             };
 
-            return FromData(reader, dataFormat, streaming, GetStrideForFormat(dataFormat), elementCount);
+            return FromData(reader, gameType, dataFormat, streaming, GetStrideForFormat(dataFormat), elementCount);
         }
 
         public static uint GetStrideForFormat(BaseDataBufferFormat format)

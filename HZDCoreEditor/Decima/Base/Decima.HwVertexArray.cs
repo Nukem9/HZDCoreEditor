@@ -51,7 +51,7 @@ namespace Decima
             }
         }
 
-        public static HwVertexArray FromData(BinaryReader reader)
+        public static HwVertexArray FromData(BinaryReader reader, GameType gameType)
         {
             var x = new HwVertexArray();
 
@@ -83,7 +83,7 @@ namespace Decima
                 }
 
                 stream.GUID = BaseGGUUID.FromData(reader);
-                stream.Buffer = HwBuffer.FromVertexData(reader, x.IsStreaming, byteStride, x.VertexCount);
+                stream.Buffer = HwBuffer.FromVertexData(reader, gameType, x.IsStreaming, byteStride, x.VertexCount);
 
                 x.Streams.Add(stream);
             }

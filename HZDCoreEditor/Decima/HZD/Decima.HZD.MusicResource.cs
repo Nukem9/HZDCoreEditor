@@ -15,7 +15,7 @@ namespace Decima.HZD
 		[RTTI.Member(4, 0x68)] public Array<MusicSubmixBinding> SubmixBindings;
 		[RTTI.Member(5, 0x78)] public Array<String> StreamingBankNames;
         public byte[] MusicData;
-        public HwStreamHandle[] StreamInfo;
+        public StreamHandle[] StreamInfo;
 
         public void DeserializeExtraData(BinaryReader reader)
         {
@@ -24,10 +24,10 @@ namespace Decima.HZD
             if (dataLength > 0)
                 MusicData = reader.ReadBytesStrict(dataLength);
 
-            StreamInfo = new HwStreamHandle[StreamingBankNames.Count];
+            StreamInfo = new StreamHandle[StreamingBankNames.Count];
 
             for (uint i = 0; i < StreamInfo.Length; i++)
-                StreamInfo[i] = HwStreamHandle.FromData(reader);
+                StreamInfo[i] = StreamHandle.FromData(reader);
         }
 
         public void SerializeExtraData(BinaryWriter writer)
