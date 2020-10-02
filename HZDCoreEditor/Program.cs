@@ -37,8 +37,11 @@ namespace HZDCoreEditor
             TestsHZD.DecodeAllArchivesTest();
             */
 
-            /*
             RTTI.SetGameMode(GameType.HZD);
+            var objects = CoreBinary.Load(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\entities\shops\shops.core");
+            Application.Run(new UI.FormCoreView(objects));
+
+            /*
             ExtractHZDLocalization();
             ExtractHZDAudio();
             */

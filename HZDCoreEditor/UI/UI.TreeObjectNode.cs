@@ -7,7 +7,7 @@ namespace HZDCoreEditor.UI
     class TreeObjectNode
     {
         public string Name => NameFieldInfo?.GetValue(UnderlyingObject).ToString();
-        public string UUID => UUIDFieldInfo?.GetValue(UnderlyingObject).ToString();
+        public string UUID => UUIDFieldInfo?.GetValue(UnderlyingObject)?.ToString();
         public string TypeName { get; private set; }
         public object UnderlyingObject { get; private set; }
         public List<TreeObjectNode> Children { get; private set; }
@@ -47,19 +47,22 @@ namespace HZDCoreEditor.UI
             // Create columns
             var typeCol = new BrightIdeasSoftware.OLVColumn("Object", nameof(TypeName))
             {
-                Width = 200
+                Width = 200,
+                IsEditable = false,
             };
             treeListView.Columns.Add(typeCol);
 
             var nameCol = new BrightIdeasSoftware.OLVColumn("Name", nameof(Name))
             {
-                Width = 200
+                Width = 200,
+                IsEditable = false,
             };
             treeListView.Columns.Add(nameCol);
 
             var uuidCol = new BrightIdeasSoftware.OLVColumn("UUID", nameof(UUID))
             {
-                Width = 300
+                Width = 300,
+                IsEditable = false,
             };
             treeListView.Columns.Add(uuidCol);
 

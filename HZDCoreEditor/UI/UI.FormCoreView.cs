@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace HZDCoreEditor.UI
@@ -32,6 +33,7 @@ namespace HZDCoreEditor.UI
 
             treeListView.ItemSelectionChanged += TreeListView_ItemSelected;
 
+            treeListView.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
             TreeObjectNode.SetupTree(treeListView, CoreObjectList);
 
             splitContainer.Panel1.Controls.Add(treeListView);
@@ -54,6 +56,7 @@ namespace HZDCoreEditor.UI
             TV2 = treeListView;
             treeListView.Dock = DockStyle.Fill;
 
+            treeListView.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
             TreeDataNode.SetupTree(treeListView, CoreObjectList[0]);
 
             splitContainer.Panel2.Controls.Add(treeListView);

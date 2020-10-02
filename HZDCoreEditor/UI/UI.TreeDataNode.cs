@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 
 namespace HZDCoreEditor.UI
 {
@@ -18,7 +16,9 @@ namespace HZDCoreEditor.UI
         {
             if (field.FieldType.IsGenericType)
             {
-                if (field.FieldType.GetGenericTypeDefinition() == typeof(Decima.HZD.Array<>) || field.FieldType.GetGenericTypeDefinition() == typeof(List<>))
+                var genericType = field.FieldType.GetGenericTypeDefinition();
+
+                if (genericType == typeof(Decima.DS.Array<>) || genericType == typeof(Decima.HZD.Array<>) || genericType == typeof(List<>))
                     return new TreeDataListNode(parent, field);
             }
 
@@ -36,19 +36,21 @@ namespace HZDCoreEditor.UI
             // Create columns
             var nameCol = new BrightIdeasSoftware.OLVColumn("Name", nameof(Name))
             {
-                Width = 300
+                Width = 300,
+                IsEditable = false,
             };
             treeListView.Columns.Add(nameCol);
 
             var valueCol = new BrightIdeasSoftware.OLVColumn("Value", nameof(Value))
             {
-                Width = 500
+                Width = 500,
             };
             treeListView.Columns.Add(valueCol);
 
             var typeCol = new BrightIdeasSoftware.OLVColumn("Type", nameof(TypeName))
             {
-                Width = 200
+                Width = 200,
+                IsEditable = false,
             };
             treeListView.Columns.Add(typeCol);
 
