@@ -8,12 +8,12 @@ namespace Decima.HZD
 	[RTTI.Serializable(0x873D69111E6F7262, GameType.HZD)]
 	public class MusicResource : Resource, RTTI.IExtraBinaryDataCallback
 	{
-		[RTTI.Member(0, 0x48)] public Array<uint32> StreamingDataHash;
-		[RTTI.Member(1, 0x58)] public int BitRate;
-		[RTTI.Member(2, 0x5C)] public bool StripSilence;
-		[RTTI.Member(3, 0x60)] public int StripSilenceThreshold;
-		[RTTI.Member(4, 0x68)] public Array<MusicSubmixBinding> SubmixBindings;
-		[RTTI.Member(5, 0x78)] public Array<String> StreamingBankNames;
+        [RTTI.Member(9, 0x48)] public Array<uint32> StreamingDataHash;
+        [RTTI.Member(4, 0x58)] public int BitRate;
+        [RTTI.Member(5, 0x5C)] public bool StripSilence;
+        [RTTI.Member(6, 0x60)] public int StripSilenceThreshold;
+        [RTTI.Member(7, 0x68)] public Array<MusicSubmixBinding> SubmixBindings;
+        [RTTI.Member(8, 0x78)] public Array<String> StreamingBankNames;
         public byte[] MusicData;
         public StreamHandle[] StreamInfo;
 

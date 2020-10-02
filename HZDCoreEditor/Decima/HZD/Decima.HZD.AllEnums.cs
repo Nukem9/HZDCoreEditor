@@ -3469,6 +3469,14 @@ namespace Decima.HZD
         Conservative = 1,
     }
 
+    [RTTI.Serializable(0xCEEDF535B9633D81, GameType.HZD)]
+    public enum EPlacementRotationType : int32
+    {
+        AxisAligned = 0,
+        TowardsSlope = 1,
+        Full = 2,
+    }
+
     [RTTI.Serializable(0xC2979D608C1E2B5A, GameType.HZD)]
     public enum EPlacementUsageMask : int32
     {
@@ -4421,6 +4429,13 @@ namespace Decima.HZD
         Dynamic = 1,
     }
 
+    [RTTI.Serializable(0x160F629B65A9008D, GameType.HZD)]
+    public enum ESetDensityBehavior : int32
+    {
+        Multiply = 0,
+        Override = 1,
+    }
+
     [RTTI.Serializable(0xE09EAFED654EB665, GameType.HZD)]
     public enum ESetFunctionHandled : int32
     {
@@ -4472,6 +4487,14 @@ namespace Decima.HZD
     {
         Multiplier = 0,
         AbsoluteBias = 1,
+    }
+
+    [RTTI.Serializable(0x484873BD2B1C4C23, GameType.HZD)]
+    public enum EShadowBlendEnabledTriState : int8
+    {
+        InheritFromParent = 0,
+        EnableShadowBlend = 1,
+        DisableShadowBlend = 2,
     }
 
     [RTTI.Serializable(0x4D351A964A2BE568, GameType.HZD)]

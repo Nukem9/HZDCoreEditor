@@ -58,6 +58,11 @@ namespace Decima.DS
 		[RTTI.Member(5, 0x28, "Behaviour")] public Ref<AIHTNPlannerResource> PlannerResource;
 	}
 
+	[RTTI.Serializable(0x49A54001B67A8CD5, GameType.DS)]
+	public class AIAgentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xA41A82781384EC82, GameType.DS)]
 	public class AIAirMover : Mover
 	{
@@ -183,6 +188,11 @@ namespace Decima.DS
 		[RTTI.Member(4, 0x28, "Logic")] public int NumberOfTokens;
 	}
 
+	[RTTI.Serializable(0xF4AADABA5C10B9DB, GameType.DS)]
+	public class AIAttackSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xDC14F52B5E4BB0C4, GameType.DS)]
 	public class AIAuralSensor : AISensor
 	{
@@ -214,6 +224,11 @@ namespace Decima.DS
 		[RTTI.Member(11, 0x45, "General")] public EDSAuralStimulusType AuralStimulusType;
 	}
 
+	[RTTI.Serializable(0xE078D3615E14E08A, GameType.DS)]
+	public class AIAuralStimulusResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xB0B8E01084C84E84, GameType.DS)]
 	public class AIBehaviorGroup : ParentWorldNode
 	{
@@ -239,6 +254,16 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x7D582BB4A4E1DAEC, GameType.DS)]
 	public class AIBehaviorGroupMemberComponent : EntityComponent
+	{
+	}
+
+	[RTTI.Serializable(0x5AD2118416F4EC1F, GameType.DS)]
+	public class AIBehaviorGroupMemberComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
+	[RTTI.Serializable(0xC8817107AB15A563, GameType.DS)]
+	public class AIBehaviorGroupSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -611,6 +636,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x218AE92F71017555, GameType.DS)]
+	public class AIContextHintResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x8C0FB188E4BB941E, GameType.DS)]
 	public class AIContextResource : Resource
 	{
@@ -728,6 +758,16 @@ namespace Decima.DS
 		[RTTI.Member(7, 0x80, "Logic")] public Array<Ref<AIDefendArea>> Nodes;
 	}
 
+	[RTTI.Serializable(0xA4DF0C862CC2F1FD, GameType.DS)]
+	public class AIDefendAreaSetSymbols : ExportedSymbolGroup
+	{
+	}
+
+	[RTTI.Serializable(0x96C301C305F07437, GameType.DS)]
+	public class AIDefendAreaSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xE202720FC5A1CF8B, GameType.DS)]
 	public class AIDiamondGroupFormation : AIGroupFormation
 	{
@@ -746,6 +786,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x115384522A001B9B, GameType.DS)]
 	public class AIDirectableAgent : AIAgent
+	{
+	}
+
+	[RTTI.Serializable(0xC0A662D086058AE7, GameType.DS)]
+	public class AIDirectableAgentSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -897,6 +942,11 @@ namespace Decima.DS
 		[RTTI.Member(9, 0x68, "General")] public int ClaimGroup;
 	}
 
+	[RTTI.Serializable(0xFC10FD50D94E8F1F, GameType.DS)]
+	public class AIFactionSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x2CEEDF4845A33004, GameType.DS)]
 	public class AIFollowAnimationAimWeaponOperationInstance : AIWeaponOperationInstanceGame
 	{
@@ -996,12 +1046,22 @@ namespace Decima.DS
 		[RTTI.Member(8, 0x50, "ParentDescriptor")] public Ref<AIGroupRoleDescriptorResource> InheritTagsFromParent;
 	}
 
+	[RTTI.Serializable(0xC5DA3AFE97E9B8E1, GameType.DS)]
+	public class AIGroupRoleDescriptorResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xE383F7FE2193B7B2, GameType.DS)]
 	public class AIGroupRolesDistributorResource : Resource
 	{
 		[RTTI.Member(2, 0x20)] public String Identifier;
 		[RTTI.Member(5, 0x30, "Union")] public bool PreventReuseOfEmptyUnion;
 		[RTTI.Member(4, 0x31, "Union")] public bool AutoJoinNewUnionMembers;
+	}
+
+	[RTTI.Serializable(0x5D224180A260E996, GameType.DS)]
+	public class AIGroupSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xA560667127A2E922, GameType.DS)]
@@ -1252,6 +1312,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x221B9A913B64B007, GameType.DS)]
+	public class AIHTNPlannerDaemonPerchPointsSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xCB4BAC22D8DB3837, GameType.DS)]
 	public class AIHTNPlannerDaemonPlayerInfo : AIHTNPlannerDaemonAgent
 	{
@@ -1269,6 +1334,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x45A338755BAEF2E9, GameType.DS)]
 	public class AIHTNPlannerDaemonPositionPickerGame : AIHTNPlannerDaemonPositionPicker
+	{
+	}
+
+	[RTTI.Serializable(0xEE032A0220969381, GameType.DS)]
+	public class AIHTNPlannerDaemonPositionPickerSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -1316,6 +1386,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x745DCE934790B7C2, GameType.DS)]
 	public class AIHTNPlannerDaemonSpecialMoves : AIHTNPlannerDaemonIndividual
+	{
+	}
+
+	[RTTI.Serializable(0x79AB1FB584ECB7CA, GameType.DS)]
+	public class AIHTNPlannerDaemonSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -2074,6 +2149,11 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x20, "Logic")] public String Hint;
 	}
 
+	[RTTI.Serializable(0x85C090E0EFD90A36, GameType.DS)]
+	public class AIHintSymbolResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x67E3EC080F3FCDDF, GameType.DS)]
 	public class AIHtnFactMessage : AIMessage
 	{
@@ -2149,6 +2229,11 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x20, "Logic")] public Ref<AIIndividualResource> AIIndividualResource;
 	}
 
+	[RTTI.Serializable(0xF0D3416AE4A2C92E, GameType.DS)]
+	public class AIIndividualComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x47990B34608D3DCF, GameType.DS)]
 	public class AIIndividualResource : AIAgentResource
 	{
@@ -2167,6 +2252,11 @@ namespace Decima.DS
 		[RTTI.Member(24, 0x80, "Communication")] public Ref<AIStimulusResource> CommunicateThreatInformationStimulusResource;
 		[RTTI.Member(26, 0x88, "Communication")] public Ref<AIStimulusResource> CommunicateDeathStimulusResource;
 		[RTTI.Member(28, 0x98, "Attacks")] public Array<Ref<AIAttackResource>> AttackResources;
+	}
+
+	[RTTI.Serializable(0x589B9492CB451064, GameType.DS)]
+	public class AIIndividualSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x682EF184665C5881, GameType.DS)]
@@ -2252,6 +2342,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x41EDB6B2F0DFB3E5, GameType.DS)]
+	public class AIManagerGameSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x3DB37DDBFA8F360F, GameType.DS)]
 	public class AIManagerResource : Resource
 	{
@@ -2278,6 +2373,11 @@ namespace Decima.DS
 		[RTTI.Member(26, 0xB0, "Factions")] public Ref<AIFaction> WildlifeFaction;
 	}
 
+	[RTTI.Serializable(0xCBC7BA9DB815C2BC, GameType.DS)]
+	public class AIManagerSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xA140D96207B9B16C, GameType.DS)]
 	public class AIMarker : WorldMarker
 	{
@@ -2293,6 +2393,11 @@ namespace Decima.DS
 	{
 		[RTTI.Member(8, 0x30, "Logic")] public Ref<AIMarker> AIMarker;
 		[RTTI.Member(9, 0x40, "Logic")] public Mat44 LocalMatrix;
+	}
+
+	[RTTI.Serializable(0x8C6DE0656BCD390, GameType.DS)]
+	public class AIMarkerSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xC64FD6330FB7CA3E, GameType.DS)]
@@ -2440,6 +2545,11 @@ namespace Decima.DS
 		[RTTI.Member(43, 0x118, "Animation")] public AnimationTagID QuickTurnStartAnimTag;
 	}
 
+	[RTTI.Serializable(0x930269783C3DDC92, GameType.DS)]
+	public class AIMoverSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x2EB2BA22EC9407BA, GameType.DS)]
 	public class AINavMeshComponent : EntityComponent
 	{
@@ -2451,6 +2561,11 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x20, "Logic")] public float Radius;
 		[RTTI.Member(4, 0x28, "Logic")] public Ref<NavMeshBuilderSettings> Settings;
 		[RTTI.Member(5, 0x30, "Logic")] public bool UseNavmeshForSpawning;
+	}
+
+	[RTTI.Serializable(0xC5A98B54EC233210, GameType.DS)]
+	public class AINavMeshComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xB014F124EDEB821D, GameType.DS)]
@@ -2465,6 +2580,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x477FA56A8FABFC58, GameType.DS)]
 	public class AIObserverComponentResource : EntityComponentResource
+	{
+	}
+
+	[RTTI.Serializable(0xA06E4185672B7980, GameType.DS)]
+	public class AIObserverComponentSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -2528,6 +2648,11 @@ namespace Decima.DS
 		[RTTI.Member(14, 0xE0, "Logic")] public float ObjectUseChance;
 	}
 
+	[RTTI.Serializable(0x192A1C1AD88B9E79, GameType.DS)]
+	public class AIPatrolPathSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x2A22296429FED71, GameType.DS)]
 	public class AIPatrolPathUseObject
 	{
@@ -2551,6 +2676,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x8705ACD7936262C5, GameType.DS)]
 	public class AIPerchMarker : AIMarker
+	{
+	}
+
+	[RTTI.Serializable(0x79E80DEB9FBE239D, GameType.DS)]
+	public class AIPerchMarkerSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -2672,6 +2802,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xD81A2FE2379329E3, GameType.DS)]
+	public class AIRememberFactResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x8542638C3326BDDF, GameType.DS)]
 	public class AIReservedObject
 	{
@@ -2694,6 +2829,11 @@ namespace Decima.DS
 	public class AIRoadManagerResource : Resource
 	{
 		[RTTI.Member(2, 0x20)] public Ref<ObjectCollection> RoadsObjectCollection;
+	}
+
+	[RTTI.Serializable(0x4F98A7A872451B9F, GameType.DS)]
+	public class AIRoadSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xAC6803A69FAFC528, GameType.DS)]
@@ -2723,6 +2863,11 @@ namespace Decima.DS
 	{
 		[RTTI.Member(2, 0x20)] public float RandomWeight;
 		[RTTI.Member(3, 0x24)] public float LookatWeight;
+	}
+
+	[RTTI.Serializable(0x3462B88A0916196B, GameType.DS)]
+	public class AIScanExpressionParamsSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x2A3C37E210BFE647, GameType.DS)]
@@ -3526,6 +3671,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x45F0286EDD1D852A, GameType.DS)]
+	public class AIUsableComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x52C0BAD9871B4A16, GameType.DS)]
 	public class AIUsableObject
 	{
@@ -3592,8 +3742,18 @@ namespace Decima.DS
 		[RTTI.Member(12, 0x4C, "General")] public float HeightOffset;
 	}
 
+	[RTTI.Serializable(0xCCB92FC7065A2AAA, GameType.DS)]
+	public class AIVisualStimulusResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xBEB12381E6975777, GameType.DS)]
 	public class AIWeaponAccuracyHintResource : AIHintSymbolResource
+	{
+	}
+
+	[RTTI.Serializable(0x38BD046BFA7955F9, GameType.DS)]
+	public class AIWeaponAccuracyHintResourceSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -3652,6 +3812,11 @@ namespace Decima.DS
 		[RTTI.Member(7, 0x48, "General")] public FRange FirstAimTime;
 		[RTTI.Member(8, 0x50, "General")] public FRange AimTime;
 		[RTTI.Member(9, 0x58, "General")] public Ref<AIWeaponOperationResource> Operation;
+	}
+
+	[RTTI.Serializable(0x8945FA9CB379844E, GameType.DS)]
+	public class AIWeaponPreferenceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x71D69EF73E2D2F53, GameType.DS)]
@@ -4405,6 +4570,11 @@ namespace Decima.DS
 		[RTTI.Member(36, 0x120, "HUD")] public FRGBAColor Color;
 	}
 
+	[RTTI.Serializable(0xDB80DEBED75387A7, GameType.DS)]
+	public class AmmoResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xDE4C4447A22EFF77, GameType.DS)]
 	public class AmmoSlotResource : Resource
 	{
@@ -4652,6 +4822,11 @@ namespace Decima.DS
 	{
 		[RTTI.Member(3, 0x40, "Logic")] public Pose InitialPose;
 		[RTTI.Member(4, 0xB0, "Logic")] public bool ForceContinuousEntityUpdates;
+	}
+
+	[RTTI.Serializable(0xFA673FE7BBD0E004, GameType.DS)]
+	public class AnimationManagerSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xE7720CEF83E00B99, GameType.DS)]
@@ -4979,6 +5154,11 @@ namespace Decima.DS
 		[RTTI.Member(15, 0x68, "Parkour")] public HumanoidAirControlLinearTrajectorySettings LinearTrajectorySettingsOverride;
 	}
 
+	[RTTI.Serializable(0x2DF61D1E42783722, GameType.DS)]
+	public class AnnotationComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xC3FBCA77DAF840CC, GameType.DS)]
 	public class AnnotationDetectionComponent : EntityComponent
 	{
@@ -5024,6 +5204,11 @@ namespace Decima.DS
 		[RTTI.Member(8, 0x80, "Logic")] public bool Enabled;
 	}
 
+	[RTTI.Serializable(0xF1C270152953B25D, GameType.DS)]
+	public class AnnotationInstanceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xE4F9BF4B93181AC4, GameType.DS)]
 	public class AnnotationLinkNode : WorldNode
 	{
@@ -5056,10 +5241,25 @@ namespace Decima.DS
 		[RTTI.Member(5, 0x50, "General")] public BoundingBox3 BoundingBox;
 	}
 
+	[RTTI.Serializable(0xCF9E66BAD308DA74, GameType.DS)]
+	public class AnnotationPrimitiveInstanceSymbols : ExportedSymbolGroup
+	{
+	}
+
+	[RTTI.Serializable(0x3687255088C1E390, GameType.DS)]
+	public class AnnotationPrimitiveSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xC1DC7F63A41120F, GameType.DS)]
 	public class AnnotationResource : Resource
 	{
 		[RTTI.Member(3, 0x20, "General")] public Array<Ref<AnnotationPrimitive>> Primitives;
+	}
+
+	[RTTI.Serializable(0xCC039B75D8CF69DC, GameType.DS)]
+	public class AnnotationResourceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x2C53DB9405B65179, GameType.DS)]
@@ -5071,6 +5271,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xB5D8B8F112CE5642, GameType.DS)]
 	public class Application
+	{
+	}
+
+	[RTTI.Serializable(0xBD4B58F9A2BB5B2F, GameType.DS)]
+	public class ApplicationSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -5095,6 +5300,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xD278A33AB2A7EFCA, GameType.DS)]
 	public class ArcComponentResource : EntityComponentResource
+	{
+	}
+
+	[RTTI.Serializable(0xABDED467BF9580D3, GameType.DS)]
+	public class ArcComponentSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -5276,6 +5486,11 @@ namespace Decima.DS
 		[RTTI.Member(22, 0x124, "General")] public bool IsRotatedRootModel;
 	}
 
+	[RTTI.Serializable(0x57E3D08B07F51ADD, GameType.DS)]
+	public class ArtPartsDataSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x1B54B9F409372DB1, GameType.DS)]
 	public class ArtPartsEffectGroupResource : ArtPartsEffectResourceBase
 	{
@@ -5389,6 +5604,11 @@ namespace Decima.DS
 		[RTTI.Member(7, 0x70, "DS")] public bool IgnoreMeshPathCheck;
 	}
 
+	[RTTI.Serializable(0xC02439F8B6F9B8BA, GameType.DS)]
+	public class ArtPartsVariationResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xE677D749F9509532, GameType.DS)]
 	public class ArtPartsVariationShaderVariableResource : RTTIRefObject
 	{
@@ -5397,6 +5617,11 @@ namespace Decima.DS
 		[RTTI.Member(5, 0x30, "DS")] public Vec3 VecValue;
 		[RTTI.Member(7, 0x40, "DS")] public Array<Ref<ResourceWithNameHash>> TargetModelParts;
 		[RTTI.Member(6, 0x50, "DS")] public bool UseVecValue;
+	}
+
+	[RTTI.Serializable(0x1A4DA585E497E69D, GameType.DS)]
+	public class ArtPartsVariationSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xBAE429C283D97922, GameType.DS)]
@@ -5544,6 +5769,11 @@ namespace Decima.DS
 		[RTTI.Member(13, 0x90, "Logic")] public int CollisionLayer;
 	}
 
+	[RTTI.Serializable(0xD596DFEE1FB68DA9, GameType.DS)]
+	public class AttachPhysicsRagdollToHelperMoverSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xCAA7BFC8887966EB, GameType.DS)]
 	public class AttachToAimMatrixMover : AttachToEntityMover
 	{
@@ -5582,6 +5812,11 @@ namespace Decima.DS
 		[RTTI.Member(9, 0x71, "Logic")] public bool MakeKeyframed;
 	}
 
+	[RTTI.Serializable(0xB388A0F5F39EC3C8, GameType.DS)]
+	public class AttachToEntityMoverSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x3D3D0CBAF2269B13, GameType.DS)]
 	public class AttachToHelperMover : AttachToEntityMover
 	{
@@ -5591,6 +5826,11 @@ namespace Decima.DS
 	public class AttachToHelperMoverResource : AttachToEntityMoverResource
 	{
 		[RTTI.Member(11, 0x80, "Logic")] public String Helper;
+	}
+
+	[RTTI.Serializable(0xE623EF65E7CEF1C7, GameType.DS)]
+	public class AttachToHelperMoverSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x545626DA601B2586, GameType.DS)]
@@ -5604,6 +5844,11 @@ namespace Decima.DS
 		[RTTI.Member(11, 0x80, "Logic")] public String Helper;
 		[RTTI.Member(12, 0x88, "Logic")] public float Relaxation;
 		[RTTI.Member(13, 0x8C, "Logic")] public float Dampening;
+	}
+
+	[RTTI.Serializable(0x49F962556462B2B5, GameType.DS)]
+	public class AttachToHelperPositionMoverSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x9F3D333730B28D48, GameType.DS)]
@@ -5707,6 +5952,11 @@ namespace Decima.DS
 		[RTTI.Member(4, 0x30, "Lights")] public float MaxLightFadeOutTime;
 	}
 
+	[RTTI.Serializable(0xE68E0569D99FE02F, GameType.DS)]
+	public class AttachedLightsComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xD35D3DE36CF830B8, GameType.DS)]
 	public class AttachmentPConstraint
 	{
@@ -5726,6 +5976,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xB7975E735930848D, GameType.DS)]
 	public class AttackEventContextGame : AttackEventContext
+	{
+	}
+
+	[RTTI.Serializable(0x76AC8DF8D82FAF96, GameType.DS)]
+	public class AttackEventContextSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -5749,6 +6004,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x6F13E5558D650DE7, GameType.DS)]
+	public class AttackEventLinkSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x1111AEF650A98F32, GameType.DS)]
 	public class AttackEventManager
 	{
@@ -5765,6 +6025,11 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x20, "Logic")] public Array<Ref<AttackEventTag>> Tags;
 	}
 
+	[RTTI.Serializable(0x7CAF8D19895E3431, GameType.DS)]
+	public class AttackEventManagerSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xC8FDB6E760F3F05C, GameType.DS)]
 	public class AttackEventResource : TimedEventResource
 	{
@@ -5775,6 +6040,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xE68A19B5CBA51965, GameType.DS)]
 	public class AttackEventTag : Resource
+	{
+	}
+
+	[RTTI.Serializable(0xD0AED99B13DCCF64, GameType.DS)]
+	public class AttackEventTagSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -5909,6 +6179,11 @@ namespace Decima.DS
 		[RTTI.Member(7, 0x30, "Logic")] public Ref<SoundResource> AudioLogEndigSound;
 		[RTTI.Member(5, 0x38, "Logic")] public Ref<ConditionResource> CancelCondition;
 		[RTTI.Member(8, 0x40, "Logic")] public Ref<BooleanFact> IsPlayingAudioLogFact;
+	}
+
+	[RTTI.Serializable(0x4AE70AC51C701654, GameType.DS)]
+	public class AudioPlayerComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x17D895BE45819E61, GameType.DS)]
@@ -6195,6 +6470,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x87B69322A0EC2B99, GameType.DS)]
+	public class BodyVariantInterfaceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xA157B8EF7257197A, GameType.DS)]
 	public class BodyVariantRuntimeComponent : EntityComponent
 	{
@@ -6203,6 +6483,16 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x9FE45682A3CFF711, GameType.DS)]
 	public class BodyVariantRuntimeComponentRep : EntityComponentRep
+	{
+	}
+
+	[RTTI.Serializable(0xE183D9A4B24B8C6B, GameType.DS)]
+	public class BodyVariantRuntimeComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
+	[RTTI.Serializable(0xC3208C4EF6297385, GameType.DS)]
+	public class BodyVariantSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -6438,6 +6728,21 @@ namespace Decima.DS
 		[RTTI.Member(4, 0x24, "Logic")] public FRange TeleportPositionRange;
 	}
 
+	[RTTI.Serializable(0xD393A7E504A412CB, GameType.DS)]
+	public class BuddyComponentResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
+	[RTTI.Serializable(0x51373756B189B5A, GameType.DS)]
+	public class BuddyComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
+	[RTTI.Serializable(0x286298CF1A7A0ED6, GameType.DS)]
+	public class BuddyManagerSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x2DA3C028C6C939C3, GameType.DS)]
 	public class BuddySequenceEntityVariable : SequenceEntityVariable
 	{
@@ -6451,6 +6756,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xAAAB49F8B4D265B4, GameType.DS)]
 	public class BuddySpawnpoint : Spawnpoint
+	{
+	}
+
+	[RTTI.Serializable(0x132B0A4AC5B24416, GameType.DS)]
+	public class BuddySpawnpointSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -6488,6 +6798,11 @@ namespace Decima.DS
 		[RTTI.Member(5, 0x28, "Duration")] public float RechargeTime;
 		[RTTI.Member(8, 0x30, "SlowMotion")] public Ref<SlowMotionSettingResource> SlowMotionSettings;
 		[RTTI.Member(6, 0x38, "Duration")] public Array<PerkDurationMapping> UpgradeMapping;
+	}
+
+	[RTTI.Serializable(0x46D0527DA4A1A250, GameType.DS)]
+	public class BulletTimeComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x1CC03E5D983F9FE0, GameType.DS)]
@@ -6583,6 +6898,11 @@ namespace Decima.DS
 		[RTTI.Member(5, 0x38)] public float ForceFieldRange;
 	}
 
+	[RTTI.Serializable(0x3F4AB8DF1FE2CD20, GameType.DS)]
+	public class CRenderGroup : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xCEBD0ED83D6D7D4F, GameType.DS)]
 	public class CRenderSystemAssets : SystemAssets
 	{
@@ -6614,6 +6934,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xFD543DED484BFC55, GameType.DS)]
 	public class CachedHelperLocationsComponent : EntityComponent
+	{
+	}
+
+	[RTTI.Serializable(0xB7760653583A0B98, GameType.DS)]
+	public class CachedHelperLocationsComponentSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -7039,6 +7364,11 @@ namespace Decima.DS
 		[RTTI.Member(45, 0x2D8, "Selectors")] public CameraParmResource FOVSelector;
 	}
 
+	[RTTI.Serializable(0xC7954A6E6DACB344, GameType.DS)]
+	public class CameraModeResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x2BED6A9A621CA803, GameType.DS)]
 	public class CameraModeScalers : CameraScalers
 	{
@@ -7215,6 +7545,11 @@ namespace Decima.DS
 		[RTTI.Member(15, 0x110, "Matrices")] public Mat44 CameraToProjected;
 		[RTTI.Member(16, 0x150, "Matrices")] public Mat44 ProjectedToCamera;
 		[RTTI.Member(17, 0x190, "Matrices")] public Mat44 WorldToProjected;
+	}
+
+	[RTTI.Serializable(0xB261D0016E2754EF, GameType.DS)]
+	public class CameraSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xC9616DB75E4C1031, GameType.DS)]
@@ -7422,6 +7757,11 @@ namespace Decima.DS
 		[RTTI.Member(8, 0x68, "Logic")] public Ref<BooleanFact> DenyHealthComponentsFact;
 	}
 
+	[RTTI.Serializable(0x66104FA4427F0461, GameType.DS)]
+	public class CharacterProgressionComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x469A8C5DE4A4BA15, GameType.DS)]
 	public class CharacterProgressionSave : RTTIRefObject
 	{
@@ -7537,6 +7877,16 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x20, "Logic")] public Ref<EntityResource> EntityResource;
 		[RTTI.Member(4, 0x28, "Logic")] public Ref<MoverResource> MoverResource;
 		[RTTI.Member(5, 0x30, "Logic")] public Array<Ref<FactValueBase>> Facts;
+	}
+
+	[RTTI.Serializable(0x28455E35B5D74D9, GameType.DS)]
+	public class ChildEntityComponentResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
+	[RTTI.Serializable(0xEF0A73FE3E93EA1D, GameType.DS)]
+	public class ChildEntityComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xCF4411B38FEBBFE2, GameType.DS)]
@@ -7803,6 +8153,16 @@ namespace Decima.DS
 		[RTTI.Member(11, 0x70, "Logic")] public Ref<UIMarkerTag> MarkerTextBinding;
 	}
 
+	[RTTI.Serializable(0xBDFE678B98D0147E, GameType.DS)]
+	public class CollectableManagerResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
+	[RTTI.Serializable(0xA8F1CFA0CEE6D08D, GameType.DS)]
+	public class CollectableManagerSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xB9E35BA9FAD373FB, GameType.DS)]
 	public class CollectableRegion : Resource
 	{
@@ -7928,6 +8288,11 @@ namespace Decima.DS
 		[RTTI.Member(11, 0x98, "General", true)] public WorldTransform Orientation;
 	}
 
+	[RTTI.Serializable(0x9FB1C7AB44ECCD47, GameType.DS)]
+	public class CollisionTriggerSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x61E0C8F38F07D6D8, GameType.DS)]
 	public class ColorPeg : PegBase
 	{
@@ -8015,6 +8380,11 @@ namespace Decima.DS
 		[RTTI.Member(7, 0x58)] public Ref<LocalizedTextResource> ComboFinishedText;
 	}
 
+	[RTTI.Serializable(0x946C46D4C74C419F, GameType.DS)]
+	public class ComboComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xE31456B893C395CA, GameType.DS)]
 	public class ComboStageSettings : Resource
 	{
@@ -8038,6 +8408,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x46C3418B57B9FA5B, GameType.DS)]
 	public class ComponentLifetimeComponent : EntityComponent
+	{
+	}
+
+	[RTTI.Serializable(0xF41C3AEAAD124DBA, GameType.DS)]
+	public class ComponentLifetimeComponentSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -8145,6 +8520,30 @@ namespace Decima.DS
 		[RTTI.Member(49, 0x198)] public Ref<ShaderResource> ComputeLinearBlendSkinning8x16NT;
 		[RTTI.Member(50, 0x1A0)] public Ref<ShaderResource> ComputeSkinnedNormals;
 		[RTTI.Member(51, 0x1A8)] public Ref<ShaderResource> ComputeSkinnedNormalsAndTangents;
+	}
+
+	[RTTI.Serializable(0x947A9B7E97FD7748, GameType.DS)]
+	public class ConcretePlacement : PlacementBase
+	{
+		[RTTI.Member(7, 0x28)] public int Priority;
+		[RTTI.Member(6, 0x2C)] public EPlacementUsageMask UsageMask;
+		[RTTI.Member(3, 0x30)] public ESetDensityBehavior DensityBehavior;
+		[RTTI.Member(4, 0x34)] public float DensityScale;
+		[RTTI.Member(5, 0x38)] public EPlacementChunkSizeSetting ChunkSize;
+		[RTTI.Member(12, 0x40, "Placement")] public EPlacementRotationType RotationType;
+		[RTTI.Member(13, 0x44, "Placement")] public float RotationOffset;
+		[RTTI.Member(14, 0x48, "Placement")] public float RotationVariance;
+		[RTTI.Member(15, 0x4C, "Placement")] public float BaseElevation;
+		[RTTI.Member(16, 0x50, "Placement")] public float ElevationVariance;
+		[RTTI.Member(18, 0x54, "Tilting")] public float RandomTiltFactor;
+		[RTTI.Member(20, 0x58, "Tilting")] public float TerrainTiltFactor;
+		[RTTI.Member(19, 0x5C, "Tilting")] public float UpTiltFactor;
+		[RTTI.Member(21, 0x60, "Tilting")] public Vec3 ManualTilt;
+		[RTTI.Member(23, 0x70, "Scaling")] public float Scale;
+		[RTTI.Member(24, 0x74, "Scaling")] public float ScaleVariance;
+		[RTTI.Member(9, 0x80, "Placement")] public float MaxSlope;
+		[RTTI.Member(10, 0x84, "Placement")] public float MinSlope;
+		[RTTI.Member(11, 0x88, "Placement")] public float WanderingDistance;
 	}
 
 	[RTTI.Serializable(0xAC066A9FF9E83D2D, GameType.DS)]
@@ -8255,6 +8654,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x1385E563D09A6244, GameType.DS)]
+	public class ConditionResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xD7B4295D4C193DE6, GameType.DS)]
 	public class ConditionStaminaConfig
 	{
@@ -8326,6 +8730,11 @@ namespace Decima.DS
 		[RTTI.Member(6, 0x38, "Logic")] public Ref<ModelPartResource> TargetModelPartResource;
 	}
 
+	[RTTI.Serializable(0x4D8B642067B74F9A, GameType.DS)]
+	public class ConstraintComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x563D29DC24AEEB66, GameType.DS)]
 	public class ContentWidget : Widget
 	{
@@ -8359,6 +8768,11 @@ namespace Decima.DS
 		[RTTI.Member(15, 0xC0, "Logic")] public Vec3 ParkourWithHandsUnbracedLineOfSightEyeOffset;
 		[RTTI.Member(16, 0xD0, "Logic")] public float PrimaryHUDCooldownDuration;
 		[RTTI.Member(17, 0xD4, "Logic")] public float SecondaryHUDCooldownDuration;
+	}
+
+	[RTTI.Serializable(0x13D5ED5A684B30A4, GameType.DS)]
+	public class ContextualActionComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x2DF7F0BC331053B7, GameType.DS)]
@@ -8455,6 +8869,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x5553C9EFB2768FC, GameType.DS)]
+	public class ContextualActionVictimComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x3FE288F832B36C90, GameType.DS)]
 	public class ContextualActionVictimSettings
 	{
@@ -8499,6 +8918,11 @@ namespace Decima.DS
 		[RTTI.Member(20, 0x68, "Windy")] public Ref<ThresholdBasedContextualEmotion> Windy_ContextualEmotion;
 		[RTTI.Member(22, 0x70, "PropertyBased")] public Array<Ref<PropertyBasedContextualEmotion>> PropertyBased_ContextualEmotion;
 		[RTTI.Member(24, 0x80, "FactBased")] public Array<Ref<FactBasedContextualEmotion>> FactBased_ContextualEmotion;
+	}
+
+	[RTTI.Serializable(0xF10F64959B6CCF71, GameType.DS)]
+	public class ContextualEmotionComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xBDE2CEBCD82D30B6, GameType.DS)]
@@ -8558,6 +8982,11 @@ namespace Decima.DS
 		[RTTI.Member(6, 0x45, "Logic")] public bool IsEnabledWhenPlayerIsInSequence;
 		[RTTI.Member(7, 0x46, "Logic")] public bool ShouldStopTalkingInstantlyWhenInSequence;
 		[RTTI.Member(8, 0x48, "Logic")] public float GlobalCooldown;
+	}
+
+	[RTTI.Serializable(0xF72516AA8A0C15E0, GameType.DS)]
+	public class ContextualSpeechComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xAAA3749E904E4C5D, GameType.DS)]
@@ -8677,6 +9106,11 @@ namespace Decima.DS
 		[RTTI.Member(35, 0x110, "AI")] public float CollisionRadius;
 		[RTTI.Member(36, 0x118, "AI")] public String IdentifiedSignalType;
 		[RTTI.Member(32, 0x120, "Logic")] public Array<String> AnimationSetTags;
+	}
+
+	[RTTI.Serializable(0xC3850D4624918439, GameType.DS)]
+	public class ControlledEntitySymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xAF9E93A997809770, GameType.DS)]
@@ -8851,6 +9285,11 @@ namespace Decima.DS
 		[RTTI.Member(2, 0x10)] public Ref<LocalizedTextResource> MultiPlayerText;
 	}
 
+	[RTTI.Serializable(0xF56802D5AA888B27, GameType.DS)]
+	public class ControllerSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x8AA9BEFB9EAC31A2, GameType.DS)]
 	public class ConvexHull
 	{
@@ -8886,6 +9325,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x1D6ACA2786C58ADC, GameType.DS)]
 	public class CoreTelemetryService : RTTIObject
+	{
+	}
+
+	[RTTI.Serializable(0x92D7A05D22A5426E, GameType.DS)]
+	public class CoreTelemetryServiceSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -8925,6 +9369,11 @@ namespace Decima.DS
 		[RTTI.Member(5, 0x20, "StateSaving", true)] public float BlinkStartTime;
 	}
 
+	[RTTI.Serializable(0xEDB64161F4AF8682, GameType.DS)]
+	public class CountdownTimerSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x70DF9D4DDE622372, GameType.DS)]
 	public class CraftingComponent : EntityComponent
 	{
@@ -8939,6 +9388,11 @@ namespace Decima.DS
 		[RTTI.Member(6, 0x50, "Logic")] public Array<Ref<CraftingRecipeGroup>> TravelRecipeGroups;
 		[RTTI.Member(7, 0x60, "Logic")] public String QuickCraftGesture;
 		[RTTI.Member(8, 0x68, "Logic")] public Ref<PerkLevel> UpgradedCraftingPerk;
+	}
+
+	[RTTI.Serializable(0x597C215DA581EAFE, GameType.DS)]
+	public class CraftingComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x1A65BA821B450BC6, GameType.DS)]
@@ -8978,6 +9432,11 @@ namespace Decima.DS
 	{
 		[RTTI.Member(2, 0x20)] public Ref<EntityResource> Item;
 		[RTTI.Member(3, 0x28)] public int Amount;
+	}
+
+	[RTTI.Serializable(0x2A60BD3F56E3BD5C, GameType.DS)]
+	public class CraftingRecipeSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x310B01354D55E64A, GameType.DS)]
@@ -9095,6 +9554,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x88EE88355C807C49, GameType.DS)]
+	public class CrowdMemberSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xB1F07DD1173C1B6C, GameType.DS)]
 	public class CrowdSpawnManager : CoreObject
 	{
@@ -9106,6 +9570,11 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x20, "Logic")] public int MaxEntities;
 		[RTTI.Member(4, 0x28, "Logic")] public Ref<NavMeshBuilderSettings> NavMeshBuilderSettings;
 		[RTTI.Member(5, 0x30, "Logic")] public Ref<EntityImpostorResource> DefaultImpostorResource;
+	}
+
+	[RTTI.Serializable(0x30934403D6C3A68C, GameType.DS)]
+	public class CrowdSpawnManagerSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x28160751BFB89A00, GameType.DS)]
@@ -9126,6 +9595,11 @@ namespace Decima.DS
 	{
 		[RTTI.Member(0, 0x0)] public int Amount;
 		[RTTI.Member(1, 0x8)] public Ref<SpawnSetupBase> SpawnSetup;
+	}
+
+	[RTTI.Serializable(0xC290979DC42CB6C4, GameType.DS)]
+	public class CrowdZoneSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xEC1EB0BD508D61A6, GameType.DS)]
@@ -9200,6 +9674,11 @@ namespace Decima.DS
 		[RTTI.Member(6, 0x52, "General")] public EInfinityMode PostInfinity;
 	}
 
+	[RTTI.Serializable(0xA7180DD4D95D76B8, GameType.DS)]
+	public class CurveResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x6ACB5A7DA1965054, GameType.DS)]
 	public class CustomInstigatorComponent : EntityComponent
 	{
@@ -9242,6 +9721,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x9E216603F55E27E8, GameType.DS)]
 	public class DHighwaySyncControlCommand : RTTIObject
+	{
+	}
+
+	[RTTI.Serializable(0xB4D3D3EE32DDFB89, GameType.DS)]
+	public class DHighwaySyncControlCommandSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -9335,6 +9819,11 @@ namespace Decima.DS
 		[RTTI.Member(5, 0x30, "Settings")] public Array<IVec2> ExclusionTileIndices;
 		[RTTI.Member(6, 0x40, "Settings")] public IVec2 MinIndex;
 		[RTTI.Member(7, 0x48, "Settings")] public IVec2 MaxIndex;
+	}
+
+	[RTTI.Serializable(0xCD79FEE7202F5ED3, GameType.DS)]
+	public class DSAIExclusionNavTilesSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x1779C129F12F1149, GameType.DS)]
@@ -9832,6 +10321,11 @@ namespace Decima.DS
 		[RTTI.Member(16, 0xC4, "WarriorParticle")] public float FadeTime;
 	}
 
+	[RTTI.Serializable(0x675A7B74676F42DA, GameType.DS)]
+	public class DSAirplaneGameActorLocatorSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xF12C6219F5EDCF61, GameType.DS)]
 	public class DSAirplaneGameActorUnit : DSGameActorUnit
 	{
@@ -9906,6 +10400,11 @@ namespace Decima.DS
 		[RTTI.Member(5, 0x28, "Logic")] public int GestureMotionStartIndex;
 		[RTTI.Member(6, 0x2C, "Logic")] public int GestureMotionEndIndex;
 		[RTTI.Member(7, 0x30, "Logic")] public int WaveHandMotionIndex;
+	}
+
+	[RTTI.Serializable(0x75986968A11C6BCE, GameType.DS)]
+	public class DSAmelieGestureComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xA7B141105F6EDDBC, GameType.DS)]
@@ -10039,6 +10538,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x121DE97DB4CBC04A, GameType.DS)]
 	public class DSAnyEventStateCommand : RTTIObject
+	{
+	}
+
+	[RTTI.Serializable(0x49C292D207901250, GameType.DS)]
+	public class DSAnyEventStateCommandSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -10501,6 +11005,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xF3C5F3A91EA599BF, GameType.DS)]
+	public class DSBaggage2ManagerSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x572467EA47521BE8, GameType.DS)]
 	public class DSBaggage2SceneInfoForAdditionalAsset : CoreObject
 	{
@@ -10509,6 +11018,11 @@ namespace Decima.DS
 		[RTTI.Member(4, 0x38)] public Ref<Scene> Scene;
 		[RTTI.Member(5, 0x40)] public Ref<Fact> UnloadFact;
 		[RTTI.Member(6, 0x48)] public Ref<Fact> ExistenceFact;
+	}
+
+	[RTTI.Serializable(0x269070720E58144B, GameType.DS)]
+	public class DSBaggage2Symbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x57AFE1FAD199C61E, GameType.DS)]
@@ -10677,6 +11191,11 @@ namespace Decima.DS
 		[RTTI.Member(7, 0x44, "BomberSettings")] public float TimeToDisappear;
 	}
 
+	[RTTI.Serializable(0xB671F7EA5BD333EC, GameType.DS)]
+	public class DSBombDropperSettingsSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x551CD7E0DA6E1CEC, GameType.DS)]
 	public class DSBottomlessSwampCollisionTrigger : CollisionTrigger
 	{
@@ -10842,6 +11361,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xE0E0FDB5BD17566B, GameType.DS)]
+	public class DSBulletSystemSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x777A889CB32128A6, GameType.DS)]
 	public class DSCalcMissionResultAfterInputInfo
 	{
@@ -10955,6 +11479,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xE1CB4A101B42F09A, GameType.DS)]
+	public class DSCameraInterfaceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xA98003D05821B3A1, GameType.DS)]
 	public class DSCameraManualMoveEventInstance : TimedEventInstance
 	{
@@ -11060,6 +11589,16 @@ namespace Decima.DS
 		[RTTI.Member(44, 0x188, "Attachment")] public CameraParmFloat BaseSmoothing;
 		[RTTI.Member(45, 0x1A0, "Attachment")] public CameraParmBool RotateWithBase;
 		[RTTI.Member(47, 0x1B8, "EntityLookAt")] public CameraParmMagnetParms EntityLookAtMagnetParms;
+	}
+
+	[RTTI.Serializable(0xFB202086B44B138C, GameType.DS)]
+	public class DSCameraModeBaseResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
+	[RTTI.Serializable(0x51423432D5B2E160, GameType.DS)]
+	public class DSCameraModeBaseSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x4C6BE36556FEB35D, GameType.DS)]
@@ -11274,6 +11813,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x4B297EC925157266, GameType.DS)]
+	public class DSCatalogueListItemCommandSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x517D86E3B87C286, GameType.DS)]
 	public class DSCatcherAttackHintPath : DSAttackPath
 	{
@@ -11467,6 +12011,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x999DF4F6DCC0F8EA, GameType.DS)]
 	public class DSCatcherManagerCommand : RTTIObject
+	{
+	}
+
+	[RTTI.Serializable(0xA4EF5D7A41F2803F, GameType.DS)]
+	public class DSCatcherManagerCommandSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -12072,6 +12621,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x7FB97563475C4875, GameType.DS)]
+	public class DSCatcherWaypointSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x260B2B737F08774F, GameType.DS)]
 	public class DSCatcherWhaleComponent : EntityComponent
 	{
@@ -12561,6 +13115,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xFE77A9D8EC9BB2AA, GameType.DS)]
+	public class DSCliffMissionCommandSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xC31DE47AA1528A88, GameType.DS)]
 	public class DSCliffNoPerceptionKnowledgeComponent : DSAINoPerceptionKnowledgeComponentBase
 	{
@@ -12791,6 +13350,11 @@ namespace Decima.DS
 	{
 		[RTTI.Member(7, 0x70, "CollectorsItem")] public Ref<DSCollectorsItemResource> CollectorsItem;
 		[RTTI.Member(8, 0x7C, "CollectorsItem")] public EDSArea DsArea;
+	}
+
+	[RTTI.Serializable(0x3D3C2F6DD1143061, GameType.DS)]
+	public class DSCollectorsItemLocatorSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xD47A64369D18AE37, GameType.DS)]
@@ -13129,6 +13693,11 @@ namespace Decima.DS
 		[RTTI.Member(58, 0x1F0, "MaterialEnabled")] public Ref<BooleanFact> FactSpecialAlloyEnabled;
 	}
 
+	[RTTI.Serializable(0x3221CEC6F8E0A301, GameType.DS)]
+	public class DSConstructionPointManagerSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xB29ADB9CEA3A01A1, GameType.DS)]
 	public class DSContactPlayerComponent : EntityComponent
 	{
@@ -13208,6 +13777,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x6AECD0ED40ACCC47, GameType.DS)]
 	public class DSControlledMarkerFactContext : RTTIRefObject
+	{
+	}
+
+	[RTTI.Serializable(0xE5718CE96287247C, GameType.DS)]
+	public class DSControlledMarkerFactContextSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -13296,6 +13870,11 @@ namespace Decima.DS
 		[RTTI.Member(2, 0x30)] public Ref<DSStringHashResource> HashResource;
 		[RTTI.Member(3, 0x38)] public EDSCountAttrFlag AttrFlag;
 		[RTTI.Member(4, 0x3C)] public EDSCountTimeType CountTimeType;
+	}
+
+	[RTTI.Serializable(0xB79625D9689B53DD, GameType.DS)]
+	public class DSCountTimerBaseSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x88BD8580C74AD200, GameType.DS)]
@@ -13419,6 +13998,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xF4A064FFD13C97F7, GameType.DS)]
 	public class DSCreateMissionBaggageNodeCommand : RTTIObject
+	{
+	}
+
+	[RTTI.Serializable(0x4265E6F28FED956F, GameType.DS)]
+	public class DSCreateMissionBaggageNodeCommandSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -13778,6 +14362,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x542244AE153DFE, GameType.DS)]
+	public class DSDataLibraryBasicNodeSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x1A318DC38A65CE3A, GameType.DS)]
 	public class DSDataLibrarySystem : RTTIObject
 	{
@@ -13801,8 +14390,18 @@ namespace Decima.DS
 		[RTTI.Member(19, 0xA8, "Trophy")] public Ref<TrophyResource> TrophyForMusicPlayer;
 	}
 
+	[RTTI.Serializable(0xA001B784D010716, GameType.DS)]
+	public class DSDataLibrarySystemSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xB468426399DA0A16, GameType.DS)]
 	public class DSDebugEntryCommand : RTTIObject
+	{
+	}
+
+	[RTTI.Serializable(0x1C56B1CE03AD579E, GameType.DS)]
+	public class DSDebugEntryCommandSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -13843,13 +14442,28 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x77B318E85B262B5D, GameType.DS)]
+	public class DSDebugPrintStringSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xA46B27E1B204CAFE, GameType.DS)]
 	public class DSDeliveredBaggageArgs : RTTIRefObject
 	{
 	}
 
+	[RTTI.Serializable(0xA79A79268FCF8B27, GameType.DS)]
+	public class DSDeliveredBaggageArgsSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x21CA58786FFAADBB, GameType.DS)]
 	public class DSDeliveredMemoryChipArgs : RTTIRefObject
+	{
+	}
+
+	[RTTI.Serializable(0x1801207E2CC6C896, GameType.DS)]
+	public class DSDeliveredMemoryChipArgsSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -13863,6 +14477,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xE77534FD346F252A, GameType.DS)]
 	public class DSDeliveryManager : RTTIObject
+	{
+	}
+
+	[RTTI.Serializable(0x61E10C775425120F, GameType.DS)]
+	public class DSDeliveryManagerSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -13897,6 +14516,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x96726F72DF4F2470, GameType.DS)]
+	public class DSDeliveryPointInfoCommandSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x96B14836C5B33B0B, GameType.DS)]
 	public class DSDeliveryPointInfoListForRandomLostBaggage : Resource
 	{
@@ -13923,6 +14547,11 @@ namespace Decima.DS
 		[RTTI.Member(10, 0xC0)] public Ref<DSUIConstructionPointResource> UIResource;
 		[RTTI.Member(3, 0xC8)] public Ref<DSRewritableDeliveryPointInfoText> ExtendDescriptionText;
 		[RTTI.Member(15, 0xD0, "SpecialReports")] public Ref<DSMissionSpecialReportResource> SpecialReportOnPlace;
+	}
+
+	[RTTI.Serializable(0xED11972E40B77F19, GameType.DS)]
+	public class DSDeliveryPointInfoResourceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xD1B8A7819861CE18, GameType.DS)]
@@ -13961,6 +14590,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x9E532799E4C05B61, GameType.DS)]
+	public class DSDeliverySurveyCommandSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x3E5F32BA0796AEA5, GameType.DS)]
 	public class DSDemensComponent : EntityComponent
 	{
@@ -13980,6 +14614,11 @@ namespace Decima.DS
 	public class DSDispResultGraphServiceFromSequenceEventResource : PauseEventResource
 	{
 		[RTTI.Member(6, 0x28, "Logic")] public EDSMessageFromResultGraphService Message;
+	}
+
+	[RTTI.Serializable(0xA815E0691B528288, GameType.DS)]
+	public class DSDispResultGraphServiceFromSequenceEventResourceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xEB226D2EA044B39E, GameType.DS)]
@@ -14165,6 +14804,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xB130C6E24BA7E8C6, GameType.DS)]
 	public class DSEnvironmentManagerNodes : RTTIObject
+	{
+	}
+
+	[RTTI.Serializable(0x7045E93282586C34, GameType.DS)]
+	public class DSEnvironmentManagerNodesSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -14501,8 +15145,18 @@ namespace Decima.DS
 		[RTTI.Member(14, 0xA8, "FreeMissionInfo")] public Ref<DSMissionSceneResource> FreeMissionScene;
 	}
 
+	[RTTI.Serializable(0xE65884E5C6BF11D5, GameType.DS)]
+	public class DSFreeMissionResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xBC850958E47F0879, GameType.DS)]
 	public class DSFrendshipContext : RTTIRefObject
+	{
+	}
+
+	[RTTI.Serializable(0x37B59E5DE6B755A8, GameType.DS)]
+	public class DSFrendshipContextSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -14692,6 +15346,11 @@ namespace Decima.DS
 		[RTTI.Member(4, 0x32)] public bool EnsureOne;
 	}
 
+	[RTTI.Serializable(0xA02F7AF8D694AF89, GameType.DS)]
+	public class DSGameBaggageListItemSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xFC20BAC6B7A4627B, GameType.DS)]
 	public class DSGameBaggageListItemWithExtraDescription : DSGameBaggageListItem
 	{
@@ -14701,6 +15360,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x1E7D3FBD0C05FBCA, GameType.DS)]
 	public class DSGameCatalogueFactContext : RTTIRefObject
+	{
+	}
+
+	[RTTI.Serializable(0xA8D4EB21895073C4, GameType.DS)]
+	public class DSGameCatalogueFactContextSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -14789,6 +15453,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x7075D2B2378421CB, GameType.DS)]
 	public class DSGameState : RTTIObject
+	{
+	}
+
+	[RTTI.Serializable(0xFAFF2F21BB82E824, GameType.DS)]
+	public class DSGameStateSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -15031,6 +15700,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x2BECA4112F5DB733, GameType.DS)]
+	public class DSGazerManagerCommandSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x558BE17366F70E8, GameType.DS)]
 	public class DSGazerManagerResource : Resource
 	{
@@ -15231,13 +15905,28 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x48930F338771367A, GameType.DS)]
+	public class DSGimmickGraphCommandSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x8BB965FF66DE6F0C, GameType.DS)]
 	public class DSGraphCtrlBaggageArgs : RTTIRefObject
 	{
 	}
 
+	[RTTI.Serializable(0xA5036C5B463BDDC4, GameType.DS)]
+	public class DSGraphCtrlBaggageArgsSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x2542C661305382CE, GameType.DS)]
 	public class DSGraphServiceArgs : RTTIObject
+	{
+	}
+
+	[RTTI.Serializable(0x3A18ECF21709DA0A, GameType.DS)]
+	public class DSGraphServiceArgsSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -15249,6 +15938,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x3AEC7FCFE38A9865, GameType.DS)]
 	public class DSGraphServiceReturnValue : RTTIObject
+	{
+	}
+
+	[RTTI.Serializable(0xA68E83D727BA733A, GameType.DS)]
+	public class DSGraphServiceReturnValueSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -15403,6 +16097,11 @@ namespace Decima.DS
 		[RTTI.Member(121, 0x2E0, "SpecialMove")] public Ref<DSGroundMovementPluginResource> MovementPlugin;
 	}
 
+	[RTTI.Serializable(0xDAFD8B2DD35656FC, GameType.DS)]
+	public class DSGroundMovementComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x91483FC160B48A7D, GameType.DS)]
 	public class DSGroundMovementPluginResource : RTTIRefObject
 	{
@@ -15492,6 +16191,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x3170590CA2B5DB2C, GameType.DS)]
 	public class DSHeartmanRoomGraphArgs : RTTIRefObject
+	{
+	}
+
+	[RTTI.Serializable(0x24F8B05D7B771796, GameType.DS)]
+	public class DSHeartmanRoomGraphArgsSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -15627,6 +16331,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x24B1097028ABBA0A, GameType.DS)]
 	public class DSHiggsMovementComponentResource : DSGroundMovementComponentResource
+	{
+	}
+
+	[RTTI.Serializable(0xC7FB2CEC9F148252, GameType.DS)]
+	public class DSHiggsMovementComponentSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -15774,6 +16483,11 @@ namespace Decima.DS
 		[RTTI.Member(19, 0x88, "SwitchToMainPerson")] public Ref<BooleanFact> EnableSwitchMainPersonFact;
 	}
 
+	[RTTI.Serializable(0xEC07BA108F0B4607, GameType.DS)]
+	public class DSHouseholdInfoResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xBABBA00DC6E49C15, GameType.DS)]
 	public class DSHouseholdPersonResource : Resource
 	{
@@ -15785,6 +16499,11 @@ namespace Decima.DS
 		[RTTI.Member(7, 0x40)] public Ref<LocalizedTextResource> BridgesIdLine0;
 		[RTTI.Member(8, 0x48)] public Ref<LocalizedTextResource> BridgesIdLine1;
 		[RTTI.Member(9, 0x50)] public uint32 PersonResourceNameHash;
+	}
+
+	[RTTI.Serializable(0xB6A7C0C7DA8AD13, GameType.DS)]
+	public class DSHouseholdPersonResourceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x81BC542C385AB746, GameType.DS)]
@@ -16065,6 +16784,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x6694B94003543607, GameType.DS)]
+	public class DSInsideTerminalSecurityContextSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xFF56A1613BF01C45, GameType.DS)]
 	public class DSInteractionComponent : EntityComponent
 	{
@@ -16112,6 +16836,11 @@ namespace Decima.DS
 		[RTTI.Member(11, 0x59, "Target")] public bool Cart;
 		[RTTI.Member(12, 0x5A, "Target")] public bool Construction;
 		[RTTI.Member(13, 0x5B, "Target")] public bool Baggage;
+	}
+
+	[RTTI.Serializable(0x909455D535D8D336, GameType.DS)]
+	public class DSIntruderDetectorComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xD6E1068C71CA8E63, GameType.DS)]
@@ -16186,6 +16915,11 @@ namespace Decima.DS
 		[RTTI.Member(8, 0x54)] public float MaxSpeed;
 	}
 
+	[RTTI.Serializable(0xA8915F2A26624A96, GameType.DS)]
+	public class DSJointAimToBaseComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x7CF48ECFC016E621, GameType.DS)]
 	public class DSJointAimToPlayerComponent : DSJointAimToBaseComponent
 	{
@@ -16254,6 +16988,16 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xF3F44CF3A8BD3B47, GameType.DS)]
 	public class DSKnotSpaceSubEntityStreamResourceInterface : Resource
+	{
+	}
+
+	[RTTI.Serializable(0xB4F6B9C7C5B429B, GameType.DS)]
+	public class DSKnotSpaceSubEntityStreamResourceInterfaceSymbols : ExportedSymbolGroup
+	{
+	}
+
+	[RTTI.Serializable(0xF7CC3CC0EF9EB8AC, GameType.DS)]
+	public class DSKnotSpaceSubEntityStreamResourceSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -16391,6 +17135,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x11A2FD69CAFBE0A, GameType.DS)]
+	public class DSLikeCommandSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xBF7553E6D551B335, GameType.DS)]
 	public class DSLikeParam : RTTIRefObject
 	{
@@ -16488,6 +17237,11 @@ namespace Decima.DS
 		[RTTI.Member(5, 0x0, "General")] public String Name;
 	}
 
+	[RTTI.Serializable(0xDF0CD8C9551D612C, GameType.DS)]
+	public class DSLocatorSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x9B4CAFCA549E7AB4, GameType.DS)]
 	public class DSLockOnComponent : EntityComponent
 	{
@@ -16564,6 +17318,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x6767AE134EB3C8B2, GameType.DS)]
 	public class DSLostBaggageGeneratorFactContext : RTTIRefObject
+	{
+	}
+
+	[RTTI.Serializable(0xEAD2D192E7C6A7D1, GameType.DS)]
+	public class DSLostBaggageGeneratorFactContextSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -16698,6 +17457,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xEAB81E7CF8488FA8, GameType.DS)]
+	public class DSMailBasicNodeSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x8AE41F7BC588FD6D, GameType.DS)]
 	public class DSMailResource : Resource
 	{
@@ -16715,8 +17479,18 @@ namespace Decima.DS
 		[RTTI.Member(12, 0x4C, "Option")] public uint32 name;
 	}
 
+	[RTTI.Serializable(0x85D3055BC9F1BC22, GameType.DS)]
+	public class DSMailResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x88907BDD93725DB0, GameType.DS)]
 	public class DSMainMissionResource : DSExMissionResourceBase
+	{
+	}
+
+	[RTTI.Serializable(0xC2A7CA88FE64F11E, GameType.DS)]
+	public class DSMainMissionResourceSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -16902,6 +17676,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x61D1DBE14E19B029, GameType.DS)]
+	public class DSMisionEvaluationCommandSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x2A1EF039D2963596, GameType.DS)]
 	public class DSMissileShellComponent : EntityComponent
 	{
@@ -16933,6 +17712,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x9DC81A032088A8F, GameType.DS)]
+	public class DSMissioDebugUnlockAllItemsCommandSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x9D7944E6C438C75A, GameType.DS)]
 	public class DSMissionAbstractPointResource : Resource
 	{
@@ -16946,6 +17730,11 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x30, "BasicInfo")] public Ref<LocalizedTextResource> DisplayText;
 		[RTTI.Member(4, 0x38, "BasicInfo")] public bool DisplayeBeforeMissionStart;
 		[RTTI.Member(5, 0x39, "BasicInfo")] public bool NotifyWhenBecomesVisible;
+	}
+
+	[RTTI.Serializable(0xA3ECAABC00697EB2, GameType.DS)]
+	public class DSMissionAbstractTodoNodeResourceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x85381B5319BFCEAF, GameType.DS)]
@@ -17042,6 +17831,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x2610BA7AB6E78CC9, GameType.DS)]
+	public class DSMissionBaggageNodeCommandSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x3EC4D3BCE3F67ACF, GameType.DS)]
 	public class DSMissionBaggageResource : Resource
 	{
@@ -17054,6 +17848,11 @@ namespace Decima.DS
 		[RTTI.Member(6, 0x58)] public bool WasCarriedByPlayer;
 	}
 
+	[RTTI.Serializable(0x326F504A61B8C0E6, GameType.DS)]
+	public class DSMissionBaggageResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xE8DA0774651F73E3, GameType.DS)]
 	public class DSMissionBaggageWeightConditionResource : DSMissionConditionResourceBase
 	{
@@ -17062,6 +17861,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x1C38C9C1301A4C9, GameType.DS)]
 	public class DSMissionBasicNode : RTTIObject
+	{
+	}
+
+	[RTTI.Serializable(0x59FA0DE3F586F8AB, GameType.DS)]
+	public class DSMissionBasicNodeSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -17086,6 +17890,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x14A5188FA8CCC0AC, GameType.DS)]
+	public class DSMissionCheckCommandSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xF616F453B152A5E0, GameType.DS)]
 	public class DSMissionChiralDonationConditionResource : DSMissionBaggageCountConditionResource
 	{
@@ -17097,11 +17906,21 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xF0B86818DBAE018A, GameType.DS)]
+	public class DSMissionCollectorsItemCommandSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x95BA019B251B4816, GameType.DS)]
 	public class DSMissionConditionResourceBase : RTTIRefObject
 	{
 		[RTTI.Member(3, 0x20, "Evaluation")] public Ref<DSMissionEvaluationDataTable> EvaluationDataTable;
 		[RTTI.Member(5, 0x28, "SpecialReport")] public Ref<DSMissionSpecialReportMissionConditionResource> SpecialReportResource;
+	}
+
+	[RTTI.Serializable(0x96315C240718107C, GameType.DS)]
+	public class DSMissionConditionResourceBaseSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xE4A68C7DA7065CAF, GameType.DS)]
@@ -17146,10 +17965,20 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xD7B4327F6D4BD01E, GameType.DS)]
+	public class DSMissionDiscreteCommandSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xED54D54F47610BC5, GameType.DS)]
 	public class DSMissionEpisodeResource : Resource
 	{
 		[RTTI.Member(3, 0x20, "General")] public Ref<LocalizedTextResource> Text;
+	}
+
+	[RTTI.Serializable(0x11C407AD3A059191, GameType.DS)]
+	public class DSMissionEpisodeResourceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xA55EFA899B990D80, GameType.DS)]
@@ -17158,6 +17987,11 @@ namespace Decima.DS
 		[RTTI.Member(1, 0x8, "Logic")] public float GreaterEqual;
 		[RTTI.Member(3, 0xC, "Bonus")] public float Like;
 		[RTTI.Member(4, 0x10, "Bonus")] public EDSRewardRank Rank;
+	}
+
+	[RTTI.Serializable(0x2E66152E262F6E30, GameType.DS)]
+	public class DSMissionEvaluationDataRecordSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x422DC1F902D81784, GameType.DS)]
@@ -17181,16 +18015,31 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x10, "Reference")] public Ref<DSMissionEvaluationDataTable> EvaluationDataTabl;
 	}
 
+	[RTTI.Serializable(0x4779DC971FB9CCD4, GameType.DS)]
+	public class DSMissionEvaluationDataTableSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xB88A86A947713F6, GameType.DS)]
 	public class DSMissionEvaluationDataTablesByDeliveryPoint : RTTIRefObject
 	{
 		[RTTI.Member(2, 0x20)] public Array<DSMissionEvaluationDataTableByDeliveryPoint> DataTables;
 	}
 
+	[RTTI.Serializable(0x6833D1F82CE80AD6, GameType.DS)]
+	public class DSMissionEvaluationDataTablesByDeliveryPointSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x1DCA8CCEDF49334, GameType.DS)]
 	public class DSMissionEvaluationDataTablesByThreshold : RTTIRefObject
 	{
 		[RTTI.Member(2, 0x20)] public Array<DSMissionEvaluationDataTableByThreshold> DataTables;
+	}
+
+	[RTTI.Serializable(0x89109C3014BE209C, GameType.DS)]
+	public class DSMissionEvaluationDataTablesByThresholdSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x1CBA9EC0051EBAE5, GameType.DS)]
@@ -17200,6 +18049,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x1223E611E9955C52, GameType.DS)]
 	public class DSMissionEventTimerCommand : RTTIObject
+	{
+	}
+
+	[RTTI.Serializable(0xD1FAC8176B0F93E8, GameType.DS)]
+	public class DSMissionEventTimerCommandSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -17218,6 +18072,11 @@ namespace Decima.DS
 		[RTTI.Member(12, 0x53, "Logic_Display")] public bool IsOverwriteWithEvaluationTime;
 	}
 
+	[RTTI.Serializable(0x8C84EBFC2E39BBEC, GameType.DS)]
+	public class DSMissionEventTimerResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x907E97D8EF845E6F, GameType.DS)]
 	public class DSMissionExportedGroup : ExportedSymbolGroup
 	{
@@ -17227,6 +18086,11 @@ namespace Decima.DS
 	public class DSMissionFactsResource : Resource
 	{
 		[RTTI.Member(3, 0x20, "Facts")] public Array<CPtr<BooleanFact>> ManagedFacts;
+	}
+
+	[RTTI.Serializable(0x5681FF1003815210, GameType.DS)]
+	public class DSMissionFactsResourceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xA825AF8238383E8E, GameType.DS)]
@@ -17254,6 +18118,11 @@ namespace Decima.DS
 		[RTTI.Member(10, 0x68, "Hidden")] public Ref<IntegerFact> CurrentEpisodeHashFact;
 	}
 
+	[RTTI.Serializable(0x5DCD6511F5A8BA89, GameType.DS)]
+	public class DSMissionGoalsResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x3090AA49D272DAD1, GameType.DS)]
 	public class DSMissionGraphBasicResource : Resource
 	{
@@ -17278,6 +18147,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x9AD19121CD26DB57, GameType.DS)]
+	public class DSMissionGraphServiceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xF3A7C14FCD178415, GameType.DS)]
 	public class DSMissionInfo
 	{
@@ -17288,6 +18162,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xE94CC2458BE49DFA, GameType.DS)]
+	public class DSMissionInfoSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xA7A46E6B585142D1, GameType.DS)]
 	public class DSMissionInstance : RTTIObject
 	{
@@ -17295,6 +18174,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xF281DE6BC72994F0, GameType.DS)]
 	public class DSMissionLargeSceneCommand : RTTIObject
+	{
+	}
+
+	[RTTI.Serializable(0x3A61E467FE1969C3, GameType.DS)]
+	public class DSMissionLargeSceneCommandSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -17314,8 +18198,18 @@ namespace Decima.DS
 		[RTTI.Member(7, 0x44, "LogicBlock")] public int AchievementConsitionNum;
 	}
 
+	[RTTI.Serializable(0xE7AD92BA9F2B7CFD, GameType.DS)]
+	public class DSMissionLogicBlockSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x9814EB3302F993A4, GameType.DS)]
 	public class DSMissionLogicCommand : RTTIObject
+	{
+	}
+
+	[RTTI.Serializable(0x8F062D6163A1F94C, GameType.DS)]
+	public class DSMissionLogicCommandSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -17324,10 +18218,20 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xB1987AE5845167B5, GameType.DS)]
+	public class DSMissionLogicMiscCommandSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x28BC59A31B53BA8A, GameType.DS)]
 	public class DSMissionLongTermGoalResource : Resource
 	{
 		[RTTI.Member(3, 0x20, "General")] public Ref<LocalizedTextResource> Text;
+	}
+
+	[RTTI.Serializable(0x9D131180CCF5BB48, GameType.DS)]
+	public class DSMissionLongTermGoalResourceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xE3AC81AFA524A22F, GameType.DS)]
@@ -17369,13 +18273,28 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x550D07D395B38CC4, GameType.DS)]
+	public class DSMissionMiscCommandSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x3A8712F8410E811A, GameType.DS)]
 	public class DSMissionMiscDiscardFactContext : RTTIRefObject
 	{
 	}
 
+	[RTTI.Serializable(0x4C2C9B37CAA00AE5, GameType.DS)]
+	public class DSMissionMiscDiscardFactContextSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xB1DF98EBF6EBE84C, GameType.DS)]
 	public class DSMissionMiscFactContext : RTTIRefObject
+	{
+	}
+
+	[RTTI.Serializable(0xFF780A8B35537D77, GameType.DS)]
+	public class DSMissionMiscFactContextSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -17450,6 +18369,16 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x20, "Data")] public Array<CPtr<DSMissionOpenCondition>> OpenConditionList;
 	}
 
+	[RTTI.Serializable(0x7ABE7EF90EAB1612, GameType.DS)]
+	public class DSMissionOpenConditionListSymbols : ExportedSymbolGroup
+	{
+	}
+
+	[RTTI.Serializable(0xA50308B9FF4D8FCE, GameType.DS)]
+	public class DSMissionOpenConditionSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x6D0E7ABBDED4815E, GameType.DS)]
 	public class DSMissionOpenList : Resource
 	{
@@ -17457,8 +18386,18 @@ namespace Decima.DS
 		[RTTI.Member(4, 0x28, "Open")] public EDSMissionOpenState OpenState;
 	}
 
+	[RTTI.Serializable(0xC584E1F4A5F6025A, GameType.DS)]
+	public class DSMissionOpenListSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xDC058D8243549F3D, GameType.DS)]
 	public class DSMissionOpenNode : RTTIObject
+	{
+	}
+
+	[RTTI.Serializable(0x4EF226A7894A350C, GameType.DS)]
+	public class DSMissionOpenNodeSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -17469,6 +18408,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xDF4B07D47BC3437B, GameType.DS)]
 	public class DSMissionProgressCommand : RTTIObject
+	{
+	}
+
+	[RTTI.Serializable(0x16C95C14F6DA271F, GameType.DS)]
+	public class DSMissionProgressCommandSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -17493,10 +18437,20 @@ namespace Decima.DS
 		[RTTI.Member(11, 0xA0, "BasicInfo")] public Ref<DSEnsureRawMaterialForItemsListResource> EnsureRawMaterialList;
 	}
 
+	[RTTI.Serializable(0x750A45D25435DCC3, GameType.DS)]
+	public class DSMissionResourceBaseSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x54F6B058EBDE93EC, GameType.DS)]
 	public class DSMissionResourceList : Resource
 	{
 		[RTTI.Member(2, 0x20)] public Array<UUIDRef<DSMissionResourceBase>> MissionResourceUUIDRefs;
+	}
+
+	[RTTI.Serializable(0x293DA7B1C8427D, GameType.DS)]
+	public class DSMissionResourceListSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xCFC07931153F32EA, GameType.DS)]
@@ -17557,6 +18511,11 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x20, "RewardDatas")] public Array<Ref<DSMissionReward2>> Rewards;
 	}
 
+	[RTTI.Serializable(0x4A4F1418CE8DD7DF, GameType.DS)]
+	public class DSMissionReward2Symbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xF15A73CEF49D2796, GameType.DS)]
 	public class DSMissionRouteMapResource : Resource
 	{
@@ -17586,8 +18545,18 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xDB477667D397C6D, GameType.DS)]
+	public class DSMissionSafetyHouseCommandSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xA871AE64B9787962, GameType.DS)]
 	public class DSMissionSceneContext : RTTIRefObject
+	{
+	}
+
+	[RTTI.Serializable(0xAA8DB537215A7170, GameType.DS)]
+	public class DSMissionSceneContextSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -17620,6 +18589,11 @@ namespace Decima.DS
 	{
 		[RTTI.Member(3, 0x20, "General")] public Ref<LocalizedTextResource> Text;
 		[RTTI.Member(4, 0x28, "General")] public bool ShowTransitionAnimation;
+	}
+
+	[RTTI.Serializable(0xC96EE9B5B59E9996, GameType.DS)]
+	public class DSMissionShortTermGoalResourceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x39F4DE6387D36DDE, GameType.DS)]
@@ -17664,6 +18638,11 @@ namespace Decima.DS
 		[RTTI.Member(21, 0x91, "MenuOption")] public EDSMissionSpecialReportMenuViewType MenuViewType;
 	}
 
+	[RTTI.Serializable(0xFD0BE399AE3DA70D, GameType.DS)]
+	public class DSMissionSpecialReportResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xF4064199356464C1, GameType.DS)]
 	public class DSMissionSpecialReportRouteDeviationResource : DSMissionSpecialReportResource
 	{
@@ -17702,6 +18681,11 @@ namespace Decima.DS
 		[RTTI.Member(7, 0x20, "MissionResource")] public UUIDRef<DSMissionResourceBase> MissionResourceUUID;
 		[RTTI.Member(3, 0x30, "Reason")] public EDSMissionSwitchSectionReason Reason;
 		[RTTI.Member(5, 0x31, "AnnihilationBehavior")] public uint8 AnnihilationProgressNumStep;
+	}
+
+	[RTTI.Serializable(0x479AC87422D99E01, GameType.DS)]
+	public class DSMissionSwitchSectionSettingSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x421F08C0D5A184EF, GameType.DS)]
@@ -17793,6 +18777,11 @@ namespace Decima.DS
 		[RTTI.Member(89, 0x280, "ResurrectInfo")] public Array<Ref<DSMissionResurrectGroup>> MissionResurrectGroups;
 	}
 
+	[RTTI.Serializable(0x26A6E4D07B75F14F, GameType.DS)]
+	public class DSMissionSystemSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x308CD52C819D9BC7, GameType.DS)]
 	public class DSMissionTargetPointBase : DSMissionStaticAbstractPointResource
 	{
@@ -17813,12 +18802,22 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x7BA998DB540DF37D, GameType.DS)]
+	public class DSMissionTerminalCommandSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xF9021B6523FB0CA7, GameType.DS)]
 	public class DSMissionTodoNodeGroupResource : Resource
 	{
 		[RTTI.Member(3, 0x20, "BasicInfo")] public EDSTodoNodeGroupRule Rule;
 		[RTTI.Member(4, 0x24, "BasicInfo")] public bool ShouldAutomaticallyShowUpcomingTodos;
 		[RTTI.Member(6, 0x28, "ResourceList")] public Array<Ref<DSMissionAbstractTodoNodeResource>> TodoNodes;
+	}
+
+	[RTTI.Serializable(0x3FD5B5FC112A9A0C, GameType.DS)]
+	public class DSMissionTodoNodeGroupResourceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x6C0EA1A853C594CA, GameType.DS)]
@@ -17974,6 +18973,11 @@ namespace Decima.DS
 		[RTTI.Member(32, 0x1D0, "Posts")] public Ref<NavMeshArea> TentShape;
 	}
 
+	[RTTI.Serializable(0xF6BB84EF1A1ABF22, GameType.DS)]
+	public class DSMuleCPGameActorLocatorSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xCA306DA8DEF666AF, GameType.DS)]
 	public class DSMuleCPGameActorUnit : DSGameActorUnit
 	{
@@ -18027,6 +19031,11 @@ namespace Decima.DS
 		[RTTI.Member(5, 0x20, "Weapon")] public Array<EDSWeaponId> InitWeaponIds;
 		[RTTI.Member(7, 0x30, "AI")] public bool DisableJavelin;
 		[RTTI.Member(3, 0x34, "General")] public uint32 NameHash;
+	}
+
+	[RTTI.Serializable(0x8D33CD8DC603006, GameType.DS)]
+	public class DSMuleConfigSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xCCE14234DB3F97AF, GameType.DS)]
@@ -18100,6 +19109,11 @@ namespace Decima.DS
 		[RTTI.Member(20, 0xF8, "Mule")] public Ref<DSFriendlyMuleGroupInfoResource> FriendlyMuleGroupInfo;
 	}
 
+	[RTTI.Serializable(0x966426DE555F71A4, GameType.DS)]
+	public class DSMuleGameActorLocatorSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xDE220E10F4B069C, GameType.DS)]
 	public class DSMuleGameActorLowLODResource : RTTIRefObject
 	{
@@ -18129,6 +19143,11 @@ namespace Decima.DS
 		[RTTI.Member(18, 0x7C, "Mule")] public int IndividualVariationMax;
 		[RTTI.Member(19, 0x80, "Mule")] public Ref<ArtPartsVariationResource> VariationSetting;
 		[RTTI.Member(20, 0x88, "Mule")] public bool IsLightArmorModel;
+	}
+
+	[RTTI.Serializable(0x3AF0D7FD8CF304EE, GameType.DS)]
+	public class DSMuleGameActorUnitResourceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x718194369670D7B5, GameType.DS)]
@@ -18324,6 +19343,11 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x64, "General")] public uint32 NameHash;
 	}
 
+	[RTTI.Serializable(0xB7D7DEA839831213, GameType.DS)]
+	public class DSMuleUnitConfigSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xC91B99DA70C90772, GameType.DS)]
 	public class DSMuleVoiceControlComponent : DSNpcVoiceControlComponent
 	{
@@ -18429,6 +19453,11 @@ namespace Decima.DS
 		[RTTI.Member(8, 0x40, "BasicInfo")] public Ref<EnumFactEntry> TrackEnumFactEntry;
 	}
 
+	[RTTI.Serializable(0xC115B3A66F209606, GameType.DS)]
+	public class DSMusicPlayerTrackResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x64334B8853D823ED, GameType.DS)]
 	public class DSNPCCoverActionSupportAimOffsetResource : Resource
 	{
@@ -18459,6 +19488,11 @@ namespace Decima.DS
 	public class DSNPCPriorityList : CoreObject
 	{
 		[RTTI.Member(3, 0x20, "Settings")] public Array<Ref<GameActorLocator>> NPCGameActorPriorityList;
+	}
+
+	[RTTI.Serializable(0xB1DC37D6765C5EFD, GameType.DS)]
+	public class DSNPCPriorityListSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x740B6F8C02B99AE7, GameType.DS)]
@@ -18544,6 +19578,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xF6001831126A6771, GameType.DS)]
+	public class DSNetOnlineObjectCommandSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xBD4F0DB36FBD3A3E, GameType.DS)]
 	public class DSNetOnlineObjectConfig : RTTIRefObject
 	{
@@ -18562,6 +19601,11 @@ namespace Decima.DS
 		[RTTI.Member(2, 0x20)] public Array<Ref<DSNetOnlineObjectConfig>> Configs;
 		[RTTI.Member(3, 0x30)] public Ref<BooleanFact> SyncMission;
 		[RTTI.Member(4, 0x38)] public Ref<BooleanFact> LastStranding;
+	}
+
+	[RTTI.Serializable(0x80A422C5A4E52039, GameType.DS)]
+	public class DSNetOnlineObjectConfigSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x8CBA755EC679B038, GameType.DS)]
@@ -18646,6 +19690,11 @@ namespace Decima.DS
 	public class DSNetSyncPreSearchParam : RTTIRefObject
 	{
 		[RTTI.Member(2, 0x20)] public uint64 ExpectedFlags;
+	}
+
+	[RTTI.Serializable(0x68844FB59906FFC0, GameType.DS)]
+	public class DSNetSyncPreSearchParamSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xB39E21C78567C151, GameType.DS)]
@@ -18812,6 +19861,11 @@ namespace Decima.DS
 	public class DSNpcCombatSettingsComponentResource : EntityComponentResource
 	{
 		[RTTI.Member(2, 0x20)] public Ref<DSNpcCombatSettings> CombatSettings;
+	}
+
+	[RTTI.Serializable(0xA9C19B0E4AB6B72A, GameType.DS)]
+	public class DSNpcCombatSettingsSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xB11EB80BFD467BAA, GameType.DS)]
@@ -19305,6 +20359,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x80DC4EF3F3FF4E59, GameType.DS)]
+	public class DSOnlineMissionCommandSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x2A7E7CAA6109483E, GameType.DS)]
 	public class DSOnlineMissionResourceBase : DSMissionResourceBase
 	{
@@ -19357,6 +20416,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x35FCE09AB5122C25, GameType.DS)]
 	public class DSOrderedBaggageArgs : RTTIRefObject
+	{
+	}
+
+	[RTTI.Serializable(0x43B84CB4ECC3B7B4, GameType.DS)]
+	public class DSOrderedBaggageArgsSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -19445,6 +20509,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x1025185B1BF7E499, GameType.DS)]
+	public class DSParkingMenuInfoSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x8D75FEFEF13FE7D5, GameType.DS)]
 	public class DSParticleFlyingAnimalComponent : EntityComponent
 	{
@@ -19512,6 +20581,16 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x20, "Settings")] public Array<Ref<DSPatrolPathGroup>> PatrolPathGroupList;
 	}
 
+	[RTTI.Serializable(0xFB9CB486DA04BD3F, GameType.DS)]
+	public class DSPatrolPathGroupPriorityListSymbols : ExportedSymbolGroup
+	{
+	}
+
+	[RTTI.Serializable(0xC61BDF4C4DC2BE5A, GameType.DS)]
+	public class DSPatrolPathGroupSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x93C845C0F38DCC2D, GameType.DS)]
 	public class DSPatrolPathLocator : WorldNode
 	{
@@ -19558,6 +20637,11 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x30, "Logic")] public EDSPatrolPathType PathType;
 	}
 
+	[RTTI.Serializable(0x57E007655CC34BE1, GameType.DS)]
+	public class DSPatrolPathNodeActionSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x7E874C06291E0CDE, GameType.DS)]
 	public class DSPatrolPathNodeBase : ParentWorldNodeOverridable
 	{
@@ -19584,6 +20668,11 @@ namespace Decima.DS
 		[RTTI.Member(6, 0x70)] public Array<Ref<DSPatrolPath>> Paths;
 	}
 
+	[RTTI.Serializable(0x9209E921B073FA05, GameType.DS)]
+	public class DSPatrolPathPlaceHolderSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x75B8AB4FD252A9AD, GameType.DS)]
 	public class DSPatrolPathPriorityList : DSPatrolPathPriorityListBase
 	{
@@ -19596,8 +20685,23 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x7E2121BA391B5860, GameType.DS)]
+	public class DSPatrolPathPriorityListBaseSymbols : ExportedSymbolGroup
+	{
+	}
+
+	[RTTI.Serializable(0xD259C4B8C2221ED5, GameType.DS)]
+	public class DSPatrolPathPriorityListSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xF67BEF5916C772DE, GameType.DS)]
 	public class DSPatrolPathRandomGroup : DSPatrolPathGroup
+	{
+	}
+
+	[RTTI.Serializable(0x8EC1D11CA2DA7D9E, GameType.DS)]
+	public class DSPatrolPathRandomGroupSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -19606,8 +20710,23 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x3DE0C6FF7E802BC3, GameType.DS)]
+	public class DSPatrolPathSequenceGroupSymbols : ExportedSymbolGroup
+	{
+	}
+
+	[RTTI.Serializable(0x4235FC358C04FB3A, GameType.DS)]
+	public class DSPatrolPathSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x98F68F36AC0D020A, GameType.DS)]
 	public class DSPersonalBaggageGeneratorForMuleContext : RTTIRefObject
+	{
+	}
+
+	[RTTI.Serializable(0x4291C9D40BDFE597, GameType.DS)]
+	public class DSPersonalBaggageGeneratorForMuleContextSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -19713,6 +20832,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xD583121B3D01B831, GameType.DS)]
 	public class DSPlayRecordBasicNode : RTTIObject
+	{
+	}
+
+	[RTTI.Serializable(0xF7A084DB09181C45, GameType.DS)]
+	public class DSPlayRecordBasicNodeSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -19880,6 +21004,16 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x81DDDF3B246E8603, GameType.DS)]
 	public class DSPlayerBodyVariantInterface : Resource
+	{
+	}
+
+	[RTTI.Serializable(0xCDFEA715537B3BE3, GameType.DS)]
+	public class DSPlayerBodyVariantInterfaceSymbols : ExportedSymbolGroup
+	{
+	}
+
+	[RTTI.Serializable(0x3278C9DE50E63829, GameType.DS)]
+	public class DSPlayerBodyVariantSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -20113,6 +21247,16 @@ namespace Decima.DS
 		[RTTI.Member(346, 0x9C0, "PhotoMode")] public Array<PlayerPhotoModePoseAnimation> PlayerPoseAnimations_PrivateRoom;
 	}
 
+	[RTTI.Serializable(0xCB79CDD08D78591A, GameType.DS)]
+	public class DSPlayerEntityResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
+	[RTTI.Serializable(0x2F15F5C8A1755A65, GameType.DS)]
+	public class DSPlayerEntitySymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xE4A1C794F2767797, GameType.DS)]
 	public class DSPlayerFacialComponent : DSFacialRigManagerComponent
 	{
@@ -20126,6 +21270,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xB78CD18EA9406ECA, GameType.DS)]
 	public class DSPlayerFactContext : RTTIRefObject
+	{
+	}
+
+	[RTTI.Serializable(0x6A9734D367C387F3, GameType.DS)]
+	public class DSPlayerFactContextSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -20374,6 +21523,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xAB9FF208503545B2, GameType.DS)]
+	public class DSPlayerNodeExporterSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xA96DDC3A33BFB90B, GameType.DS)]
 	public class DSPlayerOdradekConfig
 	{
@@ -20421,6 +21575,11 @@ namespace Decima.DS
 		[RTTI.Member(20, 0x32)] public bool RightTrigger;
 		[RTTI.Member(21, 0x33)] public bool LeftTrigger;
 		[RTTI.Member(22, 0x34)] public bool CanMoveCamera;
+	}
+
+	[RTTI.Serializable(0x4FC3FC69592A5D0C, GameType.DS)]
+	public class DSPlayerPadCheckBoxesSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x20426743449ECA2C, GameType.DS)]
@@ -20710,6 +21869,11 @@ namespace Decima.DS
 		[RTTI.Member(6, 0x58)] public Array<String> OnsenIdentifiers;
 		[RTTI.Member(7, 0x68)] public Array<Ref<LocalizedTextResource>> OnsenTexts;
 		[RTTI.Member(8, 0x78)] public Array<WorldPosition> OnsenPositions;
+	}
+
+	[RTTI.Serializable(0x76288129D6344FF3, GameType.DS)]
+	public class DSPlayerSystemSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x737D01CD04F1CBE4, GameType.DS)]
@@ -21128,6 +22292,11 @@ namespace Decima.DS
 		[RTTI.Member(31, 0x100, "NoiseArea")] public Ref<AIAuralStimulusResource> AuralStimulus;
 	}
 
+	[RTTI.Serializable(0x1816FCBCFA772C1C, GameType.DS)]
+	public class DSPrototypeNoiseAreaResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x5A3D6286E2B7DCE3, GameType.DS)]
 	public class DSQpidAreaBlankResource : Resource
 	{
@@ -21299,6 +22468,11 @@ namespace Decima.DS
 		[RTTI.Member(9, 0x98, "Logic")] public GGUUID OriginalUUID;
 	}
 
+	[RTTI.Serializable(0x89FFC7ADD7837D17, GameType.DS)]
+	public class DSQpidAreaPathSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xF2F17CE4736D6FD1, GameType.DS)]
 	public class DSQpidAreaResource : Resource
 	{
@@ -21341,6 +22515,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x3F2E1D8D45C3AB6C, GameType.DS)]
+	public class DSQpidUnitCommandSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xF29F88F4C1016F0B, GameType.DS)]
 	public class DSQpidWorldNodeEditableController
 	{
@@ -21379,6 +22558,11 @@ namespace Decima.DS
 		[RTTI.Member(11, 0x98, "General")] public Ref<RTTIRefObject> DebugInfo;
 	}
 
+	[RTTI.Serializable(0x75141090554CC4E6, GameType.DS)]
+	public class DSRadioEventHandlerResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xFB22A60B6143EEED, GameType.DS)]
 	public class DSRadioMetadata : RTTIRefObject
 	{
@@ -21386,6 +22570,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xEAC798D9547DB18E, GameType.DS)]
 	public class DSRadioNodeGraphBindings : RTTIObject
+	{
+	}
+
+	[RTTI.Serializable(0xCC1A3643B88D7D5C, GameType.DS)]
+	public class DSRadioNodeGraphBindingsSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -21635,6 +22824,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xBEF96E514055D867, GameType.DS)]
+	public class DSReliefSupplyFactContextSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x5392F9D618B7349F, GameType.DS)]
 	public class DSReliefSupplyItemResource : Resource
 	{
@@ -21746,6 +22940,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xE8034F4CE8242740, GameType.DS)]
 	public class DSResidentsBasicNode : RTTIObject
+	{
+	}
+
+	[RTTI.Serializable(0x75A850A07E98774, GameType.DS)]
+	public class DSResidentsBasicNodeSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -22141,6 +23340,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x857E30B558AE248D, GameType.DS)]
+	public class DSSceneCommandSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xC851618925CD01FA, GameType.DS)]
 	public class DSSceneExtensionParameter : SceneExtensionParameter
 	{
@@ -22323,6 +23527,11 @@ namespace Decima.DS
 		[RTTI.Member(7, 0x70, "General")] public GGUUID OriginalUUID;
 	}
 
+	[RTTI.Serializable(0x8F1D94B6B6A1D340, GameType.DS)]
+	public class DSSharedGimmickIndieLocatorSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x2180088EBF2B0029, GameType.DS)]
 	public class DSSharedGimmickLocator : DSLocator
 	{
@@ -22334,6 +23543,11 @@ namespace Decima.DS
 	{
 		[RTTI.Member(9, 0x80, "CP")] public Array<WorldPosition> Positions;
 		[RTTI.Member(10, 0x90, "CP")] public float Radius;
+	}
+
+	[RTTI.Serializable(0xA34EE5146DB80BF9, GameType.DS)]
+	public class DSSharedGimmickLocatorSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x90C21B020C0135BC, GameType.DS)]
@@ -22522,6 +23736,11 @@ namespace Decima.DS
 		[RTTI.Member(17, 0xCC, "ShellLauncher")] public float Gravity;
 	}
 
+	[RTTI.Serializable(0x28CA372124B223ED, GameType.DS)]
+	public class DSShellLauncherGameActorLocatorSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xD46E867ABC642DDA, GameType.DS)]
 	public class DSShellLauncherGameActorUnit : DSGameActorUnit
 	{
@@ -22689,6 +23908,11 @@ namespace Decima.DS
 		[RTTI.Member(8, 0x54)] public float RandomizDefaultAnimationSec;
 	}
 
+	[RTTI.Serializable(0xBC7494C855118231, GameType.DS)]
+	public class DSSimpleAnimationComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xBF230C1F4DCD3833, GameType.DS)]
 	public class DSSimpleAnimationMover : Mover
 	{
@@ -22790,6 +24014,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x8080478FEA2E62C9, GameType.DS)]
+	public class DSSleepAfterShaderAnimComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x4F3602AB1493400A, GameType.DS)]
 	public class DSSmokeLocator : DSLocator
 	{
@@ -22835,6 +24064,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xE2FCCC532548693C, GameType.DS)]
+	public class DSSoundNodeGraphBindingsSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x3B9CC2C3B0F99AEB, GameType.DS)]
 	public class DSSoundSpeakerComponent : EntityComponent
 	{
@@ -22847,6 +24081,11 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x28)] public bool IsMovable;
 		[RTTI.Member(4, 0x29)] public bool Is3D;
 		[RTTI.Member(5, 0x2A)] public bool IsMusic;
+	}
+
+	[RTTI.Serializable(0xBE1208B9706580B8, GameType.DS)]
+	public class DSSoundSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x84356603F992930E, GameType.DS)]
@@ -23276,10 +24515,20 @@ namespace Decima.DS
 		[RTTI.Member(2, 0x20)] public uint32 Hash;
 	}
 
+	[RTTI.Serializable(0xAD2FB70F4C9145A5, GameType.DS)]
+	public class DSStringHashResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xE63C6CE13AED1CB3, GameType.DS)]
 	public class DSSubMissionResource : DSExMissionResourceBase
 	{
 		[RTTI.Member(40, 0x178)] public Ref<DSMissionResurrectInfo> ResurrectTimeInfo;
+	}
+
+	[RTTI.Serializable(0x641334C3B4E8066, GameType.DS)]
+	public class DSSubMissionResourceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xE6F7FDA0CBB807CF, GameType.DS)]
@@ -23555,6 +24804,11 @@ namespace Decima.DS
 		[RTTI.Member(14, 0x58, "Parameters")] public bool StopMove;
 	}
 
+	[RTTI.Serializable(0xFE0696924B810981, GameType.DS)]
+	public class DSTargetConstrainCameraParamSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x8D2FB72EB3A3AD46, GameType.DS)]
 	public class DSTelopTipsResource : DSTipsResourceBase
 	{
@@ -23590,13 +24844,28 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xDC638CF278785D50, GameType.DS)]
+	public class DSTerminalGraphArgsSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x4095043CC8B85FA2, GameType.DS)]
 	public class DSTerminalGraphBonusArgs : RTTIRefObject
 	{
 	}
 
+	[RTTI.Serializable(0xDA2C342E2260EDC3, GameType.DS)]
+	public class DSTerminalGraphBonusArgsSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x7D168073A2761AF3, GameType.DS)]
 	public class DSTerminalGraphEvaluationArgs : RTTIRefObject
+	{
+	}
+
+	[RTTI.Serializable(0x5CC2EEAD689D8C1C, GameType.DS)]
+	public class DSTerminalGraphEvaluationArgsSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -23879,10 +25148,20 @@ namespace Decima.DS
 		[RTTI.Member(6, 0x38, "BasicInfo")] public Ref<LocalizedTextResource> DescriptionText;
 	}
 
+	[RTTI.Serializable(0xF6BCC693085F85AB, GameType.DS)]
+	public class DSTipsResourceBaseSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x1D2DE9AAA865EFDE, GameType.DS)]
 	public class DSTipsResourceList : RTTIRefObject
 	{
 		[RTTI.Member(2, 0x20)] public Array<Ref<DSTipsResourceBase>> TipsResources;
+	}
+
+	[RTTI.Serializable(0x6D78D4974EBCEDD8, GameType.DS)]
+	public class DSTipsResourceListSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x57EAE0DD66499CF2, GameType.DS)]
@@ -24124,6 +25403,11 @@ namespace Decima.DS
 		[RTTI.Member(210, 0x698, "Localize")] public Ref<LocalizedTextResource> RemoveGlassesGordon;
 		[RTTI.Member(211, 0x6A0, "Localize")] public Ref<LocalizedTextResource> RemoveValve;
 		[RTTI.Member(212, 0x6A8, "Localize")] public Ref<LocalizedTextResource> RemoveHeadCrab;
+	}
+
+	[RTTI.Serializable(0x35B6DEDF4A084384, GameType.DS)]
+	public class DSUIActionIconHUDLocalizedResourceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xDD060206AE5C18A4, GameType.DS)]
@@ -30955,6 +32239,11 @@ namespace Decima.DS
 		[RTTI.Member(22, 0x48, "TableItem")] public bool SendMessage;
 	}
 
+	[RTTI.Serializable(0x75DCCFC14CB39390, GameType.DS)]
+	public class DSUIInfoLogHUDTableItemResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xCCBEC72EF5D5AB7C, GameType.DS)]
 	public class DSUIInfoLogHUDTableResource : Resource
 	{
@@ -32452,6 +33741,11 @@ namespace Decima.DS
 		[RTTI.Member(6, 0x39)] public bool ThankYouGoods;
 	}
 
+	[RTTI.Serializable(0xC9914504DC265C96, GameType.DS)]
+	public class DSUIMissionResultUnlockFunctionDialogResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x147C8750AA3F8464, GameType.DS)]
 	public class DSUIMissionResultUnlockFunctionWithTextureDialogResource : DSUIMissionResultUnlockFunctionDialogResource
 	{
@@ -32459,6 +33753,11 @@ namespace Decima.DS
 		[RTTI.Member(8, 0x48)] public Ref<LocalizedTextResource> BottomLocalizedText;
 		[RTTI.Member(9, 0x50)] public StreamingRef<UITexture> Texture;
 		[RTTI.Member(10, 0x58)] public bool SpecialThankYouGoods;
+	}
+
+	[RTTI.Serializable(0x36385DC7B4430EB6, GameType.DS)]
+	public class DSUIMissionResultUnlockFunctionWithTextureDialogResourceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xDC223CF0EA754E4F, GameType.DS)]
@@ -32582,6 +33881,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xFE1EB39487D187C6, GameType.DS)]
+	public class DSUINodeGraphBindingsSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x7E7F3FA6E9D773F7, GameType.DS)]
 	public class DSUIOperationGuideHUDLogic : DSUIHUDLogicBase
 	{
@@ -32641,6 +33945,11 @@ namespace Decima.DS
 		[RTTI.Member(2, 0x4, "Icon")] public EDSUIButtonIconStyleType StyleType;
 	}
 
+	[RTTI.Serializable(0x6FF4615CE4F73E8D, GameType.DS)]
+	public class DSUIOperationGuideHUDTableIconSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x988C3E7F083219B0, GameType.DS)]
 	public class DSUIOperationGuideHUDTableItemResource : Resource
 	{
@@ -32648,6 +33957,11 @@ namespace Decima.DS
 		[RTTI.Member(4, 0x28, "TableItem")] public DSUIOperationGuideHUDTableIcon SecondaryIcon;
 		[RTTI.Member(5, 0x30, "TableItem")] public Ref<LocalizedTextResource> LocalizedText;
 		[RTTI.Member(6, 0x38, "TableItem")] public bool IsOr;
+	}
+
+	[RTTI.Serializable(0xDB263B885E6B01D0, GameType.DS)]
+	public class DSUIOperationGuideHUDTableItemResourceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x92287ECA726CC0F0, GameType.DS)]
@@ -35551,6 +36865,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x606379990627C1D6, GameType.DS)]
+	public class DSWeaponSystemSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x8FE68C9699E6B6FF, GameType.DS)]
 	public class DSWeatherDarkRainEventInstance : TimedEventInstance
 	{
@@ -35669,6 +36988,11 @@ namespace Decima.DS
 		[RTTI.Member(4, 0x40)] public float FarDistanceBorder;
 	}
 
+	[RTTI.Serializable(0xA72EB2FEA98E3AFD, GameType.DS)]
+	public class DSWelcomeHoloAnimationDistanceSettingSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x6C026C54616508C8, GameType.DS)]
 	public class DSWelcomeHoloAnimationSyncSet : Resource
 	{
@@ -35676,6 +37000,11 @@ namespace Decima.DS
 		[RTTI.Member(6, 0x28, "NPC2")] public Ref<DSSimpleAnimationComponentResource> Animation2;
 		[RTTI.Member(4, 0x30, "NPC1")] public Array<uint32> SyncIndex1;
 		[RTTI.Member(7, 0x40, "NPC2")] public Array<uint32> SyncIndex2;
+	}
+
+	[RTTI.Serializable(0x5E4EED2031242B19, GameType.DS)]
+	public class DSWelcomeHoloAnimationSyncSetSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xDA829715C9B26933, GameType.DS)]
@@ -35701,6 +37030,11 @@ namespace Decima.DS
 		[RTTI.Member(15, 0x44, "DS")] public bool IdleOnly;
 		[RTTI.Member(16, 0x45, "DS")] public bool DontMoveWorldPosition;
 		[RTTI.Member(12, 0x48, "DS")] public Array<Ref<NamedSoundResource>> SoundResources;
+	}
+
+	[RTTI.Serializable(0x789B0131D3DC816E, GameType.DS)]
+	public class DSWelcomeHoloComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xF4CCB967C3DF5B1F, GameType.DS)]
@@ -35768,6 +37102,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xE62F0A15AC09505D, GameType.DS)]
+	public class DSWhaleMovePathSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x20D8B6A36C186AAB, GameType.DS)]
 	public class DSWheelHologramMover : Mover
 	{
@@ -35795,6 +37134,11 @@ namespace Decima.DS
 		[RTTI.Member(9, 0x50)] public Ref<EntityResource> CursorMainFocused1Entity;
 		[RTTI.Member(10, 0x58)] public Ref<EntityResource> CursorSubFocusedEntity;
 		[RTTI.Member(7, 0x60)] public Array<GGUUID> DeliveryPoints;
+	}
+
+	[RTTI.Serializable(0x48AD472F0FFC95A, GameType.DS)]
+	public class DSWorldMapHoloComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x3A734D9FE668EB6C, GameType.DS)]
@@ -36037,6 +37381,11 @@ namespace Decima.DS
 		[RTTI.Member(5, 0x34, "Logic")] public float Interval;
 	}
 
+	[RTTI.Serializable(0xF83D4B84D8C2ED8E, GameType.DS)]
+	public class DamageOverTimeComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xDB8C9993FE37DC36, GameType.DS)]
 	public class DamagePassOnComponent : EntityComponent
 	{
@@ -36049,6 +37398,11 @@ namespace Decima.DS
 		[RTTI.Member(4, 0x21, "Logic")] public bool IgnoreExplosions;
 		[RTTI.Member(5, 0x22, "Logic")] public bool IgnoreAreaDamage;
 		[RTTI.Member(6, 0x23, "Logic")] public bool SendDamageCaused;
+	}
+
+	[RTTI.Serializable(0xC6323662239EF2F3, GameType.DS)]
+	public class DamagePassOnComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x843454FA3D1E4B8B, GameType.DS)]
@@ -36069,6 +37423,11 @@ namespace Decima.DS
 		[RTTI.Member(5, 0x38, "Damage")] public Ref<CurveResource> DamageOverDistance;
 		[RTTI.Member(8, 0x40, "Physics")] public Ref<CurveResource> ImpactSeverityOverDistance;
 		[RTTI.Member(10, 0x48, "Physics")] public Ref<CurveResource> ImpactImpulseOverDistance;
+	}
+
+	[RTTI.Serializable(0x32802DBFB26E0DC3, GameType.DS)]
+	public class DamageSettingsSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xD5B8F59FBA76A790, GameType.DS)]
@@ -36101,6 +37460,11 @@ namespace Decima.DS
 		[RTTI.Member(2, 0x20)] public Array<Ref<DamageTypeResource>> DamageTypeResources;
 	}
 
+	[RTTI.Serializable(0xF2520FBFB7BDF7C9, GameType.DS)]
+	public class DamageTypeGroupSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x844E0F2D968DBFEA, GameType.DS)]
 	public class DamageTypeMultiplier
 	{
@@ -36130,6 +37494,11 @@ namespace Decima.DS
 		[RTTI.Member(7, 0x40, "Logic")] public Array<Ref<DamageTypeResource>> HeadshotDamageTypeResources;
 		[RTTI.Member(8, 0x50, "Logic")] public Array<Ref<DamageTypeResource>> StealthKillDamageTypeResources;
 		[RTTI.Member(9, 0x60, "Logic")] public Array<Ref<DamageTypeResource>> IgnoredByAIDamageTypeResources;
+	}
+
+	[RTTI.Serializable(0x2B66A4C574616483, GameType.DS)]
+	public class DamageTypeResourceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x83423D4FF7C0461C, GameType.DS)]
@@ -36321,6 +37690,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x7E1B1AE64A924FB7, GameType.DS)]
+	public class DefendAreaUserComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x2E1603AB1FACC119, GameType.DS)]
 	public class DefendSpawnCommand : SpawnCommand
 	{
@@ -36370,6 +37744,55 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x20, "Logic")] public float Delay;
 	}
 
+	[RTTI.Serializable(0x513FB882D6A97D41, GameType.DS)]
+	public class DensityAdd : DensityNodeBase
+	{
+		[RTTI.Member(2, 0x20)] public Array<Ref<DensityNodeBase>> Inputs;
+	}
+
+	[RTTI.Serializable(0x31B283C1D38CEF86, GameType.DS)]
+	public class DensityClamp : DensityNodeBase
+	{
+		[RTTI.Member(3, 0x20)] public float Min;
+		[RTTI.Member(2, 0x24)] public float Max;
+		[RTTI.Member(4, 0x28)] public Ref<DensityNodeBase> InputDensity;
+	}
+
+	[RTTI.Serializable(0x3F0DA7E493DDFC9, GameType.DS)]
+	public class DensityCompare : DensityNodeBase
+	{
+		[RTTI.Member(2, 0x20)] public Ref<DensityNodeBase> Input;
+		[RTTI.Member(3, 0x28)] public float TestValue;
+		[RTTI.Member(5, 0x2C)] public float ValueIfLower;
+		[RTTI.Member(4, 0x30)] public float ValueIfHigher;
+	}
+
+	[RTTI.Serializable(0x749FD2A3F717A2FC, GameType.DS)]
+	public class DensityConstant : DensityNodeBase
+	{
+		[RTTI.Member(2, 0x20)] public float Value;
+	}
+
+	[RTTI.Serializable(0xB27D23F9BF9E9881, GameType.DS)]
+	public class DensityConstantReference : DensityNodeBase
+	{
+		[RTTI.Member(2, 0x20)] public float Value;
+	}
+
+	[RTTI.Serializable(0xC2756D3F25E2AE69, GameType.DS)]
+	public class DensityCurveLookup : DensityNodeBase
+	{
+		[RTTI.Member(2, 0x20)] public Ref<DensityNodeBase> Map;
+		[RTTI.Member(3, 0x28)] public Ref<CurveResource> Curve;
+	}
+
+	[RTTI.Serializable(0x811D30370B6D500D, GameType.DS)]
+	public class DensityFilter : DensityNodeBase
+	{
+		[RTTI.Member(2, 0x20)] public Ref<DensityNodeBase> Input;
+		[RTTI.Member(3, 0x28)] public String Description;
+	}
+
 	[RTTI.Serializable(0xC1461CA09F045118, GameType.DS)]
 	public class DensityGraphProgram : RTTIRefObject
 	{
@@ -36380,9 +37803,103 @@ namespace Decima.DS
 		[RTTI.Member(6, 0x98)] public MurmurHashValue Hash;
 	}
 
+	[RTTI.Serializable(0x108B4758D357F24F, GameType.DS)]
+	public class DensityHeightConcavity : DensityNodeBase
+	{
+		[RTTI.Member(2, 0x20)] public float SampleRadius;
+	}
+
+	[RTTI.Serializable(0xBCF40DDA390F74FF, GameType.DS)]
+	public class DensityHeightConvexity : DensityNodeBase
+	{
+		[RTTI.Member(2, 0x20)] public float SampleRadius;
+	}
+
+	[RTTI.Serializable(0x367E65A331C03EC4, GameType.DS)]
+	public class DensityHeightMap : DensityNodeBase
+	{
+		[RTTI.Member(3, 0x20)] public Ref<CurveResource> CurveSlope;
+		[RTTI.Member(2, 0x28)] public Ref<CurveResource> CurveHeight;
+	}
+
+	[RTTI.Serializable(0xA95310017E3853E, GameType.DS)]
+	public class DensityInvert : DensityNodeBase
+	{
+		[RTTI.Member(2, 0x20)] public Ref<DensityNodeBase> InputDensity;
+	}
+
+	[RTTI.Serializable(0x6FB5226338A1E082, GameType.DS)]
+	public class DensityMaskMap : DensityNodeBase
+	{
+		[RTTI.Member(2, 0x20)] public Ref<Texture> Texture;
+		[RTTI.Member(4, 0x28)] public Ref<CurveResource> Curve;
+		[RTTI.Member(3, 0x30)] public ETextureChannel Channel;
+	}
+
+	[RTTI.Serializable(0x829FB7BA0ADA1F4, GameType.DS)]
+	public class DensityMax : DensityNodeBase
+	{
+		[RTTI.Member(2, 0x20)] public Array<Ref<DensityNodeBase>> Inputs;
+	}
+
+	[RTTI.Serializable(0xFB7F1D8D69ABC6F3, GameType.DS)]
+	public class DensityMin : DensityNodeBase
+	{
+		[RTTI.Member(2, 0x20)] public Array<Ref<DensityNodeBase>> Inputs;
+	}
+
+	[RTTI.Serializable(0xCCE2F79DC1A270AE, GameType.DS)]
+	public class DensityMultiply : DensityNodeBase
+	{
+		[RTTI.Member(2, 0x20)] public Array<Ref<DensityNodeBase>> Inputs;
+	}
+
 	[RTTI.Serializable(0x57B44415280B09E7, GameType.DS)]
 	public class DensityNodeBase : Resource
 	{
+	}
+
+	[RTTI.Serializable(0x2E45752CDDEE970B, GameType.DS)]
+	public class DensityPower : DensityNodeBase
+	{
+		[RTTI.Member(2, 0x20)] public Ref<DensityNodeBase> InBaseValue;
+		[RTTI.Member(3, 0x28)] public Ref<DensityNodeBase> InExponentValue;
+	}
+
+	[RTTI.Serializable(0xAC355A76B299DE0E, GameType.DS)]
+	public class DensitySetRange : DensityNodeBase
+	{
+		[RTTI.Member(3, 0x20)] public float InMin;
+		[RTTI.Member(2, 0x24)] public float InMax;
+		[RTTI.Member(5, 0x28)] public float OutMin;
+		[RTTI.Member(4, 0x2C)] public float OutMax;
+		[RTTI.Member(6, 0x30)] public bool Clamp;
+		[RTTI.Member(7, 0x38)] public Ref<DensityNodeBase> InputDensity;
+	}
+
+	[RTTI.Serializable(0xA502882931193201, GameType.DS)]
+	public class DensitySubtract : DensityNodeBase
+	{
+		[RTTI.Member(2, 0x20)] public Ref<DensityNodeBase> BaseValue;
+		[RTTI.Member(3, 0x28)] public Ref<DensityNodeBase> SubtractValue;
+	}
+
+	[RTTI.Serializable(0xB763C94B9353118F, GameType.DS)]
+	public class DensityTileU : DensityNodeBase
+	{
+	}
+
+	[RTTI.Serializable(0x3928AEEEC302E869, GameType.DS)]
+	public class DensityTileV : DensityNodeBase
+	{
+	}
+
+	[RTTI.Serializable(0xDC7397460EC96DD7, GameType.DS)]
+	public class DensityWorldDataMap : DensityNodeBase
+	{
+		[RTTI.Member(2, 0x20)] public Ref<CurveResource> Curve;
+		[RTTI.Member(3, 0x28)] public Ref<WorldDataType> WorldDataType;
+		[RTTI.Member(4, 0x30)] public ETextureChannel Channel;
 	}
 
 	[RTTI.Serializable(0xC3277660905C7FD0, GameType.DS)]
@@ -36441,6 +37958,11 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x28)] public bool Enabled;
 	}
 
+	[RTTI.Serializable(0xA0D7792EE6E6C74D, GameType.DS)]
+	public class DestructibilityConstraintSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xA342B388BC6EEF4A, GameType.DS)]
 	public class DestructibilityHitReaction : RTTIRefObject
 	{
@@ -36487,11 +38009,21 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x29A04C13B2B83A18, GameType.DS)]
+	public class DestructibilityPartBaseSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x2B9816FCEA3D4F28, GameType.DS)]
 	public class DestructibilityPartGroup : DestructibilityPartBase
 	{
 		[RTTI.Member(3, 0x20, "Logic")] public Array<Ref<DestructibilityPartBase>> Parts;
 		[RTTI.Member(4, 0x30, "Logic")] public bool Enabled;
+	}
+
+	[RTTI.Serializable(0x51C6938A3B19F820, GameType.DS)]
+	public class DestructibilityPartGroupSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x2DF85ED26C51972E, GameType.DS)]
@@ -36528,6 +38060,16 @@ namespace Decima.DS
 		[RTTI.Member(13, 0xC0, "State")] public String HealthShaderVariableName;
 		[RTTI.Member(14, 0xC8, "State")] public Ref<CurveResource> HealthShaderVariableCurve;
 		[RTTI.Member(15, 0xD0, "State")] public bool ApplyHealthShaderOnPart;
+	}
+
+	[RTTI.Serializable(0x7902799B7804C20A, GameType.DS)]
+	public class DestructibilityPartStateResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
+	[RTTI.Serializable(0x10342B8BBD4EF03D, GameType.DS)]
+	public class DestructibilityPartSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x6ED813A397678BC5, GameType.DS)]
@@ -36607,6 +38149,11 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x20, "Logic")] public float Health;
 		[RTTI.Member(4, 0x28, "Logic")] public Array<Ref<DestructibilityPartState>> PartStates;
 		[RTTI.Member(5, 0x38, "Logic")] public Array<Ref<DestructibilityConstraintState>> ConstraintStates;
+	}
+
+	[RTTI.Serializable(0x88CBD5D9B659A718, GameType.DS)]
+	public class DestructibilitySymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x6B4D1AEEC20ABD53, GameType.DS)]
@@ -36761,6 +38308,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x2026714B35F27174, GameType.DS)]
+	public class DiscoverableAreaInstanceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xC54AF0AFB34271AD, GameType.DS)]
 	public class DiscoverableAreaPlayerComponent : EntityComponent
 	{
@@ -36856,6 +38408,11 @@ namespace Decima.DS
 		[RTTI.Member(7, 0x40, "Logic")] public bool IsFallbackDismountMode;
 	}
 
+	[RTTI.Serializable(0x9FF46978C5F6D2E6, GameType.DS)]
+	public class DismountModeSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x7E2E79EFA9D7F8A, GameType.DS)]
 	public class DispensableCategoryResource : Resource
 	{
@@ -36863,6 +38420,11 @@ namespace Decima.DS
 		[RTTI.Member(4, 0x24, "Logic")] public float NearRange;
 		[RTTI.Member(5, 0x28, "Logic")] public float FarRange;
 		[RTTI.Member(6, 0x2C, "Logic")] public float MinimumTime;
+	}
+
+	[RTTI.Serializable(0xCB96F6DAE6A17D57, GameType.DS)]
+	public class DispensableCategoryResourceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x3A4D7C5745E3FE58, GameType.DS)]
@@ -36875,6 +38437,11 @@ namespace Decima.DS
 	{
 		[RTTI.Member(3, 0x20, "Logic")] public Ref<DispensableCategoryResource> DefaultCategory;
 		[RTTI.Member(4, 0x28, "Logic")] public Array<Ref<DispensableCategoryResource>> Categories;
+	}
+
+	[RTTI.Serializable(0x97BB1D63E2DC3A7, GameType.DS)]
+	public class DispensableEntityManagerSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x33AD11FF0C6F3D8, GameType.DS)]
@@ -36984,13 +38551,28 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x3E9DFBEF519E1023, GameType.DS)]
+	public class DsCheckStationGraphCommandSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x6CD7F3D1A7D92649, GameType.DS)]
 	public class DsGameActorCommand : RTTIObject
 	{
 	}
 
+	[RTTI.Serializable(0x912D2C0A021963F5, GameType.DS)]
+	public class DsGameActorCommandSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x12E5D39025FBDBE8, GameType.DS)]
 	public class DsHiggsGraphCommand : RTTIObject
+	{
+	}
+
+	[RTTI.Serializable(0xB72F148FA4D22147, GameType.DS)]
+	public class DsHiggsGraphCommandSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -37004,8 +38586,18 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xC81752E917EEE98, GameType.DS)]
+	public class DsMuleMissionCommandSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xC07A3644A37499A, GameType.DS)]
 	public class DsNpcGeneralCommand : RTTIObject
+	{
+	}
+
+	[RTTI.Serializable(0xC4D5EB0E9541208F, GameType.DS)]
+	public class DsNpcGeneralCommandSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -37057,6 +38649,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xF04E2210838FB7D8, GameType.DS)]
+	public class DynamicPrefabCommandSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xC2052CF975C75270, GameType.DS)]
 	public class DynamicPrefabEntity : Entity
 	{
@@ -37082,6 +38679,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xB359BE1D18941C3, GameType.DS)]
 	public class DynamicSequenceEntityVariableInstance : SequenceEntityVariableInstance
+	{
+	}
+
+	[RTTI.Serializable(0x95DC999E67534E4A, GameType.DS)]
+	public class DynamicSequenceEntityVariableSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -37138,6 +38740,11 @@ namespace Decima.DS
 		[RTTI.Member(9, 0x48, "Texts")] public Ref<LocalizedTextResource> ModificationName;
 		[RTTI.Member(10, 0x50, "Texts")] public Ref<LocalizedTextResource> WeaponModificationType;
 		[RTTI.Member(11, 0x58, "Texts")] public Ref<LocalizedTextResource> OutfitModificationType;
+	}
+
+	[RTTI.Serializable(0xAC237B395CDCBBF6, GameType.DS)]
+	public class EconomyManagerResourceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xE8A692338DA249BB, GameType.DS)]
@@ -37234,6 +38841,11 @@ namespace Decima.DS
 		[RTTI.Member(15, 0x10B, "Network")] public bool MustBeReplicated;
 	}
 
+	[RTTI.Serializable(0xC79A02FBCB160900, GameType.DS)]
+	public class EffectComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x67669A5629E96F12, GameType.DS)]
 	public class EjectEffectsLocationResource : Resource
 	{
@@ -37253,6 +38865,11 @@ namespace Decima.DS
 		[RTTI.Member(8, 0x88)] public String ReloadFP;
 	}
 
+	[RTTI.Serializable(0x14A31ECDFE778B61, GameType.DS)]
+	public class EjectEffectsLocationResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x900F0D9CFF1F2C00, GameType.DS)]
 	public class EjectLocationResource : Resource
 	{
@@ -37266,6 +38883,11 @@ namespace Decima.DS
 		[RTTI.Member(10, 0x58)] public String PilotLightTP;
 		[RTTI.Member(6, 0x60)] public String PilotLightFP;
 		[RTTI.Member(11, 0x68)] public Array<Ref<EjectEffectsLocationResource>> EffectsLocations;
+	}
+
+	[RTTI.Serializable(0xF57D4B1B2EFFF201, GameType.DS)]
+	public class EjectLocationResourceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x2DD520DC2E4A6EBC, GameType.DS)]
@@ -37345,6 +38967,11 @@ namespace Decima.DS
 		[RTTI.Member(4, 0x28)] public Ref<DSGameCatalogueListItem> ListItem;
 		[RTTI.Member(5, 0x30)] public Ref<LocalizedTextResource> LocalizedName;
 		[RTTI.Member(3, 0x38)] public uint32 Hash;
+	}
+
+	[RTTI.Serializable(0xEA94D5F962502DF7, GameType.DS)]
+	public class EntitlementResourceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x14CAB3070D228D41, GameType.DS)]
@@ -37507,6 +39134,16 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xAC658BFE66771D53, GameType.DS)]
+	public class EntityArrayComponentResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
+	[RTTI.Serializable(0xBD58EA82F815793C, GameType.DS)]
+	public class EntityArrayComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xBD24208C27480F1D, GameType.DS)]
 	public class EntityAwarenessQuestTrigger : EntityListQuestTrigger
 	{
@@ -37561,6 +39198,11 @@ namespace Decima.DS
 	{
 		[RTTI.Member(3, 0x20, "Logic")] public Array<Ref<EntityComponentResource>> ComponentResources;
 		[RTTI.Member(4, 0x30, "Logic")] public EEntityComponentSetMode Mode;
+	}
+
+	[RTTI.Serializable(0xA7D00C33FC7DB807, GameType.DS)]
+	public class EntityComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x4436E5D5F7D8A5F7, GameType.DS)]
@@ -37690,6 +39332,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x9E6A802C7E391385, GameType.DS)]
+	public class EntityPlaceHolderSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x42474F858C0800C6, GameType.DS)]
 	public class EntityProjectileAmmoResource : AmmoResource
 	{
@@ -37776,6 +39423,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x38178B4C7E50B2E2, GameType.DS)]
 	public class EntityResourceSequenceEntityVariableInstance : SequenceEntityVariableInstance
+	{
+	}
+
+	[RTTI.Serializable(0x136774EB314FB088, GameType.DS)]
+	public class EntityResourceSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -37871,6 +39523,11 @@ namespace Decima.DS
 		[RTTI.Member(19, 0x78, "Logic")] public Ref<MoverResource> UnstickMoverResource;
 	}
 
+	[RTTI.Serializable(0xEAA64076F070CB1F, GameType.DS)]
+	public class EntitySymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xEEFF76C9046F3C7A, GameType.DS)]
 	public class EntityTypeCollisionQuestTriggerInstance : EntityResourceQuestTriggerInstance
 	{
@@ -37937,6 +39594,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xD91716B58198721B, GameType.DS)]
 	public class EnumFactEntry : ResourceWithName
+	{
+	}
+
+	[RTTI.Serializable(0xD99922B08172521F, GameType.DS)]
+	public class EnumFactSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -38038,6 +39700,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x1F44986CE2D7092, GameType.DS)]
+	public class EnvironmentSoundSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x21190739C889411A, GameType.DS)]
 	public class EpicCacheAchievement
 	{
@@ -38067,6 +39734,11 @@ namespace Decima.DS
 	public class EquipmentSlotComponentResource : EntityComponentResource
 	{
 		[RTTI.Member(3, 0x20, "Logic")] public Array<Ref<EquipSlot>> EquipSlots;
+	}
+
+	[RTTI.Serializable(0x4892DFD0CF82F475, GameType.DS)]
+	public class EquipmentSlotComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x92FE438CE5E6C8E4, GameType.DS)]
@@ -38228,6 +39900,11 @@ namespace Decima.DS
 		[RTTI.Member(50, 0x17C, "AI")] public bool SetInstigatorOnPerceptionEvent;
 	}
 
+	[RTTI.Serializable(0x5153A6D41FA47449, GameType.DS)]
+	public class ExplosionResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x1907E58DBE672BF7, GameType.DS)]
 	public class ExportedSymbolGroup
 	{
@@ -38383,6 +40060,11 @@ namespace Decima.DS
 		[RTTI.Member(6, 0x30, "Logic")] public Array<Ref<DamageTypeResource>> ExcludedDamageTypes;
 	}
 
+	[RTTI.Serializable(0x15F8D0DEAE41F937, GameType.DS)]
+	public class ExtraArmorComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x9206AD2B2513DCC1, GameType.DS)]
 	public class ExtraHealthComponent : EntityComponent
 	{
@@ -38393,6 +40075,11 @@ namespace Decima.DS
 	{
 		[RTTI.Member(3, 0x20, "Logic")] public float ExtraHealth;
 		[RTTI.Member(4, 0x24, "Logic")] public bool StartFilled;
+	}
+
+	[RTTI.Serializable(0x6F30669EA81B4FAC, GameType.DS)]
+	public class ExtraHealthComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x4D392C8A549B7322, GameType.DS)]
@@ -38500,6 +40187,11 @@ namespace Decima.DS
 		[RTTI.Member(12, 0x90, "Representation")] public float HeadMaxVisibleAngle;
 	}
 
+	[RTTI.Serializable(0x9A8BB5479B15B79A, GameType.DS)]
+	public class FacialAnimationComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x7FD9A515ECA6A890, GameType.DS)]
 	public class FacialAnimationEventInstance : FacialAnimationEventInstanceBase
 	{
@@ -38599,8 +40291,18 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xA98B9B487427CAC0, GameType.DS)]
+	public class FactDatabaseApplicationContextSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xAC3032A2E9D3FB9B, GameType.DS)]
 	public class FactDatabaseGlobalContext : CoreObject
+	{
+	}
+
+	[RTTI.Serializable(0xF72E0CF98A2AFABF, GameType.DS)]
+	public class FactDatabaseGlobalContextSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -38608,6 +40310,11 @@ namespace Decima.DS
 	public class FactDatabaseResource : Resource
 	{
 		[RTTI.Member(3, 0x20, "EntityFacts")] public Ref<BooleanFact> IsDeadFact;
+	}
+
+	[RTTI.Serializable(0xEC08F6EA25E2BBFC, GameType.DS)]
+	public class FactDatabaseSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xB82BD855EC5EB3BB, GameType.DS)]
@@ -38630,6 +40337,16 @@ namespace Decima.DS
 	{
 		[RTTI.Member(3, 0x20, "General")] public Array<FactMusicPreset> MusicPresets;
 		[RTTI.Member(4, 0x30, "General")] public Ref<EnumFact> Fact;
+	}
+
+	[RTTI.Serializable(0x6F02AEE6FBCFA227, GameType.DS)]
+	public class FactMusicPresetCollectionSymbols : ExportedSymbolGroup
+	{
+	}
+
+	[RTTI.Serializable(0x250A49D2D7D8C3F5, GameType.DS)]
+	public class FactMusicPresetSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x1D4FA2C312EA6A24, GameType.DS)]
@@ -38708,6 +40425,11 @@ namespace Decima.DS
 		[RTTI.Member(7, 0x3C, "Logic")] public float MinimalFastTravelDistance;
 		[RTTI.Member(8, 0x40, "Logic")] public Ref<IntegerFact> FastTravelCountFact;
 		[RTTI.Member(9, 0x48, "Logic")] public Ref<BooleanFact> IsUsingFastTravelFact;
+	}
+
+	[RTTI.Serializable(0xDFBB17F886570F74, GameType.DS)]
+	public class FastTravelSystemSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x60848EF35099CADB, GameType.DS)]
@@ -38910,6 +40632,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x6DAEE03F5C4A80E0, GameType.DS)]
+	public class FocusAlertSignalSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xC519011D22F82DBB, GameType.DS)]
 	public class FocusCollisionTrigger : CollisionTrigger
 	{
@@ -38950,6 +40677,11 @@ namespace Decima.DS
 		[RTTI.Member(35, 0xB0, "FocusAlertSignal")] public float SignalScanningRadius;
 		[RTTI.Member(36, 0xB4, "FocusAlertSignal")] public float SignalScanningDuration;
 		[RTTI.Member(37, 0xB8, "FocusAlertSignal")] public Array<FocusAlertSignalDisableCondition> SignalDisableConditions;
+	}
+
+	[RTTI.Serializable(0x49D958DAA9BD6915, GameType.DS)]
+	public class FocusComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xB0F2FB93A9D4225C, GameType.DS)]
@@ -39048,6 +40780,16 @@ namespace Decima.DS
 		[RTTI.Member(11, 0x70, "Tagging")] public Ref<UIMarkerTag> IconBinding;
 		[RTTI.Member(12, 0x78, "Tagging")] public Ref<UITexture> Icon;
 		[RTTI.Member(19, 0x80, "PatrolPath")] public Ref<TrackingPathSettings> TrackingPathSettings;
+	}
+
+	[RTTI.Serializable(0x7F3565CE6CD00163, GameType.DS)]
+	public class FocusTargetComponentResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
+	[RTTI.Serializable(0x95482DE2A5C174B4, GameType.DS)]
+	public class FocusTargetComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xBD31BF8571A683FB, GameType.DS)]
@@ -39157,6 +40899,11 @@ namespace Decima.DS
 		[RTTI.Member(4, 0x28)] public Ref<AIAuralStimulusResource> AIAuralStimulusResource;
 	}
 
+	[RTTI.Serializable(0xC889087324568AA4, GameType.DS)]
+	public class FootstepAuralStimulusResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x526FC9AA616DDAA3, GameType.DS)]
 	public class ForceFieldEventInstance : TimedEventInstance
 	{
@@ -39185,6 +40932,11 @@ namespace Decima.DS
 	{
 		[RTTI.Member(2, 0x20)] public Ref<WorldDataType> WaterHeightDataType;
 		[RTTI.Member(3, 0x28)] public Ref<WorldDataType> WaterFlowDataType;
+	}
+
+	[RTTI.Serializable(0x4BDEC0FF20E38D1F, GameType.DS)]
+	public class ForceFieldManagerSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xD2B1D51A012D188, GameType.DS)]
@@ -39453,6 +41205,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x1B533F5CEEA7A77B, GameType.DS)]
+	public class GameActorLocatorSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x7E1346BFD96D593F, GameType.DS)]
 	public class GameActorSetup : ResourceWithName
 	{
@@ -39611,8 +41368,18 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xB5B1C8B829DA053A, GameType.DS)]
+	public class GameModuleSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x6DF02CC6DD205981, GameType.DS)]
 	public class GameMovie : RTTIObject
+	{
+	}
+
+	[RTTI.Serializable(0xC6F7DDCCC9D89A64, GameType.DS)]
+	public class GameMovieSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -39646,6 +41413,11 @@ namespace Decima.DS
 	{
 		[RTTI.Member(3, 0x20, "Logic")] public Array<Ref<GameScheduleEntryResource>> Entries;
 		[RTTI.Member(4, 0x30, "Logic")] public bool Continuous;
+	}
+
+	[RTTI.Serializable(0x3C74F9087FB788DB, GameType.DS)]
+	public class GameScheduleResourceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x5501AF90058325FB, GameType.DS)]
@@ -39714,6 +41486,11 @@ namespace Decima.DS
 		[RTTI.Member(5, 0x1AC, "StartSettings")] public bool AllowSaveGames;
 		[RTTI.Member(6, 0x1B0, "StartSettings")] public String SpawnMarker;
 		[RTTI.Member(7, 0x1B8, "StartSettings")] public Array<Ref<FactValueBase>> InitialFacts;
+	}
+
+	[RTTI.Serializable(0xF346C68F861F77D3, GameType.DS)]
+	public class GameSettingsSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x410471DFDE35DC5A, GameType.DS)]
@@ -39842,6 +41619,21 @@ namespace Decima.DS
 		[RTTI.Member(4, 0x28, "Logic")] public String GearMovementSoundHelperName;
 	}
 
+	[RTTI.Serializable(0xC88F0E137E4729CF, GameType.DS)]
+	public class GenerateComputeJobSystemAssets : SystemAssets
+	{
+		[RTTI.Member(2, 0x20)] public Ref<ShaderResource> GenerateCompute;
+	}
+
+	[RTTI.Serializable(0xA56B125130C33F54, GameType.DS)]
+	public class GenericPlacement : ConcretePlacement
+	{
+		[RTTI.Member(25, 0x90)] public float EffectiveFootprint;
+		[RTTI.Member(26, 0x94)] public float MaxPlacementDistance;
+		[RTTI.Member(27, 0x98)] public Array<Ref<RTTIRefObject>> PlacementTargets;
+		[RTTI.Member(28, 0xA8)] public Array<Ref<PlacementComponent>> PlacementComponents;
+	}
+
 	[RTTI.Serializable(0x9E92DDE068BB8EC9, GameType.DS)]
 	public class GeometryObject : WorldNode
 	{
@@ -39863,6 +41655,11 @@ namespace Decima.DS
 	public class GestureComponentResource : EntityComponentResource
 	{
 		[RTTI.Member(3, 0x20, "Logic")] public Ref<GestureCollectionResource> Gestures;
+	}
+
+	[RTTI.Serializable(0xBCB07D0973AFCD6C, GameType.DS)]
+	public class GestureComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xA978FEC5D9CEEC8E, GameType.DS)]
@@ -39932,6 +41729,11 @@ namespace Decima.DS
 		[RTTI.Member(20, 0x74, "Logic")] public float MaxHorizontalSpeed;
 		[RTTI.Member(21, 0x78, "Logic")] public float Gravity;
 		[RTTI.Member(22, 0x7C, "Logic")] public bool KeepAnimationHorizontal;
+	}
+
+	[RTTI.Serializable(0x71DC405A1F892BD, GameType.DS)]
+	public class GliderMoverSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x2D2B3828527EFA24, GameType.DS)]
@@ -40074,6 +41876,11 @@ namespace Decima.DS
 		[RTTI.Member(14, 0xC0, "Graph")] public Array<RTTIHandle> RequiredVirtualTypes;
 	}
 
+	[RTTI.Serializable(0x63BEACBFB0ED1F30, GameType.DS)]
+	public class GraphProgramResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x3760ADC03F9BF77, GameType.DS)]
 	public class GraphProgramStreamingStrategyInstance : StreamingStrategyInstance
 	{
@@ -40190,6 +41997,11 @@ namespace Decima.DS
 		[RTTI.Member(6, 0x34, "Logic")] public ETimerStartType TimerStartType;
 	}
 
+	[RTTI.Serializable(0x820CB1B8911A44C1, GameType.DS)]
+	public class GrenadeTriggerComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x8F7CA503A12E83F7, GameType.DS)]
 	public class GridPanelCellTag : VisualTag
 	{
@@ -40287,6 +42099,11 @@ namespace Decima.DS
 		[RTTI.Member(15, 0x88, "Animation")] public String InAirAnimTagName;
 		[RTTI.Member(16, 0x90, "Animation", true)] public String AirSpawnStateAnimTagName;
 		[RTTI.Member(17, 0x98, "Animation")] public AnimationNodeID AirSpawnAnimStateNode;
+	}
+
+	[RTTI.Serializable(0x35BEFD69C2BEA398, GameType.DS)]
+	public class GroundToAirTransitionComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xBCC811BFB96E952B, GameType.DS)]
@@ -40502,6 +42319,11 @@ namespace Decima.DS
 		[RTTI.Member(7, 0x48, "Visibility")] public Ref<LocalizedTextResource> ListName;
 		[RTTI.Member(9, 0x50, "InitialHighlight")] public Ref<CurveResource> HighlightCurveResource;
 		[RTTI.Member(10, 0x60, "InitialHighlight")] public FRGBAColor HighlightColor;
+	}
+
+	[RTTI.Serializable(0xD62C5C74DB34D23D, GameType.DS)]
+	public class HUDLogicGroupResourceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xA9D6A27E0B960038, GameType.DS)]
@@ -40757,6 +42579,11 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x20, "General")] public Ref<HairResource> HairResource;
 	}
 
+	[RTTI.Serializable(0x77D40BEB6E85D157, GameType.DS)]
+	public class HairModelComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xDB8D6B2203079D12, GameType.DS)]
 	public class HairPose
 	{
@@ -40934,6 +42761,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x10F90B2F6E17B53D, GameType.DS)]
+	public class HealOverTimeComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x25EE2A04133E6B32, GameType.DS)]
 	public class HealthBarComponent : EntityComponent
 	{
@@ -41102,6 +42934,11 @@ namespace Decima.DS
 		[RTTI.Member(9, 0x80, "Logic")] public HashMap<String_GGUUID> JointNameToReactoinPart;
 	}
 
+	[RTTI.Serializable(0x35623DB9EE1AAEAA, GameType.DS)]
+	public class HitReactionComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x90855BC54DE730F3, GameType.DS)]
 	public class HitReactionCooldown
 	{
@@ -41184,6 +43021,11 @@ namespace Decima.DS
 		[RTTI.Member(12, 0x70, "Logic")] public bool AllowReactionOnDeadPart;
 		[RTTI.Member(13, 0x71, "Logic")] public bool AllowReactionPostMortem;
 		[RTTI.Member(15, 0x78, "Representation")] public Ref<HitReactionDisplaySettingsResource> DisplaySettings;
+	}
+
+	[RTTI.Serializable(0x937C33356D7BCB78, GameType.DS)]
+	public class HitReactionSeriesSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xAA8861503AF3FAE3, GameType.DS)]
@@ -41341,6 +43183,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x3AD2E38CFD61EE51, GameType.DS)]
+	public class HtnSymbolSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x579C72C2E8B2B01C, GameType.DS)]
 	public class Humanoid : ControlledEntity
 	{
@@ -41408,6 +43255,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xC4E3A52B7A656257, GameType.DS)]
 	public class HumanoidController : Controller
+	{
+	}
+
+	[RTTI.Serializable(0x8106685DB6A83DF8, GameType.DS)]
+	public class HumanoidControllerSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -41578,6 +43430,11 @@ namespace Decima.DS
 		[RTTI.Member(7, 0x28, "Logic")] public float MaxFallSpeed;
 		[RTTI.Member(8, 0x2C, "Logic")] public float LeavingOnGroundStateDelay;
 		[RTTI.Member(9, 0x30, "Logic")] public bool CompensateForwardVelocityOnUphillSlope;
+	}
+
+	[RTTI.Serializable(0x37D62C69E9A2B2F5, GameType.DS)]
+	public class HumanoidMoverSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x4C0CDB3C55B7EAB8, GameType.DS)]
@@ -41783,6 +43640,11 @@ namespace Decima.DS
 		[RTTI.Member(125, 0x480, "Logic")] public float WaterDepthForSwimmingToWalkingTransition;
 	}
 
+	[RTTI.Serializable(0x828BEFCB413545EF, GameType.DS)]
+	public class HumanoidResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x1A3C50DCBCBEFF1C, GameType.DS)]
 	public class HumanoidRopePullingState : HumanoidJoystickWalkState
 	{
@@ -41939,6 +43801,11 @@ namespace Decima.DS
 		[RTTI.Member(47, 0x168, "WaterFall")] public float WaterFallBlendOutDuration;
 		[RTTI.Member(39, 0x16C, "Logic")] public bool InvertPitchWhenSwimmingUnderWaterTowardsCamera;
 		[RTTI.Member(40, 0x16D, "Logic")] public bool EnableUnderwaterStealth;
+	}
+
+	[RTTI.Serializable(0x3D274DF865B475E4, GameType.DS)]
+	public class HumanoidSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xC161BD776D17A43A, GameType.DS)]
@@ -42471,6 +44338,11 @@ namespace Decima.DS
 		[RTTI.Member(4, 0x38, "Logic")] public uint8 Flags;
 	}
 
+	[RTTI.Serializable(0xA840109226D8D6D7, GameType.DS)]
+	public class InstigatorDataSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x809566F3712D2C26, GameType.DS)]
 	public class IntProperty : IntPropertyBase
 	{
@@ -42581,6 +44453,11 @@ namespace Decima.DS
 		[RTTI.Member(18, 0xB8, "Slots")] public Array<InventoryCategorySize> SlotBasedCategories;
 	}
 
+	[RTTI.Serializable(0x6054ACED341DA606, GameType.DS)]
+	public class InventoryCapacityComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x8FF99830783AFA71, GameType.DS)]
 	public class InventoryCapacityModificationComponent : EntityComponent
 	{
@@ -42610,6 +44487,11 @@ namespace Decima.DS
 	{
 		[RTTI.Member(0, 0x0)] public Ref<EntityResource> ItemResource;
 		[RTTI.Member(1, 0x8)] public int Amount;
+	}
+
+	[RTTI.Serializable(0x92A5FA8087857B82, GameType.DS)]
+	public class InventoryCollectionSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xD63D71C110435109, GameType.DS)]
@@ -42657,6 +44539,11 @@ namespace Decima.DS
 		[RTTI.Member(8, 0xD8, "Logic")] public Ref<BooleanFact> InventorySelectionActiveFact;
 		[RTTI.Member(9, 0xE0, "Logic")] public Ref<BooleanFact> ChildAloyFact;
 		[RTTI.Member(11, 0xE8, "Logic")] public Array<Ref<PerkLevel>> UnlockableAbilities;
+	}
+
+	[RTTI.Serializable(0x5842E0799CA5A399, GameType.DS)]
+	public class InventoryControllerSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xAE1F723D586A4921, GameType.DS)]
@@ -42799,6 +44686,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x9E37CD8C5FE41324, GameType.DS)]
+	public class InventoryItemSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x57CB219ADE97E25A, GameType.DS)]
 	public class InventoryLootPackageViewController : RTTIObject
 	{
@@ -42836,6 +44728,11 @@ namespace Decima.DS
 		[RTTI.Member(6, 0x68, true)] public Array<Ref<StoredItemsRestoreState>> StoredItems;
 	}
 
+	[RTTI.Serializable(0x3E12A2C87D4D7378, GameType.DS)]
+	public class InventorySymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xB3110A5F2E472D01, GameType.DS)]
 	public class InventoryWeapon : InventoryEntity
 	{
@@ -42860,6 +44757,11 @@ namespace Decima.DS
 		[RTTI.Member(82, 0x1FD, "Logic")] public bool FindTargetByRayCollision;
 		[RTTI.Member(83, 0x200, "Logic")] public CPtr<EntityAction> StartAimingAction;
 		[RTTI.Member(84, 0x208, "Logic")] public CPtr<EntityAction> StopAimingAction;
+	}
+
+	[RTTI.Serializable(0x773A12E1F876F87C, GameType.DS)]
+	public class InventoryWeaponSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xDBCFC4F2D06F2FB7, GameType.DS)]
@@ -44324,6 +46226,16 @@ namespace Decima.DS
 		[RTTI.Member(5, 0x30, "Logic")] public Ref<KnockDownStateEntryResource> DefaultKnockDown;
 	}
 
+	[RTTI.Serializable(0x63327F6C040D2E30, GameType.DS)]
+	public class KnockDownStateComponentResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
+	[RTTI.Serializable(0xBAF0FD7CE978AE9D, GameType.DS)]
+	public class KnockDownStateComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x648ED53C5964B709, GameType.DS)]
 	public class KnockDownStateEntry
 	{
@@ -44339,6 +46251,11 @@ namespace Decima.DS
 		[RTTI.Member(8, 0x38, "Logic")] public Array<Ref<KnockDownStateEntryResource>> AllowedTransitions;
 	}
 
+	[RTTI.Serializable(0x7CCB07EC10FAFD9E, GameType.DS)]
+	public class KnockDownStateEntryResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xF47A0D70671B04F7, GameType.DS)]
 	public class LabelEventResource : EventResource
 	{
@@ -44348,6 +46265,11 @@ namespace Decima.DS
 	public class Landmark : ParentWorldNode
 	{
 		[RTTI.Member(6, 0x70)] public float VerticalOffset;
+	}
+
+	[RTTI.Serializable(0x3810D3036D188C7F, GameType.DS)]
+	public class LandmarkSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x2C4EC65CDD6111BD, GameType.DS)]
@@ -44400,6 +46322,11 @@ namespace Decima.DS
 	public class LastingHealComponentResource : EntityComponentResource
 	{
 		[RTTI.Member(2, 0x20)] public Ref<HealthRegenerationParamsBase> RegenParams;
+	}
+
+	[RTTI.Serializable(0xCEDCDFC41E03E5CE, GameType.DS)]
+	public class LastingHealComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x36F087322F622F92, GameType.DS)]
@@ -44851,6 +46778,11 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x20, "XpPerLevel")] public Array<int> XpPerLevel;
 	}
 
+	[RTTI.Serializable(0x8EC7D8E309FE53E5, GameType.DS)]
+	public class LevelBasedXpRewardSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x36274D2289724B1A, GameType.DS)]
 	public class LevelData : CoreObject
 	{
@@ -44911,6 +46843,11 @@ namespace Decima.DS
 		[RTTI.Member(47, 0x118, "TimeOfDay")] public bool InitialEnableDayNightCycle;
 		[RTTI.Member(48, 0x119, "TimeOfDay")] public bool RandomizeTimeOfDay;
 		[RTTI.Member(43, 0x120, "EnvironmentInteraction")] public Ref<EnvironmentInteractionManager> EnvironmentInteractionManager;
+	}
+
+	[RTTI.Serializable(0xB5871AAC17444287, GameType.DS)]
+	public class LevelSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xF66BBF40E02F11CE, GameType.DS)]
@@ -45248,6 +47185,14 @@ namespace Decima.DS
 		[RTTI.Member(7, 0x80)] public Vec3 Sample7;
 	}
 
+	[RTTI.Serializable(0xB37C5B3D9316F1D6, GameType.DS)]
+	public class LinearPlacementBufferSystemAssets : SystemAssets
+	{
+		[RTTI.Member(2, 0x20)] public Ref<ShaderResource> PlacementInitCompute;
+		[RTTI.Member(3, 0x28)] public Ref<ShaderResource> PlacementAllocCompute;
+		[RTTI.Member(4, 0x30)] public Ref<ShaderResource> PlacementMatrixCopyCompute;
+	}
+
 	[RTTI.Serializable(0x1A2D47F82DC49805, GameType.DS)]
 	public class LinkToEventInReferencedSequence
 	{
@@ -45453,6 +47398,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x4C04342C7E7207AE, GameType.DS)]
+	public class LocalizedTextResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xE85BFB0C99129D0D, GameType.DS)]
 	public class LocalizedTextSuggestionResource : Resource
 	{
@@ -45490,6 +47440,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xB099FD91E053A, GameType.DS)]
 	public class LocalizerVariable
+	{
+	}
+
+	[RTTI.Serializable(0x4E0C586B7AC26653, GameType.DS)]
+	public class LocalizerVariableSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -45732,6 +47687,11 @@ namespace Decima.DS
 		[RTTI.Member(22, 0xB0, "Loot")] public UUIDRef<MenuPage> MenuPage;
 		[RTTI.Member(23, 0xC0, "Loot")] public Array<Ref<LootSlot>> LootSlots;
 		[RTTI.Member(24, 0xD0, "Loot")] public Array<RewardDestructibilityTagToLootItemMapping> LootableParts;
+	}
+
+	[RTTI.Serializable(0x40A460F5DD549B73, GameType.DS)]
+	public class LootComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xAA0E244D1DD10B0A, GameType.DS)]
@@ -46256,6 +48216,11 @@ namespace Decima.DS
 		[RTTI.Member(16, 0x68, "Options")] public EDSMaterialConfigType MaterialConfigType;
 	}
 
+	[RTTI.Serializable(0xF5E3FAC3B21A6C53, GameType.DS)]
+	public class MaterialTypeResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x913F1FE780869328, GameType.DS)]
 	public class MaxHealthStatModifierResource : ActiveStatModifierResource
 	{
@@ -46300,6 +48265,11 @@ namespace Decima.DS
 		[RTTI.Member(4, 0x28, "Logic")] public Array<Ref<MeleeBlockModifier>> BlockModifiers;
 		[RTTI.Member(5, 0x38, "Logic")] public Ref<DamageSettings> ParryDamageSettings;
 		[RTTI.Member(6, 0x40, "Logic")] public float BlockStrength;
+	}
+
+	[RTTI.Serializable(0x400E17B40F77FD1F, GameType.DS)]
+	public class MeleeBlockComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x95701ABB877676A5, GameType.DS)]
@@ -46436,6 +48406,11 @@ namespace Decima.DS
 		[RTTI.Member(20, 0x90, "Unlocks")] public Array<Ref<PerkLevel>> MeleeSkillLevelPerks;
 	}
 
+	[RTTI.Serializable(0x45624611FE6DF00C, GameType.DS)]
+	public class MeleeWeaponComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xD32365404DA0ACA, GameType.DS)]
 	public class MeleeWeaponMode : WeaponMode
 	{
@@ -46550,6 +48525,16 @@ namespace Decima.DS
 		[RTTI.Member(49, 0x1D0, "Attach")] public String AttachTargetToHelperOnHit;
 		[RTTI.Member(46, 0x1D8, "AI")] public EAttackNodePolicy AttackMode;
 		[RTTI.Member(47, 0x1DC, "AI")] public float CollisionRadiusOverride;
+	}
+
+	[RTTI.Serializable(0x8CBCAC9E77769A5C, GameType.DS)]
+	public class MeleeWeaponModeResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
+	[RTTI.Serializable(0xD7379E62E9E99AD6, GameType.DS)]
+	public class MeleeWeaponModeSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xCA3C3FB2EBB855F7, GameType.DS)]
@@ -46774,6 +48759,11 @@ namespace Decima.DS
 		[RTTI.Member(9, 0x38, "Logic")] public Ref<MenuActionResource> OnDataChanged;
 	}
 
+	[RTTI.Serializable(0x1BD8931266CA0982, GameType.DS)]
+	public class MenuDataResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xF310A3C594D95330, GameType.DS)]
 	public class MenuDataSourceBinding : MenuDataBinding
 	{
@@ -46796,6 +48786,11 @@ namespace Decima.DS
 	public class MenuElementResource : ResourceWithName
 	{
 		[RTTI.Member(5, 0x28, "General")] public bool Ignored;
+	}
+
+	[RTTI.Serializable(0xBEDBF2AC7B9E3C66, GameType.DS)]
+	public class MenuElementResourceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x8105657B3575A145, GameType.DS)]
@@ -46884,6 +48879,11 @@ namespace Decima.DS
 		[RTTI.Member(61, 0x1E8, "HoldSounds")] public Array<Ref<SoundResource>> HoldStepSounds;
 	}
 
+	[RTTI.Serializable(0xF13C3EDDF0365496, GameType.DS)]
+	public class MenuLegendHoldResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xC126CA1311DC7326, GameType.DS)]
 	public class MenuLegendLabelResource : CoreObject
 	{
@@ -46895,11 +48895,21 @@ namespace Decima.DS
 		[RTTI.Member(8, 0x48, "Properties")] public Ref<MenuDataBinding> Hold;
 	}
 
+	[RTTI.Serializable(0xE50EADCF23E353E5, GameType.DS)]
+	public class MenuLegendLabelResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x70CFA2178E50ED3A, GameType.DS)]
 	public class MenuLegendResource : MenuVisualResource
 	{
 		[RTTI.Member(47, 0x180, "Properties")] public Array<Ref<MenuElementResource>> ChildElements;
 		[RTTI.Member(48, 0x190, "Properties")] public Ref<MenuDataBinding> IsShowGamepadOnly;
+	}
+
+	[RTTI.Serializable(0xB9B96D4B0CC80AC3, GameType.DS)]
+	public class MenuLegendResourceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x43741833A8118814, GameType.DS)]
@@ -47046,6 +49056,11 @@ namespace Decima.DS
 	{
 		[RTTI.Member(0, 0x0)] public UUIDRef<MenuPage> MenuPage;
 		[RTTI.Member(1, 0x10)] public Ref<ScreenEffectResource> ScreenEffect;
+	}
+
+	[RTTI.Serializable(0xB4E248E43B875DD2, GameType.DS)]
+	public class MenuPageSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x4F1F7652CAE43BB4, GameType.DS)]
@@ -47229,6 +49244,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xBEA988D7B2BF1F38, GameType.DS)]
 	public class MenuSaveDataDialog : RTTIObject
+	{
+	}
+
+	[RTTI.Serializable(0x66CA004E56BBEC7A, GameType.DS)]
+	public class MenuSaveDataDialogSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -47666,6 +49686,11 @@ namespace Decima.DS
 		[RTTI.Member(45, 0x170, "Mouse")] public Ref<MenuDataBinding> IgnoreClippingRange;
 	}
 
+	[RTTI.Serializable(0xAD1464845DD1B53C, GameType.DS)]
+	public class MenuVisualResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x1726F9F90D7EF0A5, GameType.DS)]
 	public class MenuWidgetPropertyAnimationResource : MenuPropertyAnimationResource
 	{
@@ -47813,6 +49838,15 @@ namespace Decima.DS
 	{
 		[RTTI.Member(0, 0x0)] public uint TextureSize;
 		[RTTI.Member(1, 0x8)] public String RelplaceNodeName;
+	}
+
+	[RTTI.Serializable(0xF3AAA8E1D636B138, GameType.DS)]
+	public class MeshPlacement : ConcretePlacement
+	{
+		[RTTI.Member(28, 0x90)] public float MaxRenderDistance;
+		[RTTI.Member(27, 0x94)] public float Footprint;
+		[RTTI.Member(25, 0x98)] public Ref<MeshResourceBase> Mesh;
+		[RTTI.Member(26, 0xA0)] public Array<Ref<RTTIRefObject>> PlacementTargets;
 	}
 
 	[RTTI.Serializable(0x2879C7EF5EAF5865, GameType.DS)]
@@ -48014,6 +50048,11 @@ namespace Decima.DS
 		[RTTI.Member(6, 0x50, "General")] public String HelperName;
 	}
 
+	[RTTI.Serializable(0x342F9BE4C6333FA, GameType.DS)]
+	public class ModelSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xDC11A917C6DB1A75, GameType.DS)]
 	public class ModificationItemComponent : EntityComponent
 	{
@@ -48035,6 +50074,11 @@ namespace Decima.DS
 		[RTTI.Member(15, 0x58, "Splits")] public float SecondaryRatingMultiplierOnTertiary;
 		[RTTI.Member(16, 0x5C, "Splits")] public float TertiaryRatingMultiplier;
 		[RTTI.Member(5, 0x60, "Logic")] public EModificationItemCategory Category;
+	}
+
+	[RTTI.Serializable(0x27F25CF3E4FD71D, GameType.DS)]
+	public class ModificationItemComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xD87B014ADF6FA453, GameType.DS)]
@@ -48066,6 +50110,11 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x20, "Logic")] public EModificationSocketActivationType ActivationType;
 		[RTTI.Member(4, 0x28, "Logic")] public Array<Ref<ModificationSocketResource>> DisplayedSockets;
 		[RTTI.Member(5, 0x38, "Logic")] public Array<Ref<EntityResource>> PreSocketedModificationItems;
+	}
+
+	[RTTI.Serializable(0x4B5580DE1D3EE91F, GameType.DS)]
+	public class ModificationSocketComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x41DB6DABB7755789, GameType.DS)]
@@ -48110,6 +50159,11 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x20, "Logic")] public Array<Ref<MonitoredAnimationResource>> Animations;
 	}
 
+	[RTTI.Serializable(0xFA97F2248BA0E7E9, GameType.DS)]
+	public class MonitoredAnimationComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x954A28B2B9030F17, GameType.DS)]
 	public class MonitoredAnimationResource : Resource
 	{
@@ -48139,6 +50193,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xD327F672C521BA54, GameType.DS)]
 	public class MorphemeAnimationGraphInstance
+	{
+	}
+
+	[RTTI.Serializable(0xD2B29CAE038FFC78, GameType.DS)]
+	public class MorphemeAnimationGraphInstanceSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -48316,6 +50375,11 @@ namespace Decima.DS
 		[RTTI.Member(9, 0x44, "General")] public float ReviveRegenTime;
 	}
 
+	[RTTI.Serializable(0x86EC6B10131ABFF0, GameType.DS)]
+	public class MortallyWoundedComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x318C22C4F8BE4488, GameType.DS)]
 	public class MotionAimControllerComponent : EntityComponent
 	{
@@ -48378,10 +50442,20 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x20, "Generated")] public String Identifier;
 	}
 
+	[RTTI.Serializable(0x40CB263B9EA454B5, GameType.DS)]
+	public class MountModeIDSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x4ED7AB551FECF743, GameType.DS)]
 	public class MountModeMountPoints
 	{
 		[RTTI.Member(0, 0x0)] public HashMap<AnimationSet_Array_MountPoint> MountPointsPerAnimationSet;
+	}
+
+	[RTTI.Serializable(0xE637B62E91D775A9, GameType.DS)]
+	public class MountModeSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xB81144A13896498C, GameType.DS)]
@@ -48465,8 +50539,18 @@ namespace Decima.DS
 		[RTTI.Member(28, 0x130, "Logic")] public TagPropertyLinkCollection TagProperties;
 	}
 
+	[RTTI.Serializable(0x8901632517C3EEEF, GameType.DS)]
+	public class MountableComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x4A37EF11A2FDA2CF, GameType.DS)]
 	public class MountableID : RTTIRefObject
+	{
+	}
+
+	[RTTI.Serializable(0xB2364B70A2DE73CB, GameType.DS)]
+	public class MountableIDSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -48499,6 +50583,11 @@ namespace Decima.DS
 		[RTTI.Member(5, 0x30, "Logic")] public CPtr<EntityAction> StartDismountAction;
 		[RTTI.Member(6, 0x38, "Logic")] public CPtr<EntityAction> StopDismountAction;
 		[RTTI.Member(8, 0x40, "Animation")] public Array<String> BoolAnimVarNames;
+	}
+
+	[RTTI.Serializable(0x279DFE40A0B973D9, GameType.DS)]
+	public class MounterComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xA0D1DF9B47C06DCB, GameType.DS)]
@@ -48538,6 +50627,11 @@ namespace Decima.DS
 	{
 		[RTTI.Member(3, 0x20, "Logic")] public bool SupportsDynamicParts;
 		[RTTI.Member(5, 0x21, "NetworkedPhysics")] public bool ShouldApplyImpulseOnRemote;
+	}
+
+	[RTTI.Serializable(0x14A095220A4DCF95, GameType.DS)]
+	public class MoverSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x69F5EE5C1668CECA, GameType.DS)]
@@ -48581,6 +50675,11 @@ namespace Decima.DS
 		[RTTI.Member(12, 0x78, "Logic")] public bool ControlGameSoundFade;
 	}
 
+	[RTTI.Serializable(0x14B129D0A14CC56E, GameType.DS)]
+	public class MovieResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x4049C609F349EC75, GameType.DS)]
 	public class MovieSkipLocation
 	{
@@ -48594,8 +50693,18 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x3D3D49DC58BCF9F7, GameType.DS)]
+	public class MovieTagSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xBA5D550EC4185124, GameType.DS)]
 	public class MovieWidget : Widget
+	{
+	}
+
+	[RTTI.Serializable(0xE8DA3ED4BFBF6C61, GameType.DS)]
+	public class MsRequestInvisible : MsgBase
 	{
 	}
 
@@ -48628,10 +50737,40 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xC5D5F0DBA811C145, GameType.DS)]
+	public class MsgAIAttackIdSymbols : ExportedSymbolGroup
+	{
+	}
+
+	[RTTI.Serializable(0x44A9E42FBE25C263, GameType.DS)]
+	public class MsgAICanControlEntity : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xC41FF6F2F618B809, GameType.DS)]
+	public class MsgAICanReportToOtherEntities : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xE82CE5DE61763085, GameType.DS)]
+	public class MsgAIDisableStagger : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0x2910E70EB1C247F4, GameType.DS)]
 	public class MsgAIEvent : MsgAI
 	{
 		[RTTI.Member(2, 0x38)] public String CustomData;
+	}
+
+	[RTTI.Serializable(0x3BE175ABAAE42AF4, GameType.DS)]
+	public class MsgAIEventExpired : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x585FE8CD9257BA18, GameType.DS)]
+	public class MsgAIEventPerceived : MsgBase
+	{
 	}
 
 	[RTTI.Serializable(0x67D2B8544C982C77, GameType.DS)]
@@ -48666,6 +50805,11 @@ namespace Decima.DS
 		[RTTI.Member(2, 0x38)] public String EventData;
 	}
 
+	[RTTI.Serializable(0x3165BE49447A62CF, GameType.DS)]
+	public class MsgAIWriteFacts : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0xCFA43BA4E09C9818, GameType.DS)]
 	public class MsgActiveViewportsChanged : MsgBase
 	{
@@ -48692,6 +50836,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xE25BC0D7D4E7DAE2, GameType.DS)]
+	public class MsgAddedToScene : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0x538A426C54BC231E, GameType.DS)]
 	public class MsgAdjustImpactProperties : MsgBase
 	{
@@ -48708,6 +50857,36 @@ namespace Decima.DS
 		[RTTI.Member(0, 0x18)] public int CurrentCharge;
 		[RTTI.Member(1, 0x1C)] public int PreviousCharge;
 		[RTTI.Member(2, 0x20)] public bool IsOvercharged;
+	}
+
+	[RTTI.Serializable(0x8F27E4F60ACE5B3D, GameType.DS)]
+	public class MsgAmmoConsumed : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x6CC3EE568F832DCB, GameType.DS)]
+	public class MsgAmmoDeselected : MsgWeaponModeBase
+	{
+	}
+
+	[RTTI.Serializable(0x733F122203E21083, GameType.DS)]
+	public class MsgAmmoSelected : MsgWeaponModeBase
+	{
+	}
+
+	[RTTI.Serializable(0x68A03C0E1E9DC3BF, GameType.DS)]
+	public class MsgAmmoUnloaded : MsgWeaponModeBase
+	{
+	}
+
+	[RTTI.Serializable(0x63E3AB40187BF59C, GameType.DS)]
+	public class MsgAnimationEventEnds : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x127F8DC73A33A151, GameType.DS)]
+	public class MsgAnimationEventStarts : MsgBase
+	{
 	}
 
 	[RTTI.Serializable(0x8F3DC1F78FB6ED37, GameType.DS)]
@@ -48736,6 +50915,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x83DD78D1981257BA, GameType.DS)]
 	public class MsgAnyObjectChanged : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x62D31630EFF846C8, GameType.DS)]
+	public class MsgApplyWeaponSettings : MsgBase
 	{
 	}
 
@@ -48797,6 +50981,21 @@ namespace Decima.DS
 		[RTTI.Member(5, 0x60)] public EArcTargetType CurrentType;
 	}
 
+	[RTTI.Serializable(0xE12454907E886231, GameType.DS)]
+	public class MsgArtPartsChanged : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x1E693DAE22EB01D2, GameType.DS)]
+	public class MsgArtPartsWillChange : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x7E0BCB7934EB3A69, GameType.DS)]
+	public class MsgAssignedToInventory : MsgInventoryBase
+	{
+	}
+
 	[RTTI.Serializable(0x283021EB44EFF4A6, GameType.DS)]
 	public class MsgAttachToEntity : MsgBase
 	{
@@ -48820,9 +51019,30 @@ namespace Decima.DS
 		[RTTI.Member(2, 0x50)] public bool Aborted;
 	}
 
+	[RTTI.Serializable(0xAEA5BC26657CFDE5, GameType.DS)]
+	public class MsgAutoWieldNextItemFailed : MsgInventoryBase
+	{
+	}
+
+	[RTTI.Serializable(0x116B2103729512A8, GameType.DS)]
+	public class MsgBaggagePickedByPlayer : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0x4365D2FC747FA5C3, GameType.DS)]
 	public class MsgBase : RTTIObject
 	{
+	}
+
+	[RTTI.Serializable(0x662DF43967EC0694, GameType.DS)]
+	public class MsgBecameCurrentItem : MsgInventoryBase
+	{
+	}
+
+	[RTTI.Serializable(0x116E2372E69EE7BF, GameType.DS)]
+	public class MsgBodyVariantChanged : MsgBase
+	{
+		[RTTI.Member(0, 0x10)] public CPtr<BodyVariant> BodyVariant;
 	}
 
 	[RTTI.Serializable(0x6620E8FFA3F188CB, GameType.DS)]
@@ -48830,6 +51050,11 @@ namespace Decima.DS
 	{
 		[RTTI.Member(1, 0x20)] public CPtr<BooleanFact> Fact;
 		[RTTI.Member(2, 0x28)] public bool Value;
+	}
+
+	[RTTI.Serializable(0x47E71AE4A99091A3, GameType.DS)]
+	public class MsgBoundToSequence : MsgBase
+	{
 	}
 
 	[RTTI.Serializable(0x4F49B0E233D11DFC, GameType.DS)]
@@ -48862,13 +51087,43 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xED23452BFF50AF5F, GameType.DS)]
+	public class MsgCanExpressSignal : MsgSignalBase
+	{
+	}
+
+	[RTTI.Serializable(0xC15E715133916B43, GameType.DS)]
+	public class MsgCanExpressTalk : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x910CD82CA7C99BB4, GameType.DS)]
+	public class MsgCanMelee : MsgIsAllowedBase
+	{
+	}
+
 	[RTTI.Serializable(0xBA3C3D8882629AD4, GameType.DS)]
 	public class MsgCanReceiveDamage : MsgBase
 	{
 	}
 
+	[RTTI.Serializable(0xF9AED8E768D1085E, GameType.DS)]
+	public class MsgCanRequestMeleeAttack : MsgIsAllowedBase
+	{
+	}
+
 	[RTTI.Serializable(0x86E7D3A468890928, GameType.DS)]
 	public class MsgCanSetCameraVisibility : MsgIsAllowedBase
+	{
+	}
+
+	[RTTI.Serializable(0x2CB57F757DD717E, GameType.DS)]
+	public class MsgCanShowPopup : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x40AD08CD082930DE, GameType.DS)]
+	public class MsgCanShowTracker : MsgBase
 	{
 	}
 
@@ -48879,6 +51134,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xE88A8F43A40A4297, GameType.DS)]
 	public class MsgChildEntityAdded : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x70693737426E6FF1, GameType.DS)]
+	public class MsgClampMeleeDamage : MsgBase
 	{
 	}
 
@@ -48989,8 +51249,38 @@ namespace Decima.DS
 		[RTTI.Member(0, 0x10)] public Ref<EntityComponentResource> Resource;
 	}
 
+	[RTTI.Serializable(0xCC7AD2EE9F48FACC, GameType.DS)]
+	public class MsgCustomBase : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xD93232A2A4E2316D, GameType.DS)]
+	public class MsgCustomBaseSymbols : ExportedSymbolGroup
+	{
+	}
+
+	[RTTI.Serializable(0x528AAA3D0B26AC3F, GameType.DS)]
+	public class MsgDSAIActive : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xDD87C90D81D484EB, GameType.DS)]
+	public class MsgDSAISuspend : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xC0C6229CD91AB274, GameType.DS)]
+	public class MsgDSAddKnowledgeLostWarrior : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0xE4F6810357DF1FDB, GameType.DS)]
 	public class MsgDSAttachableObjectRemove : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xF5E1A214D4B3CC29, GameType.DS)]
+	public class MsgDSBaggage2SetWorldTransform : MsgBase
 	{
 	}
 
@@ -49001,6 +51291,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x9055230EE7CA89C7, GameType.DS)]
 	public class MsgDSCarriableUpdateOffset : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xF2DE3530130404D6, GameType.DS)]
+	public class MsgDSCheckAIActive : MsgBase
 	{
 	}
 
@@ -49031,6 +51326,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x2F68743063F2F727, GameType.DS)]
+	public class MsgDSGetAimTarget : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0x35DDAF36A16C03C0, GameType.DS)]
 	public class MsgDSGetGameActorTransformInfo : MsgBase
 	{
@@ -49038,6 +51338,26 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x4F35013BC415D0CD, GameType.DS)]
 	public class MsgDSGetKnowledge : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xED2ABFDBE8B0D01D, GameType.DS)]
+	public class MsgDSGetPatrolPath : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xEE452B9E58388C27, GameType.DS)]
+	public class MsgDSHideWeapon : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x1EDE45576537B072, GameType.DS)]
+	public class MsgDSHiggsTarryDamage : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x43E6A6773451D0B0, GameType.DS)]
+	public class MsgDSIsNoticeAndKnowlegeRequested : MsgBase
 	{
 	}
 
@@ -49056,8 +51376,28 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x2428701514E5D4B0, GameType.DS)]
+	public class MsgDSMuleAttack : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xE86676134E00200B, GameType.DS)]
+	public class MsgDSMuleCancelAttack : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x8B2317CF3E1F0732, GameType.DS)]
+	public class MsgDSMuleContinueAttack : MsgDSMuleAttack
+	{
+	}
+
 	[RTTI.Serializable(0x741B1916D08AE99F, GameType.DS)]
 	public class MsgDSMuleRegistCP : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xB0B3AD6DB99E6002, GameType.DS)]
+	public class MsgDSNpcVoiceEvent : MsgBase
 	{
 	}
 
@@ -49068,13 +51408,33 @@ namespace Decima.DS
 		[RTTI.Member(1, 0x18)] public Ref<DSPatrolPathNodeAction> NodeAction;
 	}
 
+	[RTTI.Serializable(0xA5E9A91872FA8486, GameType.DS)]
+	public class MsgDSPhotoModeModelOpacityGetOpacity : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0x5F78957ED7A5B58A, GameType.DS)]
 	public class MsgDSPickUp : MsgBase
 	{
 	}
 
+	[RTTI.Serializable(0x6F2563B604027E94, GameType.DS)]
+	public class MsgDSPlayFacialAnimation : MsgPlayFacialAnimation
+	{
+	}
+
+	[RTTI.Serializable(0x99E9D94F533B55E5, GameType.DS)]
+	public class MsgDSPlayerFloating : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0xB28277EC2F931057, GameType.DS)]
 	public class MsgDSPutDown : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x96DDC882C76813E4, GameType.DS)]
+	public class MsgDSQueryMoverDebugSettings : MsgBase
 	{
 	}
 
@@ -49100,6 +51460,26 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x8BD3A3BCF165328B, GameType.DS)]
 	public class MsgDSSetPatrolPath : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x1EFC502A3715356B, GameType.DS)]
+	public class MsgDSSharedGimmickTrigger : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x5246D82404CDF57C, GameType.DS)]
+	public class MsgDSSharedWarriorsNotice : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x64C7C34BA5051F6, GameType.DS)]
+	public class MsgDSStartTalk : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xC66B655D1D34651F, GameType.DS)]
+	public class MsgDSSummonedWarrior : MsgBase
 	{
 	}
 
@@ -49216,8 +51596,38 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x73B22D483E278254, GameType.DS)]
+	public class MsgDisablePathObject : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x3A0FB45BEE4B04A4, GameType.DS)]
+	public class MsgDiscoverableAreaInstanceAdded : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xCEBC84CA1613BEFB, GameType.DS)]
+	public class MsgDiscoverableAreaInstanceRemoved : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xBE0AEBA6A1518F30, GameType.DS)]
+	public class MsgDismount : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x24B8260FCBADC2D0, GameType.DS)]
+	public class MsgDodgeStarted : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0x883D24591759E28D, GameType.DS)]
 	public class MsgDropped : MsgInventoryBaseScene
+	{
+	}
+
+	[RTTI.Serializable(0x42C3805B4370CC93, GameType.DS)]
+	public class MsgDsActivateTile : MsgBase
 	{
 	}
 
@@ -49261,8 +51671,23 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x2BAE4E329E4E28EB, GameType.DS)]
+	public class MsgDsSharedNotice : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xEF6CAE17648118FA, GameType.DS)]
+	public class MsgDsSharedVehicleNotice : MsgDsSharedNotice
+	{
+	}
+
 	[RTTI.Serializable(0xC896133F1742F4B1, GameType.DS)]
 	public class MsgEnableAttachedLights : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xD8984CAFACED251, GameType.DS)]
+	public class MsgEnableKeepUp : MsgBase
 	{
 	}
 
@@ -49276,6 +51701,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x9C1F105808B87D9, GameType.DS)]
 	public class MsgEnableModelPartCollision : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x2F251040CA580E43, GameType.DS)]
+	public class MsgEnablePathObject : MsgBase
 	{
 	}
 
@@ -49412,10 +51842,30 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xC66B9B290E31C90C, GameType.DS)]
+	public class MsgEntityReplacedWithImpostor : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x6EEC5A63A2B048CD, GameType.DS)]
+	public class MsgEntityRestoredFromImpostor : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x9FC2395B381686EB, GameType.DS)]
+	public class MsgEntitySleep : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0x551F8A8DD70F9CF, GameType.DS)]
 	public class MsgEntitySpawnCanceled : MsgScene
 	{
 		[RTTI.Member(0, 0x0, true)] public CPtr<SpawnpointBase> Spawnpoint;
+	}
+
+	[RTTI.Serializable(0xB8C345EE36B5B12E, GameType.DS)]
+	public class MsgEntitySpawnedPreCustomization : MsgSceneEntityBase
+	{
 	}
 
 	[RTTI.Serializable(0x8B429EE1A3CFFB26, GameType.DS)]
@@ -49425,8 +51875,18 @@ namespace Decima.DS
 		[RTTI.Member(1, 0x28)] public UUIDRef<SpottableComponentResource> SpottableComponentResource;
 	}
 
+	[RTTI.Serializable(0x81011C028683F42B, GameType.DS)]
+	public class MsgEntityStartSkippingUpdates : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0xB2CDA2E3032CB1F2, GameType.DS)]
 	public class MsgEntityStartSpawning : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xF0F7AC9C1846F02B, GameType.DS)]
+	public class MsgEntityStopSkippingUpdates : MsgBase
 	{
 	}
 
@@ -49448,6 +51908,11 @@ namespace Decima.DS
 		[RTTI.Member(0, 0x1C)] public float DeltaTime;
 	}
 
+	[RTTI.Serializable(0x57562BE2BA4A4D18, GameType.DS)]
+	public class MsgEntityUpdateFrequencyChange : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0xC6DEA60135670818, GameType.DS)]
 	public class MsgEntityUpdateVisualBounds : MsgBase
 	{
@@ -49455,6 +51920,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x5616E26F0E7E7327, GameType.DS)]
 	public class MsgEntityVisualBoundsChanged : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x9116B0ABF48EC781, GameType.DS)]
+	public class MsgEntityWake : MsgBase
 	{
 	}
 
@@ -49472,6 +51942,16 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xF4494186422ADEC7, GameType.DS)]
 	public class MsgEstimateTimeOfDeath : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x1E81495FC8FAD500, GameType.DS)]
+	public class MsgExpressSignal : MsgSignalBase
+	{
+	}
+
+	[RTTI.Serializable(0x296F06F8F1C1DF13, GameType.DS)]
+	public class MsgExternalAnimationRootBoneCalculated : MsgBase
 	{
 	}
 
@@ -49499,6 +51979,16 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xD35B06B101038859, GameType.DS)]
 	public class MsgFinishedWield : MsgInventoryBase
+	{
+	}
+
+	[RTTI.Serializable(0xCAA13B4D37D0FA7, GameType.DS)]
+	public class MsgFireFixedGun : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xF97B52258BE89B55, GameType.DS)]
+	public class MsgFlinched : MsgBase
 	{
 	}
 
@@ -49621,6 +52111,26 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xDC5217CDB969645, GameType.DS)]
+	public class MsgGameStatsDamageEntryProgressed : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x12999A4210A70C85, GameType.DS)]
+	public class MsgGetAccuracyImprovements : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x2A6FC66B215DC282, GameType.DS)]
+	public class MsgGetActiveModifications : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x66051ABB1F80AB1, GameType.DS)]
+	public class MsgGetActiveWeaponAttackEvent : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0xE01A786F579574FA, GameType.DS)]
 	public class MsgGetAdditiveCameraRotation : MsgBase
 	{
@@ -49636,6 +52146,16 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x95EA70E86033A024, GameType.DS)]
+	public class MsgGetAimFromPosition : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x30EBB574EC5B793D, GameType.DS)]
+	public class MsgGetAimMagnetPosition : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0xD57023BC1015D0CE, GameType.DS)]
 	public class MsgGetAimParms : MsgBase
 	{
@@ -49646,8 +52166,23 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xACD55B944139040D, GameType.DS)]
+	public class MsgGetAnimatedPose : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xBEE3EB852DA61A16, GameType.DS)]
+	public class MsgGetAnimationSetTags : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0xBEA71CE74B59D2CF, GameType.DS)]
 	public class MsgGetArmor : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x8A0B025C52B7BC7C, GameType.DS)]
+	public class MsgGetBaggagePerSlot : MsgBase
 	{
 	}
 
@@ -49656,13 +52191,53 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x82CBC9F303D234D5, GameType.DS)]
+	public class MsgGetCenterLocation : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0xE0A2564A7416C458, GameType.DS)]
 	public class MsgGetCullInfo : MsgBase
 	{
 	}
 
+	[RTTI.Serializable(0x10C92938357644A3, GameType.DS)]
+	public class MsgGetDSPlayerSaveInfo : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x5AEEE618046FECAE, GameType.DS)]
+	public class MsgGetDSPlayerSubspaceWorkInfo : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x659724D8064E4409, GameType.DS)]
+	public class MsgGetDestinationRotation : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x197004B9E889BFB8, GameType.DS)]
+	public class MsgGetDirectableAgent : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xEF115D820AF581E, GameType.DS)]
+	public class MsgGetDisallowedNavMeshAreaTags : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0xE0A9ED6406B6D09E, GameType.DS)]
 	public class MsgGetDisguise : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x3041176970B77D48, GameType.DS)]
+	public class MsgGetDisplayName : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xEC139FBB60C7E6EC, GameType.DS)]
+	public class MsgGetEnergy : MsgBase
 	{
 	}
 
@@ -49691,8 +52266,33 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xF96B9A365A199DF1, GameType.DS)]
+	public class MsgGetFloorInfo : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x2440168F43A3468C, GameType.DS)]
+	public class MsgGetFloorProbeClampDistances : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0xC3178254DE71E012, GameType.DS)]
 	public class MsgGetGameActorWorldTransform : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xACCBE19C5AA86351, GameType.DS)]
+	public class MsgGetHUDCrosshairSettings : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x241B1C24AC764D3B, GameType.DS)]
+	public class MsgGetInAirTargetAnnotationAttachPoint : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x82A622EFFC3F2F2D, GameType.DS)]
+	public class MsgGetInitialPose : MsgBase
 	{
 	}
 
@@ -49711,13 +52311,53 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xFB42406840E1694C, GameType.DS)]
+	public class MsgGetMaxFitAmount : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xE2277A16EC382206, GameType.DS)]
+	public class MsgGetMeleeAttackEvent : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0xCA10726585F5C0DA, GameType.DS)]
 	public class MsgGetMountPosition : MsgBase
 	{
 	}
 
+	[RTTI.Serializable(0x201270323451CA11, GameType.DS)]
+	public class MsgGetMovementInput : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xE77A5CE0C3A7221C, GameType.DS)]
+	public class MsgGetMoverRemainingBaseTurnAngle : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xB3F5708480C60D19, GameType.DS)]
+	public class MsgGetNavMeshBubbleRadiusModifier : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x9F1A459E76EAE150, GameType.DS)]
+	public class MsgGetOrientationHelper : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0xFFFE0DC06DF7F0AF, GameType.DS)]
 	public class MsgGetPositionValue : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x50C392C8F1A564A5, GameType.DS)]
+	public class MsgGetPotentialContextualActionsOnVictim : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xF0BA64A0BB0BC77, GameType.DS)]
+	public class MsgGetProjectileDestroyed : MsgBase
 	{
 	}
 
@@ -49731,8 +52371,38 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xFF716176D6801CA1, GameType.DS)]
+	public class MsgGetRounds : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x34B24C0E3E6C6D2C, GameType.DS)]
+	public class MsgGetSelectedWeaponMode : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xB8A37A6453240A0A, GameType.DS)]
+	public class MsgGetSequenceAIIndividual : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x5548DDA15F19BBCB, GameType.DS)]
+	public class MsgGetSequencePlayer : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0x460ADE5B0C0F07B3, GameType.DS)]
 	public class MsgGetSkinnedModelPoseDeformer : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x86EAF7345D765AE2, GameType.DS)]
+	public class MsgGetStaggerInfo : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x32EC6662BEF4D338, GameType.DS)]
+	public class MsgGetTalkState : MsgBase
 	{
 	}
 
@@ -49761,13 +52431,43 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xC5F87287B95FFF9, GameType.DS)]
+	public class MsgGetUseLocationPrompt : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0x125758E24F257D93, GameType.DS)]
 	public class MsgGetUseLocations : MsgBase
 	{
 	}
 
+	[RTTI.Serializable(0x260B34EA3109028F, GameType.DS)]
+	public class MsgGetUseLocationsForSmartObject : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0xFF073EB4CFB53B06, GameType.DS)]
 	public class MsgGetUsePrecondition : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xF5EC5FD35AAA344D, GameType.DS)]
+	public class MsgGetUseSpeedModifier : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x35B29A41AA6BFD26, GameType.DS)]
+	public class MsgGetVisualNodeHelperNames : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x341F0D2B29E2E800, GameType.DS)]
+	public class MsgGetWeaponInputOverride : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x985894127305BDF1, GameType.DS)]
+	public class MsgGetWeaponParameters : MsgBase
 	{
 	}
 
@@ -49816,8 +52516,18 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xCD4E7532885C5E82, GameType.DS)]
+	public class MsgHasAttachedEntity : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0x18404AF0F536E26C, GameType.DS)]
 	public class MsgHeal : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x53F2F22FF41208B7, GameType.DS)]
+	public class MsgHidePlayerNotification : MsgBase
 	{
 	}
 
@@ -49834,6 +52544,11 @@ namespace Decima.DS
 		[RTTI.Member(0, 0x10)] public float Delay;
 		[RTTI.Member(1, 0x18)] public WorldPosition Origin;
 		[RTTI.Member(4, 0x58)] public CPtr<AttackEventContext> AttackEvent;
+	}
+
+	[RTTI.Serializable(0x454FBFCAF47E264A, GameType.DS)]
+	public class MsgIncreaseComboLevel : MsgBase
+	{
 	}
 
 	[RTTI.Serializable(0xB5A29750053924A1, GameType.DS)]
@@ -49891,6 +52606,11 @@ namespace Decima.DS
 		[RTTI.Member(1, 0x0, true)] public CPtr<InventoryItem> Item;
 	}
 
+	[RTTI.Serializable(0xC6B797CD5D0CD8E9, GameType.DS)]
+	public class MsgInventoryCapacityModified : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0x944C9FA50CBF73CE, GameType.DS)]
 	public class MsgInventoryEntityActivated : MsgBase
 	{
@@ -49898,6 +52618,38 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xBDD2B2915D3244EB, GameType.DS)]
 	public class MsgInventoryEntityDeactivated : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xB13F7E44B5295953, GameType.DS)]
+	public class MsgInventoryItemAdded : MsgInventoryBaseScene
+	{
+		[RTTI.Member(2, 0x48)] public EInventoryItemAddType AddType;
+		[RTTI.Member(3, 0x4C)] public int AddedAmount;
+	}
+
+	[RTTI.Serializable(0xE5EE6A317FB46F8B, GameType.DS)]
+	public class MsgInventoryItemAmountChanged : MsgInventoryBaseScene
+	{
+		[RTTI.Member(2, 0x48)] public int OldAmount;
+		[RTTI.Member(3, 0x4C)] public int NewAmount;
+		[RTTI.Member(4, 0x50)] public bool IsTransfer;
+	}
+
+	[RTTI.Serializable(0xFE4FDCDE8FF01683, GameType.DS)]
+	public class MsgInventoryItemRemoved : MsgInventoryBaseScene
+	{
+		[RTTI.Member(2, 0x48)] public EInventoryItemRemoveType RemoveType;
+		[RTTI.Member(3, 0x4C)] public int RemovedAmount;
+	}
+
+	[RTTI.Serializable(0x2BAAFAFF8593D131, GameType.DS)]
+	public class MsgIsAboutToStopMovement : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x640B71BEBEA53052, GameType.DS)]
+	public class MsgIsAi : MsgBase
 	{
 	}
 
@@ -49949,6 +52701,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xB0B95283B57093A4, GameType.DS)]
+	public class MsgIsDeathBeingDelayed : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0xAB63950BE52AE80E, GameType.DS)]
 	public class MsgIsDisabled : MsgBase
 	{
@@ -49956,6 +52713,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xEC98D2FDD58332C3, GameType.DS)]
 	public class MsgIsDodgeAllowed : MsgIsAllowedBase
+	{
+	}
+
+	[RTTI.Serializable(0xC815B43BC3106454, GameType.DS)]
+	public class MsgIsDropItemAllowed : MsgIsAllowedBase
 	{
 	}
 
@@ -49971,6 +52733,16 @@ namespace Decima.DS
 		[RTTI.Member(1, 0x11)] public bool HasRemainingLoot;
 	}
 
+	[RTTI.Serializable(0xEBA79D3D0521C4A5, GameType.DS)]
+	public class MsgIsFireAllowed : MsgIsAllowedBase
+	{
+	}
+
+	[RTTI.Serializable(0x5540DB2A6420665B, GameType.DS)]
+	public class MsgIsFireRequestAllowed : MsgIsAllowedBase
+	{
+	}
+
 	[RTTI.Serializable(0x2F1806A5FFCB4E73, GameType.DS)]
 	public class MsgIsFocusAllowed : MsgIsAllowedWithRequiredComponentBase
 	{
@@ -49978,6 +52750,21 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x51DBDC26A399BB02, GameType.DS)]
 	public class MsgIsFocusTargetAllowed : MsgIsAllowedBase
+	{
+	}
+
+	[RTTI.Serializable(0xD2413B66D3442C20, GameType.DS)]
+	public class MsgIsHandlingPopup : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x90CCF5BFBD55C2CA, GameType.DS)]
+	public class MsgIsHealable : MsgIsAllowedBase
+	{
+	}
+
+	[RTTI.Serializable(0x586AABE02BE8300B, GameType.DS)]
+	public class MsgIsInStealth : MsgBase
 	{
 	}
 
@@ -49990,6 +52777,11 @@ namespace Decima.DS
 	public class MsgIsInventoryItemSwitchAllowed : MsgIsAllowedBase
 	{
 		[RTTI.Member(1, 0x0, true)] public CPtr<Entity> Item;
+	}
+
+	[RTTI.Serializable(0x4418246D578BE3B7, GameType.DS)]
+	public class MsgIsItemRemovalAllowed : MsgIsAllowedBase
+	{
 	}
 
 	[RTTI.Serializable(0x393E7A778BE39AB6, GameType.DS)]
@@ -50007,8 +52799,23 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xABDBC0C193C7FB3, GameType.DS)]
+	public class MsgIsMortallyWounded : MsgIsAllowedBase
+	{
+	}
+
 	[RTTI.Serializable(0x32DF50A18D4629CB, GameType.DS)]
 	public class MsgIsMountingAllowed : MsgIsAllowedBase
+	{
+	}
+
+	[RTTI.Serializable(0x7A77BAA4191E5E1A, GameType.DS)]
+	public class MsgIsMovementAllowed : MsgIsAllowedBase
+	{
+	}
+
+	[RTTI.Serializable(0xDDF720A9E9D4AFF, GameType.DS)]
+	public class MsgIsMoverWarpAnimationPlaying : MsgBase
 	{
 	}
 
@@ -50019,6 +52826,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x5269114061B70590, GameType.DS)]
 	public class MsgIsOperating : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x714954681A0BC74A, GameType.DS)]
+	public class MsgIsPerkAbilityActive : MsgBase
 	{
 	}
 
@@ -50047,8 +52859,18 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x83412AC9DB8D0658, GameType.DS)]
+	public class MsgIsRopePullAllowed : MsgIsAllowedWithRequiredComponentBase
+	{
+	}
+
 	[RTTI.Serializable(0x55360FBBA0D510E2, GameType.DS)]
 	public class MsgIsRotationWhileClaimingUseLocationAllowed : MsgIsAllowedWithRequiredComponentBase
+	{
+	}
+
+	[RTTI.Serializable(0xA0C7D2FD48382329, GameType.DS)]
+	public class MsgIsSelectedItemUseAllowed : MsgIsAllowedBase
 	{
 	}
 
@@ -50062,6 +52884,16 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xBD6723F92D5BC5EB, GameType.DS)]
+	public class MsgIsTalkingContextual : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x4F65CFB115464C5C, GameType.DS)]
+	public class MsgIsUpdatingInventoryAllowed : MsgIsAllowedBase
+	{
+	}
+
 	[RTTI.Serializable(0x313303701FE7B146, GameType.DS)]
 	public class MsgIsUseLocationClaimAllowed : MsgIsAllowedBase
 	{
@@ -50072,6 +52904,17 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x57F1FC64111F101C, GameType.DS)]
+	public class MsgIsWeaponSwitchRequired : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x3C1F48BE1972DCA2, GameType.DS)]
+	public class MsgIsWieldAllowed : MsgIsAllowedBase
+	{
+		[RTTI.Member(1, 0x18)] public bool Immediate;
+	}
+
 	[RTTI.Serializable(0xD826DEDB48D8981C, GameType.DS)]
 	public class MsgItemFirstTimeInInventory : MsgInventoryBase
 	{
@@ -50079,6 +52922,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x22DC62B70916FD10, GameType.DS)]
 	public class MsgJoystick : MsgInput
+	{
+	}
+
+	[RTTI.Serializable(0xD0BBB3692BE22EF0, GameType.DS)]
+	public class MsgJoystickAimTargetSettings : MsgBase
 	{
 	}
 
@@ -50129,6 +52977,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x7200A3770951DC92, GameType.DS)]
 	public class MsgMeleeDamageHitResult : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x33FB107F53417F7A, GameType.DS)]
+	public class MsgMeleeHitBlocked : MsgBase
 	{
 	}
 
@@ -50287,6 +53140,11 @@ namespace Decima.DS
 		[RTTI.Member(1, 0x0, true)] public CPtr<InventoryItem> ModdedItem;
 	}
 
+	[RTTI.Serializable(0xF73CEB3281FE515, GameType.DS)]
+	public class MsgModifyAirMoverPhysicsClampSize : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0xB9E12F2644975AF, GameType.DS)]
 	public class MsgModifyAnimatedPose : MsgBase
 	{
@@ -50294,6 +53152,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x9E13971BFAF6947, GameType.DS)]
 	public class MsgModifyDamage : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x18B5E0A48D303AD8, GameType.DS)]
+	public class MsgModifyDamageDealt : MsgBase
 	{
 	}
 
@@ -50315,6 +53178,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x89FBA3266DE7EB40, GameType.DS)]
 	public class MsgModifyHumanoidMovementSpace : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xF5A484537F6E3C43, GameType.DS)]
+	public class MsgModifyInventoryItemStack : MsgBase
 	{
 	}
 
@@ -50415,11 +53283,26 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x97D993A1BF2A45F2, GameType.DS)]
+	public class MsgMoverHasIgnited : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x16DDEB8EC5156703, GameType.DS)]
+	public class MsgNavMeshBubbleReplaced : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0x3765F49072024416, GameType.DS)]
 	public class MsgNoAmmoWarning : MsgBase
 	{
 		[RTTI.Member(0, 0x10)] public CPtr<AmmoResource> AmmoResource;
 		[RTTI.Member(1, 0x18)] public bool CanCraftAmmo;
+	}
+
+	[RTTI.Serializable(0xCBB1BB2E78216EBB, GameType.DS)]
+	public class MsgNoLongerCurrentItem : MsgInventoryBase
+	{
 	}
 
 	[RTTI.Serializable(0x887D49FE028FFDCE, GameType.DS)]
@@ -50438,11 +53321,56 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xF84028827838350E, GameType.DS)]
+	public class MsgOnEnterMenu : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xE04E94D2059DB43E, GameType.DS)]
+	public class MsgOnExitMenu : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0xD48E1814D2094F00, GameType.DS)]
 	public class MsgOnSentenceGroupFinished : MsgSceneEntityBase
 	{
 		[RTTI.Member(1, 0x40)] public UUIDRef<SentenceGroupResource> SentenceGroup;
 		[RTTI.Member(2, 0x50)] public bool Aborted;
+	}
+
+	[RTTI.Serializable(0x5B48DFA326774701, GameType.DS)]
+	public class MsgOnSetFOVByCameraActorInstance : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x50D12CFE724CD0AF, GameType.DS)]
+	public class MsgOnSetFuzzyByCameraActorInstance : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x50095841B4BF0191, GameType.DS)]
+	public class MsgOnSetWorldTransformByAttachToSequenceLocatorMover : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x9F4755F28492A777, GameType.DS)]
+	public class MsgOnTalkEvent : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x50D2459E02E8B2BD, GameType.DS)]
+	public class MsgOnVoiceCleared : MsgVoiceBase
+	{
+	}
+
+	[RTTI.Serializable(0x1395DE349A45A54, GameType.DS)]
+	public class MsgOnVoiceSet : MsgVoiceBase
+	{
+	}
+
+	[RTTI.Serializable(0x8240B63AC844FDA4, GameType.DS)]
+	public class MsgOutOfWorldBounds : MsgBase
+	{
 	}
 
 	[RTTI.Serializable(0xAC5ADBD39532BCA0, GameType.DS)]
@@ -50476,10 +53404,20 @@ namespace Decima.DS
 		[RTTI.Member(0, 0x10)] public bool IsTagged;
 	}
 
+	[RTTI.Serializable(0xAE6EE37FBBFE737, GameType.DS)]
+	public class MsgPauseEntity : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0x21A375B05A52D864, GameType.DS)]
 	public class MsgPerkLevelUnlocked : MsgBase
 	{
 		[RTTI.Member(0, 0x10)] public CPtr<PerkLevel> Perk;
+	}
+
+	[RTTI.Serializable(0xBE4093BF39B3050, GameType.DS)]
+	public class MsgPhysicsCharacterCanPushRequest : MsgBase
+	{
 	}
 
 	[RTTI.Serializable(0x8E98B024FD767AB5, GameType.DS)]
@@ -50489,6 +53427,21 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x1D5A31F9203755BA, GameType.DS)]
 	public class MsgPinDownStarted : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xFD3BA849EBCDDB75, GameType.DS)]
+	public class MsgPlayFacialAnimation : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x7367B2C7326BB9F, GameType.DS)]
+	public class MsgPlayGearSound : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x45DB33D8F7934ED5, GameType.DS)]
+	public class MsgPlayMonitoredAnimation : MsgBase
 	{
 	}
 
@@ -50517,8 +53470,18 @@ namespace Decima.DS
 		[RTTI.Member(2, 0x1C)] public bool IsFirstSpawn;
 	}
 
+	[RTTI.Serializable(0xCBC58A832CF889D1, GameType.DS)]
+	public class MsgPostAnimationUpdate : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0xDA1D133F0876EC29, GameType.DS)]
 	public class MsgPostApplyArtPartsVariation : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x1A32F0325FB6D081, GameType.DS)]
+	public class MsgPostApplyHighLevelControllerResut : MsgBase
 	{
 	}
 
@@ -50532,8 +53495,28 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x4AFC3D0639CBEDA8, GameType.DS)]
+	public class MsgPostMoverUpdate : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x4F66A72C23893F11, GameType.DS)]
+	public class MsgPostNetStateToComponents : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xFDFCBB0D77C01B90, GameType.DS)]
+	public class MsgPostRemoveArtPartsVariation : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0x1C81C22316990727, GameType.DS)]
 	public class MsgPostSkinnedModelDeformer : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x3C4E8E14C7C273FD, GameType.DS)]
+	public class MsgPostSkinnedModelUpdate : MsgBase
 	{
 	}
 
@@ -50573,8 +53556,53 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xB87204DAB6A09A2B, GameType.DS)]
+	public class MsgQuestTracked : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xE3C6F97A0E1DCD50, GameType.DS)]
+	public class MsgReactsToDamage : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0x3CDB4C5CC4B433EC, GameType.DS)]
 	public class MsgReadBinary : RTTIObject
+	{
+	}
+
+	[RTTI.Serializable(0xAF952C0DB76D437C, GameType.DS)]
+	public class MsgRecheckFloor : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x52A737FB2A67CCA, GameType.DS)]
+	public class MsgReduceEnergy : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x79D61A09580CF1B0, GameType.DS)]
+	public class MsgRefreshModifications : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xDADFEE3846897449, GameType.DS)]
+	public class MsgReloadAbort : MsgWeaponModeBase
+	{
+	}
+
+	[RTTI.Serializable(0xD065121479E83C74, GameType.DS)]
+	public class MsgReloadCycle : MsgWeaponModeBase
+	{
+	}
+
+	[RTTI.Serializable(0x5FC2D00664D85BEA, GameType.DS)]
+	public class MsgReloadFinish : MsgWeaponModeBase
+	{
+	}
+
+	[RTTI.Serializable(0xC7CD2471A871032, GameType.DS)]
+	public class MsgReloadStart : MsgWeaponModeBase
 	{
 	}
 
@@ -50589,8 +53617,23 @@ namespace Decima.DS
 		[RTTI.Member(0, 0x10)] public CPtr<EntityComponent> Component;
 	}
 
+	[RTTI.Serializable(0x8F672C77EEBBD21E, GameType.DS)]
+	public class MsgRemoveSubtitle : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x8DD41819610A7E16, GameType.DS)]
+	public class MsgRemovedFromScene : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0x272FA4240265869, GameType.DS)]
 	public class MsgRequestDSPlayerOneShotImpactEffect : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x4EBB37AC8408C55D, GameType.DS)]
+	public class MsgRequestDismount : MsgBase
 	{
 	}
 
@@ -50599,8 +53642,68 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x7C56B8BE564C2B6D, GameType.DS)]
+	public class MsgRequestHighLevelUpdate : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xCB9C0CC4BB7475C2, GameType.DS)]
+	public class MsgRequestMeleeWeaponModeOperationBase : MsgRequestWeaponOperationBase
+	{
+	}
+
 	[RTTI.Serializable(0xCC970011E03D72C6, GameType.DS)]
 	public class MsgRequestPlayerInteractiveAction : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x78B04584D5E13E9B, GameType.DS)]
+	public class MsgRequestRangedWeaponModeOperationBase : MsgRequestWeaponOperationBase
+	{
+	}
+
+	[RTTI.Serializable(0xD95A7F9F61B6FF27, GameType.DS)]
+	public class MsgRequestWeaponAim : MsgRequestWeaponOperationBase
+	{
+	}
+
+	[RTTI.Serializable(0x6F32FEFA298FBD25, GameType.DS)]
+	public class MsgRequestWeaponFire : MsgRequestRangedWeaponModeOperationBase
+	{
+	}
+
+	[RTTI.Serializable(0xC39A17EFD85F9355, GameType.DS)]
+	public class MsgRequestWeaponMeleeAttack : MsgRequestMeleeWeaponModeOperationBase
+	{
+	}
+
+	[RTTI.Serializable(0x730744FC4B0177EE, GameType.DS)]
+	public class MsgRequestWeaponMode : MsgRequestWeaponOperationBase
+	{
+	}
+
+	[RTTI.Serializable(0xE0F0575BBB73B6CC, GameType.DS)]
+	public class MsgRequestWeaponOperationBase : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x9C657C28343C8159, GameType.DS)]
+	public class MsgRequestWeaponReload : MsgRequestRangedWeaponModeOperationBase
+	{
+	}
+
+	[RTTI.Serializable(0xACFF3C47B7E3471E, GameType.DS)]
+	public class MsgRequestWeaponReloadAbort : MsgRequestRangedWeaponModeOperationBase
+	{
+	}
+
+	[RTTI.Serializable(0x69279C4EAF627F28, GameType.DS)]
+	public class MsgRequestWeaponTriggerState : MsgRequestWeaponOperationBase
+	{
+	}
+
+	[RTTI.Serializable(0xED5B701B45408B82, GameType.DS)]
+	public class MsgRequestWeaponZoomSwitch : MsgRequestWeaponOperationBase
 	{
 	}
 
@@ -50614,8 +53717,23 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xDC561EEFB34F2369, GameType.DS)]
+	public class MsgResetForSequenceBinding : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0x3675DB2EF370EE37, GameType.DS)]
 	public class MsgResetPlayerCamera : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x7512581F98DFD1B7, GameType.DS)]
+	public class MsgRestoreFromInventoryItemRuntimeData : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x6469A1C1A8270785, GameType.DS)]
+	public class MsgResumeController : MsgBase
 	{
 	}
 
@@ -50708,6 +53826,11 @@ namespace Decima.DS
 		[RTTI.Member(1, 0x40)] public CPtr<Route> Route;
 	}
 
+	[RTTI.Serializable(0xF63C87AC7008445B, GameType.DS)]
+	public class MsgSaveToInventoryItemRuntimeData : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0x8681CB0E7F826449, GameType.DS)]
 	public class MsgSayContextualSpeech : MsgBase
 	{
@@ -50786,10 +53909,41 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xC0225F5C69C4F347, GameType.DS)]
+	public class MsgSceneRestrictionChanged : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x882AC0B6608B731C, GameType.DS)]
+	public class MsgSceneStart : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x5E786FC4A205CD9, GameType.DS)]
+	public class MsgSceneStop : MsgScene
+	{
+		[RTTI.Member(0, 0x18)] public CPtr<Scene> StoppedScene;
+	}
+
 	[RTTI.Serializable(0x15BCC9E8DF6466FA, GameType.DS)]
 	public class MsgSceneUpdate : MsgScene
 	{
 		[RTTI.Member(0, 0x18, true)] public float DeltaTime;
+	}
+
+	[RTTI.Serializable(0x3119CE2C92ADAAF4, GameType.DS)]
+	public class MsgSelectAmmoSlot : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x963EFDA5273102D9, GameType.DS)]
+	public class MsgSelectInventoryItem : MsgInventoryBase
+	{
+	}
+
+	[RTTI.Serializable(0x923D781DCD0B026D, GameType.DS)]
+	public class MsgSelectPlayerCameraMode : MsgBase
+	{
 	}
 
 	[RTTI.Serializable(0x94CEE3F396061DF0, GameType.DS)]
@@ -50845,8 +53999,29 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xF8C99CF3ED58C55B, GameType.DS)]
+	public class MsgSequenceNetworkVariableUnbound : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x4847B05E990BEB09, GameType.DS)]
+	public class MsgSetAttackEvent : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0xCE5890B926D9206, GameType.DS)]
 	public class MsgSetCameraVisibility : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xC8279BACA4BBBE6A, GameType.DS)]
+	public class MsgSetCloakAiBodyVisualStimuli : MsgBase
+	{
+		[RTTI.Member(0, 0x10)] public bool Enabled;
+	}
+
+	[RTTI.Serializable(0xE5D9F434BB88C8AD, GameType.DS)]
+	public class MsgSetDesiredStance : MsgBase
 	{
 	}
 
@@ -50865,6 +54040,16 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xCA9C1A05ACA86537, GameType.DS)]
+	public class MsgSetPotentialContextualActionsOnVictim : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x2E8971C82D26C314, GameType.DS)]
+	public class MsgSetProjectileDestroyed : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0x13AE02C3E9EDCEB4, GameType.DS)]
 	public class MsgShadowCastingChanged : MsgBase
 	{
@@ -50880,6 +54065,16 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x4598730517967E12, GameType.DS)]
+	public class MsgShouldUpdateFloorSlopeAngle : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xC45EE11BD5A8322D, GameType.DS)]
+	public class MsgShouldUpdateNearbyAnnotations : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0xC8A9E9F55126CD7, GameType.DS)]
 	public class MsgShowHeadgearChanged : MsgBase
 	{
@@ -50891,11 +54086,31 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x40C5842922F6738C, GameType.DS)]
+	public class MsgShowSubtitle : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x5A8198928753A775, GameType.DS)]
+	public class MsgSignalBase : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xD82551AD0FD5469A, GameType.DS)]
+	public class MsgSleepAIIndividual : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0x1EF2DD21C088FFD2, GameType.DS)]
 	public class MsgSpawnEntityNotify : MsgScene
 	{
 		[RTTI.Member(0, 0x18)] public GGUUID OriginalUUID;
 		[RTTI.Member(1, 0x28)] public bool IsSpawn;
+	}
+
+	[RTTI.Serializable(0xF213B387F902B89, GameType.DS)]
+	public class MsgSpawnedInAir : MsgBase
+	{
 	}
 
 	[RTTI.Serializable(0xB4ECBCFC84E1590E, GameType.DS)]
@@ -50922,6 +54137,16 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x1BD34212AD75CEA6, GameType.DS)]
+	public class MsgStartBlocking : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x99E4A700FB577C55, GameType.DS)]
+	public class MsgStartCameraUpdate : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0xF6A2317CF0522F0F, GameType.DS)]
 	public class MsgStartContextualEmotion : MsgBase
 	{
@@ -50937,6 +54162,11 @@ namespace Decima.DS
 	public class MsgStartMount : MsgMountBase
 	{
 		[RTTI.Member(2, 0x58, true)] public CPtr<MountMode> MountMode;
+	}
+
+	[RTTI.Serializable(0x62B27D1C59F9BFFC, GameType.DS)]
+	public class MsgStartTalk : MsgBase
+	{
 	}
 
 	[RTTI.Serializable(0xF855AAB0F5875A4, GameType.DS)]
@@ -50998,10 +54228,25 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xD574508008739247, GameType.DS)]
+	public class MsgStopBlocking : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x89DA9D51587FAABB, GameType.DS)]
+	public class MsgStopDelayingDeath : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0xF9142C3FB40438C5, GameType.DS)]
 	public class MsgStopDismount : MsgMountBase
 	{
 		[RTTI.Member(2, 0x58, true)] public CPtr<DismountMode> DismountMode;
+	}
+
+	[RTTI.Serializable(0x4D0A28AD651160A, GameType.DS)]
+	public class MsgStopFacialAnimation : MsgBase
+	{
 	}
 
 	[RTTI.Serializable(0x65186560939BEB6A, GameType.DS)]
@@ -51015,6 +54260,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x18968E10B5814A05, GameType.DS)]
+	public class MsgStopTalk : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0xA7DAB4890481168, GameType.DS)]
 	public class MsgStoppedHealthRegeneration : MsgBase
 	{
@@ -51023,6 +54273,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xF7BD2D2D296A98AA, GameType.DS)]
 	public class MsgStunnedStatus : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x397BAC7B6D80D10A, GameType.DS)]
+	public class MsgSuspendController : MsgBase
 	{
 	}
 
@@ -51047,6 +54302,16 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xF620E29B358F3EA2, GameType.DS)]
 	public class MsgThreatSuspected : MsgThreat
+	{
+	}
+
+	[RTTI.Serializable(0xDFC65CDFEEB578C0, GameType.DS)]
+	public class MsgTrackerHidden : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x7F29BA9BE50F37D5, GameType.DS)]
+	public class MsgTrackerShown : MsgBase
 	{
 	}
 
@@ -51098,8 +54363,23 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xBCA8B187F6601CBB, GameType.DS)]
+	public class MsgTriggerProjectileExplosion : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0xAC23227A0E93D035, GameType.DS)]
 	public class MsgTriggerRemoved : MsgTrigger
+	{
+	}
+
+	[RTTI.Serializable(0x40DED29D5ACBAE1D, GameType.DS)]
+	public class MsgUnassignedFromInventory : MsgInventoryBase
+	{
+	}
+
+	[RTTI.Serializable(0x5B01F4338F110EF0, GameType.DS)]
+	public class MsgUnboundFromSequence : MsgBase
 	{
 	}
 
@@ -51143,8 +54423,23 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x1A795BAF7735517, GameType.DS)]
+	public class MsgUpdateCameraVisibility : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x8C86DF17D88B8551, GameType.DS)]
+	public class MsgUpdateFacialAnimValues : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0xAC1639A0DFC50B7F, GameType.DS)]
 	public class MsgUpdateGestureTarget : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x28AD421E0C946B30, GameType.DS)]
+	public class MsgUpdateJointTransform : MsgBase
 	{
 	}
 
@@ -51220,6 +54515,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xC815B5E2CE1BE907, GameType.DS)]
+	public class MsgValidatePositions : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0x1F23EA962F8A0A6C, GameType.DS)]
 	public class MsgVec3FactChanged : MsgFactChangedBase
 	{
@@ -51247,6 +54547,26 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x9CCE0F2244CE2A51, GameType.DS)]
+	public class MsgVoiceBase : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xDA0E92B42B1F5455, GameType.DS)]
+	public class MsgWantsDismount : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xDBEBF3F59BF6F39D, GameType.DS)]
+	public class MsgWantsQuickWieldStow : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x2A4C5920618176DF, GameType.DS)]
+	public class MsgWantsToDoMovingStart : MsgBase
+	{
+	}
+
 	[RTTI.Serializable(0x341D6BD3DF3FFCFD, GameType.DS)]
 	public class MsgWeaponChargeAborted : MsgWeaponModeBase
 	{
@@ -51261,6 +54581,26 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x796CBA37A04344CF, GameType.DS)]
 	public class MsgWeaponModeBase : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xFD0EF6C8E5356BA5, GameType.DS)]
+	public class MsgWeaponModeChanged : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x5211F138F2D2E39D, GameType.DS)]
+	public class MsgWorldDataMapOverlayUpdated : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xFD23C45BE8CCE273, GameType.DS)]
+	public class MsgWorldDataMapUpdated : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xF1A413A49F82CCA2, GameType.DS)]
+	public class MsgWorldDataTileUpdated : MsgBase
 	{
 	}
 
@@ -51330,6 +54670,11 @@ namespace Decima.DS
 	public class MultiSpawnpoint : SpawnpointBase
 	{
 		[RTTI.Member(28, 0x160, "Item")] public int Amount;
+	}
+
+	[RTTI.Serializable(0xC08B50DEFBC7815A, GameType.DS)]
+	public class MultiSpawnpointSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x736A0CB40CCBCFBF, GameType.DS)]
@@ -51557,8 +54902,18 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x785291E44A3711FC, GameType.DS)]
+	public class NPCScheduleManagerSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xED4BEFE502AB9BB7, GameType.DS)]
 	public class NPCScheduleResource : GameScheduleResource
+	{
+	}
+
+	[RTTI.Serializable(0xEAAD0322FB4AD67F, GameType.DS)]
+	public class NPCScheduleResourceSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -51601,6 +54956,11 @@ namespace Decima.DS
 		[RTTI.Member(0, 0x0)] public Array<CPtr<NavMeshObject>> ObjectList;
 	}
 
+	[RTTI.Serializable(0xC3F66A1DE42DBC84, GameType.DS)]
+	public class NavMeshAreaSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xE7898045E904E4F4, GameType.DS)]
 	public class NavMeshAreaTag : Resource
 	{
@@ -51628,6 +54988,11 @@ namespace Decima.DS
 		[RTTI.Member(14, 0x43, "General")] public bool IsVehicle;
 		[RTTI.Member(15, 0x44, "General")] public bool DislikeUps;
 		[RTTI.Member(16, 0x48, "General")] public float WalkableSlopeAngle;
+	}
+
+	[RTTI.Serializable(0x63B1FD869DE83267, GameType.DS)]
+	public class NavMeshBuilderSettingsSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xA267DC0F3F997799, GameType.DS)]
@@ -53317,6 +56682,11 @@ namespace Decima.DS
 		[RTTI.BaseClass(0x20)] public RTTIRefObjectSet @RTTIRefObjectSet;
 	}
 
+	[RTTI.Serializable(0x54B99DA1CB12714A, GameType.DS)]
+	public class ObjectCollectionSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xAA902D505016C380, GameType.DS)]
 	public class ObjectManager : CoreObject
 	{
@@ -53408,8 +56778,18 @@ namespace Decima.DS
 		[RTTI.Member(2, 0x20)] public Array<OpenMenuParameter> Parameters;
 	}
 
+	[RTTI.Serializable(0x8D785C68766AED95, GameType.DS)]
+	public class OpenMenuParametersSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xAA23A02FCBC16A4E, GameType.DS)]
 	public class OpenMenuSystem : CoreObject
+	{
+	}
+
+	[RTTI.Serializable(0x15FBD9F5F99F8630, GameType.DS)]
+	public class OpenMenuSystemSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -53743,6 +57123,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xE2A3FEB8B29A79DF, GameType.DS)]
 	public class POSFuncGroup : ExportedSymbolGroup
+	{
+	}
+
+	[RTTI.Serializable(0xDE5FC5432E0BD880, GameType.DS)]
+	public class PRTTIGroup : ExportedSymbolGroup
 	{
 	}
 
@@ -54209,6 +57594,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x17EB0337B0BFC938, GameType.DS)]
+	public class ParticleSystemInstanceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x1DC62D1B96D621B8, GameType.DS)]
 	public class ParticleSystemManager : ObjectManager
 	{
@@ -54321,6 +57711,11 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x20, "Logic")] public Array<Ref<PathHelperNodeResource>> PathHelpers;
 	}
 
+	[RTTI.Serializable(0xD20D95C88D7347C6, GameType.DS)]
+	public class PathHelperNodeComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x1FBE5F04BFD867C6, GameType.DS)]
 	public class PathHelperNodeResource : ResourceWithName
 	{
@@ -54329,6 +57724,11 @@ namespace Decima.DS
 		[RTTI.Member(7, 0x38, "General")] public EPathMode PathMode;
 		[RTTI.Member(8, 0x3C, "General")] public float Speed;
 		[RTTI.Member(9, 0x40, "General")] public bool Looping;
+	}
+
+	[RTTI.Serializable(0x7E775F447C396DB2, GameType.DS)]
+	public class PathHelperNodeResourceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x6BCDA6FAF4A0B942, GameType.DS)]
@@ -54362,11 +57762,21 @@ namespace Decima.DS
 		[RTTI.Member(12, 0x3D, "Logic")] public bool AlignUpWithWorld;
 	}
 
+	[RTTI.Serializable(0x1967C54B283FF8E0, GameType.DS)]
+	public class PathMoverSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x71643AA2C4E3668E, GameType.DS)]
 	public class PathResource : Resource
 	{
 		[RTTI.Member(3, 0x20, "General")] public Array<PathElement> Samples;
 		[RTTI.Member(4, 0x30, "General")] public float SampleRate;
+	}
+
+	[RTTI.Serializable(0x597A5112D87266AF, GameType.DS)]
+	public class PathResourceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x880688CD4A893D33, GameType.DS)]
@@ -54725,6 +58135,11 @@ namespace Decima.DS
 	public class PhysicsConstraintResource : PhysicsResource
 	{
 		[RTTI.Member(8, 0x30, "Logic")] public float BreakThreshold;
+	}
+
+	[RTTI.Serializable(0x8F9BE77B8A02AFCF, GameType.DS)]
+	public class PhysicsConstraintResourceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xF8ADC67274BDA485, GameType.DS)]
@@ -55204,6 +58619,11 @@ namespace Decima.DS
 		[RTTI.Member(16, 0x90, "Water")] public float MaxUnderwaterDepth;
 	}
 
+	[RTTI.Serializable(0x3C97F1E836DD9A61, GameType.DS)]
+	public class PickUpComponentBaseSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x3BB9D362EB3A41FA, GameType.DS)]
 	public class PickUpComponentResource : PickUpComponentBaseResource
 	{
@@ -55212,6 +58632,11 @@ namespace Decima.DS
 		[RTTI.Member(20, 0xB0, "PickUp")] public Ref<LocalizedTextResource> FullFailureMessage;
 		[RTTI.Member(21, 0xB8, "PickUp")] public Ref<GraphProgramResource> PickUpAmountModifierGraphProgramResource;
 		[RTTI.Member(22, 0xC0, "PickUp")] public Ref<PickUpReactivationType> ReactivationType;
+	}
+
+	[RTTI.Serializable(0xCBD85B92EF6265F1, GameType.DS)]
+	public class PickUpComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x6B6ED750E400B8EA, GameType.DS)]
@@ -55240,6 +58665,21 @@ namespace Decima.DS
 		[RTTI.Member(21, 0xB8, "GraphPrograms")] public Ref<OverrideGraphProgramResource> OverrideUsabilityGraph;
 		[RTTI.Member(22, 0xC0, "GraphPrograms")] public Ref<GraphProgramResource> UseGraph;
 		[RTTI.Member(23, 0xC8, "GraphPrograms")] public Ref<OverrideGraphProgramResource> OverrideUseGraph;
+	}
+
+	[RTTI.Serializable(0x308278C8CC408CD7, GameType.DS)]
+	public class PickUpMsgPlayerInventoryStateChanged : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0x738FACB1AFEE16DD, GameType.DS)]
+	public class PickUpMsgPlayerPerkStateChanged : MsgBase
+	{
+	}
+
+	[RTTI.Serializable(0xF5CABE354951386B, GameType.DS)]
+	public class PickUpMsgSetVisibility : MsgBase
+	{
 	}
 
 	[RTTI.Serializable(0xE958CD34132C8911, GameType.DS)]
@@ -55283,6 +58723,11 @@ namespace Decima.DS
 		[RTTI.Member(18, 0xD0, "Logic")] public float BreakFreeDamageThreshold;
 		[RTTI.Member(22, 0xD4, "Logic")] public float AIDamageThresholdMultiplier;
 		[RTTI.Member(23, 0xD8, "Logic")] public float WaitForPinnedAnimationTime;
+	}
+
+	[RTTI.Serializable(0x18834D28A8DDEED3, GameType.DS)]
+	public class PinDownComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xEFA9B929B777E05F, GameType.DS)]
@@ -55364,6 +58809,13 @@ namespace Decima.DS
 		[RTTI.Member(5, 0x70)] public Array<Ref<RTTIRefObject>> PlacementTargets;
 	}
 
+	[RTTI.Serializable(0x8BABC32A6A8CC805, GameType.DS)]
+	public class PlacementComputeJobSystemAssets : SystemAssets
+	{
+		[RTTI.Member(2, 0x20)] public Ref<ShaderResource> PlacementCompute;
+		[RTTI.Member(3, 0x28)] public Ref<ShaderResource> PlacementComputeDebug;
+	}
+
 	[RTTI.Serializable(0x1915623F271FFF58, GameType.DS)]
 	public class PlacementJobBakeLookup
 	{
@@ -55396,6 +58848,11 @@ namespace Decima.DS
 		[RTTI.Member(5, 0xA0)] public Ref<PlacementTile> ParentTile;
 	}
 
+	[RTTI.Serializable(0x6299169101D60101, GameType.DS)]
+	public class PlacementMesh : GeometryObject
+	{
+	}
+
 	[RTTI.Serializable(0x750196C0A7120AB8, GameType.DS)]
 	public class PlacementProceduralData : RTTIRefObject
 	{
@@ -55419,6 +58876,23 @@ namespace Decima.DS
 		[RTTI.Member(4, 0x48)] public Array<FRange> CurveRanges;
 		[RTTI.Member(5, 0x58)] public Ref<Texture> CurveTexture;
 		[RTTI.Member(6, 0x60)] public Ref<WorldDataPacking> WorldDataPacking;
+	}
+
+	[RTTI.Serializable(0x18B2BE31BF2D9BFC, GameType.DS)]
+	public class PlacementSet : PlacementBase
+	{
+		[RTTI.Member(3, 0x28)] public Array<Ref<PlacementBase>> Children;
+		[RTTI.Member(4, 0x38)] public ESetDensityBehavior DensityBehavior;
+		[RTTI.Member(5, 0x3C)] public bool NormalizeDensity;
+		[RTTI.Member(6, 0x40)] public float DensityScale;
+		[RTTI.Member(7, 0x48)] public Ref<WorldDataType> HeightMap;
+	}
+
+	[RTTI.Serializable(0xEB5FC25A5806B8BA, GameType.DS)]
+	public class PlacementTarget
+	{
+		[RTTI.Member(0, 0x0)] public Ref<RTTIRefObject> Object;
+		[RTTI.Member(1, 0x10)] public Mat44 Transform;
 	}
 
 	[RTTI.Serializable(0x2F8D786D07E19A72, GameType.DS)]
@@ -55445,6 +58919,14 @@ namespace Decima.DS
 	{
 		[RTTI.Member(0, 0x0)] public Vec3 Normal;
 		[RTTI.Member(1, 0xC)] public float Constant;
+	}
+
+	[RTTI.Serializable(0x61E65A7AED20E66A, GameType.DS)]
+	public class PlantComputeJobSystemAssets : SystemAssets
+	{
+		[RTTI.Member(2, 0x20)] public Ref<ShaderResource> PlantComputeConstraints;
+		[RTTI.Member(3, 0x28)] public Ref<ShaderResource> PlantComputeResolve;
+		[RTTI.Member(4, 0x30)] public Ref<ShaderResource> PlantComputeIntegrate;
 	}
 
 	[RTTI.Serializable(0xFC200D5A421748D2, GameType.DS)]
@@ -55970,6 +59452,11 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x30, "Logic")] public Ref<LocalizedTextResource> MenuText;
 	}
 
+	[RTTI.Serializable(0x4570E8E98955661E, GameType.DS)]
+	public class PlayerFacePaintSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x7F0ED3DF0377CEEA, GameType.DS)]
 	public class PlayerFloorConfig
 	{
@@ -56139,6 +59626,11 @@ namespace Decima.DS
 		[RTTI.Member(173, 0x270, "Logic")] public EDSMaterialConfigType MaterialConfigType;
 	}
 
+	[RTTI.Serializable(0x902ED1709D39286D, GameType.DS)]
+	public class PlayerGameSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x9AACBA27BDC467A8, GameType.DS)]
 	public class PlayerHiggsTarryConfig
 	{
@@ -56220,6 +59712,11 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x30)] public Array<Ref<PlayerLoadout>> PresetLoadouts;
 	}
 
+	[RTTI.Serializable(0xB6BBA7568B8D3ED, GameType.DS)]
+	public class PlayerLoadoutManagerResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x81142C50FAC7DCD1, GameType.DS)]
 	public class PlayerLoadoutModdableItem : PlayerLoadoutItem
 	{
@@ -56277,8 +59774,18 @@ namespace Decima.DS
 		[RTTI.Member(6, 0x48, "Logic")] public Ref<HUDLogicGroupResource> TutorialHUDLogicGroupResource;
 	}
 
+	[RTTI.Serializable(0x58F005E821FFD392, GameType.DS)]
+	public class PlayerNotificationComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x34F77D8D437DA1D8, GameType.DS)]
 	public class PlayerNotificationPriority : Resource
+	{
+	}
+
+	[RTTI.Serializable(0x2E72848F9996C713, GameType.DS)]
+	public class PlayerNotificationPrioritySymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -56290,6 +59797,11 @@ namespace Decima.DS
 		[RTTI.Member(9, 0x2C, "Log")] public float LogCacheDuration;
 		[RTTI.Member(5, 0x30, "Popup")] public bool DisplaysPopup;
 		[RTTI.Member(7, 0x31, "Popup")] public bool HideWhileInSequence;
+	}
+
+	[RTTI.Serializable(0x9AD49837484C3D76, GameType.DS)]
+	public class PlayerNotificationResourceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xACF93DEDB1E23341, GameType.DS)]
@@ -56334,6 +59846,11 @@ namespace Decima.DS
 		[RTTI.Member(7, 0x58, "Logic")] public Ref<BooleanFact> HideHeadgearFact;
 	}
 
+	[RTTI.Serializable(0xE21C416377670FE8, GameType.DS)]
+	public class PlayerOutfitComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x6678D282EB2C4EA2, GameType.DS)]
 	public class PlayerOutfitGenericSlot : Resource
 	{
@@ -56361,6 +59878,11 @@ namespace Decima.DS
 		[RTTI.Member(6, 0x30, "Logic")] public StreamingRef<OutfitStreamingData> StreamingData;
 	}
 
+	[RTTI.Serializable(0x6DEE599D8199D225, GameType.DS)]
+	public class PlayerOutfitPartSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xBAC7FF4CAB84B20C, GameType.DS)]
 	public class PlayerOutfitSetBonus
 	{
@@ -56376,8 +59898,18 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x20, "Logic")] public Array<Ref<RenderEffectShaderOverridesResource>> ShaderOverrides;
 	}
 
+	[RTTI.Serializable(0x7756B1023636B911, GameType.DS)]
+	public class PlayerOutfitShaderEffectSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x64042BAE7CF1D601, GameType.DS)]
 	public class PlayerOutfitSlotType : Resource
+	{
+	}
+
+	[RTTI.Serializable(0x9069636B9BCCBF94, GameType.DS)]
+	public class PlayerOutfitSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -56391,6 +59923,11 @@ namespace Decima.DS
 		[RTTI.Member(8, 0x48, "Logic")] public StreamingRef<BodyVariant> BodyVariant;
 		[RTTI.Member(9, 0x50, "Logic")] public Ref<PlayerOutfitShaderEffect> DefaultShaderEffect;
 		[RTTI.Member(10, 0x58, "Logic")] public Array<Ref<PlayerOutfitShaderEffect>> ShaderEffects;
+	}
+
+	[RTTI.Serializable(0x853371AF18CF7937, GameType.DS)]
+	public class PlayerOutfitThemeSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x5707B352A14696EB, GameType.DS)]
@@ -56466,6 +60003,11 @@ namespace Decima.DS
 		[RTTI.Member(59, 0x1D0, "Camera")] public Ref<CameraModeResource> PreparingBoostedJumpCameraMode;
 	}
 
+	[RTTI.Serializable(0x83992A0AF4DC74DC, GameType.DS)]
+	public class PlayerParkourComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x5252CDC17A548391, GameType.DS)]
 	public class PlayerPhotoModePoseAnimation
 	{
@@ -56495,6 +60037,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x628C470005A62F0, GameType.DS)]
 	public class PlayerProfileOnline : RTTIRefObject
+	{
+	}
+
+	[RTTI.Serializable(0x41604589EB46396, GameType.DS)]
+	public class PlayerProfileSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -56546,6 +60093,11 @@ namespace Decima.DS
 		[RTTI.Member(5, 0x30, "MixStates")] public Ref<SoundMixStateResource> SprintSoundMixState;
 		[RTTI.Member(6, 0x38, "MixStates")] public Ref<SoundMixStateResource> ZoomedWeaponSoundMixState;
 		[RTTI.Member(7, 0x40, "MixStates")] public Ref<SoundMixStateResource> ReloadingWeaponSoundMixState;
+	}
+
+	[RTTI.Serializable(0xEC3B929A59B93DDD, GameType.DS)]
+	public class PlayerSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x6222459513202F3A, GameType.DS)]
@@ -57221,6 +60773,16 @@ namespace Decima.DS
 		[RTTI.Member(2, 0x20)] public Ref<PropertyContainerResource> ContainerResource;
 	}
 
+	[RTTI.Serializable(0x60230B66B5D4F630, GameType.DS)]
+	public class PropertyComponentResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
+	[RTTI.Serializable(0xE5BDA61D07DEB931, GameType.DS)]
+	public class PropertyComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x41FC62A6BF66B788, GameType.DS)]
 	public class PropertyContainer
 	{
@@ -57419,6 +60981,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x45A676E7057576F7, GameType.DS)]
+	public class QuestInstanceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xE31DDD244230BB57, GameType.DS)]
 	public class QuestItemTrackingObjective : QuestObjective
 	{
@@ -57551,6 +61118,11 @@ namespace Decima.DS
 		[RTTI.Member(14, 0xB8, "Logic")] public int Level;
 	}
 
+	[RTTI.Serializable(0xF3E95C2E5B6B171F, GameType.DS)]
+	public class QuestResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x7AF04C59DBDCABDA, GameType.DS)]
 	public class QuestReward : Resource
 	{
@@ -57660,6 +61232,11 @@ namespace Decima.DS
 		[RTTI.Member(46, 0x170, "ToastMessages")] public Ref<LocalizedTextResource> AddedNewJobQuest;
 		[RTTI.Member(47, 0x178, "ToastMessages")] public Ref<LocalizedTextResource> QuestTracked;
 		[RTTI.Member(48, 0x180, "ToastMessages")] public Ref<LocalizedTextResource> QuestNotTracked;
+	}
+
+	[RTTI.Serializable(0x4B5131E67EFB7C6B, GameType.DS)]
+	public class QuestSystemSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xE043725B79E55C11, GameType.DS)]
@@ -57812,6 +61389,11 @@ namespace Decima.DS
 		[RTTI.Member(2, 0x20)] public RTTIHandle Handle;
 	}
 
+	[RTTI.Serializable(0x651E31543E869B9D, GameType.DS)]
+	public class RTTIHandleObjectSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x94B37EB65446259F, GameType.DS)]
 	public class RTTIInt : RTTIPrimitive
 	{
@@ -57908,6 +61490,11 @@ namespace Decima.DS
 		[RTTI.Member(5, 0x30, "Logic")] public Ref<PhysicsSkeleton> AnimatedPhysicsSkeleton;
 		[RTTI.Member(6, 0x48, "Logic")] public float StressThreshold;
 		[RTTI.Member(8, 0x50, "Attach")] public Array<String> AttachableHelpers;
+	}
+
+	[RTTI.Serializable(0xD86CFE9B34F3BC43, GameType.DS)]
+	public class RagdollComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x5A737222570FCAE8, GameType.DS)]
@@ -58044,6 +61631,16 @@ namespace Decima.DS
 		[RTTI.Member(33, 0x104, "AI")] public EWeaponStanceRaiseType AIStanceRaiseType;
 		[RTTI.Member(34, 0x108, "AI")] public float AIRaiseTimeout;
 		[RTTI.Member(35, 0x10C, "AI")] public EAIBodyAlignmentMode BodyAlignmentMode;
+	}
+
+	[RTTI.Serializable(0x687FDE7A24377B32, GameType.DS)]
+	public class RangedWeaponModeResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
+	[RTTI.Serializable(0x9C5BB14B79348789, GameType.DS)]
+	public class RangedWeaponModeSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xAFF8338F8FE7CB62, GameType.DS)]
@@ -58590,6 +62187,11 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x20, "General")] public RTTIHandle Type;
 	}
 
+	[RTTI.Serializable(0x2C16C378B8A675BB, GameType.DS)]
+	public class ResourceIDSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xA3EB87F15FCDD4D3, GameType.DS)]
 	public class ResourceSelectorBase : Resource
 	{
@@ -58608,6 +62210,11 @@ namespace Decima.DS
 	{
 		[RTTI.Member(1, 0x0, "General")] public Ref<ResourceID> ID;
 		[RTTI.Member(2, 0x8, "General")] public Ref<RTTIRefObject> Resource;
+	}
+
+	[RTTI.Serializable(0x8EDCDA99E810BDB, GameType.DS)]
+	public class ResourceSetSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xBC5672CA3A1C549, GameType.DS)]
@@ -58707,6 +62314,11 @@ namespace Decima.DS
 		[RTTI.Member(6, 0x2C, "Logic")] public float ActivationTime;
 		[RTTI.Member(7, 0x30, "Logic")] public float MaxDistance;
 		[RTTI.Member(8, 0x38, "Logic")] public Ref<DestructibilityRetractionMoverResource> Mover;
+	}
+
+	[RTTI.Serializable(0x8D7A4623DD24D4C4, GameType.DS)]
+	public class RetractingPartsComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xF2556CA46A2C8902, GameType.DS)]
@@ -58974,6 +62586,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xB677C2E2400328, GameType.DS)]
+	public class RopeComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xD8C154D44A249814, GameType.DS)]
 	public class RopeManagerComponent : EntityComponent
 	{
@@ -59006,6 +62623,11 @@ namespace Decima.DS
 		[RTTI.Member(26, 0xA0, "Physics")] public Ref<PhysicsCollisionResource> PhysicsCollisionResource;
 		[RTTI.Member(27, 0xA8, "Physics")] public float PhysicsCollisionThickness;
 		[RTTI.Member(28, 0xAC, "Physics")] public float PhysicsCollisionHeight;
+	}
+
+	[RTTI.Serializable(0x705E4FC5E96C0048, GameType.DS)]
+	public class RopeManagerComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x5D25760406B59C1B, GameType.DS)]
@@ -59044,10 +62666,20 @@ namespace Decima.DS
 		[RTTI.Member(8, 0x30)] public bool AlignUpToWorld;
 	}
 
+	[RTTI.Serializable(0x2583D53539611BAC, GameType.DS)]
+	public class RouteMoverSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x616433521FA9E03C, GameType.DS)]
 	public class RouteNode : WorldDataShapeNode
 	{
 		[RTTI.Member(10, 0x90, "Logic")] public float Width;
+	}
+
+	[RTTI.Serializable(0x645C28BFB76E401A, GameType.DS)]
+	public class RouteSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xCA985E1457E76E7A, GameType.DS)]
@@ -59184,6 +62816,701 @@ namespace Decima.DS
 		[RTTI.Member(4, 0x21)] public ESRTUpdateFrequency UpdateFrequency;
 		[RTTI.Member(5, 0x22)] public ESRTStorageMode StorageMode;
 		[RTTI.Member(6, 0x24)] public EProgramTypeMask ProgramTypeMask;
+	}
+
+	[RTTI.Serializable(0x1AFCF070E89DD9D2, GameType.DS)]
+	public class SRT_RTTI_AccumulationBindings
+	{
+	}
+
+	[RTTI.Serializable(0xE9B2689D2C286008, GameType.DS)]
+	public class SRT_RTTI_AlbedoBindings
+	{
+	}
+
+	[RTTI.Serializable(0xF0936D3BF243387F, GameType.DS)]
+	public class SRT_RTTI_AtmosphericScatteringCB
+	{
+	}
+
+	[RTTI.Serializable(0x5DA0F3B7C3528234, GameType.DS)]
+	public class SRT_RTTI_AuroraBlurCB
+	{
+	}
+
+	[RTTI.Serializable(0xDE7B5581055536D4, GameType.DS)]
+	public class SRT_RTTI_AuroraRendererCB
+	{
+	}
+
+	[RTTI.Serializable(0x79F00C4DBC46A86F, GameType.DS)]
+	public class SRT_RTTI_BatchCustomData
+	{
+	}
+
+	[RTTI.Serializable(0x22CAD5FC44EF01E, GameType.DS)]
+	public class SRT_RTTI_BatchInfo
+	{
+	}
+
+	[RTTI.Serializable(0x8D78776495F137D1, GameType.DS)]
+	public class SRT_RTTI_CapsuleCollider
+	{
+	}
+
+	[RTTI.Serializable(0xE053D079059271C1, GameType.DS)]
+	public class SRT_RTTI_CloudDomeBlendCB
+	{
+	}
+
+	[RTTI.Serializable(0x22A7077AA0DCA9CA, GameType.DS)]
+	public class SRT_RTTI_CloudRendererCB
+	{
+	}
+
+	[RTTI.Serializable(0x1A7DAB00F6549742, GameType.DS)]
+	public class SRT_RTTI_ComputeSkinningVtxNbtType
+	{
+	}
+
+	[RTTI.Serializable(0x1BB242F4348C108A, GameType.DS)]
+	public class SRT_RTTI_ComputeSkinningVtxPos
+	{
+	}
+
+	[RTTI.Serializable(0x22CEA8BEB86D01E0, GameType.DS)]
+	public class SRT_RTTI_CubemapZone2SRTData
+	{
+	}
+
+	[RTTI.Serializable(0x1FD0A332FD5C9D11, GameType.DS)]
+	public class SRT_RTTI_DSTarEffectRayCheckComputeJobResources
+	{
+	}
+
+	[RTTI.Serializable(0x6D6FFDB2B7F786A6, GameType.DS)]
+	public class SRT_RTTI_DSTarEffectRayCheckQueryData
+	{
+	}
+
+	[RTTI.Serializable(0xD936204AF31470B7, GameType.DS)]
+	public class SRT_RTTI_DSTextureReaderComputeJobResources
+	{
+	}
+
+	[RTTI.Serializable(0xE42A587185F89E8, GameType.DS)]
+	public class SRT_RTTI_DeferredLightSamplingPerPassData
+	{
+	}
+
+	[RTTI.Serializable(0x43B8E344DCCF836B, GameType.DS)]
+	public class SRT_RTTI_DensityMapComputeParams
+	{
+	}
+
+	[RTTI.Serializable(0x3D69A9ED7E236DCA, GameType.DS)]
+	public class SRT_RTTI_DepthStencilBindings
+	{
+	}
+
+	[RTTI.Serializable(0xEE08A54C4600B744, GameType.DS)]
+	public class SRT_RTTI_DistantFogRendererCB
+	{
+	}
+
+	[RTTI.Serializable(0x52E4D655904469C2, GameType.DS)]
+	public class SRT_RTTI_EmitSlot
+	{
+	}
+
+	[RTTI.Serializable(0xEEFEA7AF5A80F3CA, GameType.DS)]
+	public class SRT_RTTI_ForceFieldComputeParams
+	{
+	}
+
+	[RTTI.Serializable(0x5F932837A1DCB945, GameType.DS)]
+	public class SRT_RTTI_ForceFieldDesc
+	{
+	}
+
+	[RTTI.Serializable(0x8CDB0033BE1081CC, GameType.DS)]
+	public class SRT_RTTI_ForceFieldSample
+	{
+	}
+
+	[RTTI.Serializable(0x3700184F90A77C3C, GameType.DS)]
+	public class SRT_RTTI_ForceFieldSampleResult
+	{
+	}
+
+	[RTTI.Serializable(0xA123DA1E604C27B4, GameType.DS)]
+	public class SRT_RTTI_ForceFieldtoTextureComputeJobParams
+	{
+	}
+
+	[RTTI.Serializable(0x39D997750B6DF1F0, GameType.DS)]
+	public class SRT_RTTI_ForwardPassIndirectConstants
+	{
+	}
+
+	[RTTI.Serializable(0xE520B31DB88079CC, GameType.DS)]
+	public class SRT_RTTI_ForwardPassIndirectParams
+	{
+	}
+
+	[RTTI.Serializable(0xE644812084E9416D, GameType.DS)]
+	public class SRT_RTTI_GBufferBindings
+	{
+	}
+
+	[RTTI.Serializable(0xE80C996D1DF8E4E1, GameType.DS)]
+	public class SRT_RTTI_GPUParticle
+	{
+	}
+
+	[RTTI.Serializable(0x6EE4E83748564546, GameType.DS)]
+	public class SRT_RTTI_GPUParticleSystemStats
+	{
+	}
+
+	[RTTI.Serializable(0xAFB2FEB313E690C1, GameType.DS)]
+	public class SRT_RTTI_GPUParticleUpdateParams
+	{
+	}
+
+	[RTTI.Serializable(0xDA0AA0F82455AAE6, GameType.DS)]
+	public class SRT_RTTI_GenerateComputeOutput
+	{
+	}
+
+	[RTTI.Serializable(0xDD6A553465DD0916, GameType.DS)]
+	public class SRT_RTTI_GenerateComputeParams
+	{
+	}
+
+	[RTTI.Serializable(0x45EAC48253A68301, GameType.DS)]
+	public class SRT_RTTI_GlobalConstants
+	{
+	}
+
+	[RTTI.Serializable(0xDF393F5BE57DD7D7, GameType.DS)]
+	public class SRT_RTTI_HairCollissionCB
+	{
+	}
+
+	[RTTI.Serializable(0x73EB8D8A5DAB0CA3, GameType.DS)]
+	public class SRT_RTTI_HairSimCB
+	{
+	}
+
+	[RTTI.Serializable(0x7274566BA2247F3A, GameType.DS)]
+	public class SRT_RTTI_HairSkinCB
+	{
+	}
+
+	[RTTI.Serializable(0xF91AEDC116CAFFBE, GameType.DS)]
+	public class SRT_RTTI_HeightFogSettingsCB
+	{
+	}
+
+	[RTTI.Serializable(0xA9430828D618D0D4, GameType.DS)]
+	public class SRT_RTTI_ImageBlendComputeConstants
+	{
+	}
+
+	[RTTI.Serializable(0xBDD441008792F7CA, GameType.DS)]
+	public class SRT_RTTI_ImageBlendComputeLayerInfo
+	{
+	}
+
+	[RTTI.Serializable(0x5D7B91410A0C0707, GameType.DS)]
+	public class SRT_RTTI_ImpactData
+	{
+	}
+
+	[RTTI.Serializable(0xBDDCF84D5369536D, GameType.DS)]
+	public class SRT_RTTI_InputData0
+	{
+	}
+
+	[RTTI.Serializable(0xB451D4F5F0F332CC, GameType.DS)]
+	public class SRT_RTTI_InstanceData
+	{
+	}
+
+	[RTTI.Serializable(0xA7AD21C27B02890E, GameType.DS)]
+	public class SRT_RTTI_InstanceWork
+	{
+	}
+
+	[RTTI.Serializable(0xFD2A140197490FC8, GameType.DS)]
+	public class SRT_RTTI_InteractionData
+	{
+	}
+
+	[RTTI.Serializable(0x55833C1AB136AE5, GameType.DS)]
+	public class SRT_RTTI_LensFlareConstants
+	{
+	}
+
+	[RTTI.Serializable(0xDD2EA3D0FE9F3721, GameType.DS)]
+	public class SRT_RTTI_LensFlareData
+	{
+	}
+
+	[RTTI.Serializable(0x6F1EE9405537F435, GameType.DS)]
+	public class SRT_RTTI_LightComposeIrradianceFullParams
+	{
+	}
+
+	[RTTI.Serializable(0x478164CB00A24ACB, GameType.DS)]
+	public class SRT_RTTI_LightComposeIrradianceFullParamsDx11
+	{
+	}
+
+	[RTTI.Serializable(0x16E5FAAF9767B3E5, GameType.DS)]
+	public class SRT_RTTI_LightComposeOutputParams
+	{
+	}
+
+	[RTTI.Serializable(0xD4B2357E78ED23D0, GameType.DS)]
+	public class SRT_RTTI_LightComposeTileParams
+	{
+	}
+
+	[RTTI.Serializable(0xF6DE23DE45AE558C, GameType.DS)]
+	public class SRT_RTTI_LightVolumeConstants
+	{
+	}
+
+	[RTTI.Serializable(0xCA85442D7790A31E, GameType.DS)]
+	public class SRT_RTTI_LightingMaterial
+	{
+	}
+
+	[RTTI.Serializable(0xAF65B6A29AB992A9, GameType.DS)]
+	public class SRT_RTTI_LightingProjectiveTextureData
+	{
+	}
+
+	[RTTI.Serializable(0x218FD1760C5423FA, GameType.DS)]
+	public class SRT_RTTI_LinearBufferComputeParams
+	{
+	}
+
+	[RTTI.Serializable(0xE760180FC7E33D98, GameType.DS)]
+	public class SRT_RTTI_LinearBufferState
+	{
+	}
+
+	[RTTI.Serializable(0x80A5A095E8EA76AA, GameType.DS)]
+	public class SRT_RTTI_LinkedListDepthValue
+	{
+	}
+
+	[RTTI.Serializable(0x343DC6AC69D2B9D4, GameType.DS)]
+	public class SRT_RTTI_MetaLight
+	{
+	}
+
+	[RTTI.Serializable(0xC336EEED6604E656, GameType.DS)]
+	public class SRT_RTTI_NormalBindings
+	{
+	}
+
+	[RTTI.Serializable(0xEE62B919920B7545, GameType.DS)]
+	public class SRT_RTTI_OcclusionCaptureBindings
+	{
+	}
+
+	[RTTI.Serializable(0xB115CCC6C4482170, GameType.DS)]
+	public class SRT_RTTI_OcclusionClearBindings
+	{
+	}
+
+	[RTTI.Serializable(0xA5D6D753A4D9C8ED, GameType.DS)]
+	public class SRT_RTTI_OcclusionDownsampleBindings
+	{
+	}
+
+	[RTTI.Serializable(0xE2FE09BF1F9BEFC3, GameType.DS)]
+	public class SRT_RTTI_OffscreenParams
+	{
+	}
+
+	[RTTI.Serializable(0xCCB489BEC58A2135, GameType.DS)]
+	public class SRT_RTTI_ParticleUpdateComputeParams
+	{
+	}
+
+	[RTTI.Serializable(0x2B938053A3076F0B, GameType.DS)]
+	public class SRT_RTTI_ParticleVertexGenerationDynamicParams
+	{
+	}
+
+	[RTTI.Serializable(0x66AD3CECCCA3FF26, GameType.DS)]
+	public class SRT_RTTI_ParticleVertexGenerationStaticParams
+	{
+	}
+
+	[RTTI.Serializable(0xD7F6EFA4417D1629, GameType.DS)]
+	public class SRT_RTTI_PlacementCommonSamplers
+	{
+	}
+
+	[RTTI.Serializable(0x570171ED78D87B87, GameType.DS)]
+	public class SRT_RTTI_PlacementComputeParams
+	{
+	}
+
+	[RTTI.Serializable(0xA0A371B9FB22481B, GameType.DS)]
+	public class SRT_RTTI_PlacementMatrixData
+	{
+	}
+
+	[RTTI.Serializable(0x5C6EF096660F9BCC, GameType.DS)]
+	public class SRT_RTTI_PlacementPipelineState
+	{
+	}
+
+	[RTTI.Serializable(0xB431CC8570A3E5C8, GameType.DS)]
+	public class SRT_RTTI_PlantComputeParams
+	{
+	}
+
+	[RTTI.Serializable(0xF925586DCF84D854, GameType.DS)]
+	public class SRT_RTTI_PostProcessDoFParams
+	{
+	}
+
+	[RTTI.Serializable(0x7266CB4FFC2918D5, GameType.DS)]
+	public class SRT_RTTI_PrecipitationOcclusionSampleParams
+	{
+	}
+
+	[RTTI.Serializable(0xF2186029E03530ED, GameType.DS)]
+	public class SRT_RTTI_PrecipitationOcclusionUpdateParams
+	{
+	}
+
+	[RTTI.Serializable(0xE7F9A3FC923BF00E, GameType.DS)]
+	public class SRT_RTTI_QueryClusterBindings
+	{
+	}
+
+	[RTTI.Serializable(0xBA0AA3B53C44F15F, GameType.DS)]
+	public class SRT_RTTI_QueryGlobalBindings
+	{
+	}
+
+	[RTTI.Serializable(0xE05BDCF807AD230D, GameType.DS)]
+	public class SRT_RTTI_QueryOutputBindings
+	{
+	}
+
+	[RTTI.Serializable(0xE7A671E72D6067B1, GameType.DS)]
+	public class SRT_RTTI_QueryPackedOutputBindings
+	{
+	}
+
+	[RTTI.Serializable(0x27A2998E259063AF, GameType.DS)]
+	public class SRT_RTTI_QueryShaderBounds
+	{
+	}
+
+	[RTTI.Serializable(0x91F4615F7176012F, GameType.DS)]
+	public class SRT_RTTI_QueryShaderConstants
+	{
+	}
+
+	[RTTI.Serializable(0x56FFDF4311971291, GameType.DS)]
+	public class SRT_RTTI_QueryShaderInstance
+	{
+	}
+
+	[RTTI.Serializable(0xEB1C8B1181718C9A, GameType.DS)]
+	public class SRT_RTTI_QueryShaderLod
+	{
+	}
+
+	[RTTI.Serializable(0x3ECA4754CC562016, GameType.DS)]
+	public class SRT_RTTI_QueryShaderMatrix
+	{
+	}
+
+	[RTTI.Serializable(0x49D426CF20A29C5, GameType.DS)]
+	public class SRT_RTTI_QueryShaderObject
+	{
+	}
+
+	[RTTI.Serializable(0xB3D71151D10FC51A, GameType.DS)]
+	public class SRT_RTTI_QueryShaderSetup
+	{
+	}
+
+	[RTTI.Serializable(0x90B3A531845A9068, GameType.DS)]
+	public class SRT_RTTI_QueryTileBindings
+	{
+	}
+
+	[RTTI.Serializable(0xC54A5204AFD3E343, GameType.DS)]
+	public class SRT_RTTI_RasterizerVariables
+	{
+	}
+
+	[RTTI.Serializable(0x1670F5944BE9302E, GameType.DS)]
+	public class SRT_RTTI_RasterizerVariablesExtended
+	{
+	}
+
+	[RTTI.Serializable(0x8E7D5D5EFE69562D, GameType.DS)]
+	public class SRT_RTTI_ReflectanceBindings
+	{
+	}
+
+	[RTTI.Serializable(0x8D0D98380B5013E3, GameType.DS)]
+	public class SRT_RTTI_RenderPassBindings
+	{
+	}
+
+	[RTTI.Serializable(0x8F5AF8BB66018E40, GameType.DS)]
+	public class SRT_RTTI_SSParticle
+	{
+	}
+
+	[RTTI.Serializable(0xB5F87E810DFF1F19, GameType.DS)]
+	public class SRT_RTTI_ShaderFogSettings
+	{
+	}
+
+	[RTTI.Serializable(0x7E67ADE99481ACF7, GameType.DS)]
+	public class SRT_RTTI_ShaderLightVolumeSettings
+	{
+	}
+
+	[RTTI.Serializable(0x258ED352BBD2353F, GameType.DS)]
+	public class SRT_RTTI_ShadowCubeMapSampleBindings
+	{
+	}
+
+	[RTTI.Serializable(0xE154765B93556044, GameType.DS)]
+	public class SRT_RTTI_ShadowMapConstants
+	{
+	}
+
+	[RTTI.Serializable(0x1824AE144E97730, GameType.DS)]
+	public class SRT_RTTI_ShadowMapSampleBindings
+	{
+	}
+
+	[RTTI.Serializable(0xC59DB53CBA13FFE, GameType.DS)]
+	public class SRT_RTTI_ShadowMapSampleConstants
+	{
+	}
+
+	[RTTI.Serializable(0x712F64DF73A6DF82, GameType.DS)]
+	public class SRT_RTTI_SharedTiledVertexParams
+	{
+	}
+
+	[RTTI.Serializable(0xBD59A4F77743CC38, GameType.DS)]
+	public class SRT_RTTI_SimulationLink
+	{
+	}
+
+	[RTTI.Serializable(0xB799165F6DD3F700, GameType.DS)]
+	public class SRT_RTTI_SimulationPointSettings
+	{
+	}
+
+	[RTTI.Serializable(0x2FBBA2BA19090D92, GameType.DS)]
+	public class SRT_RTTI_SkinnedMeshBatchData
+	{
+	}
+
+	[RTTI.Serializable(0x7091F900DB4AA404, GameType.DS)]
+	public class SRT_RTTI_SkinnedMeshInstanceData
+	{
+	}
+
+	[RTTI.Serializable(0xA7314DDBE18C25CC, GameType.DS)]
+	public class SRT_RTTI_SnowInteractionBatchSampleParams
+	{
+	}
+
+	[RTTI.Serializable(0x4C4AC88E39B65B39, GameType.DS)]
+	public class SRT_RTTI_SnowInteractionSampleParams
+	{
+	}
+
+	[RTTI.Serializable(0xD50E27A7057CBF25, GameType.DS)]
+	public class SRT_RTTI_SnowInteractionUpdateParams
+	{
+	}
+
+	[RTTI.Serializable(0xD57BC5581078F6BC, GameType.DS)]
+	public class SRT_RTTI_SoundCollisionMapEntry
+	{
+	}
+
+	[RTTI.Serializable(0xAF57B29A867B0D7D, GameType.DS)]
+	public class SRT_RTTI_SoundInstanceData
+	{
+	}
+
+	[RTTI.Serializable(0x8D92C90147D01948, GameType.DS)]
+	public class SRT_RTTI_SoundObstructionData
+	{
+	}
+
+	[RTTI.Serializable(0x38B229E144605731, GameType.DS)]
+	public class SRT_RTTI_SoundObstructionSampleComputeJobResources
+	{
+	}
+
+	[RTTI.Serializable(0xD71618C556D095, GameType.DS)]
+	public class SRT_RTTI_StreamingCheckActivationComputeJobResources
+	{
+	}
+
+	[RTTI.Serializable(0x5D7D985CBEF0110B, GameType.DS)]
+	public class SRT_RTTI_StreamingPriorityGPUComputeJobResources
+	{
+	}
+
+	[RTTI.Serializable(0xD4944B844FED9528, GameType.DS)]
+	public class SRT_RTTI_SunShadowProjectionConstants
+	{
+	}
+
+	[RTTI.Serializable(0xFC36FFF637A1271F, GameType.DS)]
+	public class SRT_RTTI_SunShadowProjectionSettings
+	{
+	}
+
+	[RTTI.Serializable(0x545F21A51AD1D810, GameType.DS)]
+	public class SRT_RTTI_SunShadowSampleConstants
+	{
+	}
+
+	[RTTI.Serializable(0xB0FA7668022EF366, GameType.DS)]
+	public class SRT_RTTI_SunShadowSampleSettings
+	{
+	}
+
+	[RTTI.Serializable(0x919ACCAE1576357, GameType.DS)]
+	public class SRT_RTTI_Texture3DBlurCB
+	{
+	}
+
+	[RTTI.Serializable(0xBEFDB57B14534A1A, GameType.DS)]
+	public class SRT_RTTI_VegetationInteractionSampleParams
+	{
+	}
+
+	[RTTI.Serializable(0x83B31A073833F5DE, GameType.DS)]
+	public class SRT_RTTI_VegetationInteractionUpdateParams
+	{
+	}
+
+	[RTTI.Serializable(0x2BDF64E650646666, GameType.DS)]
+	public class SRT_RTTI_ViewConstants
+	{
+	}
+
+	[RTTI.Serializable(0x5645B78F8D59C433, GameType.DS)]
+	public class SRT_RTTI_VolumeLightAreaCB
+	{
+	}
+
+	[RTTI.Serializable(0xF2D38960B3AE292F, GameType.DS)]
+	public class SRT_RTTI_WaterInteractionSampleParams
+	{
+	}
+
+	[RTTI.Serializable(0xD5E9B20EE0C3DE08, GameType.DS)]
+	public class SRT_RTTI_WorldDataCacheComputeJobResources
+	{
+	}
+
+	[RTTI.Serializable(0xC8372EA346E234FC, GameType.DS)]
+	public class SRT_RTTI_WorldDataProbeTextureCopyCB
+	{
+	}
+
+	[RTTI.Serializable(0x5339D2B8987FB75E, GameType.DS)]
+	public class SRT_RTTI_WorldDataTileSRTData
+	{
+	}
+
+	[RTTI.Serializable(0x48118E500BC381AD, GameType.DS)]
+	public class SRT_RTTI_WorldDataTypePackingSRTData
+	{
+	}
+
+	[RTTI.Serializable(0x21E757740A024A7A, GameType.DS)]
+	public class SRT_RTTI_WorldMapHeightSampleComputeResources
+	{
+	}
+
+	[RTTI.Serializable(0x3AEB87E58D98D8CB, GameType.DS)]
+	public class SRT_RTTI_float
+	{
+	}
+
+	[RTTI.Serializable(0x60D05D04790741A3, GameType.DS)]
+	public class SRT_RTTI_float2
+	{
+	}
+
+	[RTTI.Serializable(0x696490301D279D50, GameType.DS)]
+	public class SRT_RTTI_float3
+	{
+	}
+
+	[RTTI.Serializable(0x960697B893A82A0F, GameType.DS)]
+	public class SRT_RTTI_float4
+	{
+	}
+
+	[RTTI.Serializable(0xC6EA40795135EED4, GameType.DS)]
+	public class SRT_RTTI_int
+	{
+	}
+
+	[RTTI.Serializable(0xB6804A97C32C1F80, GameType.DS)]
+	public class SRT_RTTI_int2
+	{
+	}
+
+	[RTTI.Serializable(0xC5AE416E7A923A3E, GameType.DS)]
+	public class SRT_RTTI_int3
+	{
+	}
+
+	[RTTI.Serializable(0x254FC20DB639F7BE, GameType.DS)]
+	public class SRT_RTTI_int4
+	{
+	}
+
+	[RTTI.Serializable(0x994E23EB38188F79, GameType.DS)]
+	public class SRT_RTTI_uint
+	{
+	}
+
+	[RTTI.Serializable(0xA704C4502B227BD3, GameType.DS)]
+	public class SRT_RTTI_uint2
+	{
+	}
+
+	[RTTI.Serializable(0xE3BB2417DA7D66AC, GameType.DS)]
+	public class SRT_RTTI_uint3
+	{
+	}
+
+	[RTTI.Serializable(0x2DEB3ABF2100D22C, GameType.DS)]
+	public class SRT_RTTI_uint4
+	{
 	}
 
 	[RTTI.Serializable(0xAD5CFD8252EF3D1F, GameType.DS)]
@@ -59328,6 +63655,11 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x20, "Logic")] public bool BroadcastToAllScenes;
 	}
 
+	[RTTI.Serializable(0xE7018AD0394B8E6B, GameType.DS)]
+	public class SceneComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x61A80D5E9CA27A74, GameType.DS)]
 	public class SceneEntityImpostorInfo
 	{
@@ -59359,6 +63691,11 @@ namespace Decima.DS
 	public class SceneInstance : ScenePrefabInstance
 	{
 		[RTTI.Member(37, 0x150, "General")] public Ref<Scene> SceneResource;
+	}
+
+	[RTTI.Serializable(0xA2299D6E339F47F3, GameType.DS)]
+	public class SceneInstanceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x7FFE1D958322C5F8, GameType.DS)]
@@ -59409,6 +63746,11 @@ namespace Decima.DS
 		[RTTI.Member(19, 0x148, "General")] public Ref<ConditionResource> ActivateCondition;
 	}
 
+	[RTTI.Serializable(0x4FCA78DE92D06007, GameType.DS)]
+	public class ScenePrefabInstanceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x5E7FFEFBD6052997, GameType.DS)]
 	public class SceneRemovalActivationPolicy : EntityActivationPolicy
 	{
@@ -59455,6 +63797,11 @@ namespace Decima.DS
 	public class SceneScheduleResource : GameScheduleResource
 	{
 		[RTTI.Member(6, 0x38, "Scene")] public float SimulatedMovementSpeed;
+	}
+
+	[RTTI.Serializable(0x6F4E68210CD884, GameType.DS)]
+	public class SceneSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x649BDEE74AA58FFE, GameType.DS)]
@@ -59757,6 +64104,11 @@ namespace Decima.DS
 		[RTTI.Member(7, 0x40, "General")] public Array<Ref<SentenceResource>> Sentences;
 	}
 
+	[RTTI.Serializable(0x8C3344BB240E7D, GameType.DS)]
+	public class SentenceGroupResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xAD7F486B5DD745A4, GameType.DS)]
 	public class SentenceResource : Resource
 	{
@@ -59767,6 +64119,11 @@ namespace Decima.DS
 		[RTTI.Member(7, 0x38, "General")] public Ref<LocalizedAnimationResource> Animation;
 		[RTTI.Member(8, 0x40, "General")] public Ref<LocalizedTextResource> Text;
 		[RTTI.Member(9, 0x48, "General")] public Ref<VoiceResource> Voice;
+	}
+
+	[RTTI.Serializable(0x1CF432CC3EB4824, GameType.DS)]
+	public class SentenceResourceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x25E9540FF0E3BBD2, GameType.DS)]
@@ -59807,6 +64164,11 @@ namespace Decima.DS
 		[RTTI.Member(6, 0x50, "Sequence", true)] public CPtr<Sequence> Sequence;
 	}
 
+	[RTTI.Serializable(0x56F74E8BCC96C2E8, GameType.DS)]
+	public class SequenceComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x32697FDC321731B6, GameType.DS)]
 	public class SequenceEntity : Entity
 	{
@@ -59835,6 +64197,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x94A6E8F84C8118D3, GameType.DS)]
 	public class SequenceEntityVariableInstance : SequenceLocatorVariableInstance
+	{
+	}
+
+	[RTTI.Serializable(0xCC84B2AEA50E8AFE, GameType.DS)]
+	public class SequenceEntityVariableSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -59915,6 +64282,11 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x20, "Logic")] public Ref<SequenceNetworkResource> SequenceNetwork;
 	}
 
+	[RTTI.Serializable(0x46120E95E7005CD1, GameType.DS)]
+	public class SequenceNetworkComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xAB3F9728C0AEFDB3, GameType.DS)]
 	public class SequenceNetworkCondition : SequenceNetworkConditionBase
 	{
@@ -59990,6 +64362,11 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x50, "General")] public CPtr<SequenceNetworkResource> Resource;
 	}
 
+	[RTTI.Serializable(0xD4AE5BCC81938AB8, GameType.DS)]
+	public class SequenceNetworkInstanceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x2B3569153BAECB14, GameType.DS)]
 	public class SequenceNetworkInterruptHandler : Resource
 	{
@@ -60029,6 +64406,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x79A8370286D70445, GameType.DS)]
 	public class SequenceNetworkNodeInstance : RTTIObject
+	{
+	}
+
+	[RTTI.Serializable(0x6A5CD5E3C5A05EF2, GameType.DS)]
+	public class SequenceNetworkNodeSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -60113,6 +64495,11 @@ namespace Decima.DS
 		[RTTI.Member(14, 0x98, "Generated")] public Array<SequenceNetworkMountMode> MountModes;
 		[RTTI.Member(15, 0xA8, "Generated")] public Array<SequenceNetworkDismountMode> DismountModes;
 		[RTTI.Member(16, 0xB8, "Generated")] public Array<UUIDRef<SequenceNetworkResource>> ForwardSequenceNetworks;
+	}
+
+	[RTTI.Serializable(0x11FFE20E6496310E, GameType.DS)]
+	public class SequenceNetworkResourceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xA6CE3ABCCDE2FD5F, GameType.DS)]
@@ -60327,6 +64714,11 @@ namespace Decima.DS
 	public class SequenceResourceBase : EntityResource
 	{
 		[RTTI.Member(31, 0x100, "General")] public String Name;
+	}
+
+	[RTTI.Serializable(0xB3D5D58E79267F69, GameType.DS)]
+	public class SequenceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xF390E33315E48D95, GameType.DS)]
@@ -60797,6 +65189,11 @@ namespace Decima.DS
 		[RTTI.Member(12, 0x58, "DelayStart")] public float DelayStartTime;
 	}
 
+	[RTTI.Serializable(0x2729271C07CFF2B7, GameType.DS)]
+	public class ShaderAnimComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x7929D52663C50D0D, GameType.DS)]
 	public class ShaderAnimCurveSet : Resource
 	{
@@ -60965,6 +65362,11 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x20, "Logic")] public Ref<GraphProgramResource> GraphProgram;
 	}
 
+	[RTTI.Serializable(0x7DE06B5C5064C12F, GameType.DS)]
+	public class ShaderVariableComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xFE2843D4AAD255E7, GameType.DS)]
 	public class ShadingGroup : Resource
 	{
@@ -61065,6 +65467,11 @@ namespace Decima.DS
 		[RTTI.Member(26, 0x98, "Private")] public Ref<IntegerFact> LastDamageGameTimeFact;
 		[RTTI.Member(27, 0xA0, "Private")] public Ref<FloatFact> RegenerationSpeedFact;
 		[RTTI.Member(28, 0xA8, "Private")] public Ref<IntegerFact> LastRegenerationGameTimeFact;
+	}
+
+	[RTTI.Serializable(0x41F5F19689103FE8, GameType.DS)]
+	public class ShieldComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xFAE61686B1977742, GameType.DS)]
@@ -61196,6 +65603,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x3234F5E627A587DE, GameType.DS)]
+	public class SimplePathMoverSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xF339FECBEE432A7E, GameType.DS)]
 	public class SimplePolygon
 	{
@@ -61279,6 +65691,11 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x8D74080411833C99, GameType.DS)]
+	public class SkeletonAnimationEventPayloadSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x50E6EDCD8229496F, GameType.DS)]
 	public class SkeletonAnimationEventSound : SkeletonAnimationEventPayload
 	{
@@ -61321,6 +65738,11 @@ namespace Decima.DS
 		[RTTI.Member(14, 0x70, "General")] public Vec3 LocomotionDeltaTranslation;
 		[RTTI.Member(12, 0x80, "General")] public Ref<SkeletonAnimationEventsResource> Events;
 		[RTTI.Member(15, 0x88, "General")] public Array<uint32> AnimEvent;
+	}
+
+	[RTTI.Serializable(0xA5A5512F0AA803AD, GameType.DS)]
+	public class SkeletonAnimationResourceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xF95259E7154F2739, GameType.DS)]
@@ -61462,6 +65884,11 @@ namespace Decima.DS
 		[RTTI.Member(19, 0xB8, "General", true)] public Ref<AbilityAnimationResource> AbilityAnimationResource;
 	}
 
+	[RTTI.Serializable(0xC4B9E97DCE64EBD9, GameType.DS)]
+	public class SkinnedModelSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x4599C370ADA6912F, GameType.DS)]
 	public class SkinnedPoint
 	{
@@ -61579,6 +66006,11 @@ namespace Decima.DS
 		[RTTI.Member(6, 0x2C, "Logic")] public float BlendOutTime;
 	}
 
+	[RTTI.Serializable(0x1EBE3E277390FE31, GameType.DS)]
+	public class SlowMotionSettingResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x15D1014B7936A22, GameType.DS)]
 	public class SmartObjectArea : NavMeshArea
 	{
@@ -61602,6 +66034,11 @@ namespace Decima.DS
 		[RTTI.Member(6, 0x3C, "Logic")] public float CooldownTime;
 		[RTTI.Member(7, 0x40, "Logic")] public TagPropertyLinkCollection RequiredTags;
 		[RTTI.Member(8, 0x50, "Logic")] public TagPropertyLinkCollection DisallowedTags;
+	}
+
+	[RTTI.Serializable(0x33CDAF75D62357EA, GameType.DS)]
+	public class SmartObjectComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x60208F7CCB3F07D7, GameType.DS)]
@@ -61727,6 +66164,11 @@ namespace Decima.DS
 		[RTTI.Member(4, 0x30)] public Ref<ShaderResource> BatchSampleShader;
 	}
 
+	[RTTI.Serializable(0x9E4661998D0B9B78, GameType.DS)]
+	public class SnowInteractionSystemSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x6317BAC8B52FB4E1, GameType.DS)]
 	public class SoldierAIController : HumanoidController
 	{
@@ -61784,6 +66226,11 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x30)] public Array<SoundParameterPODVariant> ImpactSoundParameters;
 	}
 
+	[RTTI.Serializable(0x7C18CA92F82EF4AA, GameType.DS)]
+	public class SoundComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xD59A044EB6C6A1D5, GameType.DS)]
 	public class SoundEnvironment : WorldEnvironment
 	{
@@ -61794,6 +66241,11 @@ namespace Decima.DS
 		[RTTI.Member(9, 0x54)] public float MaxSoundsPerSpawnPoint;
 		[RTTI.Member(10, 0x58)] public Ref<GraphProgramResource> SoundSpawnLogic;
 		[RTTI.Member(11, 0x60)] public Array<IRange> SpawnPointRange;
+	}
+
+	[RTTI.Serializable(0xCF0FB7A7ECD0872B, GameType.DS)]
+	public class SoundEnvironmentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x4D0A59DCF294E2B1, GameType.DS)]
@@ -61841,6 +66293,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0x24F28A610A51E65B, GameType.DS)]
 	public class SoundInstanceBase : WorldNode
+	{
+	}
+
+	[RTTI.Serializable(0xF6D7C2BB166870C4, GameType.DS)]
+	public class SoundInstanceSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -62302,6 +66759,11 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x28)] public Ref<EntityImpostorResource> Impostor;
 	}
 
+	[RTTI.Serializable(0x3EB8484980BAA20A, GameType.DS)]
+	public class SpawnSetupNonPlaceholderSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xE451110CC235107A, GameType.DS)]
 	public class SpawnSetupOverride
 	{
@@ -62339,6 +66801,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xF82730BBF40AE72C, GameType.DS)]
 	public class SpawnSetupStreamingHintComponent : EntityComponent
+	{
+	}
+
+	[RTTI.Serializable(0xFB65846B5AF94C3, GameType.DS)]
+	public class SpawnSetupSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -62405,11 +66872,21 @@ namespace Decima.DS
 		[RTTI.Member(26, 0x150, "Logic")] public GGUUID OriginalUUID;
 	}
 
+	[RTTI.Serializable(0xFEA2BBA38570EB4D, GameType.DS)]
+	public class SpawnpointBaseSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xA8D3AC388103E9C, GameType.DS)]
 	public class SpawnpointGame : Spawnpoint
 	{
 		[RTTI.Member(33, 0x1B0, "Logic")] public Ref<NPCScheduleResource> ScheduleResource;
 		[RTTI.Member(34, 0x1B8, "Logic")] public Ref<EntityResource> StartSequenceNetwork;
+	}
+
+	[RTTI.Serializable(0xCAC2B9E653DD5340, GameType.DS)]
+	public class SpawnpointGameSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x245C9D2CA1DCC2A9, GameType.DS)]
@@ -62420,6 +66897,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xB40E36F5E244C6EA, GameType.DS)]
 	public class SpawnpointSequenceEntityVariableInstance : SequenceEntityVariableInstance
+	{
+	}
+
+	[RTTI.Serializable(0x3DB7749FAD517B9E, GameType.DS)]
+	public class SpawnpointSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -62618,6 +67100,11 @@ namespace Decima.DS
 		[RTTI.Member(5, 0x38, "Logic")] public String IsActiveAnimTagName;
 	}
 
+	[RTTI.Serializable(0x4E6D6C7CC560212C, GameType.DS)]
+	public class StaggerStateComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x2AD1EAC1078E4293, GameType.DS)]
 	public class StaminaAnimationSettings : Resource
 	{
@@ -62644,6 +67131,11 @@ namespace Decima.DS
 		[RTTI.Member(7, 0x30, "Logic")] public float ConsumptionRegenerationDelay;
 		[RTTI.Member(8, 0x34, "Logic")] public float EmptyRegenerationDelay;
 		[RTTI.Member(9, 0x38, "Logic")] public Array<Ref<StaminaAnimationSettings>> AnimationSettings;
+	}
+
+	[RTTI.Serializable(0xF324A8AEBF1E1C61, GameType.DS)]
+	public class StaminaComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xCDD3BACF23F0031, GameType.DS)]
@@ -63071,14 +67563,29 @@ namespace Decima.DS
 		[RTTI.Member(4, 0x28, "General")] public Array<Ref<StreamingTileStateResource>> States;
 	}
 
+	[RTTI.Serializable(0x54E452351ACAE6D6, GameType.DS)]
+	public class StreamingTileResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x8C348AF2D505E5BC, GameType.DS)]
 	public class StreamingTileStateResource : CoreObject
 	{
 		[RTTI.Member(3, 0x20, "General")] public Array<Ref<StreamingTileLODResource>> LODs;
 	}
 
+	[RTTI.Serializable(0x7639D40E12A8116A, GameType.DS)]
+	public class StreamingTileStateResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xE86F39E978DCD8D4, GameType.DS)]
 	public class StringToolsGroup
+	{
+	}
+
+	[RTTI.Serializable(0xC448DDC186FF05C5, GameType.DS)]
+	public class StringToolsGroupSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -63168,6 +67675,11 @@ namespace Decima.DS
 		[RTTI.Member(5, 0x20, "Representation")] public Ref<BoneAttachedParticleSystemResource> StunParticleSystem;
 		[RTTI.Member(6, 0x28, "Representation")] public String StunAnimVarName;
 		[RTTI.Member(3, 0x30, "Logic")] public bool DeactivateMoverOnStun;
+	}
+
+	[RTTI.Serializable(0x6750C20D5BCB0805, GameType.DS)]
+	public class StunnedComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x1EE938E0A7F25C8B, GameType.DS)]
@@ -63556,8 +68068,18 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x519A0EEF801D8637, GameType.DS)]
+	public class TagEventButtonPressAndHoldFinishSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x74E7393B7D04D4D9, GameType.DS)]
 	public class TagEventButtonPressAndHoldStart : TagEventInput
+	{
+	}
+
+	[RTTI.Serializable(0x31D149775F2AE7E8, GameType.DS)]
+	public class TagEventButtonPressAndHoldStartSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -63597,6 +68119,11 @@ namespace Decima.DS
 		[RTTI.Member(4, 0x0)] public CPtr<DataNode> Data;
 	}
 
+	[RTTI.Serializable(0xA3CD2398E97AFF7B, GameType.DS)]
+	public class TagEventDataProviderUpdateSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xE7D28F000143436F, GameType.DS)]
 	public class TagEventDeinitialize : TagEvent
 	{
@@ -63625,6 +68152,11 @@ namespace Decima.DS
 		[RTTI.Member(6, 0x38)] public CPtr<Tag> RootElement;
 	}
 
+	[RTTI.Serializable(0x4572DF58AAD44351, GameType.DS)]
+	public class TagEventInputSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xB1B2A01BF7E5FEA1, GameType.DS)]
 	public class TagEventMenuStateChanged : TagEvent
 	{
@@ -63645,6 +68177,11 @@ namespace Decima.DS
 	public class TagEventPageOn : TagEvent
 	{
 		[RTTI.Member(4, 0x18)] public CPtr<Tag> PageRoot;
+	}
+
+	[RTTI.Serializable(0x609BA4665C3A41C6, GameType.DS)]
+	public class TagEventSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xDFAF5F2DF5F6B491, GameType.DS)]
@@ -63681,10 +68218,20 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0x142414D7B6F193EE, GameType.DS)]
+	public class TalkComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x7C95CE67258AB427, GameType.DS)]
 	public class TalkPriority : Resource
 	{
 		[RTTI.Member(2, 0x20)] public float Priority;
+	}
+
+	[RTTI.Serializable(0x93BFD208B9AB4F95, GameType.DS)]
+	public class TalkPrioritySymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x71E49D24478F77C5, GameType.DS)]
@@ -64719,6 +69266,20 @@ namespace Decima.DS
 	{
 	}
 
+	[RTTI.Serializable(0xE5DEA7EC475070C, GameType.DS)]
+	public class TerrainInteractionLayerParams
+	{
+		[RTTI.Member(0, 0x0)] public Vec4 GridSize;
+		[RTTI.Member(1, 0x10)] public Vec4 UVCentralAndOffset;
+		[RTTI.Member(2, 0x20)] public Vec4 DiffParam;
+	}
+
+	[RTTI.Serializable(0xAD6D594C94B96538, GameType.DS)]
+	public class TerrainInteractionLayerStampInstance : WorldNode
+	{
+		[RTTI.Member(4, 0x60)] public EStampGeomTyoe StampType;
+	}
+
 	[RTTI.Serializable(0xCBFBB63411299DE5, GameType.DS)]
 	public class TerrainMaterial : Resource
 	{
@@ -64834,6 +69395,11 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x20, "Logic")] public float TetherRadius;
 		[RTTI.Member(4, 0x28, "Logic")] public Ref<CurveResource> RoundsOverTime;
 		[RTTI.Member(5, 0x30, "Logic")] public int TotalRoundsAvailable;
+	}
+
+	[RTTI.Serializable(0x7336632E32594525, GameType.DS)]
+	public class TetheredAmmoPileComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xF7481F9524AC084C, GameType.DS)]
@@ -65045,6 +69611,11 @@ namespace Decima.DS
 		[RTTI.Member(8, 0x48, "Input")] public Ref<CurveResource> LookSensitivityToPitchScaler;
 	}
 
+	[RTTI.Serializable(0x9020131CD15669FF, GameType.DS)]
+	public class ThirdPersonPlayerCameraComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xB21BDB0CBB66AB0A, GameType.DS)]
 	public class ThresholdBasedContextualEmotion : ContextualEmotion
 	{
@@ -65133,6 +69704,16 @@ namespace Decima.DS
 		[RTTI.Member(59, 0x1C8, "Logic")] public bool BounceFromHumanoids;
 		[RTTI.Member(60, 0x1C9, "Logic")] public bool IgnoreCollisionWithPhysicsCapsules;
 		[RTTI.Member(62, 0x1CC, "AI")] public float ThreatRemovalTime;
+	}
+
+	[RTTI.Serializable(0x782CC0299F7CC137, GameType.DS)]
+	public class ThrowableSymbols : ExportedSymbolGroup
+	{
+	}
+
+	[RTTI.Serializable(0xD6EF9EB5C8A9ED2B, GameType.DS)]
+	public class TileBasedStreamingStrategyInstanceSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x3C0D150DB02D8C80, GameType.DS)]
@@ -65324,6 +69905,11 @@ namespace Decima.DS
 		[RTTI.Member(6, 0x68, "Logic")] public bool IsShownOutsideFocus;
 	}
 
+	[RTTI.Serializable(0x9F9450C0609FF1D5, GameType.DS)]
+	public class TrackingPathSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xA59084D70F7FB01D, GameType.DS)]
 	public class TrackingPathTrailBaseResource : Resource
 	{
@@ -65424,6 +70010,11 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x28)] public String HelperNode;
 	}
 
+	[RTTI.Serializable(0x1EE8B92080AFCCBB, GameType.DS)]
+	public class TriggerComponentResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xEA01DFFCD43C0A89, GameType.DS)]
 	public class TriggerComponentTrigger : CollisionTrigger
 	{
@@ -65444,6 +70035,11 @@ namespace Decima.DS
 		[RTTI.Member(5, 0x38)] public String StatApiName;
 	}
 
+	[RTTI.Serializable(0xE10F55804F049E27, GameType.DS)]
+	public class TrophyResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xB7A06FA01FA42E8C, GameType.DS)]
 	public class TrophySystem : CoreObject
 	{
@@ -65455,6 +70051,11 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x20, "General")] public Array<Ref<TrophyResource>> Trophies;
 		[RTTI.Member(5, 0x40, "Requirements")] public Ref<TrophyResource> EquipmentModificationTrophy;
 		[RTTI.Member(6, 0x48, "Requirements")] public Ref<TrophyResource> SpecalTrophy;
+	}
+
+	[RTTI.Serializable(0xEA715C6AAA9FC6BC, GameType.DS)]
+	public class TrophySystemSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xCE870D61B914958C, GameType.DS)]
@@ -65570,6 +70171,11 @@ namespace Decima.DS
 
 	[RTTI.Serializable(0xD0D2E9791FF76933, GameType.DS)]
 	public class UTFToolsGroup
+	{
+	}
+
+	[RTTI.Serializable(0xF28B0A48BB5A068E, GameType.DS)]
+	public class UTFToolsGroupSymbols : ExportedSymbolGroup
 	{
 	}
 
@@ -65811,6 +70417,11 @@ namespace Decima.DS
 		[RTTI.Member(35, 0xC0, "Representation")] public bool ShowBusyIcon;
 	}
 
+	[RTTI.Serializable(0x9124123EE252F8CE, GameType.DS)]
+	public class UseLocationSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x5F80C5FDC88FF514, GameType.DS)]
 	public class UseSpeedModifierComponent : EntityComponent
 	{
@@ -66034,6 +70645,11 @@ namespace Decima.DS
 		[RTTI.Member(10, 0x48, "Logic")] public Array<String> LoweredVisualNodeBones;
 	}
 
+	[RTTI.Serializable(0x73D77FD5165C6FC3, GameType.DS)]
+	public class VegetationCoverComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xF3E9A514FFA0D278, GameType.DS)]
 	public class VegetationInteractionSystem : EnvironmentInteractionSystem
 	{
@@ -66132,6 +70748,11 @@ namespace Decima.DS
 		[RTTI.Member(65, 0x230, "Effect")] public Array<Ref<AttachedLightsComponentResource>> BurstLightComponents;
 		[RTTI.Member(66, 0x240, "Effect")] public Array<Ref<AttachedLightsComponentResource>> BurstMiddleLightComponents;
 		[RTTI.Member(67, 0x250, "Effect")] public Array<Ref<AttachedLightsComponentResource>> BurstLowLightComponents;
+	}
+
+	[RTTI.Serializable(0xB769B2F52474E5BB, GameType.DS)]
+	public class VehicleEntitySymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x984C498EC2D04098, GameType.DS)]
@@ -66351,6 +70972,11 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x20, "Logic")] public Array<Ref<VoiceSignalsResource>> Signals;
 	}
 
+	[RTTI.Serializable(0xD3CDBF5E36E44BAF, GameType.DS)]
+	public class VoiceComponentSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0xE676A549155DA53B, GameType.DS)]
 	public class VoiceResource : ResourceWithName
 	{
@@ -66359,11 +70985,23 @@ namespace Decima.DS
 		[RTTI.Member(7, 0x30, "General")] public Ref<LocalizedTextResource> NameResource;
 	}
 
+	[RTTI.Serializable(0xF65943CE983AF14, GameType.DS)]
+	public class VoiceResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x4BFBDCB7D62D9C59, GameType.DS)]
 	public class VoiceSignalsResource : Resource
 	{
 		[RTTI.Member(3, 0x20)] public Ref<VoiceResource> Voice;
 		[RTTI.Member(2, 0x28)] public Array<Ref<AISignalResource>> AISignals;
+	}
+
+	[RTTI.Serializable(0xC5E8845736537FEE, GameType.DS)]
+	public class VolumeLightArea : WorldNode
+	{
+		[RTTI.BaseClass(0x60)] public Shape2DExtrusion @Shape2DExtrusion;
+		[RTTI.Member(10, 0xA0, "General")] public float FadeRange;
 	}
 
 	[RTTI.Serializable(0xDF4CC1DF71D8DBD1, GameType.DS)]
@@ -66445,6 +71083,11 @@ namespace Decima.DS
 		[RTTI.Member(12, 0xC0, "Logic")] public String Label;
 	}
 
+	[RTTI.Serializable(0x8CC1DBC56794787, GameType.DS)]
+	public class WalkAndTalkPathSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x72732A020CC456EB, GameType.DS)]
 	public class WarpedAnimation : Resource
 	{
@@ -66484,6 +71127,11 @@ namespace Decima.DS
 	public class WaterDetectionComponentResource : EntityComponentResource
 	{
 		[RTTI.Member(3, 0x20, "Logic")] public Ref<CurveResource> DepthToMovementModifierCurve;
+	}
+
+	[RTTI.Serializable(0x8181A8568CE0BD93, GameType.DS)]
+	public class WaterDetectionComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xB14D26407BA7FE6C, GameType.DS)]
@@ -66798,11 +71446,21 @@ namespace Decima.DS
 		[RTTI.Member(7, 0x48, "AI")] public float MaxBoneAlignmentAngle;
 	}
 
+	[RTTI.Serializable(0xB9BA295982CB79B9, GameType.DS)]
+	public class WeaponModeResourceSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x7DC792FAD55CBF80, GameType.DS)]
 	public class WeaponModeRestoreData : StateObject
 	{
 		[RTTI.Member(1, 0x8, "StateSaving")] public int WeaponModeIndex;
 		[RTTI.Member(2, 0xC, "StateSaving")] public int RoundsInMagazine;
+	}
+
+	[RTTI.Serializable(0x87FC6936B815C699, GameType.DS)]
+	public class WeaponModeSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xC5A56E053DB57F2E, GameType.DS)]
@@ -67044,6 +71702,11 @@ namespace Decima.DS
 		[RTTI.Member(4, 0xB8, "General")] public FRange TemperatureLimits;
 	}
 
+	[RTTI.Serializable(0x7DEC518DA7DD5A50, GameType.DS)]
+	public class WeatherSystemSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x2D7C2130ED017CB4, GameType.DS)]
 	public class WeightJoint
 	{
@@ -67080,6 +71743,11 @@ namespace Decima.DS
 		[RTTI.Member(7, 0x38, "Dropping")] public Array<Ref<TagProperty>> InvalidDropTags;
 		[RTTI.Member(8, 0x48, "Dropping")] public Ref<ConditionResource> CanDropCondition;
 		[RTTI.Member(10, 0x50, "Wielding")] public String GunBoneHelperName;
+	}
+
+	[RTTI.Serializable(0x47130C9953F6F57C, GameType.DS)]
+	public class WieldStowInventorySymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xEE59C9EB9DB2F5FD, GameType.DS)]
@@ -67176,6 +71844,14 @@ namespace Decima.DS
 	public class WorldDataMap : Resource
 	{
 		[RTTI.Member(3, 0x20, "MapData")] public IVec2 GridCoordinates;
+	}
+
+	[RTTI.Serializable(0x63DF69195207E49B, GameType.DS)]
+	public class WorldDataMapGenerator : PlacementBase
+	{
+		[RTTI.Member(3, 0x28)] public Ref<WorldDataType> WorldDataType;
+		[RTTI.Member(4, 0x30)] public ISize MinimumResolution;
+		[RTTI.Member(5, 0x38)] public ESetDensityBehavior DensityBehavior;
 	}
 
 	[RTTI.Serializable(0xB73D9758B83FC9B0, GameType.DS)]
@@ -67383,6 +72059,11 @@ namespace Decima.DS
 		[RTTI.Member(5, 0x30, "Conditions")] public float EncounterDenialRange;
 	}
 
+	[RTTI.Serializable(0xA9CC5F330DC5D79A, GameType.DS)]
+	public class WorldEncounterManagerSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x3A00C692E6110C30, GameType.DS)]
 	public class WorldEnvironment : Resource
 	{
@@ -67402,6 +72083,11 @@ namespace Decima.DS
 		[RTTI.Member(5, 0x60, "General")] public String Name;
 	}
 
+	[RTTI.Serializable(0x493C38099FE5F6DF, GameType.DS)]
+	public class WorldMarkerSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x86C9FAD4999D5CE3, GameType.DS)]
 	public class WorldNode : CoreObject
 	{
@@ -67412,6 +72098,11 @@ namespace Decima.DS
 	public class WorldNodeOverridable : WorldNode
 	{
 		[RTTI.Member(5, 0x60, "Override")] public Ref<WorldNode> Overrider;
+	}
+
+	[RTTI.Serializable(0x94D53265526CE0BF, GameType.DS)]
+	public class WorldNodeSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0xBBAA509D25D82AA5, GameType.DS)]
@@ -67606,6 +72297,11 @@ namespace Decima.DS
 		[RTTI.Member(4, 0x28, "Logic")] public Ref<LocalizedTextResource> Description;
 	}
 
+	[RTTI.Serializable(0xF64D4FEAFA30C334, GameType.DS)]
+	public class XpMultiplierSymbols : ExportedSymbolGroup
+	{
+	}
+
 	[RTTI.Serializable(0x3C9AE9FC1BFFE23C, GameType.DS)]
 	public class XpQuestReward : SummableQuestReward
 	{
@@ -67660,6 +72356,11 @@ namespace Decima.DS
 		[RTTI.Member(3, 0x20, "Logic")] public Vec3 HandOffset;
 		[RTTI.Member(4, 0x30, "Logic")] public float DetectionRadius;
 		[RTTI.Member(5, 0x34, "Logic")] public float CollisionRadius;
+	}
+
+	[RTTI.Serializable(0xD45838DCC412DDA, GameType.DS)]
+	public class ZiplineDetectionComponentSymbols : ExportedSymbolGroup
+	{
 	}
 
 	[RTTI.Serializable(0x25D4753C2D255674, GameType.DS)]

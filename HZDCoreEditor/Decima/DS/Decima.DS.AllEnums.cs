@@ -10390,6 +10390,13 @@ namespace Decima.DS
         Dynamic = 1,
     }
 
+    [RTTI.Serializable(0x160F629B65A9008D, GameType.DS)]
+    public enum ESetDensityBehavior : int32
+    {
+        Multiply = 0,
+        Override = 1,
+    }
+
     [RTTI.Serializable(0x90D1135E676F8CB5, GameType.DS)]
     public enum EShaderInstancingMode : int8
     {
@@ -10678,6 +10685,12 @@ namespace Decima.DS
         ELECTRICITY = 1,
         BREATH = 2,
         DODGE = 3,
+    }
+
+    [RTTI.Serializable(0x67B7229805CFE3B8, GameType.DS)]
+    public enum EStampGeomTyoe : int32
+    {
+        SQURE = 0,
     }
 
     [RTTI.Serializable(0xE4BF315FA0FD26A8, GameType.DS)]
@@ -11554,5 +11567,4 @@ namespace Decima.DS
         CustomAbsolute = 1,
         CustomRelative = 2,
     }
-
 }

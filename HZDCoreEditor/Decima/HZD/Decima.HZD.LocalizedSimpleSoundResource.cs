@@ -8,8 +8,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0xF73C79417552568E, GameType.HZD)]
     public class LocalizedSimpleSoundResource : SimpleSoundResource, RTTI.IExtraBinaryDataCallback
     {
-        [RTTI.Member(0, 0x100, "General")] public Ref<SoundMixStateResource> SoundMixState;
-        [RTTI.Member(1, 0x108, "General")] public Ref<LocalizedSoundPreset> Preset;
+        [RTTI.Member(39, 0x100, "General")] public Ref<SoundMixStateResource> SoundMixState;
+        [RTTI.Member(40, 0x108, "General")] public Ref<LocalizedSoundPreset> Preset;
         public string SoundDataFilePath;
         public ushort LanguageBits;
         public byte DataLength;

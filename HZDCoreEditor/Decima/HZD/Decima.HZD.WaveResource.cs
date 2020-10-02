@@ -10,20 +10,20 @@ namespace Decima.HZD
     [RTTI.Serializable(0x685DC980BBF316E3, GameType.HZD)]
     public class WaveResource : Resource, RTTI.IExtraBinaryDataCallback
     {
-        [RTTI.Member(0, 0x0, "Format")] public EWaveDataEncodingQuality EncodingQuality;
-        [RTTI.Member(1, 0x0, "Format")] public bool IsStreaming;
-        [RTTI.Member(2, 0x0, "Format")] public bool UseVBR;
-        [RTTI.Member(3, 0x28, "Data")] public Array<uint8> WaveData;
-        [RTTI.Member(4, 0x38, "Data")] public uint WaveDataSize;
-        [RTTI.Member(5, 0x48, "Format")] public int SampleRate;
-        [RTTI.Member(6, 0x4C, "Format")] public uint8 ChannelCount;
-        [RTTI.Member(7, 0x50, "Format")] public EWaveDataEncoding Encoding;
-        [RTTI.Member(8, 0x54, "Format")] public uint16 BitsPerSample;
-        [RTTI.Member(9, 0x58, "Format")] public uint32 BitsPerSecond;
-        [RTTI.Member(10, 0x5C, "Format")] public uint16 BlockAlignment;
-        [RTTI.Member(11, 0x5E, "Format")] public uint16 FormatTag;
+        [RTTI.Member(10, 0x0, "Format")] public EWaveDataEncodingQuality EncodingQuality;
+        [RTTI.Member(8, 0x0, "Format")] public bool IsStreaming;
+        [RTTI.Member(9, 0x0, "Format")] public bool UseVBR;
+        [RTTI.Member(5, 0x28, "Data")] public Array<uint8> WaveData;
+        [RTTI.Member(6, 0x38, "Data")] public uint WaveDataSize;
+        [RTTI.Member(15, 0x48, "Format")] public int SampleRate;
+        [RTTI.Member(14, 0x4C, "Format")] public uint8 ChannelCount;
+        [RTTI.Member(13, 0x50, "Format")] public EWaveDataEncoding Encoding;
+        [RTTI.Member(16, 0x54, "Format")] public uint16 BitsPerSample;
+        [RTTI.Member(17, 0x58, "Format")] public uint32 BitsPerSecond;
+        [RTTI.Member(18, 0x5C, "Format")] public uint16 BlockAlignment;
+        [RTTI.Member(19, 0x5E, "Format")] public uint16 FormatTag;
         [RTTI.Member(12, 0x62, "Format")] public uint16 FrameSize;
-        [RTTI.Member(13, 0x64, "Format")] public int SampleCount;
+        [RTTI.Member(11, 0x64, "Format")] public int SampleCount;
         public StreamHandle StreamInfo;
 
         [Flags]

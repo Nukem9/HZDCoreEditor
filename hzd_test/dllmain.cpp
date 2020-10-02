@@ -50,27 +50,23 @@ void RegisterTypeInfoRecursively(const GGRTTI *Info)
 	}
 }
 
-void __fastcall hk_sub_1402EE8D0(__int64 a1, GGRTTI **TypeInfoList)
+void(__fastcall * RTTIFactory__RegisterTypeInfo)(__int64 a1, GGRTTI *TypeInfo);
+void __fastcall hk_RTTIFactory__RegisterTypeInfo(__int64 a1, GGRTTI *TypeInfo)
 {
 	static std::atomic_uint32_t listIndex;
 	listIndex++;
 
-	for (auto i = TypeInfoList; *i != nullptr; i++)
-	{
-		RegisterTypeInfoRecursively(*i);
-
-		(*(__int64(__fastcall **)(__int64, GGRTTI *))(*(__int64 *)a1 + 8))(a1, *i);
-	}
+	RegisterTypeInfoRecursively(TypeInfo);
 
 	// If the final list is registered, dump everything to disk
-	if (g_GameType == GameType::DeathStranding && listIndex == 117)
+	if (g_GameType == GameType::DeathStranding && listIndex == 12290)
 	{
 		RegisterTypeInfoRecursively(reinterpret_cast<GGRTTI *>(g_OffsetMap["GGRTTI_EVertexElementStorageType"]));
 
 		RTTIIDAExporter::ExportAll("C:\\ggrtti_export");
 		RTTICSharpExporter::ExportAll("C:\\ggrtti_export");
 	}
-	else if (g_GameType == GameType::HorizonZeroDawn && listIndex == 59)
+	else if (g_GameType == GameType::HorizonZeroDawn && listIndex == 30644)
 	{
 		RegisterTypeInfoRecursively(reinterpret_cast<GGRTTI *>(g_OffsetMap["GGRTTI_EDataBufferFormat"]));
 		RegisterTypeInfoRecursively(reinterpret_cast<GGRTTI *>(g_OffsetMap["GGRTTI_EIndexFormat"]));
@@ -81,6 +77,8 @@ void __fastcall hk_sub_1402EE8D0(__int64 a1, GGRTTI **TypeInfoList)
 		RTTIIDAExporter::ExportAll("C:\\ggrtti_export");
 		RTTICSharpExporter::ExportAll("C:\\ggrtti_export");
 	}
+
+	RTTIFactory__RegisterTypeInfo(a1, TypeInfo);
 }
 
 void LoadSignatures()
@@ -111,7 +109,7 @@ void LoadSignatures()
 		g_OffsetMap["String::String"] = scan("40 53 48 83 EC 20 48 8B D9 48 C7 01 00 00 00 00 49 C7 C0 FF FF FF FF");
 		g_OffsetMap["String::~String"] = scan("40 53 48 83 EC 20 48 8B 19 48 8D 05 ? ? ? ? 48 83 EB 10");
 		g_OffsetMap["GGRTTI::GetCoreBinaryTypeId"] = scan("4C 8B DC 55 53 56 41 56 49 8D 6B A1 48 81 EC C8 00 00 00");
-		g_OffsetMap["sub_1402EE8D0"] = scan("48 89 5C 24 08 57 48 83 EC 20 48 8B DA 48 8B F9 48 8B 12 48 85 D2 74 1D 0F 1F 84 00 00 00 00 00 48");
+		g_OffsetMap["RTTIFactory::RegisterTypeInfo"] = scan("40 55 53 56 57 41 56 41 57 48 8D 6C 24 D1 48 81 EC F8 00 00 00 48 8B ? ? ? ? ? 48 33 C4 48 89 45 1F 66 83 3A FE");
 
 		// 1.04
 		g_OffsetMap["GGRTTI_EVertexElementStorageType"] = g_ModuleBase + 0x3ED1728;
@@ -125,7 +123,7 @@ void LoadSignatures()
 		g_OffsetMap["String::String"] = scan("48 89 5C 24 10 48 89 6C 24 18 48 89 7C 24 20 41 56 48 83 EC 20 33 FF 48 8B EA 48 89 39 4C 8B F1 48 C7 C3 FF FF FF FF 48 FF C3");
 		g_OffsetMap["String::~String"] = scan("40 53 48 83 EC 20 48 8B 19 48 85 DB 74 37 48 83 C3 F0");
 		g_OffsetMap["GGRTTI::GetCoreBinaryTypeId"] = scan("48 8B C4 44 89 40 18 48 89 50 10 48 89 48 08 55 53 56 41 56 48 8D 68 A1 48 81 EC 98 00 00 00 4C 89 60 D0");
-		g_OffsetMap["sub_1402EE8D0"] = scan("48 89 5C 24 08 57 48 83 EC 20 48 8B DA 48 8B F9 48 8B 12 48 85 D2 74 1E 0F 1F 84 00 00 00 00 00");
+		g_OffsetMap["RTTIFactory::RegisterTypeInfo"] = scan("48 89 5C 24 08 57 48 83 EC 20 48 8B DA 48 8B F9 E8 ? ? ? ? 84 C0 75 77 48 8D");
 		g_OffsetMap["hk_RunCoreLibraryInitializer"] = scan("E8 ? ? ? ? 48 8D 4C 24 58 B3 01 E8 ? ? ? ? 48 8D 4C 24 50 E8");
 		g_OffsetMap["RunCoreLibraryInitializer"] = scan("48 8B C2 4C 8D 05 ? ? ? ? 48 8D 15 ? ? ? ? 48 8D 0D ? ? ? ? 48 FF E0");
 		g_OffsetMap["ShaderCachePresent"] = scan("48 89 5C 24 18 48 89 74 24 20 57 48 81 EC 90 00 00 00 48 8D");
@@ -146,7 +144,7 @@ void ApplyHooks()
 	if (g_GameType == GameType::DeathStranding)
 	{
 		// Intercept all type info registrations
-		XUtil::DetourJump(g_OffsetMap["sub_1402EE8D0"], &hk_sub_1402EE8D0);
+		*(uintptr_t *)&RTTIFactory__RegisterTypeInfo = Detours::X64::DetourFunctionClass(g_OffsetMap["RTTIFactory::RegisterTypeInfo"], &hk_RTTIFactory__RegisterTypeInfo);
 	}
 	else if (g_GameType == GameType::HorizonZeroDawn)
 	{
@@ -157,7 +155,7 @@ void ApplyHooks()
 		MSRTTI::Initialize();
 
 		// Intercept all type info registrations
-		XUtil::DetourJump(g_OffsetMap["sub_1402EE8D0"], &hk_sub_1402EE8D0);
+		*(uintptr_t *)&RTTIFactory__RegisterTypeInfo = Detours::X64::DetourFunctionClass(g_OffsetMap["RTTIFactory::RegisterTypeInfo"], &hk_RTTIFactory__RegisterTypeInfo);
 
 		// Intercept fullgame load
 		XUtil::DetourCall(g_OffsetMap["hk_RunCoreLibraryInitializer"], &hk_RunCoreLibraryInitializer);

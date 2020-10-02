@@ -5,8 +5,8 @@ namespace Decima.HZD
     [RTTI.Serializable(0x9C78E9FDC6042A60, GameType.HZD)]
     public class UITexture : Resource, RTTI.IExtraBinaryDataCallback
     {
-        [RTTI.Member(0, 0x30, "Logic")] public String TextureName;
-        [RTTI.Member(1, 0x38, "Logic")] public ISize Size;
+        [RTTI.Member(5, 0x30, "Logic")] public String TextureName;
+        [RTTI.Member(6, 0x38, "Logic")] public ISize Size;
         public uint HiResDataSize;
         public uint LowResDataSize;
         public Texture HiResTexture;   // Screen res >  1920x1080 (Default if low res not present)
