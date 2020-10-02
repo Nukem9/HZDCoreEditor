@@ -32,6 +32,8 @@ namespace RTTICSharpExporter
 		// Dump these types into their own separate files
 		const char *separatedTypes[] =
 		{
+			"AnimationStreamingBlockResource",
+			"AnimationStreamingEventResource",
 			"BuddyManager",
 			"CollectableManager",
 			"CountdownTimerManager",
@@ -79,6 +81,8 @@ namespace RTTICSharpExporter
 			"WorldPosition",
 			"WorldState",
 			"WorldTransform",
+			"WwiseBankResource",
+			"WwiseWemResource",
 		};
 
 		sortedTypes.erase(std::remove_if(sortedTypes.begin(), sortedTypes.end(), [Directory, separatedTypes](const GGRTTI *Type)
