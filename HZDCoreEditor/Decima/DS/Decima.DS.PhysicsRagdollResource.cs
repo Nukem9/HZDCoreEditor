@@ -1,8 +1,12 @@
+using System.IO;
+using Utility;
+
 namespace Decima.DS
 {
     [RTTI.Serializable(0xE034B1EFA4CAE66C, GameType.DS)]
     public class PhysicsRagdollResource : PhysicsResource, RTTI.IExtraBinaryDataCallback
     {
+        // Identical impl to HZD
         [RTTI.Member(9, 0x30, "General")] public float BuoyancyFactor;
         [RTTI.Member(10, 0x34, "General")] public float DragFactor;
         [RTTI.Member(11, 0x38, "General")] public float ImpulseFactor;
@@ -14,5 +18,19 @@ namespace Decima.DS
         [RTTI.Member(16, 0x80, "General")] public float MaxAngularVelocity;
         [RTTI.Member(17, 0x84, "General")] public float MaxLinearVelocity;
         [RTTI.Member(18, 0x88, "General")] public float MaxContactImpulse;
+        public byte[] HavokData;
+
+        public void DeserializeExtraData(BinaryReader reader)
+        {
+            // Generic havok reader / Havok 2014 HKX file ("hk_2014.2.0-r1")
+            uint havokDataLength = reader.ReadUInt32();
+            HavokData = reader.ReadBytesStrict(havokDataLength);
+        }
+
+        public void SerializeExtraData(BinaryWriter writer)
+        {
+            writer.Write((uint)HavokData.Length);
+            writer.Write(HavokData);
+        }
     }
 }

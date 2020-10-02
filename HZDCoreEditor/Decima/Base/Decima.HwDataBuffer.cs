@@ -4,7 +4,7 @@ namespace Decima
 {
     public class HwDataBuffer
     {
-        uint Flags;
+        public uint Flags;
         public HwBuffer Buffer;
 
         public void ToData(BinaryWriter writer)
@@ -14,7 +14,7 @@ namespace Decima
 
             if (elementCount > 0)
             {
-                writer.Write((uint)(Buffer.IsStreamed() ? 1 : 0));
+                writer.Write((uint)(Buffer.Streaming ? 1 : 0));
                 writer.Write(Flags);
                 writer.Write((uint)Buffer.Format);
                 writer.Write(Buffer.ElementStride);

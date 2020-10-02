@@ -11,16 +11,12 @@ namespace Decima
 
         public static BaseStreamHandle FromData(BinaryReader reader, GameType gameType)
         {
-            switch (gameType)
+            return gameType switch
             {
-                case GameType.DS:
-                    return DS.StreamHandle.FromData(reader);
-
-                case GameType.HZD:
-                    return HZD.StreamHandle.FromData(reader);
-            }
-
-            throw new NotImplementedException();
+                GameType.DS => DS.StreamHandle.FromData(reader),
+                GameType.HZD => HZD.StreamHandle.FromData(reader),
+                _ => throw new NotImplementedException(),
+            };
         }
     }
 }

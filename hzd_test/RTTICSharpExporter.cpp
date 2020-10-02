@@ -62,9 +62,11 @@ namespace RTTICSharpExporter
 			"Pose",
 			"QuestSave",
 			"QuestSystem",
+			"RegularSkinnedMeshResource",
 			"RotMatrix",
 			"SceneManagerGame",
 			"ShaderResource",
+			"StaticMeshResource",
 			"Story",
 			"StreamingStrategyInstance",
 			"StreamingStrategyManagerGame",
@@ -82,6 +84,7 @@ namespace RTTICSharpExporter
 			"WorldState",
 			"WorldTransform",
 			"WwiseBankResource",
+			"WwiseWemLocalizedResource",
 			"WwiseWemResource",
 		};
 

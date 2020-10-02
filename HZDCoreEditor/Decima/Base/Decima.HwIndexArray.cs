@@ -25,7 +25,7 @@ namespace Decima
             {
                 writer.Write(Flags);
                 writer.Write((uint)dataFormat);
-                writer.Write((uint)(Buffer.IsStreamed() ? 1 : 0));
+                writer.Write((uint)(Buffer.Streaming ? 1 : 0));
                 ResourceGUID.ToData(writer);
                 Buffer.ToData(writer);
             }

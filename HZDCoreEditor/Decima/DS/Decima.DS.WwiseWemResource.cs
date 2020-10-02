@@ -17,14 +17,16 @@ namespace Decima.DS
         [RTTI.Member(9, 0xE8, "Format")] public float mLengthInSeconds;
         public StreamHandle StreamInfo;
 
-        public void DeserializeExtraData(BinaryReader reader)
+        public virtual void DeserializeExtraData(BinaryReader reader)
         {
-            StreamInfo = StreamHandle.FromData(reader);
+            if (IsStreaming)
+                StreamInfo = StreamHandle.FromData(reader);
         }
 
-        public void SerializeExtraData(BinaryWriter writer)
+        public virtual void SerializeExtraData(BinaryWriter writer)
         {
-            StreamInfo.ToData(writer);
+            if (IsStreaming)
+                StreamInfo.ToData(writer);
         }
     }
 }

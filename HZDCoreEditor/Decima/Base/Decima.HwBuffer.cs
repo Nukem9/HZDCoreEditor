@@ -9,18 +9,14 @@ namespace Decima
         public BaseDataBufferFormat Format;
         public uint ElementStride;
         public uint ElementCount;
+        public bool Streaming { get; private set; }
         public BaseStreamHandle StreamInfo;
         public byte[] Data;
 
-        public bool IsStreamed()
-        {
-            return StreamInfo != null;
-        }
-
         public void ToData(BinaryWriter writer)
         {
-            if (IsStreamed())
-                StreamInfo.ToData(writer);
+            if (Streaming)
+                StreamInfo?.ToData(writer);
             else
                 writer.Write(Data);
         }
@@ -32,12 +28,21 @@ namespace Decima
                 Format = format,
                 ElementStride = byteStride,
                 ElementCount = elementCount,
+                Streaming = streaming,
             };
 
-            if (streaming)
-                buffer.StreamInfo = BaseStreamHandle.FromData(reader, gameType);
+            if (buffer.Streaming)
+            {
+                if (gameType == GameType.HZD)
+                    buffer.StreamInfo = BaseStreamHandle.FromData(reader, gameType);
+                else
+                    buffer.StreamInfo = null;
+            }
             else
+            {
+                // Read raw data
                 buffer.Data = reader.ReadBytesStrict(elementCount * byteStride);
+            }
 
             return buffer;
         }

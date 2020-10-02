@@ -24,6 +24,8 @@ namespace Decima.DS
             for (int i = 0; i < WemIDs.Count; i++)
             {
                 var x = new WwiseWemResource();
+
+                x.IsStreaming = true;
                 x.DeserializeExtraData(reader);
 
                 WemResources.Add(x);

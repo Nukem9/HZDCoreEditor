@@ -58113,17 +58113,6 @@ namespace Decima.DS
 		[RTTI.Member(9, 0x58)] public Ref<ShaderResource> ReflectionMaskGenerate;
 	}
 
-	[RTTI.Serializable(0xE2A812418ABC2172, GameType.DS)]
-	public class RegularSkinnedMeshResource : RegularSkinnedMeshResourceBase, RTTI.IExtraBinaryDataCallback
-	{
-		[RTTI.Member(24, 0xC0)] public Vec3 PositionBoundsScale;
-		[RTTI.Member(25, 0xD0)] public Vec3 PositionBoundsOffset;
-		[RTTI.Member(22, 0xE0)] public Ref<RegularSkinnedMeshResourceSkinInfo> SkinInfo;
-		[RTTI.Member(23, 0xE8)] public Array<Ref<PrimitiveResource>> Primitives;
-		[RTTI.Member(21, 0xF8)] public Array<Ref<ShadingGroup>> ShadingGroups;
-		[RTTI.Member(26, 0x140)] public Ref<KJPRenderEffectSwapper> RenderEffectSwapper;
-	}
-
 	[RTTI.Serializable(0xD40C19AE1D16D98E, GameType.DS)]
 	public class RegularSkinnedMeshResourceBase : SkinnedMeshResource
 	{
@@ -62859,24 +62848,6 @@ namespace Decima.DS
 		[RTTI.Member(21, 0x1E8, "General")] public uint32 PackedData;
 	}
 
-	[RTTI.Serializable(0xB36C3ADC211AB947, GameType.DS)]
-	public class StaticMeshResource : MeshResourceBase, RTTI.IExtraBinaryDataCallback
-	{
-		[RTTI.Member(16, 0x0, "Lighting", true)] public EDrawPartType RenderType;
-		[RTTI.Member(14, 0x0, "Lighting", true)] public bool CastShadows;
-		[RTTI.Member(15, 0x0, "Lighting", true)] public bool CastDynamicShadows;
-		[RTTI.Member(17, 0x0, "Lighting", true)] public EViewLayer ViewLayer;
-		[RTTI.Member(19, 0x0, "Lighting", true)] public bool VoxelizeBaking;
-		[RTTI.Member(18, 0x0, "Lighting", true)] public EShadowCull ShadowCullMode;
-		[RTTI.Member(13, 0x80, "Lighting")] public DrawFlags DrawFlags;
-		[RTTI.Member(8, 0x88, "MeshDescription")] public Array<Ref<PrimitiveResource>> Primitives;
-		[RTTI.Member(7, 0x98, "MeshDescription")] public Array<Ref<ShadingGroup>> ShadingGroups;
-		[RTTI.Member(9, 0xB8, "MeshDescription")] public Ref<SkeletonHelpers> OrientationHelpers;
-		[RTTI.Member(10, 0xC0, "MeshDescription")] public Ref<StaticMeshSimulationInfo> SimulationInfo;
-		[RTTI.Member(11, 0x108, "MeshDescription")] public Ref<KJPRenderEffectSwapper> RenderEffectSwapper;
-		[RTTI.Member(20, 0x110, "Lighting")] public bool DisableSunCascade1;
-	}
-
 	[RTTI.Serializable(0xBD4CCD4658077591, GameType.DS)]
 	public class StaticMeshSimulationInfo : Resource
 	{
@@ -67609,11 +67580,6 @@ namespace Decima.DS
 		[RTTI.Member(16, 0x41, "Data")] public bool IsMovieBackgroundSound;
 		[RTTI.Member(17, 0x42, "Data")] public bool PauseOnLoading;
 		[RTTI.Member(14, 0x48, "Data")] public Ref<WwiseWemSoundResource> WwiseWemSoundResource;
-	}
-
-	[RTTI.Serializable(0x3DE345CD4B0C7E72, GameType.DS)]
-	public class WwiseWemLocalizedResource : WwiseWemResource, RTTI.IExtraBinaryDataCallback
-	{
 	}
 
 	[RTTI.Serializable(0x8F8BA50D8B46CE52, GameType.DS)]
