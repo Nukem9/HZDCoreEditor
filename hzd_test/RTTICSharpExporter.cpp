@@ -271,7 +271,7 @@ namespace RTTICSharpExporter
 		// [RTTI.Member(0, 0x20, true)] public GlobalRenderVariableValues @GlobalRenderVariableValues;
 		// [RTTI.BaseClass(0xC0)] public Shape2DExtrusion @Shape2DExtrusion;
 		//
-		int index = 0;
+		size_t index = 0;
 
 		// Insert fake members from base classes, skipping the first one
 		for (size_t i = 1; i < inheritance.size(); i++)
@@ -286,13 +286,10 @@ namespace RTTICSharpExporter
 		}
 
 		// Insert real members sorted by offset
-		auto members = Type->GetSortedClassMembers();
+		auto members = Type->GetCategorizedClassMembers();
 
-		for (auto& [member, category] : members)
+		for (auto& [member, category, declOrder] : members)
 		{
-			if (member->IsGroupMarker())
-				continue;
-
 			std::string typeName = member->m_Type->GetSymbolName();
 			std::string memberName = member->m_Name;
 
@@ -310,9 +307,9 @@ namespace RTTICSharpExporter
 			char attributeDecl[1024] = {};
 
 			if (strlen(category) > 0)
-				sprintf_s(attributeDecl, "[RTTI.Member(%d, 0x%X, \"%s\"", index, member->m_Offset, category);
+				sprintf_s(attributeDecl, "[RTTI.Member(%llu, 0x%X, \"%s\"", index + declOrder, member->m_Offset, category);
 			else
-				sprintf_s(attributeDecl, "[RTTI.Member(%d, 0x%X", index, member->m_Offset);
+				sprintf_s(attributeDecl, "[RTTI.Member(%llu, 0x%X", index + declOrder, member->m_Offset);
 
 			if (member->IsSaveStateOnly())
 				strcat_s(attributeDecl, ", true)]");
@@ -320,7 +317,6 @@ namespace RTTICSharpExporter
 				strcat_s(attributeDecl, ")]");
 
 			fprintf(F, "\t%s public %s %s;\n", attributeDecl, typeName.c_str(), memberName.c_str());
-			index++;
 		}
 
 		fprintf(F, "}\n\n");

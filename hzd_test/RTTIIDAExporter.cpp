@@ -160,13 +160,10 @@ namespace RTTIIDAExporter
 				fprintf(F, "class %s%s\n{\npublic:\n", asClass->GetSymbolName().c_str(), inheritanceDecl);
 
 				// Dump all class members
-				auto members = asClass->GetSortedClassMembers();
+				auto members = asClass->GetCategorizedClassMembers();
 
-				for (auto& [member, category] : members)
+				for (auto& [member, category, _] : members)
 				{
-					if (member->IsGroupMarker())
-						continue;
-
 					// Regular data member
 					fprintf(F, "\t%s %s;// 0x%X", member->m_Type->GetSymbolName().c_str(), member->m_Name, member->m_Offset);
 

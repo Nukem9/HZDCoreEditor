@@ -181,19 +181,17 @@ public:
 	}
 
 	bool IsPostLoadCallbackEnabled() const;
-	std::vector<std::pair<const MemberEntry *, const char *>> GetSortedClassMembers() const;
+	std::vector<std::tuple<const MemberEntry *, const char *, size_t>> GetCategorizedClassMembers() const;
 
 private:
-	// This struct DOESN'T match the game, it just needs to be 72 bytes in size
 	struct SorterEntry
 	{
+		size_t m_DeclOrder;
 		const MemberEntry *m_Type;
 		const char *m_Category;
 		uint32_t m_Offset;
 		bool m_TopLevel;
-		char _pad0[0x31];
 	};
-	static_assert(sizeof(SorterEntry) == 0x48);
 
 	static void BuildFullClassMemberLayout(const GGRTTIClass *Type, std::vector<SorterEntry>& Members, uint32_t Offset, bool TopLevel);
 };

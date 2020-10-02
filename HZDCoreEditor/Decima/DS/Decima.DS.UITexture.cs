@@ -1,38 +1,43 @@
-#pragma warning disable CS0649 // warning CS0649: 'member' is never assigned to, and will always have its default value 'value'.
-#pragma warning disable CS0108 // warning CS0108: 'class' hides inherited member 'member'. Use the new keyword if hiding was intended.
+using System.IO;
 
 namespace Decima.DS
 {
-    using int8 = System.SByte;
-    using uint8 = System.Byte;
-    using int16 = System.Int16;
-    using uint16 = System.UInt16;
-    using int32 = System.Int32;
-    using uint32 = System.UInt32;
-    using int64 = System.Int64;
-    using uint64 = System.UInt64;
+    [RTTI.Serializable(0x292F8B9447AF20A8, GameType.DS)]
+    public class UITexture : Resource, RTTI.IExtraBinaryDataCallback
+    {
+        // Identical impl to HZD
+        [RTTI.BaseClass(0x20)] public StreamingRefTarget @StreamingRefTarget;
+        [RTTI.Member(6, 0x40, "Logic")] public String TextureName;
+        [RTTI.Member(7, 0x48, "Logic")] public ISize Size;
+        public uint HiResDataSize;
+        public uint LowResDataSize;
+        public Texture HiResTexture;   // Screen res >  1920x1080 (Default if low res not present)
+        public Texture LowResTexture;  // Screen res <= 1920x1080
 
-    using wchar = System.Int16;
-    using ucs4 = System.Int32;
+        public void DeserializeExtraData(BinaryReader reader)
+        {
+            HiResDataSize = reader.ReadUInt32();
+            LowResDataSize = reader.ReadUInt32();
 
-    using HalfFloat = System.UInt16;
-    using LinearGainFloat = System.Single;
-    using MusicTime = System.UInt64;
+            HiResTexture = new Texture();
+            HiResTexture.DeserializeExtraData(reader);
 
-    using MaterialType = System.UInt16;
-    using AnimationNodeID = System.UInt16;
-    using AnimationTagID = System.UInt32;
-    using AnimationSet = System.UInt32;
-    using AnimationStateID = System.UInt32;
-    using AnimationEventID = System.UInt32;
-    using PhysicsCollisionFilterInfo = System.UInt32;
+            if (LowResDataSize > 0)
+            {
+                LowResTexture = new Texture();
+                LowResTexture.DeserializeExtraData(reader);
+            }
+        }
 
-[RTTI.Serializable(0x292F8B9447AF20A8, GameType.DS)]
-public class UITexture : Resource, RTTI.IExtraBinaryDataCallback
-{
-	[RTTI.BaseClass(0x20)] public StreamingRefTarget @StreamingRefTarget;
-	[RTTI.Member(1, 0x40, "Logic")] public String TextureName;
-	[RTTI.Member(2, 0x48, "Logic")] public ISize Size;
-}
+        public void SerializeExtraData(BinaryWriter writer)
+        {
+            writer.Write(HiResDataSize);
+            writer.Write(LowResDataSize);
 
+            HiResTexture.SerializeExtraData(writer);
+
+            if (LowResTexture != null)
+                LowResTexture.SerializeExtraData(writer);
+        }
+    }
 }

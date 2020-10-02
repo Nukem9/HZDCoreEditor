@@ -106,7 +106,7 @@ bool GGRTTIClass::IsPostLoadCallbackEnabled() const
 	return false;
 }
 
-std::vector<std::pair<const GGRTTIClass::MemberEntry *, const char *>> GGRTTIClass::GetSortedClassMembers() const
+std::vector<std::tuple<const GGRTTIClass::MemberEntry *, const char *, size_t>> GGRTTIClass::GetCategorizedClassMembers() const
 {
 	std::vector<SorterEntry> sortedEntries;
 	BuildFullClassMemberLayout(this, sortedEntries, 0, true);
@@ -117,13 +117,16 @@ std::vector<std::pair<const GGRTTIClass::MemberEntry *, const char *>> GGRTTICla
 		return A->m_Offset < B->m_Offset;
 	});
 
-	// We only care about the top-level fields
-	std::vector<std::pair<const MemberEntry *, const char *>> out;
+	// Declaration order must be preserved - return the member index as defined in the static RTTI data
+	std::vector<std::tuple<const MemberEntry *, const char *, size_t>> out;
 
 	for (auto& entry : sortedEntries)
 	{
-		if (entry.m_TopLevel)
-			out.emplace_back(entry.m_Type, entry.m_Category);
+		// We only care about the top-level fields
+		if (!entry.m_TopLevel || entry.m_Type->IsGroupMarker())
+			continue;
+
+		out.emplace_back(entry.m_Type, entry.m_Category, entry.m_DeclOrder);
 	}
 
 	return out;
@@ -143,6 +146,7 @@ void GGRTTIClass::BuildFullClassMemberLayout(const GGRTTIClass *Type, std::vecto
 
 		SorterEntry entry
 		{
+			.m_DeclOrder = Members.size(),
 			.m_Type = &member,
 			.m_Category = activeCategory,
 			.m_Offset = member.m_Offset + Offset,

@@ -1,35 +1,34 @@
-#pragma warning disable CS0649 // warning CS0649: 'member' is never assigned to, and will always have its default value 'value'.
-#pragma warning disable CS0108 // warning CS0108: 'class' hides inherited member 'member'. Use the new keyword if hiding was intended.
+using System.Collections.Generic;
+using System.IO;
 
 namespace Decima.DS
 {
-    using int8 = System.SByte;
-    using uint8 = System.Byte;
-    using int16 = System.Int16;
-    using uint16 = System.UInt16;
-    using int32 = System.Int32;
-    using uint32 = System.UInt32;
-    using int64 = System.Int64;
-    using uint64 = System.UInt64;
+    [RTTI.Serializable(0x2CD10F6FF48962C9, GameType.DS)]
+    public class TextureList : Resource, RTTI.IExtraBinaryDataCallback
+    {
+        // Identical impl to HZD
+        public List<Texture> Textures;
 
-    using wchar = System.Int16;
-    using ucs4 = System.Int32;
+        public void DeserializeExtraData(BinaryReader reader)
+        {
+            uint textureCount = reader.ReadUInt32();
+            Textures = new List<Texture>((int)textureCount);
 
-    using HalfFloat = System.UInt16;
-    using LinearGainFloat = System.Single;
-    using MusicTime = System.UInt64;
+            for (uint i = 0; i < textureCount; i++)
+            {
+                var x = new Texture();
+                x.DeserializeExtraData(reader);
 
-    using MaterialType = System.UInt16;
-    using AnimationNodeID = System.UInt16;
-    using AnimationTagID = System.UInt32;
-    using AnimationSet = System.UInt32;
-    using AnimationStateID = System.UInt32;
-    using AnimationEventID = System.UInt32;
-    using PhysicsCollisionFilterInfo = System.UInt32;
+                Textures.Add(x);
+            }
+        }
 
-[RTTI.Serializable(0x2CD10F6FF48962C9, GameType.DS)]
-public class TextureList : Resource, RTTI.IExtraBinaryDataCallback
-{
-}
+        public void SerializeExtraData(BinaryWriter writer)
+        {
+            writer.Write((uint)Textures.Count);
 
+            foreach (var texture in Textures)
+                texture.SerializeExtraData(writer);
+        }
+    }
 }
