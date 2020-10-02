@@ -203,13 +203,20 @@ namespace Decima
                 }
             }
 
-            // Sort: member offset, member index, class index
+            // Sort: class index, { member order | member offset }
             addFieldsRecursively(type);
 
             var sortedHierarchy = allFields
-                .OrderBy(x => x.Offset)
+                .OrderByDescending(x => x.ClassOrder)
                 .ThenBy(x => x.Attr.Order)
-                .ThenByDescending(x => x.ClassOrder);
+                .ToArray();
+
+            PCore.Quicksort(sortedHierarchy, (
+                (MemberAttribute, uint Offset, uint, FieldInfo, FieldInfo) a,
+                (MemberAttribute, uint Offset, uint, FieldInfo, FieldInfo) b) =>
+            {
+                return a.Offset < b.Offset;
+            });
 
             // Unique base classes
             var miBases = sortedHierarchy
