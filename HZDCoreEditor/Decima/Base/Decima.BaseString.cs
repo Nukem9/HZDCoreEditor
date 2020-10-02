@@ -45,12 +45,11 @@ namespace Decima
 
         public void Serialize(BinaryWriter writer)
         {
-            writer.Write((uint)Value.Length);
+            byte[] data = Encoding.UTF8.GetBytes(Value);
+            writer.Write((uint)data.Length);
 
-            if (Value.Length > 0)
+            if (data.Length > 0)
             {
-                byte[] data = Encoding.UTF8.GetBytes(Value);
-
                 writer.Write(CRC32C.Checksum(data) & ~0x80000000u);
                 writer.Write(data);
             }

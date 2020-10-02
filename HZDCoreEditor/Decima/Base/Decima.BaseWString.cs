@@ -34,10 +34,11 @@ namespace Decima
 
         public void Serialize(BinaryWriter writer)
         {
-            writer.Write((uint)Value.Length);
+            byte[] data = Encoding.Unicode.GetBytes(Value);
+            writer.Write((uint)data.Length);
 
-            if (Value.Length > 0)
-                writer.Write(Encoding.Unicode.GetBytes(Value));
+            if (data.Length > 0)
+                writer.Write(data);
         }
 
         public void DeserializeStateObject(SaveState state)
