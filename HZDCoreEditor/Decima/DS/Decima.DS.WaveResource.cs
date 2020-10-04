@@ -1,3 +1,5 @@
+using System.IO;
+
 namespace Decima.DS
 {
     using uint8 = System.Byte;
@@ -21,5 +23,13 @@ namespace Decima.DS
         [RTTI.Member(17, 0x56, "Format")] public uint16 FormatTag;
         [RTTI.Member(10, 0x5A, "Format")] public uint16 FrameSize;
         [RTTI.Member(9, 0x5C, "Format")] public int SampleCount;
+
+        public void DeserializeExtraData(BinaryReader reader)
+        {
+        }
+
+        public void SerializeExtraData(BinaryWriter writer)
+        {
+        }
     }
 }
