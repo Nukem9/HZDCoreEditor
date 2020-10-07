@@ -161,4 +161,35 @@
         BC6S = 74,
         BC7 = 75,
     }
+
+    /// <summary>
+    /// Assumes that the TypeId is 0x8E32C40558E36E3E for DS/HZD.
+    /// </summary>
+    public enum BaseProgramType
+    {
+        ComputeProgram = 0,
+        GeometryProgram = 1,
+        VertexProgram = 2,
+        PixelProgram = 3,
+    }
+
+    /// <summary>
+    /// Assumes that the TypeId is 0x2D12E73211551897 for DS/HZD.
+    /// </summary>
+    public enum BaseProgramTypeMask
+    {
+        None = 0,
+
+        CP = 1,
+        GP = 2,
+        VP = 4,
+        FP = 8,
+        All = 15,
+        AllGraphics = 14,
+
+        VP_GP_FP = 14,
+        VP_GP = 6,
+        VP_FP = 12,
+        FP_CP = 9,
+    }
 }
