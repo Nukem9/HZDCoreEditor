@@ -1,39 +1,72 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Numerics;
+using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using Utility;
 
 namespace Decima
 {
     public class Packfile
     {
-        public PackfileHeader Header { get; private set; }
-        public FileEntry[] FileEntries { get; private set; }
-        public BlockEntry[] BlockEntries { get; private set; }
+        private PackfileHeader Header;
+        public List<FileEntry> FileEntries { get; private set; }
+        private List<BlockEntry> BlockEntries;
         private readonly FileStream ArchiveFileHandle;
 
+        /// <summary>
+        /// Main header for *.bin files
+        /// </summary>
         public class PackfileHeader
         {
-            public const uint HardcodedMagic = 0x20304050;
-            public const uint HardcodedMagicEncrypted = 0x21304050;
+            public const int DataHeaderSize = 40;// Bytes
+            private const uint HardcodedMagic = 0x20304050;
+            private const uint HardcodedMagicEncrypted = 0x21304050;
 
             public uint Magic;
             public uint XorKey;
             public uint FileEntryCount;
             public uint BlockEntryCount;
 
-            public bool IsEncrypted => Magic == HardcodedMagicEncrypted;
-
-            public static PackfileHeader FromData(BinaryReader reader)
+            public bool IsEncrypted
             {
-                var x = new PackfileHeader();
-                Span<byte> xorData = reader.ReadBytes(40);
+                set { Magic = value ? HardcodedMagicEncrypted : HardcodedMagic; }
+                get { return Magic == HardcodedMagicEncrypted; }
+            }
 
-                x.Magic = BitConverter.ToUInt32(xorData.Slice(0));  // 0x0
-                x.XorKey = BitConverter.ToUInt32(xorData.Slice(4)); // 0x4
+            public void ToData(BinaryWriter writer)
+            {
+                Span<byte> data = stackalloc byte[DataHeaderSize];
+                BitConverter.TryWriteBytes(data.Slice(0), Magic);           // 0x0
+                BitConverter.TryWriteBytes(data.Slice(4), XorKey);          // 0x4
+                BitConverter.TryWriteBytes(data.Slice(24), FileEntryCount); // 0x18
+                BitConverter.TryWriteBytes(data.Slice(32), BlockEntryCount);// 0x20
 
-                switch (x.Magic)
+                if (IsEncrypted)
+                {
+                    var key1 = BuildXorKey(BitConverter.GetBytes(XorKey));
+                    var key2 = BuildXorKey(BitConverter.GetBytes(XorKey + 1));
+
+                    for (int i = 0; i < 16; i++)
+                        data[i + 8] ^= key1[i];// XOR bytes 8 to 24
+
+                    for (int i = 0; i < 16; i++)
+                        data[i + 24] ^= key2[i];// XOR bytes 24 to 40
+                }
+
+                writer.Write(data);
+            }
+
+            public PackfileHeader FromData(BinaryReader reader)
+            {
+                Span<byte> xorData = reader.ReadBytes(DataHeaderSize);
+                Magic = BitConverter.ToUInt32(xorData.Slice(0));            // 0x0
+                XorKey = BitConverter.ToUInt32(xorData.Slice(4));           // 0x4
+
+                switch (Magic)
                 {
                     case HardcodedMagic:
                     case HardcodedMagicEncrypted:
@@ -43,24 +76,24 @@ namespace Decima
                         throw new InvalidDataException("Unknown header magic");
                 }
 
-                if (x.IsEncrypted)
+                if (IsEncrypted)
                 {
-                    var key1 = x.BuildXorKey(BitConverter.GetBytes(x.XorKey));
-                    var key2 = x.BuildXorKey(BitConverter.GetBytes(x.XorKey + 1));
+                    var key1 = BuildXorKey(BitConverter.GetBytes(XorKey));
+                    var key2 = BuildXorKey(BitConverter.GetBytes(XorKey + 1));
 
                     for (int i = 0; i < 16; i++)
-                        xorData[i + 0x8] ^= key1[i];// XOR bytes 8 to 24
+                        xorData[i + 8] ^= key1[i];// XOR bytes 8 to 24
 
                     for (int i = 0; i < 16; i++)
-                        xorData[i + 0x18] ^= key2[i];// XOR bytes 24 to 40
+                        xorData[i + 24] ^= key2[i];// XOR bytes 24 to 40
                 }
 
-                //_ = BitConverter.ToUInt32(xorData.Slice(8));                  // 0x8 - 0x18 Not used?
-                x.FileEntryCount = BitConverter.ToUInt32(xorData.Slice(24));    // 0x18
-                x.BlockEntryCount = BitConverter.ToUInt32(xorData.Slice(32));   // 0x20
-                //_ = BitConverter.ToUInt32(xorData.Slice(36));                 // 0x24 Not used?
+                //_ = BitConverter.ToUInt32(xorData.Slice(8));              // 0x8 - 0x18 Not used?
+                FileEntryCount = BitConverter.ToUInt32(xorData.Slice(24));  // 0x18
+                BlockEntryCount = BitConverter.ToUInt32(xorData.Slice(32)); // 0x20
+                //_ = BitConverter.ToUInt32(xorData.Slice(36));             // 0x24 Not used?
 
-                return x;
+                return this;
             }
 
             public byte[] BuildXorKey(ReadOnlySpan<byte> mixData)
@@ -89,40 +122,66 @@ namespace Decima
         /// </remarks>
         public class FileEntry
         {
-            public uint XorKey1;
+            public const int DataHeaderSize = 32;// Bytes
+
             public ulong PathHash;
             public ulong DecompressedOffset;
             public uint DecompressedSize;
+            public uint XorKey1;
             public uint XorKey2;
 
-            public static FileEntry FromData(BinaryReader reader, PackfileHeader header)
+            public void ToData(BinaryWriter writer, PackfileHeader header)
             {
-                var x = new FileEntry();
-                Span<byte> xorData = reader.ReadBytes(32);
+                Span<byte> data = stackalloc byte[DataHeaderSize];
+                BitConverter.TryWriteBytes(data.Slice(8), PathHash);            // 0x8
+                BitConverter.TryWriteBytes(data.Slice(16), DecompressedOffset); // 0x10
+                BitConverter.TryWriteBytes(data.Slice(24), DecompressedSize);   // 0x18
 
                 if (header.IsEncrypted)
                 {
-                    x.XorKey1 = BitConverter.ToUInt32(xorData.Slice(4));    // 0x4
-                    x.XorKey2 = BitConverter.ToUInt32(xorData.Slice(28));   // 0x1C
-
-                    var key1 = header.BuildXorKey(BitConverter.GetBytes(x.XorKey1));
-                    var key2 = header.BuildXorKey(BitConverter.GetBytes(x.XorKey2));
+                    var key1 = header.BuildXorKey(BitConverter.GetBytes(XorKey1));
+                    var key2 = header.BuildXorKey(BitConverter.GetBytes(XorKey2));
 
                     for (int i = 0; i < 16; i++)
-                        xorData[i + 0x0] ^= key1[i];// XOR bytes 0 to 16
+                        data[i + 0] ^= key1[i];// XOR bytes 0 to 16
 
                     for (int i = 0; i < 16; i++)
-                        xorData[i + 0x10] ^= key2[i];// XOR bytes 16 to 32
+                        data[i + 16] ^= key2[i];// XOR bytes 16 to 32
+                }
+
+                BitConverter.TryWriteBytes(data.Slice(4), XorKey1);             // 0x4
+                BitConverter.TryWriteBytes(data.Slice(28), XorKey2);            // 0x1C
+
+                writer.Write(data);
+            }
+
+            public FileEntry FromData(BinaryReader reader, PackfileHeader header)
+            {
+                Span<byte> xorData = reader.ReadBytes(DataHeaderSize);
+
+                if (header.IsEncrypted)
+                {
+                    XorKey1 = BitConverter.ToUInt32(xorData.Slice(4));          // 0x4
+                    XorKey2 = BitConverter.ToUInt32(xorData.Slice(28));         // 0x1C
+
+                    var key1 = header.BuildXorKey(BitConverter.GetBytes(XorKey1));
+                    var key2 = header.BuildXorKey(BitConverter.GetBytes(XorKey2));
+
+                    for (int i = 0; i < 16; i++)
+                        xorData[i + 0] ^= key1[i];// XOR bytes 0 to 16
+
+                    for (int i = 0; i < 16; i++)
+                        xorData[i + 16] ^= key2[i];// XOR bytes 16 to 32
 
                     // The XOR keys at offset 0x4 and 0x1C in xorData are trashed now. They seem to ignore it.
                 }
 
-                //_ = BitConverter.ToUInt32(xorData.Slice(0));                      // 0x0 Not used?
-                x.PathHash = BitConverter.ToUInt64(xorData.Slice(8));               // 0x8
-                x.DecompressedOffset = BitConverter.ToUInt64(xorData.Slice(16));    // 0x10
-                x.DecompressedSize = BitConverter.ToUInt32(xorData.Slice(24));      // 0x18
+                //_ = BitConverter.ToUInt32(xorData.Slice(0));                  // 0x0 Not used?
+                PathHash = BitConverter.ToUInt64(xorData.Slice(8));             // 0x8
+                DecompressedOffset = BitConverter.ToUInt64(xorData.Slice(16));  // 0x10
+                DecompressedSize = BitConverter.ToUInt32(xorData.Slice(24));    // 0x18
 
-                return x;
+                return this;
             }
         }
 
@@ -135,44 +194,116 @@ namespace Decima
         /// </remarks>
         public class BlockEntry
         {
+            public const int DataHeaderSize = 32;// Bytes
+
             public ulong DecompressedOffset;
             public uint DecompressedSize;
-            public uint XorKey1;
             public ulong Offset;
             public uint Size;
+            public uint XorKey1;
             public uint XorKey2;
 
-            public static BlockEntry FromData(BinaryReader reader, PackfileHeader header)
+            // There's no guarantee MD5 will be thread safe, so use a per-thread instance instead
+            private static readonly ThreadLocal<MD5> MD5Context = new ThreadLocal<MD5>(() =>
             {
-                var x = new BlockEntry();
-                Span<byte> xorData = reader.ReadBytes(32);
+                return MD5.Create();
+            });
+
+            public void ToData(BinaryWriter writer, PackfileHeader header)
+            {
+                Span<byte> data = stackalloc byte[DataHeaderSize];
+                BitConverter.TryWriteBytes(data.Slice(0), DecompressedOffset);  // 0x0
+                BitConverter.TryWriteBytes(data.Slice(8), DecompressedSize);    // 0x8
+                BitConverter.TryWriteBytes(data.Slice(16), Offset);             // 0x10
+                BitConverter.TryWriteBytes(data.Slice(24), Size);               // 0x18
 
                 if (header.IsEncrypted)
                 {
-                    x.XorKey1 = BitConverter.ToUInt32(xorData.Slice(12));   // 0xC
-                    x.XorKey2 = BitConverter.ToUInt32(xorData.Slice(28));   // 0x1C
-
-                    var key1 = header.BuildXorKey(BitConverter.GetBytes(x.XorKey1));
-                    var key2 = header.BuildXorKey(BitConverter.GetBytes(x.XorKey2));
+                    var key1 = header.BuildXorKey(BitConverter.GetBytes(XorKey1));
+                    var key2 = header.BuildXorKey(BitConverter.GetBytes(XorKey2));
 
                     for (int i = 0; i < 16; i++)
-                        xorData[i + 0x0] ^= key1[i];// XOR bytes 0 to 16
+                        data[i + 0] ^= key1[i];// XOR bytes 0 to 16
 
                     for (int i = 0; i < 16; i++)
-                        xorData[i + 0x10] ^= key2[i];// XOR bytes 16 to 32
+                        data[i + 16] ^= key2[i];// XOR bytes 16 to 32
+                }
+
+                BitConverter.TryWriteBytes(data.Slice(12), XorKey1);            // 0xC
+                BitConverter.TryWriteBytes(data.Slice(28), XorKey2);            // 0x1C
+
+                writer.Write(data);
+            }
+
+            public BlockEntry FromData(BinaryReader reader, PackfileHeader header)
+            {
+                Span<byte> xorData = reader.ReadBytes(DataHeaderSize);
+
+                if (header.IsEncrypted)
+                {
+                    XorKey1 = BitConverter.ToUInt32(xorData.Slice(12));         // 0xC
+                    XorKey2 = BitConverter.ToUInt32(xorData.Slice(28));         // 0x1C
+
+                    var key1 = header.BuildXorKey(BitConverter.GetBytes(XorKey1));
+                    var key2 = header.BuildXorKey(BitConverter.GetBytes(XorKey2));
+
+                    for (int i = 0; i < 16; i++)
+                        xorData[i + 0] ^= key1[i];// XOR bytes 0 to 16
+
+                    for (int i = 0; i < 16; i++)
+                        xorData[i + 16] ^= key2[i];// XOR bytes 16 to 32
 
                     // The XOR keys at offset 0xC and 0x1C in xorData are trashed now. They are manually restored in game code.
                 }
 
-                x.DecompressedOffset = BitConverter.ToUInt64(xorData.Slice(0)); // 0x0
-                x.DecompressedSize = BitConverter.ToUInt32(xorData.Slice(8));   // 0x8
-                x.Offset = BitConverter.ToUInt64(xorData.Slice(16));            // 0x10
-                x.Size = BitConverter.ToUInt32(xorData.Slice(24));              // 0x18
+                DecompressedOffset = BitConverter.ToUInt64(xorData.Slice(0));   // 0x0
+                DecompressedSize = BitConverter.ToUInt32(xorData.Slice(8));     // 0x8
+                Offset = BitConverter.ToUInt64(xorData.Slice(16));              // 0x10
+                Size = BitConverter.ToUInt32(xorData.Slice(24));                // 0x18
 
-                return x;
+                return this;
             }
 
-            public byte[] BuildXorKey()
+            public void XorDataBuffer(byte[] data)
+            {
+                // Raw data is XOR'd with a 16-byte MD5 of the block entry key
+                var key = BuildXorKey();
+
+                // If possible, do the XOR in a vectorized loop
+                int vectorRegisterSize = Vector<byte>.Count;
+                int vectorizedLoopCount = data.Length / vectorRegisterSize;
+                int byteIndex = 0;
+
+                if (vectorRegisterSize % key.Length != 0)
+                    vectorizedLoopCount = 0;
+
+                if (vectorizedLoopCount > 0)
+                {
+                    // Key length has to match register size, so replicate necessary values
+                    Span<byte> temp = stackalloc byte[vectorRegisterSize];
+
+                    for (int i = 0; i < vectorRegisterSize; i++)
+                        temp[i] = key[i & 15];
+
+                    var keyVector = new Vector<byte>(temp);
+
+                    // XOR operation
+                    for (int i = 0; i < vectorizedLoopCount; i++)
+                    {
+                        var encData = new Vector<byte>(data, byteIndex);
+                        var decData = encData ^ keyVector;
+
+                        decData.CopyTo(data, byteIndex);
+                        byteIndex += vectorRegisterSize;
+                    }
+                }
+
+                // Remainder
+                for (; byteIndex < data.Length; byteIndex++)
+                    data[byteIndex] ^= key[byteIndex & 15];
+            }
+
+            private byte[] BuildXorKey()
             {
                 // Murmurhash3 of the first 16 bytes of the BlockEntry header as stored in the file. No type casting = very ugly in C#.
                 Span<byte> seed = stackalloc byte[16];
@@ -190,11 +321,11 @@ namespace Decima
                 for (int i = 0; i < key.Length; i++)
                     key[i] ^= seed[i];
 
-                return key;
+                return MD5Context.Value.ComputeHash(key);
             }
         }
 
-        public Packfile(string archivePath, FileMode mode = FileMode.Open)
+        public Packfile(string archivePath, FileMode mode = FileMode.Open, bool encrypted = false)
         {
             if (mode == FileMode.Open)
             {
@@ -202,20 +333,26 @@ namespace Decima
 
                 using (var reader = new BinaryReader(ArchiveFileHandle, Encoding.UTF8, true))
                 {
-                    Header = PackfileHeader.FromData(reader);
-                    FileEntries = new FileEntry[Header.FileEntryCount];
-                    BlockEntries = new BlockEntry[Header.BlockEntryCount];
+                    Header = new PackfileHeader().FromData(reader);
+                    FileEntries = new List<FileEntry>((int)Header.FileEntryCount);
+                    BlockEntries = new List<BlockEntry>((int)Header.BlockEntryCount);
 
-                    for (uint i = 0; i < FileEntries.Length; i++)
-                        FileEntries[i] = FileEntry.FromData(reader, Header);
+                    for (int i = 0; i < Header.FileEntryCount; i++)
+                        FileEntries.Add(new FileEntry().FromData(reader, Header));
 
-                    for (uint i = 0; i < BlockEntries.Length; i++)
-                        BlockEntries[i] = BlockEntry.FromData(reader, Header);
+                    for (int i = 0; i < Header.BlockEntryCount; i++)
+                        BlockEntries.Add(new BlockEntry().FromData(reader, Header));
                 }
             }
             else if (mode == FileMode.Create || mode == FileMode.CreateNew)
             {
-                throw new NotImplementedException("Writing archives is not supported at the moment");
+                ArchiveFileHandle = File.Open(archivePath, mode, FileAccess.ReadWrite, FileShare.None);
+
+                Header = new PackfileHeader();
+                FileEntries = new List<FileEntry>();
+                BlockEntries = new List<BlockEntry>();
+
+                Header.IsEncrypted = encrypted;
             }
             else
             {
@@ -228,6 +365,16 @@ namespace Decima
             ArchiveFileHandle.Close();
         }
 
+        public bool ContainsFile(string path)
+        {
+            return GetFileEntryIndex(path) != int.MaxValue;
+        }
+
+        public void AddFile(string path, string sourcePath)
+        {
+            throw new NotImplementedException();
+        }
+
         public void ExtractFile(string path, string destinationPath, bool allowOverwrite = false)
         {
             ExtractFile(GetHashForPath(path), destinationPath, allowOverwrite);
@@ -236,15 +383,14 @@ namespace Decima
         public void ExtractFile(ulong pathId, string destinationPath, bool allowOverwrite = false)
         {
             // Hashed path -> file entry -> block entries
-            uint fileIndex = GetFileEntryIndex(pathId);
+            int fileIndex = GetFileEntryIndex(pathId);
             var fileEntry = FileEntries[fileIndex];
 
-            uint firstBlock = GetBlockEntryIndex(fileEntry.DecompressedOffset);
-            uint lastBlock = GetBlockEntryIndex(fileEntry.DecompressedOffset + fileEntry.DecompressedSize - 1);
+            int firstBlock = GetBlockEntryIndex(fileEntry.DecompressedOffset);
+            int lastBlock = GetBlockEntryIndex(fileEntry.DecompressedOffset + fileEntry.DecompressedSize - 1);
 
             using (var reader = new BinaryReader(ArchiveFileHandle, Encoding.UTF8, true))
             using (var writer = new BinaryWriter(File.Open(destinationPath, allowOverwrite ? FileMode.Create : FileMode.CreateNew, FileAccess.Write)))
-            using (var md5 = System.Security.Cryptography.MD5.Create())
             {
                 // Keep a small cache sitting around to avoid excessive allocations
                 Span<byte> decompressedData = new byte[512 * 1024];
@@ -253,7 +399,7 @@ namespace Decima
                 ulong fileDataLength = fileEntry.DecompressedSize;   // Remainder
 
                 // Files can be split across multiple sequential blocks
-                for (uint blockIndex = firstBlock; blockIndex <= lastBlock; blockIndex++)
+                for (int blockIndex = firstBlock; blockIndex <= lastBlock; blockIndex++)
                 {
                     var block = BlockEntries[blockIndex];
 
@@ -265,43 +411,7 @@ namespace Decima
                     var data = reader.ReadBytesStrict(block.Size);
 
                     if (Header.IsEncrypted)
-                    {
-                        // Raw data is XOR'd with a 16-byte MD5 of the block entry key
-                        var key = md5.ComputeHash(block.BuildXorKey());
-
-                        // If possible, do the XOR in a vectorized loop
-                        int vectorRegisterSize = Vector<byte>.Count;
-                        int vectorizedLoopCount = data.Length / vectorRegisterSize;
-                        int byteIndex = 0;
-
-                        if (vectorRegisterSize % key.Length != 0)
-                            vectorizedLoopCount = 0;
-
-                        if (vectorizedLoopCount > 0)
-                        {
-                            // Key length has to match register size, so replicate necessary values
-                            Span<byte> temp = stackalloc byte[vectorRegisterSize];
-
-                            for (int i = 0; i < vectorRegisterSize; i++)
-                                temp[i] = key[i & 15];
-
-                            var keyVector = new Vector<byte>(temp);
-
-                            // XOR operation
-                            for (int i = 0; i < vectorizedLoopCount; i++)
-                            {
-                                var encData = new Vector<byte>(data, byteIndex);
-                                var decData = encData ^ keyVector;
-
-                                decData.CopyTo(data, byteIndex);
-                                byteIndex += vectorRegisterSize;
-                            }
-                        }
-
-                        // Remainder
-                        for (; byteIndex < data.Length; byteIndex++)
-                            data[byteIndex] ^= key[byteIndex & 15];
-                    }
+                        block.XorDataBuffer(data);
 
                     if (!OodleLZ.Decompress(data, decompressedData))
                         throw new InvalidDataException("OodleLZ block decompression failed");
@@ -319,14 +429,151 @@ namespace Decima
             }
         }
 
-        public void AddFile(string path, string sourcePath)
+        public void BuildFromFileList(string physicalPathRoot, string[] sourceFiles)
         {
-            throw new NotImplementedException();
+            using var archiveWriter = new BinaryWriter(ArchiveFileHandle, Encoding.UTF8, true);
+            using var blockStream = new MemoryStream();
+            byte[] tempCompressedBuffer = new byte[512 * 1024];
+
+            uint blockSizeThreshold = 256 * 1024;
+            ulong decompressedFileOffset = 0;
+            ulong decompressedBlockOffset = 0;
+
+            // Append file data until a 256KB block write/flush is triggered - combine multiple files into single block entries
+            void flushBlockEntries(bool flushAllData)
+            {
+                int dataRemainder = 0;
+                int readPosition = 0;
+
+                while (true)
+                {
+                    dataRemainder = (int)Math.Min(blockStream.Length - readPosition, blockSizeThreshold);
+
+                    if (dataRemainder == 0 || (dataRemainder < blockSizeThreshold && !flushAllData))
+                        break;
+
+                    var blockEntry = new BlockEntry()
+                    {
+                        DecompressedOffset = decompressedBlockOffset,
+                        DecompressedSize = (uint)dataRemainder,
+                        Offset = (ulong)archiveWriter.BaseStream.Position,
+                    };
+
+                    // Compress
+                    long compressedSize = OodleLZ.Compress(blockStream.GetBuffer().AsSpan().Slice(readPosition, dataRemainder), tempCompressedBuffer);
+
+                    if (compressedSize == -1)
+                        throw new Exception("Buffer compression failed");
+
+                    blockEntry.Size = (uint)compressedSize;
+
+                    // Encrypt
+                    if (Header.IsEncrypted)
+                        blockEntry.XorDataBuffer(tempCompressedBuffer);
+
+                    // Write to disk
+                    archiveWriter.Write(tempCompressedBuffer, 0, (int)blockEntry.Size);
+
+                    decompressedBlockOffset += blockEntry.DecompressedSize;
+                    readPosition += dataRemainder;
+
+                    BlockEntries.Add(blockEntry);
+                }
+
+                // Free MemoryStream data that was already written to prevent excessive memory consumption
+                if (readPosition > 0 && dataRemainder > 0)
+                {
+                    Buffer.BlockCopy(blockStream.GetBuffer(), readPosition, blockStream.GetBuffer(), 0, dataRemainder);
+                    blockStream.SetLength(blockStream.Length - readPosition);
+                }
+            }
+
+            // Reserve space for the header
+            long totalBlockSize = sourceFiles.Sum(file => new FileInfo(Path.Combine(physicalPathRoot, file)).Length);
+            int fileCount = sourceFiles.Length;
+            int blockCount = (int)((totalBlockSize + blockSizeThreshold) / blockSizeThreshold);
+
+            archiveWriter.BaseStream.Position = CalculateHeaderBlockLength(fileCount, blockCount);
+
+            // Write file data sequentially
+            foreach (string filePath in sourceFiles)
+            {
+                using var reader = new BinaryReader(File.OpenRead(Path.Combine(physicalPathRoot, filePath)));
+
+                var fileEntry = new FileEntry()
+                {
+                    PathHash = GetHashForPath(filePath),
+                    DecompressedOffset = decompressedFileOffset,
+                    DecompressedSize = (uint)reader.BaseStream.Length,
+                };
+
+                reader.BaseStream.CopyTo(blockStream);
+                decompressedFileOffset += fileEntry.DecompressedSize;
+
+                flushBlockEntries(false);
+                FileEntries.Add(fileEntry);
+            }
+
+            flushBlockEntries(true);
+
+            // Rewind & insert headers before the compressed data
+            archiveWriter.BaseStream.Position = 0;
+            WriteArchiveHeaders(archiveWriter);
         }
 
-        public bool FileExists(string path)
+        public void Validate()
         {
-            return GetFileEntryIndex(path) != uint.MaxValue;
+            //
+            // Simple validation:
+            // - FileEntries must be sorted in order based on PathHash (asc)
+            // - BlockEntries must be sorted in order based on DecompressedOffset (asc)
+            // - BlockEntries should not exceed the file size (Offset + Size)
+            //
+            ulong previousPathHash = 0;
+            ulong previousOffset = 0;
+
+            foreach (var entry in FileEntries)
+            {
+                if (entry.PathHash < previousPathHash)
+                    throw new InvalidDataException("Archive file entry array isn't sorted properly");
+
+                previousPathHash = entry.PathHash;
+            }
+
+            foreach (var entry in BlockEntries)
+            {
+                if (entry.DecompressedOffset < previousOffset)
+                    throw new InvalidDataException("Archive block entry array isn't sorted properly");
+
+                if ((entry.Offset + entry.Size) > (ulong)ArchiveFileHandle.Length)
+                    throw new InvalidDataException("Archive data truncated. A block entry header exceeds the file size.");
+
+                previousOffset = entry.DecompressedOffset;
+            }
+        }
+
+        private void WriteArchiveHeaders(BinaryWriter writer)
+        {
+            FileEntries.Sort((x, y) => x.PathHash.CompareTo(y.PathHash));
+            Header.FileEntryCount = (uint)FileEntries.Count;
+
+            BlockEntries.Sort((x, y) => x.DecompressedOffset.CompareTo(y.DecompressedOffset));
+            Header.BlockEntryCount = (uint)BlockEntries.Count;
+
+            Header.ToData(writer);
+
+            foreach (var entry in FileEntries)
+                entry.ToData(writer, Header);
+
+            foreach (var entry in BlockEntries)
+                entry.ToData(writer, Header);
+        }
+
+        private int CalculateHeaderBlockLength(int fileEntryCount, int blockEntryCount)
+        {
+            return PackfileHeader.DataHeaderSize +
+                (FileEntry.DataHeaderSize * fileEntryCount) +
+                (BlockEntry.DataHeaderSize * blockEntryCount);
         }
 
         private ulong GetHashForPath(string path)
@@ -335,15 +582,15 @@ namespace Decima
             return hash[0];
         }
 
-        private uint GetFileEntryIndex(string path)
+        private int GetFileEntryIndex(string path)
         {
             return GetFileEntryIndex(GetHashForPath(path));
         }
 
-        private uint GetFileEntryIndex(ulong pathId)
+        private int GetFileEntryIndex(ulong pathId)
         {
             int l = 0;
-            int r = FileEntries.Length - 1;
+            int r = FileEntries.Count - 1;
 
             // Binary search
             while (l <= r)
@@ -351,27 +598,27 @@ namespace Decima
                 int mid = l + (r - l) / 2;
 
                 if (FileEntries[mid].PathHash == pathId)
-                    return (uint)mid;
+                    return mid;
                 else if (FileEntries[mid].PathHash < pathId)
                     l = mid + 1;
                 else
                     r = mid - 1;
             }
 
-            return uint.MaxValue;
+            return int.MaxValue;
         }
 
-        private uint GetBlockEntryIndex(ulong offset)
+        private int GetBlockEntryIndex(ulong offset)
         {
             // TODO: Binary search
-            for (uint i = 0; i < BlockEntries.Length; i++)
+            for (int i = 0; i < BlockEntries.Count; i++)
             {
                 if (offset >= BlockEntries[i].DecompressedOffset &&
                     offset < (BlockEntries[i].DecompressedOffset + BlockEntries[i].DecompressedSize))
                     return i;
             }
 
-            return uint.MaxValue;
+            return int.MaxValue;
         }
     }
 }

@@ -148,7 +148,7 @@ namespace HZDCoreEditor
                 {
                     string localCorePath = assetPath.Path + ".core";
 
-                    if (!archive.FileExists(localCorePath))
+                    if (!archive.ContainsFile(localCorePath))
                         continue;
 
                     var physicalPath = Path.Combine(basePath, "extracted", localCorePath);
