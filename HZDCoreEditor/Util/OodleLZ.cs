@@ -120,7 +120,9 @@ namespace Utility
             int compressLevel, // OodleLZ_Compression_V#
             UIntPtr compressOptions,
             byte* encoderMemory,
-            UIntPtr encoderMemorySize);
+            UIntPtr encoderMemorySize,
+            UIntPtr unknown1,
+            UIntPtr unknown2);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
         private static extern IntPtr LoadLibraryW(string lpFileName);
@@ -189,7 +191,7 @@ namespace Utility
             return Decompress(inputBuffer.AsSpan(), outputBuffer.AsSpan());
         }
 
-        public static long Compress(ReadOnlySpan<byte> inputBuffer, Span<byte> outputBuffer)
+        public static long Compress(Span<byte> inputBuffer, Span<byte> outputBuffer)
         {
             long result = -1;
 
@@ -220,6 +222,8 @@ namespace Utility
                         compression,
                         UIntPtr.Zero,
                         null,
+                        UIntPtr.Zero,
+                        UIntPtr.Zero,
                         UIntPtr.Zero);
                 }
             }
