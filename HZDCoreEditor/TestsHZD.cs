@@ -1,6 +1,7 @@
 ﻿using Decima;
 using System;
 using System.IO;
+using System.Linq;
 
 namespace HZDCoreEditor
 {
@@ -170,6 +171,51 @@ namespace HZDCoreEditor
 
                 var objects = CoreBinary.Load(file, true);
             }
+        }
+
+        public static void PackArchivesQuickTest()
+        {
+            string archivePath = Path.Combine(GameDataPath, "test_packed_archive.tmp");
+
+            using (var testArchive = new Packfile(archivePath, FileMode.Create))
+            {
+                testArchive.BuildFromFileList(GameDataPathExtracted, QuickTestFiles);
+            }
+
+            using (var testArchive = new Packfile(archivePath, FileMode.Open))
+            {
+                testArchive.Validate();
+            }
+
+            File.Delete(archivePath);
+        }
+
+        public static void PackArchivesTest()
+        {
+            string archivePath = Path.Combine(GameDataPath, "test_packed_archive.tmp");
+
+            using (var testArchive = new Packfile(archivePath, FileMode.Create))
+            {
+                string targetDir = GameDataPathExtracted;
+
+                if (!targetDir.EndsWith('\\'))
+                    targetDir += "\\";
+
+                var filesToCombine = Directory
+                    .EnumerateFiles(targetDir, "*.core", SearchOption.AllDirectories)
+                    .Take(500)
+                    .Select(f => f.Substring(targetDir.Length))
+                    .ToArray();
+
+                testArchive.BuildFromFileList(targetDir, filesToCombine);
+            }
+
+            using (var testArchive = new Packfile(archivePath, FileMode.Open))
+            {
+                testArchive.Validate();
+            }
+
+            File.Delete(archivePath);
         }
 
         public static void DecodeQuickArchivesTest()

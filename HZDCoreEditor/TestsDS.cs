@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace HZDCoreEditor
 {
@@ -25,7 +26,7 @@ namespace HZDCoreEditor
             @"localized\sentences\ds\loc_object_names.core",
             @"ds\generic_demo\sqn_common_sq_cs99_s00500.core",
             @"ds\generic_demo\sqn_common_sq_cs99_s00400.core",
-            @"game\ds_online_sync_config.core",
+            @"ds\game\ds_online_sync_config.core",
             @"ambience\newambiencemanager.core",
             @"ds\models\characters\sam_sam\core\sam_body_black\model\parts\mesh_bodynaked_lx.core",
             @"ds\models\characters\sam_sam\core\sam_body_black\model\parts\mesh_upperbody_lx.core",
@@ -109,6 +110,51 @@ namespace HZDCoreEditor
 
                 var objects = CoreBinary.Load(file, true);
             }
+        }
+
+        public static void PackArchivesQuickTest()
+        {
+            string archivePath = Path.Combine(GameDataPath, "test_packed_archive.tmp");
+
+            using (var testArchive = new Packfile(archivePath, FileMode.Create, true))
+            {
+                testArchive.BuildFromFileList(GameDataPathExtracted, QuickTestFiles);
+            }
+
+            using (var testArchive = new Packfile(archivePath, FileMode.Open))
+            {
+                testArchive.Validate();
+            }
+
+            File.Delete(archivePath);
+        }
+
+        public static void PackArchivesTest()
+        {
+            string archivePath = Path.Combine(GameDataPath, "test_packed_archive.tmp");
+
+            using (var testArchive = new Packfile(archivePath, FileMode.Create, true))
+            {
+                string targetDir = GameDataPathExtracted;
+
+                if (!targetDir.EndsWith('\\'))
+                    targetDir += "\\";
+
+                var filesToCombine = Directory
+                    .EnumerateFiles(targetDir, "*.core", SearchOption.AllDirectories)
+                    .Take(500)
+                    .Select(f => f.Substring(targetDir.Length))
+                    .ToArray();
+
+                testArchive.BuildFromFileList(targetDir, filesToCombine);
+            }
+
+            using (var testArchive = new Packfile(archivePath, FileMode.Open))
+            {
+                testArchive.Validate();
+            }
+
+            File.Delete(archivePath);
         }
 
         public static void DecodeArchivesBenchmarkTest()

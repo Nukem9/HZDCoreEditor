@@ -17,13 +17,15 @@ namespace HZDCoreEditor
             Application.SetCompatibleTextRenderingDefault(false);
 
             /*
-            Needs to be moved to its own unit test project
+            // Needs to be moved to its own unit test project
 
             RTTI.SetGameMode(GameType.DS);
             TestsDS.DecodeReserializeQuickCoreFilesTest();
             TestsDS.DecodeReserializeAllCoreFilesTest();
             TestsDS.DecodeQuickCoreFilesTest();
             TestsDS.DecodeAllCoreFilesTest();
+            TestsDS.PackArchivesQuickTest();
+            TestsDS.PackArchivesTest();
             TestsDS.DecodeArchivesBenchmarkTest();
             TestsDS.DecodeQuickArchivesTest();
 
@@ -33,13 +35,11 @@ namespace HZDCoreEditor
             TestsHZD.DecodeReserializeAllCoreFilesTest();
             TestsHZD.DecodeQuickCoreFilesTest();
             TestsHZD.DecodeAllCoreFilesTest();
+            TestsHZD.PackArchivesQuickTest();
+            TestsHZD.PackArchivesTest();
             TestsHZD.DecodeQuickArchivesTest();
             TestsHZD.DecodeAllArchivesTest();
             */
-
-            RTTI.SetGameMode(GameType.HZD);
-            var objects = CoreBinary.Load(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\entities\shops\shops.core");
-            Application.Run(new UI.FormCoreView(objects));
 
             /*
             ExtractHZDLocalization();
