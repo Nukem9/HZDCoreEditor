@@ -3,6 +3,7 @@ using NAudio.Wave;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace HZDCoreEditor
@@ -59,9 +60,9 @@ namespace HZDCoreEditor
                 allStrings.Add("\n");
                 allStrings.Add(file);
 
-                var objects = CoreBinary.Load(file);
+                var core = new CoreBinary().FromFile(file);
 
-                foreach (var obj in objects)
+                foreach (var obj in core)
                 {
                     if (obj is Decima.HZD.LocalizedTextResource asResource)
                         allStrings.Add(asResource.GetStringForLanguage(Decima.HZD.ELanguage.English));
@@ -79,9 +80,9 @@ namespace HZDCoreEditor
             {
                 Console.WriteLine(file);
 
-                var coreObjects = CoreBinary.Load(file);
+                var core = new CoreBinary().FromFile(file);
 
-                foreach (var obj in coreObjects)
+                foreach (var obj in core)
                 {
                     var wave = obj as Decima.HZD.WaveResource;
 

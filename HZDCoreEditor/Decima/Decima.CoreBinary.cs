@@ -1,23 +1,30 @@
-﻿using Utility;
-using System;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using Utility;
 
 namespace Decima
 {
-    class CoreBinary
+    class CoreBinary : IEnumerable<object>
     {
+        private List<CoreEntry> Entries;
+
         /// <remarks>
         /// File data format:
         /// UInt64  (+0)  Type A.K.A. MurmurHash3 of the textual RTTI description
         /// UInt32  (+8)  Chunk size
         /// UInt8[] (+12) (Optional) Chunk data
         /// </remarks>
-        public class Entry : RTTI.ISerializable
+        private class CoreEntry : RTTI.ISerializable
         {
+            public const int DataHeaderSize = 12;// Bytes
+
             public ulong TypeId;
             public long ChunkOffset;
             public uint ChunkSize;
+            public object ContainedObject;
 
             public void Deserialize(BinaryReader reader)
             {
@@ -36,84 +43,114 @@ namespace Decima
             }
         }
 
-        public static List<object> Load(string filePath, bool ignoreUnknownChunks = false)
+        public void ToData(BinaryWriter writer)
         {
-            var coreFileObjects = new List<object>();
-
-            using (var reader = new BinaryReader(File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read)))
+            foreach (var entry in Entries)
             {
-                while (reader.BaseStream.Position != reader.BaseStream.Length)
+                // Allocate file space for a fake entry with all zeros
+                entry.ChunkOffset = writer.BaseStream.Position;
+                writer.BaseStream.Position += CoreEntry.DataHeaderSize;
+
+                if (entry.ContainedObject is byte[] asBytes)
                 {
-                    //Console.WriteLine($"Beginning chunk parse at {reader.BaseStream.Position:X}");
-
-                    var entry = RTTI.DeserializeType<Entry>(reader);
-
-                    long currentFilePos = reader.BaseStream.Position;
-                    long expectedFilePos = currentFilePos + entry.ChunkSize;
-
-                    if (expectedFilePos > reader.StreamLength())
-                        throw new InvalidDataException($"Invalid chunk size {entry.ChunkSize} was supplied in Core file at offset {entry.ChunkOffset:X}");
-
-                    // TODO: This needs to be part of Entry
-                    Type topLevelObjectType = RTTI.GetTypeById(entry.TypeId);
-                    object topLevelObject = null;
-
-                    if (topLevelObjectType != null)
-                    {
-                        topLevelObject = RTTI.DeserializeType(reader, topLevelObjectType);
-                    }
-                    else
-                    {
-                        if (!ignoreUnknownChunks)
-                            throw new InvalidDataException($"Unknown type ID {entry.TypeId:X16} found in Core file at offset {entry.ChunkOffset:X}");
-
-                        // Invalid or unknown chunk ID hit - create an array of bytes "object" and try to continue with the rest of the file
-                        topLevelObject = reader.ReadBytes(entry.ChunkSize);
-                    }
-
-                    if (reader.BaseStream.Position > expectedFilePos)
-                        throw new Exception("Read past the end of a chunk while deserializing object");
-                    else if (reader.BaseStream.Position < expectedFilePos)
-                        throw new Exception("Short read of a chunk while deserializing object");
-
-                    reader.BaseStream.Position = expectedFilePos;
-                    coreFileObjects.Add(topLevelObject);
+                    // Unsupported (raw data) object type
+                    writer.Write(asBytes);
                 }
-            }
+                else
+                {
+                    RTTI.SerializeType(writer, entry.ContainedObject);
+                }
 
-            return coreFileObjects;
+                // Now rewrite it with the updated fields
+                entry.ChunkSize = (uint)(writer.BaseStream.Position - entry.ChunkOffset - CoreEntry.DataHeaderSize);
+
+                long oldPosition = writer.BaseStream.Position;
+                writer.BaseStream.Position = entry.ChunkOffset;
+                RTTI.SerializeType(writer, entry);
+                writer.BaseStream.Position = oldPosition;
+            }
         }
 
-        public static void Save(string filePath, List<object> objects)
+        public void ToFile(string filePath)
         {
-            using (var writer = new BinaryWriter(File.Open(filePath, FileMode.Create, FileAccess.Write, FileShare.None)))
+            using (var writer = new BinaryWriter(File.OpenWrite(filePath)))
+                ToData(writer);
+        }
+
+        public CoreBinary FromData(BinaryReader reader, bool ignoreUnknownChunks = false)
+        {
+            Entries = new List<CoreEntry>();
+
+            while (reader.StreamRemainder() > 0)
             {
-                foreach (var topLevelObject in objects)
+                //Debugger.Log(0, "Info", $"Beginning chunk parse at {reader.BaseStream.Position:X}");
+
+                var entry = RTTI.DeserializeType<CoreEntry>(reader);
+                var topLevelObjectType = RTTI.GetTypeById(entry.TypeId);
+
+                if (entry.ChunkSize > reader.StreamRemainder())
+                    throw new InvalidDataException($"Invalid chunk size {entry.ChunkSize} was supplied in Core file at offset {entry.ChunkOffset:X}");
+
+                if (topLevelObjectType != null)
                 {
-                    // Allocate file space for a fake entry with all zeros
-                    var entry = new Entry();
-                    RTTI.SerializeType(writer, entry);
-
-                    if (topLevelObject is byte[] asBytes)
-                    {
-                        // Handle unsupported (raw data) object types
-                        writer.Write(asBytes);
-                    }
-                    else
-                    {
-                        RTTI.SerializeType(writer, topLevelObject);
-                    }
-
-                    entry.TypeId = RTTI.GetIdByType(topLevelObject.GetType());
-                    entry.ChunkSize = (uint)(writer.BaseStream.Position - entry.ChunkOffset - 12);
-
-                    // Now rewrite it with the updated fields
-                    long oldPosition = writer.BaseStream.Position;
-                    writer.BaseStream.Position = entry.ChunkOffset;
-                    RTTI.SerializeType(writer, entry);
-                    writer.BaseStream.Position = oldPosition;
+                    entry.ContainedObject = RTTI.DeserializeType(reader, topLevelObjectType);
                 }
+                else
+                {
+                    if (!ignoreUnknownChunks)
+                        throw new InvalidDataException($"Unknown type ID {entry.TypeId:X16} found in Core file at offset {entry.ChunkOffset:X}");
+
+                    // Invalid or unknown chunk ID hit - create an array of bytes "object" and try to continue with the rest of the file
+                    entry.ContainedObject = reader.ReadBytes(entry.ChunkSize);
+                }
+
+                // Check for overflows and underflows
+                long expectedFilePos = reader.BaseStream.Position + entry.ChunkSize;
+
+                if (reader.BaseStream.Position > expectedFilePos)
+                    throw new Exception("Read past the end of a chunk while deserializing object");
+                else if (reader.BaseStream.Position < expectedFilePos)
+                    throw new Exception("Short read of a chunk while deserializing object");
+
+                //if (reader.BaseStream.Position < expectedFilePos)
+                //    Debugger.Log(0, "Warn", $"Short read of a chunk while deserializing object. {reader.BaseStream.Position} < {expectedFilePos}. TypeId = {entry.TypeId:X16}\n");
+
+                reader.BaseStream.Position = expectedFilePos;
+                Entries.Add(entry);
             }
+
+            return this;
+        }
+
+        public CoreBinary FromFile(string filePath, bool ignoreUnknownChunks = false)
+        {
+            using (var reader = new BinaryReader(File.OpenRead(filePath)))
+                return FromData(reader, ignoreUnknownChunks);
+        }
+
+        public void AddObject(object obj)
+        {
+            Entries.Add(new CoreEntry()
+            {
+                TypeId = RTTI.GetIdByType(obj.GetType()),
+                ContainedObject = obj,
+            });
+        }
+
+        public void RemoveObject(object obj)
+        {
+            Entries.Remove(Entries.Where(x => x.ContainedObject == obj).Single());
+        }
+
+        public IEnumerator<object> GetEnumerator()
+        {
+            foreach (var entry in Entries)
+                yield return entry.ContainedObject;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

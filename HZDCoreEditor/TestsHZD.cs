@@ -100,10 +100,10 @@ namespace HZDCoreEditor
                 string fullPath = Path.Combine(GameDataPathExtracted, file);
                 Console.WriteLine(fullPath);
 
-                var objects = CoreBinary.Load(fullPath);
+                var core = new CoreBinary().FromFile(fullPath);
 
                 string tempPath = Path.ChangeExtension(fullPath, ".tmp");
-                CoreBinary.Save(tempPath, objects);
+                core.ToFile(tempPath);
 
                 byte[] d1 = File.ReadAllBytes(fullPath);
                 byte[] d2 = File.ReadAllBytes(tempPath);
@@ -129,10 +129,10 @@ namespace HZDCoreEditor
             {
                 Console.WriteLine(file);
 
-                var objects = CoreBinary.Load(file, true);
+                var core = new CoreBinary().FromFile(file, true);
 
                 string tempPath = Path.ChangeExtension(file, ".tmp");
-                CoreBinary.Save(tempPath, objects);
+                core.ToFile(tempPath);
 
                 byte[] d1 = File.ReadAllBytes(file);
                 byte[] d2 = File.ReadAllBytes(tempPath);
@@ -157,7 +157,7 @@ namespace HZDCoreEditor
                 string fullPath = Path.Combine(GameDataPathExtracted, file);
                 Console.WriteLine(fullPath);
 
-                var objects = CoreBinary.Load(fullPath);
+                var core = new CoreBinary().FromFile(fullPath);
             }
         }
 
@@ -169,7 +169,7 @@ namespace HZDCoreEditor
             {
                 Console.WriteLine(file);
 
-                var objects = CoreBinary.Load(file, true);
+                var core = new CoreBinary().FromFile(file, true);
             }
         }
 
