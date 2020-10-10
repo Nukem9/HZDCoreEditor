@@ -64,7 +64,6 @@
     /// </summary>
     public enum BaseVertexElement : byte
     {
-
     }
 
     /// <summary>
@@ -165,7 +164,7 @@
     /// <summary>
     /// Assumes that the TypeId is 0x8E32C40558E36E3E for DS/HZD.
     /// </summary>
-    public enum BaseProgramType
+    public enum BaseProgramType : int
     {
         ComputeProgram = 0,
         GeometryProgram = 1,
@@ -176,7 +175,7 @@
     /// <summary>
     /// Assumes that the TypeId is 0x2D12E73211551897 for DS/HZD.
     /// </summary>
-    public enum BaseProgramTypeMask
+    public enum BaseProgramTypeMask : int
     {
         None = 0,
 
