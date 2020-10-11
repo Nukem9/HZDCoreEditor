@@ -73,7 +73,7 @@ namespace Decima
 
         public void ToFile(string filePath)
         {
-            using (var writer = new BinaryWriter(File.OpenWrite(filePath)))
+            using (var writer = new BinaryWriter(File.Open(filePath, FileMode.Create, FileAccess.ReadWrite, FileShare.None)))
                 ToData(writer);
         }
 
@@ -87,6 +87,7 @@ namespace Decima
 
                 var entry = RTTI.DeserializeType<CoreEntry>(reader);
                 var topLevelObjectType = RTTI.GetTypeById(entry.TypeId);
+                long expectedStreamPos = reader.BaseStream.Position + entry.ChunkSize;
 
                 if (entry.ChunkSize > reader.StreamRemainder())
                     throw new InvalidDataException($"Invalid chunk size {entry.ChunkSize} was supplied in Core file at offset {entry.ChunkOffset:X}");
@@ -105,17 +106,15 @@ namespace Decima
                 }
 
                 // Check for overflows and underflows
-                long expectedFilePos = reader.BaseStream.Position + entry.ChunkSize;
-
-                if (reader.BaseStream.Position > expectedFilePos)
+                if (reader.BaseStream.Position > expectedStreamPos)
                     throw new Exception("Read past the end of a chunk while deserializing object");
-                else if (reader.BaseStream.Position < expectedFilePos)
+                else if (reader.BaseStream.Position < expectedStreamPos)
                     throw new Exception("Short read of a chunk while deserializing object");
 
-                //if (reader.BaseStream.Position < expectedFilePos)
-                //    Debugger.Log(0, "Warn", $"Short read of a chunk while deserializing object. {reader.BaseStream.Position} < {expectedFilePos}. TypeId = {entry.TypeId:X16}\n");
+                //if (reader.BaseStream.Position < expectedStreamPos)
+                //    Debugger.Log(0, "Warn", $"Short read of a chunk while deserializing object. {reader.BaseStream.Position} < {expectedStreamPos}. TypeId = {entry.TypeId:X16}\n");
 
-                reader.BaseStream.Position = expectedFilePos;
+                reader.BaseStream.Position = expectedStreamPos;
                 Entries.Add(entry);
             }
 
