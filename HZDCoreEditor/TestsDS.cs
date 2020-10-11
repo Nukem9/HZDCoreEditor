@@ -124,6 +124,15 @@ namespace HZDCoreEditor
             using (var testArchive = new Packfile(archivePath, FileMode.Open))
             {
                 testArchive.Validate();
+
+                // Re-extract all of the contained files
+                foreach (string file in QuickTestFiles)
+                {
+                    string tempFilePath = Path.Combine(GameDataPathExtracted, $"{file}.tmp");
+
+                    testArchive.ExtractFile(file, tempFilePath, true);
+                    File.Delete(tempFilePath);
+                }
             }
 
             File.Delete(archivePath);
@@ -132,26 +141,34 @@ namespace HZDCoreEditor
         public static void PackArchivesTest()
         {
             string archivePath = Path.Combine(GameDataPath, "test_packed_archive.tmp");
+            string targetDir = GameDataPathExtracted;
 
-            using (var testArchive = new Packfile(archivePath, FileMode.Create, true))
+            if (!targetDir.EndsWith('\\'))
+                targetDir += "\\";
+
+            var filesToCombine = Directory
+                .EnumerateFiles(targetDir, "*.core", SearchOption.AllDirectories)
+                .Take(500)
+                .Select(f => f.Substring(targetDir.Length))
+                .ToArray();
+
+            using (var testArchive = new Packfile(archivePath, FileMode.Create))
             {
-                string targetDir = GameDataPathExtracted;
-
-                if (!targetDir.EndsWith('\\'))
-                    targetDir += "\\";
-
-                var filesToCombine = Directory
-                    .EnumerateFiles(targetDir, "*.core", SearchOption.AllDirectories)
-                    .Take(500)
-                    .Select(f => f.Substring(targetDir.Length))
-                    .ToArray();
-
                 testArchive.BuildFromFileList(targetDir, filesToCombine);
             }
 
             using (var testArchive = new Packfile(archivePath, FileMode.Open))
             {
                 testArchive.Validate();
+
+                // Re-extract all of the contained files
+                foreach (string file in filesToCombine)
+                {
+                    string tempFilePath = Path.Combine(targetDir, $"{file}.tmp");
+
+                    testArchive.ExtractFile(file, tempFilePath, true);
+                    File.Delete(tempFilePath);
+                }
             }
 
             File.Delete(archivePath);
