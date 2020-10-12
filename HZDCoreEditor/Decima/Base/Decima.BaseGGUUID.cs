@@ -32,25 +32,6 @@ namespace Decima
         [RTTI.Member(14, 0xE)] public uint8 Data14;
         [RTTI.Member(15, 0xF)] public uint8 Data15;
 
-        public void DeserializeStateObject(SaveState state)
-        {
-            AssignFromOther(state.ReadIndexedGUID());
-        }
-
-        public bool IsEmpty()
-        {
-            return
-                Data0 == 0 && Data1 == 0 && Data2 == 0 && Data3 == 0 &&
-                Data4 == 0 && Data5 == 0 && Data6 == 0 && Data7 == 0 &&
-                Data8 == 0 && Data9 == 0 && Data10 == 0 && Data11 == 0 &&
-                Data12 == 0 && Data13 == 0 && Data14 == 0 && Data15 == 0;
-        }
-
-        public override string ToString()
-        {
-            return $"{{{Data3:X2}{Data2:X2}{Data1:X2}{Data0:X2}-{Data5:X2}{Data4:X2}-{Data7:X2}{Data6:X2}-{Data8:X2}{Data9:X2}-{Data10:X2}{Data11:X2}{Data12:X2}{Data13:X2}{Data14:X2}{Data15:X2}}}";
-        }
-
         public void ToData(BinaryWriter writer)
         {
             writer.Write(Data0);
@@ -71,20 +52,36 @@ namespace Decima
             writer.Write(Data15);
         }
 
-        public static BaseGGUUID FromData(BinaryReader reader)
+        public override string ToString()
+        {
+            return $"{{{Data3:X2}{Data2:X2}{Data1:X2}{Data0:X2}-{Data5:X2}{Data4:X2}-{Data7:X2}{Data6:X2}-{Data8:X2}{Data9:X2}-{Data10:X2}{Data11:X2}{Data12:X2}{Data13:X2}{Data14:X2}{Data15:X2}}}";
+        }
+
+        public BaseGGUUID FromData(BinaryReader reader)
         {
             return FromData(reader.ReadBytesStrict(16));
         }
 
-        public static BaseGGUUID FromData(ReadOnlySpan<byte> data)
+        public BaseGGUUID FromData(ReadOnlySpan<byte> data)
         {
-            var x = new BaseGGUUID();
-            x.AssignFromData(data);
-
-            return x;
+            AssignFromData(data);
+            return this;
         }
 
-        public void AssignFromOther(BaseGGUUID other)
+        public BaseGGUUID FromString(string value)
+        {
+            if (!Guid.TryParse(value, out Guid guid))
+                throw new ArgumentException("Invalid GUID", nameof(value));
+
+            return FromData(guid.ToByteArray());
+        }
+
+        public void DeserializeStateObject(SaveState state)
+        {
+            AssignFromOther(state.ReadIndexedGUID());
+        }
+
+        protected void AssignFromOther(BaseGGUUID other)
         {
             // No unions. No marshaling. Assign each manually...
             Data0 = other.Data0;
@@ -105,7 +102,7 @@ namespace Decima
             Data15 = other.Data15;
         }
 
-        private void AssignFromData(ReadOnlySpan<byte> data)
+        protected void AssignFromData(ReadOnlySpan<byte> data)
         {
             Data0 = data[0];
             Data1 = data[1];
@@ -123,6 +120,11 @@ namespace Decima
             Data13 = data[13];
             Data14 = data[14];
             Data15 = data[15];
+        }
+
+        public static implicit operator BaseGGUUID(string value)
+        {
+            return new BaseGGUUID().FromString(value);
         }
     }
 }

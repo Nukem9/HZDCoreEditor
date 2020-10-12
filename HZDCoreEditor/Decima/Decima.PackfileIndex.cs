@@ -38,7 +38,7 @@ namespace Decima
                     x.PathHash = hash[0];
                 }
 
-                x.GUID = BaseGGUUID.FromData(reader);
+                x.GUID = new BaseGGUUID().FromData(reader);
                 var unknown = reader.ReadBytesStrict(16);
 
                 return x;

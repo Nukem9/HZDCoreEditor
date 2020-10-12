@@ -32,7 +32,7 @@ namespace Decima.DS
             if (stringLength > 0)
                 x.ResourcePath = Encoding.UTF8.GetString(reader.ReadBytesStrict(stringLength));
 
-            x.ResourceUUID = BaseGGUUID.FromData(reader);
+            x.ResourceUUID = new BaseGGUUID().FromData(reader);
             x.Unknown1 = reader.ReadUInt32();
             x.Unknown2 = reader.ReadUInt32();
             x.Unknown3 = reader.ReadUInt32();

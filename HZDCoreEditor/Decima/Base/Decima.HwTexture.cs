@@ -110,7 +110,7 @@ namespace Decima
             header.Flags = reader.ReadByte();                       // 13
             header.Unknown4 = reader.ReadByte();                    // 14 Something to do with mips. Autogen?
             header.Unknown5 = reader.ReadByte();                    // 15
-            header.ResourceGUID = BaseGGUUID.FromData(reader);      // 16
+            header.ResourceGUID = new BaseGGUUID().FromData(reader);// 16
 
             var x = new HwTexture();
             x.Header = header;

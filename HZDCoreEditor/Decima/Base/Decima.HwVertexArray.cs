@@ -82,7 +82,7 @@ namespace Decima
                     });
                 }
 
-                stream.GUID = BaseGGUUID.FromData(reader);
+                stream.GUID = new BaseGGUUID().FromData(reader);
                 stream.Buffer = HwBuffer.FromVertexData(reader, gameType, x.IsStreaming, byteStride, x.VertexCount);
 
                 x.Streams.Add(stream);
