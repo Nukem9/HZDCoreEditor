@@ -6,24 +6,30 @@ namespace HZDCoreEditor.UI
 {
     public class TreeDataClassMemberNode : TreeDataNode
     {
-        public override string Value { get { return ParentFieldEntry.GetValue(ParentObject)?.ToString(); } }
+        public override object Value { get { return ParentFieldEntry.GetValue(ParentObject); } }
 
-        public override bool HasChildren => Children.Count > 0;
+        public override bool HasChildren => Children?.Count > 0;
         public override List<TreeDataNode> Children { get; }
+        public override bool IsEditable => AllowEdits;
 
         private readonly object ParentObject;
-        private readonly FieldInfo ParentFieldEntry;
+        private readonly FieldOrProperty ParentFieldEntry;
+        private readonly bool AllowEdits;
 
-        public TreeDataClassMemberNode(object parent, FieldInfo field)
+        public TreeDataClassMemberNode(object parent, FieldOrProperty member, NodeAttributes attributes)
         {
-            Name = field.Name;
-            TypeName = field.FieldType.Name;
+            Name = member.GetName();
+            TypeName = member.GetMemberType().Name;
 
-            Children = new List<TreeDataNode>();
             ParentObject = parent;
-            ParentFieldEntry = field;
+            ParentFieldEntry = member;
+            AllowEdits = !attributes.HasFlag(NodeAttributes.DisableEditing);
 
-            AddObjectChildren();
+            if (!attributes.HasFlag(NodeAttributes.HideChildren))
+            {
+                Children = new List<TreeDataNode>();
+                AddObjectChildren();
+            }
         }
 
         private void AddObjectChildren()
@@ -34,11 +40,11 @@ namespace HZDCoreEditor.UI
             if (Type.GetTypeCode(objectType) != TypeCode.Object)
                 return;
 
-            // Class member variales act as children
+            // Class member variables act as children
             var fields = objectType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
             foreach (var field in fields)
-                Children.Add(CreateNode(objectInstance, field));
+                Children.Add(CreateNode(objectInstance, new FieldOrProperty(field)));
         }
     }
 }

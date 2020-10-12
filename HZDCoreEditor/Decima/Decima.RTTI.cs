@@ -104,6 +104,32 @@ namespace Decima
             return type.GetCustomAttribute<SerializableAttribute>().BinaryTypeId;
         }
 
+        public static string GetTypeNameString(Type type)
+        {
+            // Array<Ref<PlayerParams>> -> Array`1 -> Array_Ref_PlayerParams
+            static string getGenericTypeString(Type genericType)
+            {
+                string typeName = genericType.Name;
+
+                if (!genericType.IsGenericType)
+                {
+                    if (DotNetTypeToDecima.TryGetValue(typeName, out string translatedName))
+                        return translatedName;
+
+                    return typeName;
+                }
+
+                typeName = typeName.Substring(0, typeName.IndexOf('`'));
+
+                foreach (var argType in genericType.GetGenericArguments())
+                    typeName += $"_{getGenericTypeString(argType)}";
+
+                return typeName;
+            }
+
+            return getGenericTypeString(type);
+        }
+
         public static string GetFieldCategory(FieldInfo field)
         {
             return field.GetCustomAttribute<MemberAttribute>()?.Category;
@@ -126,32 +152,6 @@ namespace Decima
                 name = name.Substring(1);
 
             return name;
-        }
-
-        public static string GetFieldTypeName(FieldInfo field)
-        {
-            // Array<Ref<PlayerParams>> -> Array`1 -> Array_Ref_PlayerParams
-            static string getGenericTypeString(Type type)
-            {
-                string typeName = type.Name;
-
-                if (!type.IsGenericType)
-                {
-                    if (DotNetTypeToDecima.TryGetValue(typeName, out string translatedName))
-                        return translatedName;
-
-                    return typeName;
-                }
-
-                typeName = typeName.Substring(0, typeName.IndexOf('`'));
-
-                foreach (var argType in type.GetGenericArguments())
-                    typeName += $"_{getGenericTypeString(argType)}";
-
-                return typeName;
-            }
-
-            return getGenericTypeString(field.FieldType);
         }
 
         public static OrderedFieldInfo GetOrderedFieldsForClass(Type type)

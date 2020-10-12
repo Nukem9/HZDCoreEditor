@@ -1,35 +1,44 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
+using System.Linq;
 
 namespace HZDCoreEditor.UI
 {
     public class TreeDataListNode : TreeDataNode
     {
-        public override string Value { get { return $"List<{TypeName}> ({GetListLength()})"; } }
+        public override object Value { get { return $"{TypeName} ({GetListLength()})"; } }
 
         public override bool HasChildren => GetListLength() > 0;
         public override List<TreeDataNode> Children { get; }
+        public override bool IsEditable => false;
 
         private readonly object ParentObject;
-        private readonly FieldInfo ParentFieldEntry;
+        private readonly FieldOrProperty ParentFieldEntry;
 
-        public TreeDataListNode(object parent, FieldInfo field)
+        public TreeDataListNode(object parent, FieldOrProperty member, NodeAttributes attributes)
         {
-            Name = field.Name;
-            TypeName = field.FieldType.Name;
+            Name = member.GetName();
+            TypeName = Decima.RTTI.GetTypeNameString(member.GetMemberType()).Replace("_", "<");
+
+            // Pad template brackets on the right hand side
+            for (int i = 0; i < TypeName.Where(x => x == '<').Count(); i++)
+                TypeName += '>';
 
             Children = new List<TreeDataNode>();
             ParentObject = parent;
-            ParentFieldEntry = field;
+            ParentFieldEntry = member;
 
-            AddListChildren();
+            if (!attributes.HasFlag(NodeAttributes.HideChildren))
+            {
+                Children = new List<TreeDataNode>();
+                AddListChildren();
+            }
         }
 
         private IList GetList()
         {
-            return ParentFieldEntry.GetValue(ParentObject) as IList;
+            return ParentFieldEntry.GetValue<IList>(ParentObject);
         }
 
         private int GetListLength()
@@ -41,48 +50,55 @@ namespace HZDCoreEditor.UI
         {
             var asList = GetList();
 
-            // Array entries act as children
-            for (int i = 0; i < asList?.Count; i++)
-                Children.Add(new TreeDataListIndexNode(asList, i));
+            if (asList != null)
+            {
+                // Fetch the type of T from IList<T>
+                var enumerableTemplateType = asList.GetType()
+                    .GetInterfaces()
+                    .Where(i => i.IsGenericType && i.GenericTypeArguments.Length == 1)
+                    .Single(i => i.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                    .GenericTypeArguments[0];
+
+                // Array elements act as children
+                for (int i = 0; i < asList.Count; i++)
+                    Children.Add(new TreeDataListIndexNode(asList, i, enumerableTemplateType));
+            }
         }
     }
 
     public class TreeDataListIndexNode : TreeDataNode
     {
-        public override string Value { get { return $"{ParentObject[ParentArrayIndex]?.ToString()}"; } }
+        public override object Value { get { return ObjectWrapper?.ToString(); } }
 
-        public override bool HasChildren => Children.Count > 0;
-        public override List<TreeDataNode> Children { get; }
+        public override bool HasChildren => ObjectWrapperNode.HasChildren;
+        public override List<TreeDataNode> Children => ObjectWrapperNode.Children;
+        public override bool IsEditable => ObjectWrapperNode.IsEditable;
 
         private readonly IList ParentObject;
         private readonly int ParentArrayIndex;
+        private TreeDataNode ObjectWrapperNode;
 
-        public TreeDataListIndexNode(IList parent, int index)
+        // Property is needed in order to get a FieldOrProperty handle
+        private object ObjectWrapper
+        {
+            get { return ParentObject[ParentArrayIndex]; }
+            set { ParentObject[ParentArrayIndex] = value; }
+        }
+
+        public TreeDataListIndexNode(IList parent, int index, Type elementType)
         {
             Name = $"[{index}]";
-            TypeName = "";
+            TypeName = elementType.Name;
 
-            Children = new List<TreeDataNode>();
             ParentObject = parent;
             ParentArrayIndex = index;
 
-            AddObjectChildren();
+            AddObjectChildren(elementType);
         }
 
-        private void AddObjectChildren()
+        private void AddObjectChildren(Type elementType)
         {
-            var objectInstance = ParentObject[ParentArrayIndex];
-            var objectType = objectInstance?.GetType();
-
-            if (Type.GetTypeCode(objectType) == TypeCode.Object)
-            {
-                // If it's not a basic type, avoid an extra tree-expando-entry by making child class members part
-                // of this node.
-                var fields = objectType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-
-                foreach (var field in fields)
-                    Children.Add(CreateNode(objectInstance, field));
-            }
+            ObjectWrapperNode = CreateNode(this, new FieldOrProperty(GetType(), nameof(ObjectWrapper)), elementType);
         }
     }
 }
