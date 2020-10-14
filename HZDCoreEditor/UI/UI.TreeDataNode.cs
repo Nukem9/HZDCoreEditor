@@ -145,10 +145,10 @@ namespace HZDCoreEditor.UI
                 return new TreeDataArrayNode(parent, member, attributes);
 
             if (TypeInherits(overrideType, typeof(Decima.BaseGGUUID)))
-                attributes |= NodeAttributes.HideChildren;
+                return new TreeDataGUIDNode(parent, member, attributes);
 
             if (TypeInherits(overrideType, typeof(Decima.BaseString)) || TypeInherits(overrideType, typeof(Decima.BaseWString)))
-                attributes |= NodeAttributes.HideChildren;
+                return new TreeDataStringNode(parent, member, attributes);
 
             return new TreeDataClassMemberNode(parent, member, attributes);
         }

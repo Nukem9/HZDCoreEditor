@@ -31,12 +31,16 @@ namespace HZDCoreEditor.UI
 
 		private void AddObjectChildren()
 		{
-			// Ref object shouldn't be null, skip checks for it
+			// Ref objects may be null while loading SaveState classes
 			var objectInstance = ParentFieldEntry.GetValue(ParentObject);
-			var fields = objectInstance.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
-			foreach (var field in fields)
-				Children.Add(CreateNode(objectInstance, new FieldOrProperty(field), NodeAttributes.HideChildren | NodeAttributes.DisableEditing));
+			if (objectInstance != null)
+			{
+				var fields = objectInstance.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+				foreach (var field in fields)
+					Children.Add(CreateNode(objectInstance, new FieldOrProperty(field), NodeAttributes.HideChildren | NodeAttributes.DisableEditing));
+			}
 		}
 	}
 }
