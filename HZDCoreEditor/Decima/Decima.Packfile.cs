@@ -596,7 +596,7 @@ namespace Decima
 
         private ulong GetHashForPath(string path)
         {
-            SMHasher.MurmurHash3_x64_128(Encoding.UTF8.GetBytes(path + char.MinValue), 42, out ulong[] hash);
+            SMHasher.MurmurHash3_x64_128(Encoding.UTF8.GetBytes(path.Replace('\\', '/') + char.MinValue), 42, out ulong[] hash);
             return hash[0];
         }
 
