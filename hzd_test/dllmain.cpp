@@ -128,14 +128,14 @@ void LoadSignatures()
 		g_OffsetMap["RunCoreLibraryInitializer"] = scan("48 8B C2 4C 8D 05 ? ? ? ? 48 8D 15 ? ? ? ? 48 8D 0D ? ? ? ? 48 FF E0");
 		g_OffsetMap["ShaderCachePresent"] = scan("48 89 5C 24 18 48 89 74 24 20 57 48 81 EC 90 00 00 00 48 8D");
 
-		// 1.05
-		g_OffsetMap["GGRTTI_EDataBufferFormat"] = g_ModuleBase + 0x2317898;
-		g_OffsetMap["GGRTTI_EIndexFormat"] = g_ModuleBase + 0x2317528;
-		g_OffsetMap["GGRTTI_ERenderBufferFormat"] = g_ModuleBase + 0x23179A8;
-		g_OffsetMap["GGRTTI_ETextureType"] = g_ModuleBase + 0x2316FA0;
-		g_OffsetMap["GGRTTI_EVertexElementStorageType"] = g_ModuleBase + 0x2317678;
+		// 1.06
+		g_OffsetMap["GGRTTI_EDataBufferFormat"] = g_ModuleBase + 0x231CA50;
+		g_OffsetMap["GGRTTI_EIndexFormat"] = g_ModuleBase + 0x231C740;
+		g_OffsetMap["GGRTTI_ERenderBufferFormat"] = g_ModuleBase + 0x231CB60;
+		g_OffsetMap["GGRTTI_ETextureType"] = g_ModuleBase + 0x231C1C8;
+		g_OffsetMap["GGRTTI_EVertexElementStorageType"] = g_ModuleBase + 0x231C8A0;
 
-		g_OffsetMap["ExportedSymbolGroupArray"] = g_ModuleBase + 0x2A16CF0;
+		g_OffsetMap["ExportedSymbolGroupArray"] = g_ModuleBase + 0x2A1BF70;
 	}
 }
 
