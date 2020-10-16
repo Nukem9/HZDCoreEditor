@@ -1,4 +1,6 @@
-﻿namespace HZDCoreEditor.UI
+﻿using Utility;
+
+namespace HZDCoreEditor.UI
 {
     public class TreeDataStringNode : TreeDataClassMemberNode
     {
