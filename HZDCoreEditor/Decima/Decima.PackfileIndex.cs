@@ -12,75 +12,70 @@ namespace Decima
     /// </summary>
     public class PackfileIndex
     {
-        public const uint HardcodedMagic = 0x10203040;
-
         public Dictionary<ulong, IndexEntry> Entries { get; private set; }
-        private readonly FileStream IndexFileHandle;
 
+        private const uint HardcodedMagic = 0x10203040;
+
+        /// <remarks>
+        /// File data format:
+        /// UInt32  (+0)  Path string length
+        /// UInt8[] (+4)  Path string
+        /// GGUUID  (+8)  GUID
+        /// UInt8[] (+24) 16 unknown bytes
+        /// </remarks>
         public class IndexEntry
         {
             public string FilePath;
             public ulong PathHash;
             public BaseGGUUID GUID;
 
-            public static IndexEntry FromData(BinaryReader reader)
+            public void ToData(BinaryWriter writer)
             {
-                var x = new IndexEntry();
+                throw new NotImplementedException();
+            }
+
+            public IndexEntry FromData(BinaryReader reader)
+            {
                 uint pathLength = reader.ReadUInt32();
 
                 if (pathLength > 0)
                 {
                     // Strings are expected to be lowercase and prefixed with "cache:"
                     var fullPath = Encoding.UTF8.GetString(reader.ReadBytesStrict(pathLength));
-                    x.FilePath = fullPath.Replace("cache:", "");
+                    FilePath = fullPath.Replace("cache:", "");
 
-                    SMHasher.MurmurHash3_x64_128(Encoding.UTF8.GetBytes(x.FilePath + char.MinValue), 42, out ulong[] hash);
-                    x.PathHash = hash[0];
+                    SMHasher.MurmurHash3_x64_128(Encoding.UTF8.GetBytes(FilePath + char.MinValue), 42, out ulong[] hash);
+                    PathHash = hash[0];
                 }
 
-                x.GUID = new BaseGGUUID().FromData(reader);
+                GUID = new BaseGGUUID().FromData(reader);
                 var unknown = reader.ReadBytesStrict(16);
 
-                return x;
+                return this;
             }
         }
 
-        public PackfileIndex(string indexPath, FileMode mode = FileMode.Open)
+        public PackfileIndex FromData(BinaryReader reader)
         {
-            Entries = new Dictionary<ulong, IndexEntry>();
+            uint magic = reader.ReadUInt32();
+            uint entryCount = reader.ReadUInt32();
 
-            if (mode == FileMode.Open)
+            if (magic != HardcodedMagic)
+                throw new InvalidDataException("Unknown header magic");
+
+            for (uint i = 0; i < entryCount; i++)
             {
-                IndexFileHandle = File.Open(indexPath, mode, FileAccess.Read, FileShare.Read);
-
-                using (var reader = new BinaryReader(IndexFileHandle, Encoding.UTF8, true))
-                {
-                    uint magic = reader.ReadUInt32();
-                    uint entryCount = reader.ReadUInt32();
-
-                    if (magic != HardcodedMagic)
-                        throw new InvalidDataException("Unknown header magic");
-
-                    for (uint i = 0; i < entryCount; i++)
-                    {
-                        var entry = IndexEntry.FromData(reader);
-                        Entries[entry.PathHash] = entry;
-                    }
-                }
+                var entry = new IndexEntry().FromData(reader);
+                Entries[entry.PathHash] = entry;
             }
-            else if (mode == FileMode.Create || mode == FileMode.CreateNew)
-            {
-                throw new NotImplementedException("Writing archives is not supported at the moment");
-            }
-            else
-            {
-                throw new NotImplementedException("Archive file mode must be Open, Create, or CreateNew");
-            }
+
+            return this;
         }
 
-        ~PackfileIndex()
+        public PackfileIndex FromFile(string filePath)
         {
-            IndexFileHandle.Close();
+            using (var reader = new BinaryReader(File.OpenRead(filePath)))
+                return FromData(reader);
         }
 
         public bool ResolvePathByHash(ulong hash, out string path)

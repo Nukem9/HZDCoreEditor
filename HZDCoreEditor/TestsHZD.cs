@@ -243,7 +243,7 @@ namespace HZDCoreEditor
             {
                 Console.WriteLine(file);
 
-                var indexFile = new PackfileIndex(Path.Combine(basePath, Path.ChangeExtension(file, ".idx")));
+                var indexFile = new PackfileIndex().FromFile(Path.Combine(basePath, Path.ChangeExtension(file, ".idx")));
                 var archive = new Packfile(Path.Combine(basePath, file));
 
                 foreach (var entry in archive.FileEntries)
@@ -269,7 +269,7 @@ namespace HZDCoreEditor
             {
                 Console.WriteLine(file);
 
-                var indexFile = new PackfileIndex(Path.ChangeExtension(file, ".idx"));
+                var indexFile = new PackfileIndex().FromFile(Path.ChangeExtension(file, ".idx"));
                 var archive = new Packfile(file);
 
                 foreach (var entry in archive.FileEntries)
