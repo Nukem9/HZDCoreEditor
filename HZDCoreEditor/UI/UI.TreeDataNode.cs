@@ -27,32 +27,6 @@ namespace HZDCoreEditor.UI
         {
         }
 
-        private static bool TypeInherits(Type objectType, Type baseType)
-        {
-            while (objectType != null)
-            {
-                if (objectType == baseType)
-                    return true;
-
-                objectType = objectType.BaseType;
-            }
-
-            return false;
-        }
-
-        private static bool TypeInheritsGeneric(Type objectType, Type genericType)
-        {
-            while (objectType != null)
-            {
-                if (objectType.IsGenericType && objectType.GetGenericTypeDefinition() == genericType)
-                    return true;
-
-                objectType = objectType.BaseType;
-            }
-
-            return false;
-        }
-
         public static TreeDataNode CreateNode(object parent, FieldOrProperty member, NodeAttributes attributes = NodeAttributes.None)
         {
             return CreateNode(parent, member, member.GetMemberType(), attributes);
@@ -62,27 +36,27 @@ namespace HZDCoreEditor.UI
         {
             if (overrideType.IsGenericType)
             {
-                var generic = overrideType.GetGenericTypeDefinition();
+                var type = overrideType.GetGenericTypeDefinition();
 
-                if (TypeInheritsGeneric(generic, typeof(Decima.BaseArray<>)) ||
-                    TypeInheritsGeneric(generic, typeof(List<>)))
+                if (type.InheritsGeneric(typeof(Decima.BaseArray<>)) ||
+                    type.InheritsGeneric(typeof(List<>)))
                     return new TreeDataListNode(parent, member, attributes);
 
-                if (TypeInheritsGeneric(generic, typeof(Decima.BaseRef<>)) ||
-                    TypeInheritsGeneric(generic, typeof(Decima.BaseStreamingRef<>)) ||
-                    TypeInheritsGeneric(generic, typeof(Decima.BaseUUIDRef<>)) ||
-                    TypeInheritsGeneric(generic, typeof(Decima.BaseCPtr<>)) ||
-                    TypeInheritsGeneric(generic, typeof(Decima.BaseWeakPtr<>)))
+                if (type.InheritsGeneric(typeof(Decima.BaseRef<>)) ||
+                    type.InheritsGeneric(typeof(Decima.BaseStreamingRef<>)) ||
+                    type.InheritsGeneric(typeof(Decima.BaseUUIDRef<>)) ||
+                    type.InheritsGeneric(typeof(Decima.BaseCPtr<>)) ||
+                    type.InheritsGeneric(typeof(Decima.BaseWeakPtr<>)))
                     return new TreeDataRefNode(parent, member, attributes);
             }
 
             if (overrideType.IsArray)
                 return new TreeDataArrayNode(parent, member, attributes);
 
-            if (TypeInherits(overrideType, typeof(Decima.BaseGGUUID)))
+            if (overrideType.Inherits(typeof(Decima.BaseGGUUID)))
                 return new TreeDataGUIDNode(parent, member, attributes);
 
-            if (TypeInherits(overrideType, typeof(Decima.BaseString)) || TypeInherits(overrideType, typeof(Decima.BaseWString)))
+            if (overrideType.Inherits(typeof(Decima.BaseString)) || overrideType.Inherits(typeof(Decima.BaseWString)))
                 return new TreeDataStringNode(parent, member, attributes);
 
             return new TreeDataClassMemberNode(parent, member, attributes);
