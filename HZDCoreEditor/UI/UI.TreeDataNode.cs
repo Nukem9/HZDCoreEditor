@@ -42,7 +42,7 @@ namespace HZDCoreEditor.UI
                     type.InheritsGeneric(typeof(List<>)))
                     return new TreeDataListNode(parent, member, attributes);
 
-                if (type.InheritsGeneric(typeof(Decima.BaseRef<>)) ||
+                if (type.Inherits(typeof(Decima.BaseRef)) ||
                     type.InheritsGeneric(typeof(Decima.BaseStreamingRef<>)) ||
                     type.InheritsGeneric(typeof(Decima.BaseUUIDRef<>)) ||
                     type.InheritsGeneric(typeof(Decima.BaseCPtr<>)) ||

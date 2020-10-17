@@ -11,12 +11,13 @@ namespace Decima
     /// String (+17) (Optional) External resource path
     /// </remarks>
     [DebuggerDisplay("{ToString(),nq}")]
-    public class BaseRef<T> : RTTI.ISerializable, RTTI.ISaveSerializable
+    public class BaseRef : RTTI.ISerializable, RTTI.ISaveSerializable
     {
         public Types Type;
         public BaseGGUUID GUID;
         public BaseString ExternalFile;
         private object ResolvedObject;
+        private Type ObjectType;
 
         public enum Types
         {
@@ -26,6 +27,11 @@ namespace Decima
             StreamingRef = 3,
             // Unknown4 = 4,
             UUIDRef = 5,
+        }
+
+        public BaseRef(Type objectType)
+        {
+            ObjectType = objectType;
         }
 
         public void Deserialize(BinaryReader reader)
@@ -112,8 +118,12 @@ namespace Decima
         }
     }
 
-    public class BaseStreamingRef<T> : BaseRef<T>
+    public class BaseStreamingRef<T> : BaseRef
     {
+        public BaseStreamingRef() : base(typeof(T))
+        {
+        }
+
         public override void DeserializeStateObject(SaveState state)
         {
             Type = Types.StreamingRef;
@@ -125,12 +135,18 @@ namespace Decima
         }
     }
 
-    public class BaseUUIDRef<T> : BaseRef<T>
+    public class BaseUUIDRef<T> : BaseRef
     {
+        public BaseUUIDRef() : base(typeof(T))
+        {
+        }
     }
 
-    public class BaseCPtr<T> : BaseRef<T>
+    public class BaseCPtr<T> : BaseRef
     {
+        public BaseCPtr() : base(typeof(T))
+        {
+        }
     }
 
     public class BaseWeakPtr<T> : RTTI.ISerializable, RTTI.ISaveSerializable

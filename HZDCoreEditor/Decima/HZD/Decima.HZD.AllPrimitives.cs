@@ -8,8 +8,11 @@ namespace Decima.HZD
     /// <summary>
     /// Typedef alias for BaseRef
     /// </summary>
-    public class Ref<T> : BaseRef<T>
+    public class Ref<T> : BaseRef
     {
+        public Ref() : base(typeof(T))
+        {
+        }
     }
 
     /// <summary>
