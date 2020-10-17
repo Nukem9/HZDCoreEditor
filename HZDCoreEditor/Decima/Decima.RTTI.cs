@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace Decima
     static partial class RTTI
     {
         private static Dictionary<ulong, Type> TypeIdLookupMap;
-        private static Dictionary<Type, OrderedFieldInfo> TypeFieldInfoCache;
+        private static ConcurrentDictionary<Type, OrderedFieldInfo> TypeFieldInfoCache;
         private static readonly Dictionary<string, string> DotNetTypeToDecima;
 
         public class OrderedFieldInfo
@@ -32,6 +33,17 @@ namespace Decima
                     MIBase = miBase;
                     Field = field;
                     SaveStateOnly = saveStateOnly;
+                }
+
+                public void SetValue(object parent, object value)
+                {
+                    // If using emulated MI: fetch the base class pointer first, then write the field
+                    Field.SetValue(MIBase != null ? MIBase.GetValue(parent) : parent, value);
+                }
+
+                public object GetValue(object parent)
+                {
+                    return Field.GetValue(MIBase != null ? MIBase.GetValue(parent) : parent);
                 }
             }
 
@@ -65,8 +77,8 @@ namespace Decima
         public static void SetGameMode(GameType game)
         {
             // Build a cache of the 64-bit type IDs to actual C# types. Previous values are erased.
-            TypeIdLookupMap = new Dictionary<ulong, Type>();
-            TypeFieldInfoCache = new Dictionary<Type, OrderedFieldInfo>();
+            var typeIdLookupMap = new Dictionary<ulong, Type>();
+            var typeFieldInfoCache = new ConcurrentDictionary<Type, OrderedFieldInfo>();
 
             foreach (var classType in typeof(SerializableAttribute).Assembly.GetTypes())
             {
@@ -77,13 +89,17 @@ namespace Decima
                     if (attribute.Game != game)
                         continue;
 
-                    TypeIdLookupMap.Add(attribute.BinaryTypeId, classType);
+                    typeIdLookupMap.Add(attribute.BinaryTypeId, classType);
                 }
             }
+
+            TypeIdLookupMap = typeIdLookupMap;
+            TypeFieldInfoCache = typeFieldInfoCache;
         }
 
         public static Type GetTypeByName(string name)
         {
+            // Slow
             var type = TypeIdLookupMap.Values
                 .Where(x => x.Name == name)
                 .Single();
@@ -161,7 +177,7 @@ namespace Decima
 
             if (!type.IsDefined(typeof(SerializableAttribute)))
             {
-                TypeFieldInfoCache.Add(type, null);
+                TypeFieldInfoCache.TryAdd(type, null);
                 return null;
             }
 
@@ -231,8 +247,9 @@ namespace Decima
                 .ToArray();
 
             info = new OrderedFieldInfo(miBases, members);
-            TypeFieldInfoCache.Add(type, info);
 
+            // Another thread might insert this entry before we do, but it doesn't matter as long as the data is identical
+            TypeFieldInfoCache.TryAdd(type, info);
             return info;
         }
 
@@ -323,10 +340,7 @@ namespace Decima
                     if (member.SaveStateOnly)
                         continue;
 
-                    // Check if this field needs to be applied to an emulated base class
-                    var baseClass = member.MIBase != null ? member.MIBase.GetValue(objectInstance) : objectInstance;
-
-                    member.Field.SetValue(baseClass, DeserializeType(reader, member.Field.FieldType));
+                    member.SetValue(objectInstance, DeserializeType(reader, member.Field.FieldType));
                 }
             }
 
@@ -394,14 +408,10 @@ namespace Decima
                     if (member.SaveStateOnly)
                         continue;
 
-                    // If using a base class: pull the value out separately, then write it
-                    var baseClass = member.MIBase != null ? member.MIBase.GetValue(objectInstance) : objectInstance;
-
-                    SerializeType(writer, member.Field.GetValue(baseClass));
+                    SerializeType(writer, member.GetValue(objectInstance));
                 }
             }
 
-            // Done reading. Now copy what the engine does and notify MsgReadBinary subscribers.
             if (objectInstance is IExtraBinaryDataCallback asExtraBinaryDataCallback)
                 asExtraBinaryDataCallback.SerializeExtraData(writer);
 
