@@ -177,12 +177,12 @@ namespace HZDCoreEditor
         {
             string archivePath = Path.Combine(GameDataPath, "test_packed_archive.tmp");
 
-            using (var testArchive = new Packfile(archivePath, FileMode.Create))
+            using (var testArchive = new PackfileWriter(archivePath, false, true))
             {
                 testArchive.BuildFromFileList(GameDataPathExtracted, QuickTestFiles);
             }
 
-            using (var testArchive = new Packfile(archivePath, FileMode.Open))
+            using (var testArchive = new PackfileReader(archivePath))
             {
                 testArchive.Validate();
 
@@ -213,12 +213,12 @@ namespace HZDCoreEditor
                 .Select(f => f.Substring(targetDir.Length))
                 .ToArray();
 
-            using (var testArchive = new Packfile(archivePath, FileMode.Create))
+            using (var testArchive = new PackfileWriter(archivePath, false, true))
             {
                 testArchive.BuildFromFileList(targetDir, filesToCombine);
             }
 
-            using (var testArchive = new Packfile(archivePath, FileMode.Open))
+            using (var testArchive = new PackfileReader(archivePath))
             {
                 testArchive.Validate();
 
@@ -244,7 +244,7 @@ namespace HZDCoreEditor
                 Console.WriteLine(file);
 
                 var indexFile = new PackfileIndex().FromFile(Path.Combine(basePath, Path.ChangeExtension(file, ".idx")));
-                var archive = new Packfile(Path.Combine(basePath, file));
+                var archive = new PackfileReader(Path.Combine(basePath, file));
 
                 foreach (var entry in archive.FileEntries)
                 {
@@ -270,7 +270,7 @@ namespace HZDCoreEditor
                 Console.WriteLine(file);
 
                 var indexFile = new PackfileIndex().FromFile(Path.ChangeExtension(file, ".idx"));
-                var archive = new Packfile(file);
+                var archive = new PackfileReader(file);
 
                 foreach (var entry in archive.FileEntries)
                 {

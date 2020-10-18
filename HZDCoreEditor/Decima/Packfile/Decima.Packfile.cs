@@ -10,15 +10,11 @@ using Utility;
 
 namespace Decima
 {
-    public class Packfile : IDisposable
+    public abstract class Packfile : IDisposable
     {
-        private readonly PackfileHeader Header;
-        public readonly List<FileEntry> FileEntries;
-        private readonly List<BlockEntry> BlockEntries;
-        private readonly FileStream ArchiveFileHandle;
-
-        private uint WriterBlockSizeThreshold;
-        private ulong WriterDecompressedBlockOffset;
+        public PackfileHeader Header { protected set; get; }
+        public List<FileEntry> FileEntries { protected set; get; }
+        public List<BlockEntry> BlockEntries { protected set; get; }
 
         /// <summary>
         /// Main header for *.bin files
@@ -119,9 +115,9 @@ namespace Decima
         /// Data structure that comes directly after the <see cref="PackfileHeader"/> header.
         /// </summary>
         /// <remarks>
-        /// <see cref="PathHash"/> is calculated from the MurmurHash3 of the file path with
-        /// the null terminator included. Entries must be sorted from smallest to largest based
-        /// on <see cref="PathHash"/>.
+        /// <see cref="FileEntry.PathHash"/> is calculated from the MurmurHash3 of the file path with
+        /// the null terminator included. Entries must be sorted from smallest to largest based on
+        /// <see cref="FileEntry.PathHash"/>.
         /// </remarks>
         public class FileEntry
         {
@@ -193,7 +189,7 @@ namespace Decima
         /// chunks of compressed data.
         /// </summary>
         /// <remarks>
-        /// Entries must be sorted from smallest to largest based on <see cref="DecompressedOffset"/>.
+        /// Entries must be sorted from smallest to largest based on <see cref="BlockEntry.DecompressedOffset"/>.
         /// </remarks>
         public class BlockEntry
         {
@@ -290,7 +286,6 @@ namespace Decima
 
                     var keyVector = new Vector<byte>(temp);
 
-                    // XOR operation
                     for (int i = 0; i < vectorizedLoopCount; i++)
                     {
                         var encData = new Vector<byte>(data, byteIndex);
@@ -328,284 +323,48 @@ namespace Decima
             }
         }
 
-        public Packfile(string archivePath, FileMode mode = FileMode.Open, bool encrypted = false)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        protected Packfile()
         {
-            if (mode == FileMode.Open)
-            {
-                ArchiveFileHandle = File.Open(archivePath, mode, FileAccess.Read, FileShare.Read);
-
-                using (var reader = new BinaryReader(ArchiveFileHandle, Encoding.UTF8, true))
-                {
-                    Header = new PackfileHeader().FromData(reader);
-                    FileEntries = new List<FileEntry>((int)Header.FileEntryCount);
-                    BlockEntries = new List<BlockEntry>((int)Header.BlockEntryCount);
-
-                    for (int i = 0; i < Header.FileEntryCount; i++)
-                        FileEntries.Add(new FileEntry().FromData(reader, Header));
-
-                    for (int i = 0; i < Header.BlockEntryCount; i++)
-                        BlockEntries.Add(new BlockEntry().FromData(reader, Header));
-                }
-            }
-            else if (mode == FileMode.Create || mode == FileMode.CreateNew)
-            {
-                ArchiveFileHandle = File.Open(archivePath, mode, FileAccess.ReadWrite, FileShare.None);
-
-                Header = new PackfileHeader();
-                FileEntries = new List<FileEntry>();
-                BlockEntries = new List<BlockEntry>();
-
-                Header.IsEncrypted = encrypted;
-            }
-            else
-            {
-                throw new NotImplementedException("Archive file mode must be Open, Create, or CreateNew");
-            }
         }
 
+        /// <summary>
+        /// Destructor
+        /// </summary>
         ~Packfile()
         {
             Dispose();
         }
 
-        public void Dispose()
+        /// <summary>
+        /// Called when file handles should be cleaned up
+        /// </summary>
+        public virtual void Dispose()
         {
-            ArchiveFileHandle.Close();
         }
 
+        /// <summary>
+        /// Checks if a Decima-formatted path is valid for this archive
+        /// </summary>
         public bool ContainsFile(string path)
         {
             return GetFileEntryIndex(path) != int.MaxValue;
         }
 
-        public void AddFile(string path, string sourcePath)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ExtractFile(string path, string destinationPath, bool allowOverwrite = false)
-        {
-            ExtractFile(GetHashForPath(path), destinationPath, allowOverwrite);
-        }
-
-        public void ExtractFile(ulong pathId, string destinationPath, bool allowOverwrite = false)
-        {
-            // Hashed path -> file entry -> block entries
-            int fileIndex = GetFileEntryIndex(pathId);
-            var fileEntry = FileEntries[fileIndex];
-
-            int firstBlock = GetBlockEntryIndex(fileEntry.DecompressedOffset);
-            int lastBlock = GetBlockEntryIndex(fileEntry.DecompressedOffset + fileEntry.DecompressedSize - 1);
-
-            using (var reader = new BinaryReader(ArchiveFileHandle, Encoding.UTF8, true))
-            using (var writer = new BinaryWriter(File.Open(destinationPath, allowOverwrite ? FileMode.Create : FileMode.CreateNew, FileAccess.Write)))
-            {
-                // Keep a small cache sitting around to avoid excessive allocations
-                Span<byte> decompressedData = new byte[512 * 1024];
-
-                ulong fileDataOffset = fileEntry.DecompressedOffset; // 
-                ulong fileDataLength = fileEntry.DecompressedSize;   // Remainder
-
-                // Files can be split across multiple sequential blocks
-                for (int blockIndex = firstBlock; blockIndex <= lastBlock; blockIndex++)
-                {
-                    var block = BlockEntries[blockIndex];
-
-                    if (block.DecompressedSize > decompressedData.Length)
-                        throw new Exception("Increase cache buffer size");
-
-                    // Read from the bin, decrypt, and decompress
-                    reader.BaseStream.Position = (long)block.Offset;
-                    var data = reader.ReadBytesStrict(block.Size);
-
-                    if (Header.IsEncrypted)
-                        block.XorDataBuffer(data);
-
-                    if (!OodleLZ.Decompress(data, decompressedData))
-                        throw new InvalidDataException("OodleLZ block decompression failed");
-
-                    // Copy data from the adjusted offset within the decompressed buffer. If the file requires another block,
-                    // truncate the copy and loop again.
-                    ulong copyOffset = fileDataOffset - block.DecompressedOffset;
-                    ulong copySize = Math.Min(fileDataLength, block.DecompressedSize - copyOffset);
-
-                    writer.Write(decompressedData.Slice((int)copyOffset, (int)copySize));
-
-                    fileDataOffset += copySize;
-                    fileDataLength -= copySize;
-                }
-            }
-        }
-
-        public void BuildFromFileList(string physicalPathRoot, string[] sourceFiles)
-        {
-            WriterBlockSizeThreshold = 256 * 1024;
-            WriterDecompressedBlockOffset = 0;
-            byte[] tempCompressedBuffer = new byte[WriterBlockSizeThreshold * 2];
-
-            long totalBlockSize = sourceFiles.Sum(file => new FileInfo(Path.Combine(physicalPathRoot, file)).Length);
-            int blockCount = (int)((totalBlockSize + WriterBlockSizeThreshold) / WriterBlockSizeThreshold);
-            int fileCount = sourceFiles.Length;
-
-            using (var archiveWriter = new BinaryWriter(ArchiveFileHandle, Encoding.UTF8, true))
-            using (var blockStream = new MemoryStream())
-            {
-                // Reserve space for the header
-                archiveWriter.BaseStream.Position = CalculateArchiveHeaderLength(fileCount, blockCount);
-
-                // Write file data sequentially
-                ulong decompressedFileOffset = 0;
-
-                foreach (string filePath in sourceFiles)
-                {
-                    using var reader = new BinaryReader(File.OpenRead(Path.Combine(physicalPathRoot, filePath)));
-
-                    var fileEntry = new FileEntry()
-                    {
-                        PathHash = GetHashForPath(filePath),
-                        DecompressedOffset = decompressedFileOffset,
-                        DecompressedSize = (uint)reader.BaseStream.Length,
-                    };
-
-                    // This appends data until a 256KB block write/flush is triggered - combining multiple files into single block entries
-                    reader.BaseStream.CopyTo(blockStream);
-                    decompressedFileOffset += fileEntry.DecompressedSize;
-
-                    WriteBlockEntries(archiveWriter, blockStream, false, tempCompressedBuffer);
-                    FileEntries.Add(fileEntry);
-                }
-
-                WriteBlockEntries(archiveWriter, blockStream, true, tempCompressedBuffer);
-
-                // Rewind & insert headers before the compressed data
-                archiveWriter.BaseStream.Position = 0;
-                WriteArchiveHeaders(archiveWriter);
-            }
-        }
-
-        public void Validate()
-        {
-            //
-            // Simple validation:
-            //
-            // - FileEntries must be sorted in order based on PathHash (asc)
-            // - FileEntries must resolve to a valid block entry
-            // - BlockEntries must be sorted in order based on DecompressedOffset (asc)
-            // - BlockEntries should not exceed the file size (Offset + Size)
-            //
-            ulong previousPathHash = 0;
-            ulong previousOffset = 0;
-
-            foreach (var entry in FileEntries)
-            {
-                if (entry.PathHash < previousPathHash)
-                    throw new InvalidDataException("Archive file entry array isn't sorted properly.");
-
-                int firstBlock = GetBlockEntryIndex(entry.DecompressedOffset);
-                int lastBlock = GetBlockEntryIndex(entry.DecompressedOffset + entry.DecompressedSize - 1);
-
-                if (firstBlock == int.MaxValue || lastBlock == int.MaxValue)
-                    throw new InvalidDataException("Unable to resolve a file to one or more block entries.");
-
-                previousPathHash = entry.PathHash;
-            }
-
-            foreach (var entry in BlockEntries)
-            {
-                if (entry.DecompressedOffset < previousOffset)
-                    throw new InvalidDataException("Archive block entry array isn't sorted properly.");
-
-                if ((entry.Offset + entry.Size) > (ulong)ArchiveFileHandle.Length)
-                    throw new InvalidDataException("Archive data truncated. A block entry header exceeds the file size.");
-
-                previousOffset = entry.DecompressedOffset;
-            }
-        }
-
-        private void WriteBlockEntries(BinaryWriter writer, MemoryStream blockStream, bool flushAllData, byte[] compressorBufferCache)
-        {
-            int dataRemainder = 0;
-            int readPosition = 0;
-
-            while (true)
-            {
-                dataRemainder = (int)Math.Min(blockStream.Length - readPosition, WriterBlockSizeThreshold);
-
-                if (dataRemainder == 0 || (dataRemainder < WriterBlockSizeThreshold && !flushAllData))
-                    break;
-
-                var blockEntry = new BlockEntry()
-                {
-                    DecompressedOffset = WriterDecompressedBlockOffset,
-                    DecompressedSize = (uint)dataRemainder,
-                    Offset = (ulong)writer.BaseStream.Position,
-                };
-
-                // Compress
-                long compressedSize = OodleLZ.Compress(blockStream.GetBuffer().AsSpan().Slice(readPosition, dataRemainder), compressorBufferCache);
-
-                if (compressedSize == -1)
-                    throw new Exception("Buffer compression failed");
-
-                blockEntry.Size = (uint)compressedSize;
-
-                // Encrypt
-                if (Header.IsEncrypted)
-                    blockEntry.XorDataBuffer(compressorBufferCache);
-
-                // Write to disk
-                writer.Write(compressorBufferCache, 0, (int)blockEntry.Size);
-
-                WriterDecompressedBlockOffset += blockEntry.DecompressedSize;
-                readPosition += dataRemainder;
-
-                BlockEntries.Add(blockEntry);
-            }
-
-            // Free MemoryStream data that was already written to prevent excessive memory consumption
-            if (readPosition > 0 && dataRemainder > 0)
-            {
-                Buffer.BlockCopy(blockStream.GetBuffer(), readPosition, blockStream.GetBuffer(), 0, dataRemainder);
-                blockStream.SetLength(blockStream.Length - readPosition);
-            }
-        }
-
-        private void WriteArchiveHeaders(BinaryWriter writer)
-        {
-            FileEntries.Sort((x, y) => x.PathHash.CompareTo(y.PathHash));
-            Header.FileEntryCount = (uint)FileEntries.Count;
-
-            BlockEntries.Sort((x, y) => x.DecompressedOffset.CompareTo(y.DecompressedOffset));
-            Header.BlockEntryCount = (uint)BlockEntries.Count;
-
-            Header.ToData(writer);
-
-            foreach (var entry in FileEntries)
-                entry.ToData(writer, Header);
-
-            foreach (var entry in BlockEntries)
-                entry.ToData(writer, Header);
-        }
-
-        private int CalculateArchiveHeaderLength(int fileEntryCount, int blockEntryCount)
-        {
-            return PackfileHeader.DataHeaderSize +
-                (FileEntry.DataHeaderSize * fileEntryCount) +
-                (BlockEntry.DataHeaderSize * blockEntryCount);
-        }
-
-        private ulong GetHashForPath(string path)
+        protected ulong GetHashForPath(string path)
         {
             SMHasher.MurmurHash3_x64_128(Encoding.UTF8.GetBytes(path.Replace('\\', '/') + char.MinValue), 42, out ulong[] hash);
             return hash[0];
         }
 
-        private int GetFileEntryIndex(string path)
+        protected int GetFileEntryIndex(string path)
         {
             return GetFileEntryIndex(GetHashForPath(path));
         }
 
-        private int GetFileEntryIndex(ulong pathId)
+        protected int GetFileEntryIndex(ulong pathId)
         {
             int l = 0;
             int r = FileEntries.Count - 1;
@@ -626,7 +385,7 @@ namespace Decima
             return int.MaxValue;
         }
 
-        private int GetBlockEntryIndex(ulong offset)
+        protected int GetBlockEntryIndex(ulong offset)
         {
             // TODO: Binary search
             for (int i = 0; i < BlockEntries.Count; i++)

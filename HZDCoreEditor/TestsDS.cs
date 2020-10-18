@@ -116,12 +116,12 @@ namespace HZDCoreEditor
         {
             string archivePath = Path.Combine(GameDataPath, "test_packed_archive.tmp");
 
-            using (var testArchive = new Packfile(archivePath, FileMode.Create, true))
+            using (var testArchive = new PackfileWriter(archivePath, true, true))
             {
                 testArchive.BuildFromFileList(GameDataPathExtracted, QuickTestFiles);
             }
 
-            using (var testArchive = new Packfile(archivePath, FileMode.Open))
+            using (var testArchive = new PackfileReader(archivePath))
             {
                 testArchive.Validate();
 
@@ -152,12 +152,12 @@ namespace HZDCoreEditor
                 .Select(f => f.Substring(targetDir.Length))
                 .ToArray();
 
-            using (var testArchive = new Packfile(archivePath, FileMode.Create))
+            using (var testArchive = new PackfileWriter(archivePath, true, true))
             {
                 testArchive.BuildFromFileList(targetDir, filesToCombine);
             }
 
-            using (var testArchive = new Packfile(archivePath, FileMode.Open))
+            using (var testArchive = new PackfileReader(archivePath))
             {
                 testArchive.Validate();
 
@@ -181,7 +181,7 @@ namespace HZDCoreEditor
             string prefetchPath = Path.Combine(basePath, "extracted", "prefetch/fullgame.prefetch.core");
             Directory.CreateDirectory(Path.GetDirectoryName(prefetchPath));
 
-            var archive = new Packfile(Path.Combine(basePath, "7017f9bb9d52fc1c4433599203cc51b1.bin"));
+            var archive = new PackfileReader(Path.Combine(basePath, "7017f9bb9d52fc1c4433599203cc51b1.bin"));
             var sw = Stopwatch.StartNew();
 
             for (int i = 0; i < 500; i++)
@@ -197,7 +197,7 @@ namespace HZDCoreEditor
 
             foreach (var file in QuickTestArchives)
             {
-                var archive = new Packfile(Path.Combine(basePath, file));
+                var archive = new PackfileReader(Path.Combine(basePath, file));
 
                 // Prefetch has to be extracted first in order to get any kind of file names
                 string prefetchPath = Path.Combine(basePath, "extracted", "prefetch/fullgame.prefetch.core");
