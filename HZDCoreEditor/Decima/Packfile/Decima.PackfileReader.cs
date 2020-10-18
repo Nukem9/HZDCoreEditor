@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.MemoryMappedFiles;
 using System.Text;
 using Utility;
 
@@ -11,12 +12,14 @@ namespace Decima
         private const uint ReaderBlockSizeThreshold = 256 * 1024;
 
         private readonly FileStream ArchiveFileHandle;
+        private readonly MemoryMappedFile ArchiveMapHandle;
 
         public PackfileReader(string archivePath)
         {
             ArchiveFileHandle = File.Open(archivePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            ArchiveMapHandle = MemoryMappedFile.CreateFromFile(ArchiveFileHandle, null, 0, MemoryMappedFileAccess.Read, HandleInheritability.None, true);
 
-            using (var reader = new BinaryReader(ArchiveFileHandle, Encoding.UTF8, true))
+            using (var reader = GetMappedReaderStream())
             {
                 Header = new PackfileHeader().FromData(reader);
                 FileEntries = new List<FileEntry>((int)Header.FileEntryCount);
@@ -50,7 +53,7 @@ namespace Decima
             int firstBlock = GetBlockEntryIndex(fileEntry.DecompressedOffset);
             int lastBlock = GetBlockEntryIndex(fileEntry.DecompressedOffset + fileEntry.DecompressedSize - 1);
 
-            using (var reader = new BinaryReader(ArchiveFileHandle, Encoding.UTF8, true))
+            using (var reader = GetMappedReaderStream())
             using (var writer = new BinaryWriter(File.Open(destinationPath, allowOverwrite ? FileMode.Create : FileMode.CreateNew, FileAccess.Write)))
             {
                 // Keep a small cache sitting around to avoid excessive allocations
@@ -99,8 +102,20 @@ namespace Decima
         /// </summary>
         public void Validate()
         {
-            ulong previousPathHash = 0;
             ulong previousOffset = 0;
+            ulong previousPathHash = 0;
+
+            // Run this check first - GetBlockEntryIndex could fail otherwise
+            foreach (var entry in BlockEntries)
+            {
+                if (entry.DecompressedOffset < previousOffset)
+                    throw new InvalidDataException("Archive block entry array isn't sorted properly.");
+
+                if ((entry.Offset + entry.Size) > (ulong)ArchiveFileHandle.Length)
+                    throw new InvalidDataException("Archive data truncated. A block entry header exceeds the file size.");
+
+                previousOffset = entry.DecompressedOffset;
+            }
 
             foreach (var entry in FileEntries)
             {
@@ -115,17 +130,12 @@ namespace Decima
 
                 previousPathHash = entry.PathHash;
             }
+        }
 
-            foreach (var entry in BlockEntries)
-            {
-                if (entry.DecompressedOffset < previousOffset)
-                    throw new InvalidDataException("Archive block entry array isn't sorted properly.");
-
-                if ((entry.Offset + entry.Size) > (ulong)ArchiveFileHandle.Length)
-                    throw new InvalidDataException("Archive data truncated. A block entry header exceeds the file size.");
-
-                previousOffset = entry.DecompressedOffset;
-            }
+        private BinaryReader GetMappedReaderStream()
+        {
+            lock (ArchiveMapHandle)
+                return new BinaryReader(ArchiveMapHandle.CreateViewStream(0, 0, MemoryMappedFileAccess.Read), Encoding.UTF8, true);
         }
     }
 }
