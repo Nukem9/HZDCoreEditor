@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Utility;
 
 namespace Decima
@@ -141,6 +142,21 @@ namespace Decima
             Entries.Remove(Entries.Where(x => x.ContainedObject == obj).Single());
         }
 
+        public List<BaseRef> GetAllReferences()
+        {
+            var refs = new List<BaseRef>();
+
+            foreach (var entry in Entries)
+            {
+                VisitObjectTypes(entry.ContainedObject, (BaseRef baseRef) =>
+                {
+                    refs.Add(baseRef);
+                });
+            }
+
+            return refs;
+        }
+
         public IEnumerator<object> GetEnumerator()
         {
             foreach (var entry in Entries)
@@ -150,6 +166,49 @@ namespace Decima
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        private static void VisitObjectTypes<T>(object obj, Action<T> memberCallback) where T : class
+        {
+            if (obj == null)
+                return;
+
+            // Ignore all primitives
+            var objectType = obj.GetType();
+
+            if (Type.GetTypeCode(objectType) != TypeCode.Object)
+                return;
+
+            // T, arrays, lists, then any other object
+            if (objectType.Inherits(typeof(T)))
+            {
+                memberCallback(obj as T);
+            }
+            else if (objectType.IsArray)
+            {
+                // Skip large byte arrays (pure data)
+                if (obj is byte[])
+                    return;
+
+                foreach (var arrayObj in (obj as Array))
+                    VisitObjectTypes(arrayObj, memberCallback);
+            }
+            else if (objectType.InheritsGeneric(typeof(List<>)))
+            {
+                foreach (var listObj in (obj as IList))
+                    VisitObjectTypes(listObj, memberCallback);
+            }
+            else
+            {
+                // Recursively gather all public and private instance members
+                for (var type = objectType; type != null; type = type.BaseType)
+                {
+                    var fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
+
+                    foreach (var field in fields)
+                        VisitObjectTypes(field.GetValue(obj), memberCallback);
+                }
+            }
         }
     }
 }
