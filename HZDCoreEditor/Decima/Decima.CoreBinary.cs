@@ -5,7 +5,7 @@ using System.IO;
 
 namespace Decima
 {
-    class CoreBinary
+    public class CoreBinary
     {
         /// <remarks>
         /// File data format:
