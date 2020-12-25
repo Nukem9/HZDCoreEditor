@@ -13,7 +13,7 @@ namespace Decima
         HZD,    // Horizon Zero Dawn
     }
 
-    static partial class RTTI
+    public static partial class RTTI
     {
         private static Dictionary<ulong, Type> TypeIdLookupMap;
         private static Dictionary<Type, OrderedFieldInfo> TypeFieldInfoCache;

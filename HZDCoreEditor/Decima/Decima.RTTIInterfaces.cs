@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Decima
 {
-    static partial class RTTI
+    public static partial class RTTI
     {
         /// <summary>
         /// Describes a class, struct, or enum that is serialized as Core binary data using reflection
