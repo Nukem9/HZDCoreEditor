@@ -3,6 +3,7 @@ using NAudio.Wave;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Windows.Forms;
 
 namespace HZDCoreEditor
@@ -38,8 +39,10 @@ namespace HZDCoreEditor
             */
 
             RTTI.SetGameMode(GameType.HZD);
-            var objects = CoreBinary.Load(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\entities\shops\shops.core");
-            Application.Run(new UI.FormCoreView(objects));
+
+            //ExtractHZDLocalization();
+
+            Application.Run(new UI.FormCoreView());
 
             /*
             ExtractHZDLocalization();
@@ -49,26 +52,33 @@ namespace HZDCoreEditor
 
         static void ExtractHZDLocalization()
         {
-            var files = Directory.GetFiles(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\localized\", "*.core", SearchOption.AllDirectories);
-            var allStrings = new List<string>();
+            var files = Directory.GetFiles(@"E:\hzd\localized\", "*.core", SearchOption.AllDirectories);
+            var sb = new StringBuilder();
 
             foreach (string file in files)
             {
                 Console.WriteLine(file);
-
-                allStrings.Add("\n");
-                allStrings.Add(file);
+                bool first = true;
 
                 var objects = CoreBinary.Load(file);
 
                 foreach (var obj in objects)
                 {
                     if (obj is Decima.HZD.LocalizedTextResource asResource)
-                        allStrings.Add(asResource.GetStringForLanguage(Decima.HZD.ELanguage.English));
+                    {
+                        if (first)
+                        {
+                            sb.AppendLine();
+                            sb.AppendLine(file);
+                            first = false;
+                        }
+
+                        sb.AppendLine(asResource.ObjectUUID + asResource.GetStringForLanguage(Decima.HZD.ELanguage.English));
+                    }
                 }
             }
 
-            File.WriteAllLines(@"C:\text_data_dump.txt", allStrings);
+            File.WriteAllText(@"E:\hzd\text_data_dump.txt", sb.ToString());
         }
 
         static void ExtractHZDAudio()
