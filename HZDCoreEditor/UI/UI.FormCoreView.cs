@@ -2,16 +2,20 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using HZDCoreEditor.Util;
+using Newtonsoft.Json;
 
 namespace HZDCoreEditor.UI
 {
     public partial class FormCoreView : Form
     {
         private List<object> CoreObjectList;
+        private string LoadedFilePath;
 
         private BrightIdeasSoftware.TreeListView TV1;
         private BrightIdeasSoftware.TreeListView TV2;
@@ -40,8 +44,10 @@ namespace HZDCoreEditor.UI
                 return;
             }
 
-            var objects = CoreBinary.Load(ofd.FileName);
-            CoreObjectList = objects;
+            LoadedFilePath = ofd.FileName;
+            this.Text = "FormCoreView - " + LoadedFilePath;
+
+            CoreObjectList = CoreBinary.Load(ofd.FileName);
 
             BuildObjectView();
             BuildDataView();
@@ -193,6 +199,25 @@ namespace HZDCoreEditor.UI
         {
             if (e.KeyCode == Keys.Enter)
                 btnSearch_Click(null, null);
+        }
+
+        private void btnExport_Click(object sender, EventArgs e)
+        {
+            var sfd = new SaveFileDialog();
+            sfd.Filter = "Json files (*.json)|*.json|All files (*.*)|*.*";
+            sfd.FileName = Path.GetFileNameWithoutExtension(LoadedFilePath) + ".json";
+
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                var json = JsonConvert.SerializeObject(CoreObjectList, new JsonSerializerSettings()
+                {
+                    Formatting = Formatting.Indented,
+                    TypeNameHandling = TypeNameHandling.Objects,
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    Converters = new List<JsonConverter>() { new BaseGGUUIDConverter() }
+                });
+                File.WriteAllText(sfd.FileName, json);
+            }
         }
     }
 }
