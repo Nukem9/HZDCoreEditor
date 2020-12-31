@@ -1,21 +1,23 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace HZDCoreEditor.UI
+namespace HZDCoreEditorUI.UI
 {
-    public class TreeDataListNode : TreeDataNode
+    public class TreeDataArrayNode : TreeDataNode
     {
-        public override string Value { get { return $"List<{TypeName}> ({GetListLength()})"; } }
+        public override string Value { get { return $"Array<{TypeName}> ({GetArrayLength()})"; } }
 
-        public override bool HasChildren => GetListLength() > 0;
+        public override bool HasChildren => GetArrayLength() > 0;
         public override List<TreeDataNode> Children { get; }
 
         private readonly object ParentObject;
         private readonly FieldInfo ParentFieldEntry;
 
-        public TreeDataListNode(object parent, FieldInfo field)
+        public TreeDataArrayNode(object parent, FieldInfo field)
         {
             Name = field.Name;
             TypeName = field.FieldType.Name;
@@ -24,43 +26,43 @@ namespace HZDCoreEditor.UI
             ParentObject = parent;
             ParentFieldEntry = field;
 
-            AddListChildren();
+            AddArrayChildren();
         }
 
-        private IList GetList()
+        private Array GetArray()
         {
-            return ParentFieldEntry.GetValue(ParentObject) as IList;
+            return ParentFieldEntry.GetValue(ParentObject) as Array;
         }
 
-        private int GetListLength()
+        private int GetArrayLength()
         {
-            return GetList()?.Count ?? 0;
+            return GetArray()?.Length ?? 0;
         }
 
-        private void AddListChildren()
+        private void AddArrayChildren()
         {
-            var asList = GetList();
+            var asArray = GetArray();
 
             // Array entries act as children
-            for (int i = 0; i < asList?.Count; i++)
-                Children.Add(new TreeDataListIndexNode(asList, i));
+            for (int i = 0; i < asArray?.Length; i++)
+                Children.Add(new TreeDataArrayIndexNode(asArray, i));
         }
     }
 
-    public class TreeDataListIndexNode : TreeDataNode
+    public class TreeDataArrayIndexNode : TreeDataNode
     {
-        public override string Value { get { return $"{ParentObject[ParentArrayIndex]?.ToString()}"; } }
+        public override string Value { get { return $"{ParentObject.GetValue(ParentArrayIndex)?.ToString()}"; } }
 
         public override bool HasChildren => Children.Count > 0;
         public override List<TreeDataNode> Children { get; }
 
-        private readonly IList ParentObject;
+        private readonly Array ParentObject;
         private readonly int ParentArrayIndex;
 
-        public TreeDataListIndexNode(IList parent, int index)
+        public TreeDataArrayIndexNode(Array parent, int index)
         {
             Name = $"[{index}]";
-            TypeName = "";
+            TypeName = parent.GetType().GetElementType().Name;
 
             Children = new List<TreeDataNode>();
             ParentObject = parent;
@@ -71,7 +73,7 @@ namespace HZDCoreEditor.UI
 
         private void AddObjectChildren()
         {
-            var objectInstance = ParentObject[ParentArrayIndex];
+            var objectInstance = ParentObject.GetValue(ParentArrayIndex);
             var objectType = objectInstance?.GetType();
 
             if (Type.GetTypeCode(objectType) == TypeCode.Object)
@@ -81,7 +83,11 @@ namespace HZDCoreEditor.UI
                 var fields = objectType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
                 foreach (var field in fields)
-                    Children.Add(CreateNode(objectInstance, field));
+                {
+                    var entry = new TreeDataClassMemberNode(objectInstance, field);
+
+                    Children.Add(entry);
+                }
             }
         }
     }

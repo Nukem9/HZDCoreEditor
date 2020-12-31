@@ -1,16 +1,15 @@
-﻿using Decima;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Threading;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Decima;
 using HZDCoreEditor.Util;
 using Newtonsoft.Json;
 
-namespace HZDCoreEditor.UI
+namespace HZDCoreEditorUI.UI
 {
     public partial class FormCoreView : Form
     {

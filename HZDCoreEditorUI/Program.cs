@@ -1,4 +1,4 @@
-﻿using Decima;
+using Decima;
 using NAudio.Wave;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
-namespace HZDCoreEditor
+namespace HZDCoreEditorUI
 {
     class Program
     {
