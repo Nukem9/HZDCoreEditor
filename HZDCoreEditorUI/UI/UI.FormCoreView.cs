@@ -83,6 +83,7 @@ namespace HZDCoreEditorUI.UI
         {
             var treeListView = new BrightIdeasSoftware.TreeListView();
             TV2 = treeListView;
+            treeListView.FullRowSelect = true;
             treeListView.Dock = DockStyle.Fill;
 
             treeListView.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
@@ -147,8 +148,6 @@ namespace HZDCoreEditorUI.UI
                 {
                     if (SearchDataNode(dNode))
                     {
-                        if (!NonExand.Any(x => dNode.TypeName.Contains(x)))
-                            TV2.Expand(dNode);
                         return true;
                     }
                 }
@@ -165,7 +164,6 @@ namespace HZDCoreEditorUI.UI
                 {
                     if (SearchDataNode(subNode))
                     {
-                        TV2.Expand(node);
                         return true;
                     }
                 }
@@ -186,12 +184,52 @@ namespace HZDCoreEditorUI.UI
 
             if (node.Value?.Contains(txtSearch.Text, StringComparison.OrdinalIgnoreCase) == true)
             {
-                TV2.SelectObject(node, true);
-                SearchNext = SearchIndex;
-                return true;
+                var parents = GetParents(TV2.Objects.Cast<TreeDataNode>(), node);
+                var nodeParent = parents.LastOrDefault();
+                if (nodeParent?.Value.StartsWith("Ref<") != true)
+                {
+                    foreach (var p in parents)
+                        TV2.Expand(p);
+
+                    TV2.SelectObject(node, true);
+                    SearchNext = SearchIndex;
+                    return true;
+                }
             }
 
             return false;
+        }
+
+        private List<TreeDataNode> GetParents(IEnumerable<TreeDataNode> roots, TreeDataNode node)
+        {
+            var parents = new List<TreeDataNode>();
+            foreach (var root in roots)
+            {
+                if (FindNodeParents(parents, root, node))
+                {
+                    if (parents.Any()) parents.Add(root);
+                    break;
+                }
+            }
+
+            parents.Reverse();
+            return parents;
+        }
+        private bool FindNodeParents(List<TreeDataNode> parents, TreeDataNode curNode, TreeDataNode searchNode)
+        {
+            if (curNode.Children?.Any() == true)
+            {
+                foreach (var subNode in curNode.Children)
+                {
+                    if (FindNodeParents(parents, subNode, searchNode))
+                    {
+                        parents.Add(curNode);
+                        return true;
+                    }
+                }
+            }
+
+            return ReferenceEquals(searchNode, curNode);
         }
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
