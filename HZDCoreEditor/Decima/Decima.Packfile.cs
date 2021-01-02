@@ -10,7 +10,7 @@ using Utility;
 
 namespace Decima
 {
-    public class Packfile
+    public class Packfile : IDisposable
     {
         private PackfileHeader Header;
         public List<FileEntry> FileEntries { get; private set; }
@@ -362,7 +362,7 @@ namespace Decima
 
         ~Packfile()
         {
-            ArchiveFileHandle.Close();
+            Dispose(false);
         }
 
         public bool ContainsFile(string path)
@@ -619,6 +619,20 @@ namespace Decima
             }
 
             return int.MaxValue;
+        }
+        
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                ArchiveFileHandle.Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }
