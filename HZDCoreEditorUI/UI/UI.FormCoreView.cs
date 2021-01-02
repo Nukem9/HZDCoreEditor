@@ -16,8 +16,8 @@ namespace HZDCoreEditorUI.UI
         private List<object> CoreObjectList;
         private string LoadedFilePath;
 
-        private BrightIdeasSoftware.TreeListView TV1;
-        private BrightIdeasSoftware.TreeListView TV2;
+        private BrightIdeasSoftware.TreeListView tvMain;
+        private BrightIdeasSoftware.TreeListView tvData;
 
         public FormCoreView()
         {
@@ -54,43 +54,42 @@ namespace HZDCoreEditorUI.UI
 
         private void BuildObjectView()
         {
-            var treeListView = new BrightIdeasSoftware.TreeListView();
-            TV1 = treeListView;
-            treeListView.FullRowSelect = true;
-            treeListView.Dock = DockStyle.Fill;
+            tvMain = new BrightIdeasSoftware.TreeListView();
+            tvMain.FullRowSelect = true;
+            tvMain.Dock = DockStyle.Fill;
 
-            treeListView.ItemSelectionChanged += TreeListView_ItemSelected;
+            tvMain.ItemSelectionChanged += TreeListView_ItemSelected;
 
-            treeListView.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
-            TreeObjectNode.SetupTree(treeListView, CoreObjectList);
+            tvMain.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
+            TreeObjectNode.SetupTree(tvMain, CoreObjectList);
 
             splitContainer.Panel1.Controls.Clear();
-            splitContainer.Panel1.Controls.Add(treeListView);
+            splitContainer.Panel1.Controls.Add(tvMain);
         }
 
         private void TreeListView_ItemSelected(object sender, EventArgs e)
         {
-            var underlying = (TV1.SelectedObject as TreeObjectNode)?.UnderlyingObject;
+            var underlying = (tvMain.SelectedObject as TreeObjectNode)?.UnderlyingObject;
 
             if (underlying != null)
             {
-                TV2.Clear();
-                TreeDataNode.SetupTree(TV2, underlying);
+                tvData.Clear();
+                TreeDataNode.SetupTree(tvData, underlying);
             }
         }
 
         private void BuildDataView()
         {
-            var treeListView = new BrightIdeasSoftware.TreeListView();
-            TV2 = treeListView;
-            treeListView.FullRowSelect = true;
-            treeListView.Dock = DockStyle.Fill;
+            tvData = new BrightIdeasSoftware.TreeListView();
+            tvData.FullRowSelect = true;
+            tvData.Dock = DockStyle.Fill;
+            tvData.VirtualMode = true;
 
-            treeListView.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
-            TreeDataNode.SetupTree(treeListView, CoreObjectList[0]);
+            tvData.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
+            TreeDataNode.SetupTree(tvData, CoreObjectList[0]);
 
             splitContainer.Panel2.Controls.Clear();
-            splitContainer.Panel2.Controls.Add(treeListView);
+            splitContainer.Panel2.Controls.Add(tvData);
         }
 
         private void btnOpen_Click(object sender, EventArgs e)
@@ -114,9 +113,9 @@ namespace HZDCoreEditorUI.UI
                 SearchNext = -1;
             SearchLast = txtSearch.Text;
 
-            foreach (var node in TV1.Objects.Cast<TreeObjectNode>())
+            foreach (var node in tvMain.Objects.Cast<TreeObjectNode>())
             {
-                TV1.Expand(node);
+                tvMain.Expand(node);
                 if (SearchNode(node))
                     return;
             }
@@ -131,7 +130,7 @@ namespace HZDCoreEditorUI.UI
             {
                 foreach (var subNode in node.Children)
                 {
-                    TV1.Expand(subNode);
+                    tvMain.Expand(subNode);
                     if (SearchNode(subNode))
                         return true;
                 }
@@ -139,12 +138,12 @@ namespace HZDCoreEditorUI.UI
 
             if (node.UnderlyingObject != null)
             {
-                TV1.SelectObject(node, true);
+                tvMain.SelectObject(node, true);
 
-                TV2.Clear();
-                TreeDataNode.SetupTree(TV2, node.UnderlyingObject);
+                tvData.Clear();
+                TreeDataNode.SetupTree(tvData, node.UnderlyingObject);
 
-                foreach (var dNode in TV2.Objects.Cast<TreeDataNode>())
+                foreach (var dNode in tvData.Objects.Cast<TreeDataNode>())
                 {
                     if (SearchDataNode(dNode))
                     {
@@ -184,14 +183,14 @@ namespace HZDCoreEditorUI.UI
 
             if (node.Value?.Contains(txtSearch.Text, StringComparison.OrdinalIgnoreCase) == true)
             {
-                var parents = GetParents(TV2.Objects.Cast<TreeDataNode>(), node);
+                var parents = GetParents(tvData.Objects.Cast<TreeDataNode>(), node);
                 var nodeParent = parents.LastOrDefault();
                 if (nodeParent?.Value.StartsWith("Ref<") != true)
                 {
                     foreach (var p in parents)
-                        TV2.Expand(p);
+                        tvData.Expand(p);
 
-                    TV2.SelectObject(node, true);
+                    tvData.SelectObject(node, true);
                     SearchNext = SearchIndex;
                     return true;
                 }
@@ -249,7 +248,7 @@ namespace HZDCoreEditorUI.UI
                 var json = JsonConvert.SerializeObject(CoreObjectList, new JsonSerializerSettings()
                 {
                     Formatting = Formatting.Indented,
-                    TypeNameHandling = TypeNameHandling.Objects,
+                    TypeNameHandling = cbExportTypes.Checked ? TypeNameHandling.Objects : TypeNameHandling.None,
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                     Converters = new List<JsonConverter>() { new BaseGGUUIDConverter() }
                 });

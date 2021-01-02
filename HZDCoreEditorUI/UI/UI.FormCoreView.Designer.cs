@@ -39,6 +39,7 @@ namespace HZDCoreEditorUI.UI
             this.btnSearch = new System.Windows.Forms.Button();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.btnExport = new System.Windows.Forms.Button();
+            this.cbExportTypes = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.SuspendLayout();
             this.SuspendLayout();
@@ -93,11 +94,24 @@ namespace HZDCoreEditorUI.UI
             this.btnExport.UseVisualStyleBackColor = true;
             this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
             // 
+            // cbExportTypes
+            // 
+            this.cbExportTypes.AutoSize = true;
+            this.cbExportTypes.Checked = true;
+            this.cbExportTypes.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbExportTypes.Location = new System.Drawing.Point(304, 9);
+            this.cbExportTypes.Name = "cbExportTypes";
+            this.cbExportTypes.Size = new System.Drawing.Size(92, 19);
+            this.cbExportTypes.TabIndex = 5;
+            this.cbExportTypes.Text = "Export Types";
+            this.cbExportTypes.UseVisualStyleBackColor = true;
+            // 
             // FormCoreView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1570, 877);
+            this.Controls.Add(this.cbExportTypes);
             this.Controls.Add(this.btnExport);
             this.Controls.Add(this.txtSearch);
             this.Controls.Add(this.btnSearch);
@@ -120,5 +134,6 @@ namespace HZDCoreEditorUI.UI
         private System.Windows.Forms.Button btnSearch;
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Button btnExport;
+        private System.Windows.Forms.CheckBox cbExportTypes;
     }
 }
