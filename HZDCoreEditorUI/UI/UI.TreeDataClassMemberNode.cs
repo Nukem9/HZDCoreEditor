@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using HZDCoreEditorUI.Util;
 
 namespace HZDCoreEditorUI.UI
 {
@@ -20,7 +21,7 @@ namespace HZDCoreEditorUI.UI
         public TreeDataClassMemberNode(object parent, FieldInfo field)
         {
             Name = field.Name;
-            TypeName = field.FieldType.Name;
+            TypeName = field.FieldType.GetFriendlyName();
 
             Children = new List<TreeDataNode>();
             ParentObject = parent;

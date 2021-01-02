@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using HZDCoreEditorUI.Util;
 
 namespace HZDCoreEditorUI.UI
 {
@@ -20,7 +21,7 @@ namespace HZDCoreEditorUI.UI
         public TreeDataArrayNode(object parent, FieldInfo field)
         {
             Name = field.Name;
-            TypeName = field.FieldType.Name;
+            TypeName = field.FieldType.GetFriendlyName();
 
             Children = new List<TreeDataNode>();
             ParentObject = parent;
@@ -62,7 +63,7 @@ namespace HZDCoreEditorUI.UI
         public TreeDataArrayIndexNode(Array parent, int index)
         {
             Name = $"[{index}]";
-            TypeName = parent.GetType().GetElementType().Name;
+            TypeName = parent.GetType().GetElementType().GetFriendlyName();
 
             Children = new List<TreeDataNode>();
             ParentObject = parent;

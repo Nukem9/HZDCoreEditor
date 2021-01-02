@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using HZDCoreEditorUI.Util;
 
 namespace HZDCoreEditorUI.UI
 {
@@ -22,7 +23,7 @@ namespace HZDCoreEditorUI.UI
                 throw new ArgumentNullException("Not supported. Use TreeDataClassMemberHolder instead if objects are potentially null.", nameof(instance));
 
             Name = name;
-            TypeName = instance.GetType().Name;
+            TypeName = instance.GetType().GetFriendlyName();
 
             Children = new List<TreeDataNode>();
             ObjectInstance = instance;
