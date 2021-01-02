@@ -48,7 +48,8 @@ namespace Decima
 
         public override string ToString()
         {
-            return $"{{{Data3:X2}{Data2:X2}{Data1:X2}{Data0:X2}-{Data5:X2}{Data4:X2}-{Data7:X2}{Data6:X2}-{Data8:X2}{Data9:X2}-{Data10:X2}{Data11:X2}{Data12:X2}{Data13:X2}{Data14:X2}{Data15:X2}}}";
+            return $"{{{Data3:X2}{Data2:X2}{Data1:X2}{Data0:X2}-{Data5:X2}{Data4:X2}-{Data7:X2}{Data6:X2}-{Data8:X2}{Data9:X2}" +
+                $"-{Data10:X2}{Data11:X2}{Data12:X2}{Data13:X2}{Data14:X2}{Data15:X2}}}";
         }
 
         public void ToData(BinaryWriter writer)
@@ -69,6 +70,43 @@ namespace Decima
             writer.Write(Data13);
             writer.Write(Data14);
             writer.Write(Data15);
+        }
+
+        public static BaseGGUUID FromString(string data)
+        {
+            if (data == null) 
+                throw new ArgumentNullException(nameof(data));
+            if (data.Length != 38)
+                throw new Exception($"Invalid BaseGGUUID data length: {data.Length}");
+
+            byte GetHexByte(string text, int idx) => Convert.ToByte(text.Substring(idx, 2), 16);
+
+            var byteIdx = 0;
+            var offset = 1;
+
+            var id = new BaseGGUUID();
+            id.Data3  = GetHexByte(data, byteIdx++ * 2 + offset);
+            id.Data2  = GetHexByte(data, byteIdx++ * 2 + offset);
+            id.Data1  = GetHexByte(data, byteIdx++ * 2 + offset);
+            id.Data0  = GetHexByte(data, byteIdx++ * 2 + offset);
+            offset++;
+            id.Data5  = GetHexByte(data, byteIdx++ * 2 + offset);
+            id.Data4  = GetHexByte(data, byteIdx++ * 2 + offset);
+            offset++;
+            id.Data7  = GetHexByte(data, byteIdx++ * 2 + offset);
+            id.Data6  = GetHexByte(data, byteIdx++ * 2 + offset);
+            offset++;
+            id.Data8  = GetHexByte(data, byteIdx++ * 2 + offset);
+            id.Data9  = GetHexByte(data, byteIdx++ * 2 + offset);
+            offset++;
+            id.Data10 = GetHexByte(data, byteIdx++ * 2 + offset);
+            id.Data11 = GetHexByte(data, byteIdx++ * 2 + offset);
+            id.Data12 = GetHexByte(data, byteIdx++ * 2 + offset);
+            id.Data13 = GetHexByte(data, byteIdx++ * 2 + offset);
+            id.Data14 = GetHexByte(data, byteIdx++ * 2 + offset);
+            id.Data15 = GetHexByte(data, byteIdx++ * 2 + offset);
+
+            return id;
         }
 
         public static BaseGGUUID FromData(BinaryReader reader)
