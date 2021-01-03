@@ -38,9 +38,14 @@ namespace Decima
 
         public static List<object> Load(string filePath, bool ignoreUnknownChunks = false)
         {
+            using var fs = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            return Load(fs, ignoreUnknownChunks);
+        }
+        public static List<object> Load(Stream stream, bool ignoreUnknownChunks = false)
+        {
             var coreFileObjects = new List<object>();
 
-            using (var reader = new BinaryReader(File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read)))
+            using (var reader = new BinaryReader(stream))
             {
                 while (reader.BaseStream.Position != reader.BaseStream.Length)
                 {

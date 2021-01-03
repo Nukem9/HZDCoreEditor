@@ -382,6 +382,11 @@ namespace Decima
 
         public void ExtractFile(ulong pathId, string destinationPath, bool allowOverwrite = false)
         {
+            using var fs = File.Open(destinationPath, allowOverwrite ? FileMode.Create : FileMode.CreateNew, FileAccess.Write);
+            ExtractFile(pathId, fs);
+        }
+        public void ExtractFile(ulong pathId, Stream stream)
+        {
             // Hashed path -> file entry -> block entries
             int fileIndex = GetFileEntryIndex(pathId);
             var fileEntry = FileEntries[fileIndex];
@@ -389,43 +394,42 @@ namespace Decima
             int firstBlock = GetBlockEntryIndex(fileEntry.DecompressedOffset);
             int lastBlock = GetBlockEntryIndex(fileEntry.DecompressedOffset + fileEntry.DecompressedSize - 1);
 
-            using (var reader = new BinaryReader(ArchiveFileHandle, Encoding.UTF8, true))
-            using (var writer = new BinaryWriter(File.Open(destinationPath, allowOverwrite ? FileMode.Create : FileMode.CreateNew, FileAccess.Write)))
+            using var reader = new BinaryReader(ArchiveFileHandle, Encoding.UTF8, true);
+            var writer = new BinaryWriter(stream);
+
+            // Keep a small cache sitting around to avoid excessive allocations
+            Span<byte> decompressedData = new byte[512 * 1024];
+
+            ulong fileDataOffset = fileEntry.DecompressedOffset; // 
+            ulong fileDataLength = fileEntry.DecompressedSize;   // Remainder
+
+            // Files can be split across multiple sequential blocks
+            for (int blockIndex = firstBlock; blockIndex <= lastBlock; blockIndex++)
             {
-                // Keep a small cache sitting around to avoid excessive allocations
-                Span<byte> decompressedData = new byte[512 * 1024];
+                var block = BlockEntries[blockIndex];
 
-                ulong fileDataOffset = fileEntry.DecompressedOffset; // 
-                ulong fileDataLength = fileEntry.DecompressedSize;   // Remainder
+                if (block.DecompressedSize > decompressedData.Length)
+                    throw new Exception("Increase cache buffer size");
 
-                // Files can be split across multiple sequential blocks
-                for (int blockIndex = firstBlock; blockIndex <= lastBlock; blockIndex++)
-                {
-                    var block = BlockEntries[blockIndex];
+                // Read from the bin, decrypt, and decompress
+                reader.BaseStream.Position = (long)block.Offset;
+                var data = reader.ReadBytesStrict(block.Size);
 
-                    if (block.DecompressedSize > decompressedData.Length)
-                        throw new Exception("Increase cache buffer size");
+                if (Header.IsEncrypted)
+                    block.XorDataBuffer(data);
 
-                    // Read from the bin, decrypt, and decompress
-                    reader.BaseStream.Position = (long)block.Offset;
-                    var data = reader.ReadBytesStrict(block.Size);
+                if (!OodleLZ.Decompress(data, decompressedData))
+                    throw new InvalidDataException("OodleLZ block decompression failed");
 
-                    if (Header.IsEncrypted)
-                        block.XorDataBuffer(data);
+                // Copy data from the adjusted offset within the decompressed buffer. If the file requires another block,
+                // truncate the copy and loop again.
+                ulong copyOffset = fileDataOffset - block.DecompressedOffset;
+                ulong copySize = Math.Min(fileDataLength, block.DecompressedSize - copyOffset);
 
-                    if (!OodleLZ.Decompress(data, decompressedData))
-                        throw new InvalidDataException("OodleLZ block decompression failed");
+                writer.Write(decompressedData.Slice((int)copyOffset, (int)copySize));
 
-                    // Copy data from the adjusted offset within the decompressed buffer. If the file requires another block,
-                    // truncate the copy and loop again.
-                    ulong copyOffset = fileDataOffset - block.DecompressedOffset;
-                    ulong copySize = Math.Min(fileDataLength, block.DecompressedSize - copyOffset);
-
-                    writer.Write(decompressedData.Slice((int)copyOffset, (int)copySize));
-
-                    fileDataOffset += copySize;
-                    fileDataLength -= copySize;
-                }
+                fileDataOffset += copySize;
+                fileDataLength -= copySize;
             }
         }
 
@@ -576,7 +580,7 @@ namespace Decima
                 (BlockEntry.DataHeaderSize * blockEntryCount);
         }
 
-        private ulong GetHashForPath(string path)
+        public static ulong GetHashForPath(string path)
         {
             SMHasher.MurmurHash3_x64_128(Encoding.UTF8.GetBytes(path + char.MinValue), 42, out ulong[] hash);
             return hash[0];

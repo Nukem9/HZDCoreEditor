@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace Decima
     public static partial class RTTI
     {
         private static Dictionary<ulong, Type> TypeIdLookupMap;
-        private static Dictionary<Type, OrderedFieldInfo> TypeFieldInfoCache;
+        private static ConcurrentDictionary<Type, OrderedFieldInfo> TypeFieldInfoCache;
         private static readonly Dictionary<string, string> DotNetTypeToDecima;
 
         public class OrderedFieldInfo
@@ -66,7 +67,7 @@ namespace Decima
         {
             // Build a cache of the 64-bit type IDs to actual C# types. Previous values are erased.
             TypeIdLookupMap = new Dictionary<ulong, Type>();
-            TypeFieldInfoCache = new Dictionary<Type, OrderedFieldInfo>();
+            TypeFieldInfoCache = new ConcurrentDictionary<Type, OrderedFieldInfo>();
 
             foreach (var classType in typeof(SerializableAttribute).Assembly.GetTypes())
             {
@@ -161,7 +162,7 @@ namespace Decima
 
             if (!type.IsDefined(typeof(SerializableAttribute)))
             {
-                TypeFieldInfoCache.Add(type, null);
+                TypeFieldInfoCache.TryAdd(type, null);
                 return null;
             }
 
@@ -231,7 +232,7 @@ namespace Decima
                 .ToArray();
 
             info = new OrderedFieldInfo(miBases, members);
-            TypeFieldInfoCache.Add(type, info);
+            TypeFieldInfoCache.TryAdd(type, info);
 
             return info;
         }
