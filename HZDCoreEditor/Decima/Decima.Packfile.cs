@@ -155,10 +155,8 @@ namespace Decima
                 writer.Write(data);
             }
 
-            public FileEntry FromData(BinaryReader reader, PackfileHeader header)
+            public FileEntry FromData(Span<byte> xorData, PackfileHeader header)
             {
-                Span<byte> xorData = reader.ReadBytes(DataHeaderSize);
-
                 if (header.IsEncrypted)
                 {
                     XorKey1 = BitConverter.ToUInt32(xorData.Slice(4));          // 0x4
@@ -235,10 +233,8 @@ namespace Decima
                 writer.Write(data);
             }
 
-            public BlockEntry FromData(BinaryReader reader, PackfileHeader header)
+            public BlockEntry FromData(Span<byte> xorData, PackfileHeader header)
             {
-                Span<byte> xorData = reader.ReadBytes(DataHeaderSize);
-
                 if (header.IsEncrypted)
                 {
                     XorKey1 = BitConverter.ToUInt32(xorData.Slice(12));         // 0xC
@@ -324,7 +320,6 @@ namespace Decima
                 return MD5Context.Value.ComputeHash(key);
             }
         }
-
         public Packfile(string archivePath, FileMode mode = FileMode.Open, bool encrypted = false)
         {
             if (mode == FileMode.Open)
@@ -337,11 +332,19 @@ namespace Decima
                     FileEntries = new List<FileEntry>((int)Header.FileEntryCount);
                     BlockEntries = new List<BlockEntry>((int)Header.BlockEntryCount);
 
+                    Span<byte> fileData = reader.ReadBytes(Header.FileEntryCount * FileEntry.DataHeaderSize);
                     for (int i = 0; i < Header.FileEntryCount; i++)
-                        FileEntries.Add(new FileEntry().FromData(reader, Header));
+                    {
+                        var data = fileData.Slice(i * FileEntry.DataHeaderSize, FileEntry.DataHeaderSize);
+                        FileEntries.Add(new FileEntry().FromData(data, Header));
+                    }
 
+                    Span<byte> blockData = reader.ReadBytes(Header.BlockEntryCount * BlockEntry.DataHeaderSize);
                     for (int i = 0; i < Header.BlockEntryCount; i++)
-                        BlockEntries.Add(new BlockEntry().FromData(reader, Header));
+                    {
+                        var data = blockData.Slice(i * BlockEntry.DataHeaderSize, BlockEntry.DataHeaderSize);
+                        BlockEntries.Add(new BlockEntry().FromData(data, Header));
+                    }
                 }
             }
             else if (mode == FileMode.Create || mode == FileMode.CreateNew)
