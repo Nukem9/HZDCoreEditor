@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using HZDCoreEditor.Util;
 
 namespace Decima
 {
@@ -73,7 +74,7 @@ namespace Decima
                             throw new InvalidDataException($"Unknown type ID {entry.TypeId:X16} found in Core file at offset {entry.ChunkOffset:X}");
 
                         // Invalid or unknown chunk ID hit - create an array of bytes "object" and try to continue with the rest of the file
-                        topLevelObject = reader.ReadBytes(entry.ChunkSize);
+                        topLevelObject = new UnknownType(reader.ReadBytes(entry.ChunkSize), entry.TypeId);
                     }
 
                     if (reader.BaseStream.Position > expectedFilePos)
@@ -99,17 +100,19 @@ namespace Decima
                     var entry = new Entry();
                     RTTI.SerializeType(writer, entry);
 
-                    if (topLevelObject is byte[] asBytes)
+                    if (topLevelObject is UnknownType unknown)
                     {
                         // Handle unsupported (raw data) object types
-                        writer.Write(asBytes);
+                        writer.Write(unknown.Data);
+                        entry.TypeId = unknown.TypeId;
                     }
                     else
                     {
                         RTTI.SerializeType(writer, topLevelObject);
+
+                        entry.TypeId = RTTI.GetIdByType(topLevelObject.GetType());
                     }
 
-                    entry.TypeId = RTTI.GetIdByType(topLevelObject.GetType());
                     entry.ChunkSize = (uint)(writer.BaseStream.Position - entry.ChunkOffset - 12);
 
                     // Now rewrite it with the updated fields
