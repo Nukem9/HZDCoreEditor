@@ -13,7 +13,6 @@ namespace Decima
         {
             return gameType switch
             {
-                GameType.DS => DS.StreamHandle.FromData(reader),
                 GameType.HZD => HZD.StreamHandle.FromData(reader),
                 _ => throw new NotImplementedException(),
             };
