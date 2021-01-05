@@ -46,7 +46,7 @@ namespace HZDCoreEditorUI.UI
             LoadedFilePath = ofd.FileName;
             this.Text = "FormCoreView - " + LoadedFilePath;
 
-            CoreObjectList = CoreBinary.Load(ofd.FileName);
+            CoreObjectList = CoreBinary.Load(ofd.FileName, true);
 
             BuildObjectView();
             BuildDataView();
