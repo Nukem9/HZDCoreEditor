@@ -255,5 +255,11 @@ namespace HZDCoreEditorUI.UI
                 File.WriteAllText(sfd.FileName, json);
             }
         }
+
+        private void btnExpand_Click(object sender, EventArgs e)
+        {
+            tvMain.ExpandAll();
+            tvData.ExpandAll();
+        }
     }
 }

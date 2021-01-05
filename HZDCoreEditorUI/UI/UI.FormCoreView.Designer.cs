@@ -40,6 +40,7 @@ namespace HZDCoreEditorUI.UI
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.btnExport = new System.Windows.Forms.Button();
             this.cbExportTypes = new System.Windows.Forms.CheckBox();
+            this.btnExpand = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.SuspendLayout();
             this.SuspendLayout();
@@ -68,9 +69,10 @@ namespace HZDCoreEditorUI.UI
             // 
             // btnSearch
             // 
-            this.btnSearch.Location = new System.Drawing.Point(1421, 5);
+            this.btnSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSearch.Location = new System.Drawing.Point(1347, 5);
             this.btnSearch.Name = "btnSearch";
-            this.btnSearch.Size = new System.Drawing.Size(143, 23);
+            this.btnSearch.Size = new System.Drawing.Size(100, 23);
             this.btnSearch.TabIndex = 2;
             this.btnSearch.Text = "Search";
             this.btnSearch.UseVisualStyleBackColor = true;
@@ -78,7 +80,8 @@ namespace HZDCoreEditorUI.UI
             // 
             // txtSearch
             // 
-            this.txtSearch.Location = new System.Drawing.Point(1006, 5);
+            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSearch.Location = new System.Drawing.Point(932, 5);
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(409, 23);
             this.txtSearch.TabIndex = 3;
@@ -106,11 +109,23 @@ namespace HZDCoreEditorUI.UI
             this.cbExportTypes.Text = "Export Types";
             this.cbExportTypes.UseVisualStyleBackColor = true;
             // 
+            // btnExpand
+            // 
+            this.btnExpand.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExpand.Location = new System.Drawing.Point(1453, 5);
+            this.btnExpand.Name = "btnExpand";
+            this.btnExpand.Size = new System.Drawing.Size(100, 23);
+            this.btnExpand.TabIndex = 6;
+            this.btnExpand.Text = "Expand All";
+            this.btnExpand.UseVisualStyleBackColor = true;
+            this.btnExpand.Click += new System.EventHandler(this.btnExpand_Click);
+            // 
             // FormCoreView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1570, 877);
+            this.Controls.Add(this.btnExpand);
             this.Controls.Add(this.cbExportTypes);
             this.Controls.Add(this.btnExport);
             this.Controls.Add(this.txtSearch);
@@ -135,5 +150,6 @@ namespace HZDCoreEditorUI.UI
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Button btnExport;
         private System.Windows.Forms.CheckBox cbExportTypes;
+        private System.Windows.Forms.Button btnExpand;
     }
 }
