@@ -22,7 +22,7 @@ namespace HZDCoreEditorUI.UI
             {
                 var genericType = field.FieldType.GetGenericTypeDefinition();
 
-                if (genericType == typeof(Decima.DS.Array<>) || genericType == typeof(Decima.HZD.Array<>) || genericType == typeof(List<>))
+                if (genericType == typeof(Decima.HZD.Array<>) || genericType == typeof(List<>))
                     return new TreeDataListNode(parent, field);
             }
 
