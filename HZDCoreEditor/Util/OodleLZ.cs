@@ -193,6 +193,10 @@ namespace Utility
 
         public static long Compress(Span<byte> inputBuffer, Span<byte> outputBuffer)
         {
+            return Compress(inputBuffer, inputBuffer.Length, outputBuffer);
+        }
+        public static long Compress(Span<byte> inputBuffer, int inputBufferLength, Span<byte> outputBuffer)
+        {
             long result = -1;
 
             int compressor = OodleLZ_Version switch
@@ -217,7 +221,7 @@ namespace Utility
                     result = OodleLZ_Compress(
                         compressor,
                         input,
-                        (UIntPtr)inputBuffer.Length,
+                        (UIntPtr)inputBufferLength,
                         output,
                         compression,
                         UIntPtr.Zero,

@@ -27,11 +27,20 @@ namespace Decima
             if (itemCount > reader.StreamRemainder())
                 throw new Exception("Array item count is out of bounds");
 
-            if (typeof(T) == typeof(byte))
+            if (itemCount == 0)
+                return;
+            
+            if (typeof(T) == typeof(int))
+            {
+                var bytes = reader.ReadBytesStrict(itemCount * sizeof(int));
+                var ints = new int[itemCount];
+                Buffer.BlockCopy(bytes, 0, ints, 0, bytes.Length);
+                (this as List<int>).AddRange(ints);
+            }
+            else if (typeof(T) == typeof(byte))
             {
                 // Avoid wasting time on large arrays
-                if (itemCount > 0)
-                    (this as List<byte>).AddRange(reader.ReadBytesStrict(itemCount));
+                (this as List<byte>).AddRange(reader.ReadBytesStrict(itemCount));
             }
             else
             {
