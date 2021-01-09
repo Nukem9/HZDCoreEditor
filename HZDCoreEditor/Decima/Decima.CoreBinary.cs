@@ -158,18 +158,7 @@ namespace Decima
             return refs;
         }
 
-        public IEnumerator<object> GetEnumerator()
-        {
-            foreach (var entry in Entries)
-                yield return entry.ContainedObject;
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        private static void VisitObjectTypes<T>(object obj, Action<T> memberCallback) where T : class
+        private void VisitObjectTypes<T>(object obj, Action<T> memberCallback) where T : class
         {
             if (obj == null)
                 return;
@@ -210,6 +199,17 @@ namespace Decima
                         VisitObjectTypes(field.GetValue(obj), memberCallback);
                 }
             }
+        }
+
+        public IEnumerator<object> GetEnumerator()
+        {
+            foreach (var entry in Entries)
+                yield return entry.ContainedObject;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }
