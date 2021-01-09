@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using HZDCoreEditorUI.Util;
 
 namespace HZDCoreEditorUI.UI
 {
@@ -34,7 +35,7 @@ namespace HZDCoreEditorUI.UI
         {
             var objectType = containedObject.GetType();
 
-            TypeName = objectType.Name;
+            TypeName = objectType.GetFriendlyName();
             UnderlyingObject = containedObject;
             Children = null;
 

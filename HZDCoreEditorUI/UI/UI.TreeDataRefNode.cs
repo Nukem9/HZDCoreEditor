@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
+using HZDCoreEditorUI.Util;
 using Utility;
 
 namespace HZDCoreEditorUI.UI
@@ -18,7 +19,7 @@ namespace HZDCoreEditorUI.UI
 		public TreeDataRefNode(object parent, FieldOrProperty member, NodeAttributes attributes)
 		{
 			Name = member.GetName();
-			TypeName = member.GetMemberType().Name;
+			TypeName = member.GetMemberType().GetFriendlyName();
 
 			ParentObject = parent;
 			ParentFieldEntry = member;
