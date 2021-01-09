@@ -61,7 +61,7 @@ namespace Decima
                 if (GetFieldName(field) != name)
                     return false;
 
-                string ftn = GetFieldTypeName(field);
+                string ftn = GetTypeNameString(field.FieldType);
 
                 // TODO: Custom int32 type - C# doesn't support typedefs. I can pretend this isn't a problem until I need
                 // to write fields.

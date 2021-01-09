@@ -34,6 +34,17 @@ namespace Decima
                     Field = field;
                     SaveStateOnly = saveStateOnly;
                 }
+
+                public void SetValue(object parent, object value)
+                {
+                    // If using emulated MI: fetch the base class pointer first, then write the field
+                    Field.SetValue(MIBase != null ? MIBase.GetValue(parent) : parent, value);
+                }
+
+                public object GetValue(object parent)
+                {
+                    return Field.GetValue(MIBase != null ? MIBase.GetValue(parent) : parent);
+                }
             }
 
             public readonly FieldInfo[] MIBases;
@@ -78,13 +89,17 @@ namespace Decima
                     if (attribute.Game != game)
                         continue;
 
-                    TypeIdLookupMap.Add(attribute.BinaryTypeId, classType);
+                    typeIdLookupMap.Add(attribute.BinaryTypeId, classType);
                 }
             }
+
+            TypeIdLookupMap = typeIdLookupMap;
+            TypeFieldInfoCache = typeFieldInfoCache;
         }
 
         public static Type GetTypeByName(string name)
         {
+            // Slow
             var type = TypeIdLookupMap.Values
                 .Where(x => x.Name == name)
                 .Single();
@@ -103,6 +118,32 @@ namespace Decima
         public static ulong GetIdByType(Type type)
         {
             return type.GetCustomAttribute<SerializableAttribute>().BinaryTypeId;
+        }
+
+        public static string GetTypeNameString(Type type)
+        {
+            // Array<Ref<PlayerParams>> -> Array`1 -> Array_Ref_PlayerParams
+            static string getGenericTypeString(Type genericType)
+            {
+                string typeName = genericType.Name;
+
+                if (!genericType.IsGenericType)
+                {
+                    if (DotNetTypeToDecima.TryGetValue(typeName, out string translatedName))
+                        return translatedName;
+
+                    return typeName;
+                }
+
+                typeName = typeName.Substring(0, typeName.IndexOf('`'));
+
+                foreach (var argType in genericType.GetGenericArguments())
+                    typeName += $"_{getGenericTypeString(argType)}";
+
+                return typeName;
+            }
+
+            return getGenericTypeString(type);
         }
 
         public static string GetFieldCategory(FieldInfo field)
@@ -127,32 +168,6 @@ namespace Decima
                 name = name.Substring(1);
 
             return name;
-        }
-
-        public static string GetFieldTypeName(FieldInfo field)
-        {
-            // Array<Ref<PlayerParams>> -> Array`1 -> Array_Ref_PlayerParams
-            static string getGenericTypeString(Type type)
-            {
-                string typeName = type.Name;
-
-                if (!type.IsGenericType)
-                {
-                    if (DotNetTypeToDecima.TryGetValue(typeName, out string translatedName))
-                        return translatedName;
-
-                    return typeName;
-                }
-
-                typeName = typeName.Substring(0, typeName.IndexOf('`'));
-
-                foreach (var argType in type.GetGenericArguments())
-                    typeName += $"_{getGenericTypeString(argType)}";
-
-                return typeName;
-            }
-
-            return getGenericTypeString(field.FieldType);
         }
 
         public static OrderedFieldInfo GetOrderedFieldsForClass(Type type)
@@ -232,8 +247,9 @@ namespace Decima
                 .ToArray();
 
             info = new OrderedFieldInfo(miBases, members);
-            TypeFieldInfoCache.TryAdd(type, info);
 
+            // Another thread might insert this entry before we do, but it doesn't matter as long as the data is identical
+            TypeFieldInfoCache.TryAdd(type, info);
             return info;
         }
 
@@ -324,10 +340,7 @@ namespace Decima
                     if (member.SaveStateOnly)
                         continue;
 
-                    // Check if this field needs to be applied to an emulated base class
-                    var baseClass = member.MIBase != null ? member.MIBase.GetValue(objectInstance) : objectInstance;
-
-                    member.Field.SetValue(baseClass, DeserializeType(reader, member.Field.FieldType));
+                    member.SetValue(objectInstance, DeserializeType(reader, member.Field.FieldType));
                 }
             }
 
@@ -395,14 +408,10 @@ namespace Decima
                     if (member.SaveStateOnly)
                         continue;
 
-                    // If using a base class: pull the value out separately, then write it
-                    var baseClass = member.MIBase != null ? member.MIBase.GetValue(objectInstance) : objectInstance;
-
-                    SerializeType(writer, member.Field.GetValue(baseClass));
+                    SerializeType(writer, member.GetValue(objectInstance));
                 }
             }
 
-            // Done reading. Now copy what the engine does and notify MsgReadBinary subscribers.
             if (objectInstance is IExtraBinaryDataCallback asExtraBinaryDataCallback)
                 asExtraBinaryDataCallback.SerializeExtraData(writer);
 

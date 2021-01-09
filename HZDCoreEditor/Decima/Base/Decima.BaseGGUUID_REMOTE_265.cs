@@ -80,13 +80,6 @@ namespace Decima
         {
             AssignFromOther(state.ReadIndexedGUID());
         }
-        public static BaseGGUUID FromOther(BaseGGUUID other)
-        {
-            var x = new BaseGGUUID();
-            x.AssignFromOther(other);
-
-            return x;
-        }
 
         protected void AssignFromOther(BaseGGUUID other)
         {
@@ -129,49 +122,6 @@ namespace Decima
             Data15 = data[15];
         }
 
-        public override bool Equals(object obj)
-        {
-            return obj is BaseGGUUID gGUUID &&
-                   Data0 == gGUUID.Data0 &&
-                   Data1 == gGUUID.Data1 &&
-                   Data2 == gGUUID.Data2 &&
-                   Data3 == gGUUID.Data3 &&
-                   Data4 == gGUUID.Data4 &&
-                   Data5 == gGUUID.Data5 &&
-                   Data6 == gGUUID.Data6 &&
-                   Data7 == gGUUID.Data7 &&
-                   Data8 == gGUUID.Data8 &&
-                   Data9 == gGUUID.Data9 &&
-                   Data10 == gGUUID.Data10 &&
-                   Data11 == gGUUID.Data11 &&
-                   Data12 == gGUUID.Data12 &&
-                   Data13 == gGUUID.Data13 &&
-                   Data14 == gGUUID.Data14 &&
-                   Data15 == gGUUID.Data15;
-        }
-
-        public override int GetHashCode()
-        {
-            HashCode hash = new HashCode();
-            hash.Add(Data0);
-            hash.Add(Data1);
-            hash.Add(Data2);
-            hash.Add(Data3);
-            hash.Add(Data4);
-            hash.Add(Data5);
-            hash.Add(Data6);
-            hash.Add(Data7);
-            hash.Add(Data8);
-            hash.Add(Data9);
-            hash.Add(Data10);
-            hash.Add(Data11);
-            hash.Add(Data12);
-            hash.Add(Data13);
-            hash.Add(Data14);
-            hash.Add(Data15);
-            return hash.ToHashCode();
-        }
-        
         public static implicit operator BaseGGUUID(string value)
         {
             return new BaseGGUUID().FromString(value);

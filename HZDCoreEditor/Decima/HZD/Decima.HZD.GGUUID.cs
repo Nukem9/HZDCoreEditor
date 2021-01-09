@@ -7,9 +7,14 @@
         {
         }
 
-        public GGUUID(BaseGGUUID GUID)
+        public GGUUID(BaseGGUUID value)
         {
-            AssignFromOther(GUID);
+            AssignFromOther(value);
+        }
+
+        public static implicit operator GGUUID(string value)
+        {
+            return (GGUUID)(new GGUUID().FromString(value));
         }
     }
 }

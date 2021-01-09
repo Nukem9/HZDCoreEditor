@@ -45,7 +45,7 @@ namespace Decima
                 if (isStreaming != 0 && isStreaming != 1)
                     throw new InvalidDataException("Must be true or false");
 
-                x.ResourceGUID = BaseGGUUID.FromData(reader);
+                x.ResourceGUID = new BaseGGUUID().FromData(reader);
                 x.Buffer = HwBuffer.FromIndexData(reader, gameType, format, isStreaming != 0, indexElementCount);
             }
 

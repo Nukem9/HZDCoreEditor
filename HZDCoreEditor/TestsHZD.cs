@@ -1,6 +1,7 @@
 ﻿using Decima;
 using System;
 using System.IO;
+using System.Linq;
 
 namespace HZDCoreEditor
 {
@@ -99,10 +100,10 @@ namespace HZDCoreEditor
                 string fullPath = Path.Combine(GameDataPathExtracted, file);
                 Console.WriteLine(fullPath);
 
-                var objects = CoreBinary.Load(fullPath);
+                var core = new CoreBinary().FromFile(fullPath);
 
                 string tempPath = Path.ChangeExtension(fullPath, ".tmp");
-                CoreBinary.Save(tempPath, objects);
+                core.ToFile(tempPath);
 
                 byte[] d1 = File.ReadAllBytes(fullPath);
                 byte[] d2 = File.ReadAllBytes(tempPath);
@@ -128,10 +129,10 @@ namespace HZDCoreEditor
             {
                 Console.WriteLine(file);
 
-                var objects = CoreBinary.Load(file, true);
+                var core = new CoreBinary().FromFile(file, true);
 
                 string tempPath = Path.ChangeExtension(file, ".tmp");
-                CoreBinary.Save(tempPath, objects);
+                core.ToFile(tempPath);
 
                 byte[] d1 = File.ReadAllBytes(file);
                 byte[] d2 = File.ReadAllBytes(tempPath);
@@ -156,7 +157,7 @@ namespace HZDCoreEditor
                 string fullPath = Path.Combine(GameDataPathExtracted, file);
                 Console.WriteLine(fullPath);
 
-                var objects = CoreBinary.Load(fullPath);
+                var core = new CoreBinary().FromFile(fullPath);
             }
         }
 
@@ -168,8 +169,70 @@ namespace HZDCoreEditor
             {
                 Console.WriteLine(file);
 
-                var objects = CoreBinary.Load(file, true);
+                var core = new CoreBinary().FromFile(file, true);
             }
+        }
+
+        public static void PackArchivesQuickTest()
+        {
+            string archivePath = Path.Combine(GameDataPath, "test_packed_archive.tmp");
+
+            using (var testArchive = new PackfileWriter(archivePath, false, true))
+            {
+                testArchive.BuildFromFileList(GameDataPathExtracted, QuickTestFiles);
+            }
+
+            using (var testArchive = new PackfileReader(archivePath))
+            {
+                testArchive.Validate();
+
+                // Re-extract all of the contained files
+                foreach (string file in QuickTestFiles)
+                {
+                    string tempFilePath = Path.Combine(GameDataPathExtracted, $"{file}.tmp");
+
+                    testArchive.ExtractFile(file, tempFilePath, true);
+                    File.Delete(tempFilePath);
+                }
+            }
+
+            File.Delete(archivePath);
+        }
+
+        public static void PackArchivesTest()
+        {
+            string archivePath = Path.Combine(GameDataPath, "test_packed_archive.tmp");
+            string targetDir = GameDataPathExtracted;
+
+            if (!targetDir.EndsWith('\\'))
+                targetDir += "\\";
+
+            var filesToCombine = Directory
+                .EnumerateFiles(targetDir, "*.core", SearchOption.AllDirectories)
+                .Take(500)
+                .Select(f => f.Substring(targetDir.Length))
+                .ToArray();
+
+            using (var testArchive = new PackfileWriter(archivePath, false, true))
+            {
+                testArchive.BuildFromFileList(targetDir, filesToCombine);
+            }
+
+            using (var testArchive = new PackfileReader(archivePath))
+            {
+                testArchive.Validate();
+
+                // Re-extract all of the contained files
+                foreach (string file in filesToCombine)
+                {
+                    string tempFilePath = Path.Combine(targetDir, $"{file}.tmp");
+
+                    testArchive.ExtractFile(file, tempFilePath, true);
+                    File.Delete(tempFilePath);
+                }
+            }
+
+            File.Delete(archivePath);
         }
 
         public static void DecodeQuickArchivesTest()
@@ -180,8 +243,8 @@ namespace HZDCoreEditor
             {
                 Console.WriteLine(file);
 
-                var indexFile = new PackfileIndex(Path.Combine(basePath, Path.ChangeExtension(file, ".idx")));
-                var archive = new Packfile(Path.Combine(basePath, file));
+                var indexFile = new PackfileIndex().FromFile(Path.Combine(basePath, Path.ChangeExtension(file, ".idx")));
+                var archive = new PackfileReader(Path.Combine(basePath, file));
 
                 foreach (var entry in archive.FileEntries)
                 {
@@ -206,8 +269,8 @@ namespace HZDCoreEditor
             {
                 Console.WriteLine(file);
 
-                var indexFile = new PackfileIndex(Path.ChangeExtension(file, ".idx"));
-                var archive = new Packfile(file);
+                var indexFile = new PackfileIndex().FromFile(Path.ChangeExtension(file, ".idx"));
+                var archive = new PackfileReader(file);
 
                 foreach (var entry in archive.FileEntries)
                 {

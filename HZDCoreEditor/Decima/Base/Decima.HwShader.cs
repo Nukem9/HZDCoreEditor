@@ -111,7 +111,7 @@ namespace Decima
 
             // shaderDataLength is discarded
             uint shaderDataLength = reader.ReadUInt32();
-            x.ResourceGUID = BaseGGUUID.FromData(reader);
+            x.ResourceGUID = new BaseGGUUID().FromData(reader);
 
             x.Unknown1 = reader.ReadUInt32();
             x.TypeMask = (BaseProgramTypeMask)reader.ReadUInt32();

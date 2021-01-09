@@ -32,6 +32,25 @@ namespace Decima
         [RTTI.Member(14, 0xE)] public uint8 Data14;
         [RTTI.Member(15, 0xF)] public uint8 Data15;
 
+        public void DeserializeStateObject(SaveState state)
+        {
+            AssignFromOther(state.ReadIndexedGUID());
+        }
+
+        public bool IsEmpty()
+        {
+            return
+                Data0 == 0 && Data1 == 0 && Data2 == 0 && Data3 == 0 &&
+                Data4 == 0 && Data5 == 0 && Data6 == 0 && Data7 == 0 &&
+                Data8 == 0 && Data9 == 0 && Data10 == 0 && Data11 == 0 &&
+                Data12 == 0 && Data13 == 0 && Data14 == 0 && Data15 == 0;
+        }
+
+        public override string ToString()
+        {
+            return $"{{{Data3:X2}{Data2:X2}{Data1:X2}{Data0:X2}-{Data5:X2}{Data4:X2}-{Data7:X2}{Data6:X2}-{Data8:X2}{Data9:X2}-{Data10:X2}{Data11:X2}{Data12:X2}{Data13:X2}{Data14:X2}{Data15:X2}}}";
+        }
+
         public void ToData(BinaryWriter writer)
         {
             writer.Write(Data0);
@@ -52,43 +71,20 @@ namespace Decima
             writer.Write(Data15);
         }
 
-        public override string ToString()
-        {
-            return $"{{{Data3:X2}{Data2:X2}{Data1:X2}{Data0:X2}-{Data5:X2}{Data4:X2}-{Data7:X2}{Data6:X2}-{Data8:X2}{Data9:X2}-{Data10:X2}{Data11:X2}{Data12:X2}{Data13:X2}{Data14:X2}{Data15:X2}}}";
-        }
-
-        public BaseGGUUID FromData(BinaryReader reader)
+        public static BaseGGUUID FromData(BinaryReader reader)
         {
             return FromData(reader.ReadBytesStrict(16));
         }
 
-        public BaseGGUUID FromData(ReadOnlySpan<byte> data)
-        {
-            AssignFromData(data);
-            return this;
-        }
-
-        public BaseGGUUID FromString(string value)
-        {
-            if (!Guid.TryParse(value, out Guid guid))
-                throw new ArgumentException("Invalid GUID", nameof(value));
-
-            return FromData(guid.ToByteArray());
-        }
-
-        public void DeserializeStateObject(SaveState state)
-        {
-            AssignFromOther(state.ReadIndexedGUID());
-        }
-        public static BaseGGUUID FromOther(BaseGGUUID other)
+        public static BaseGGUUID FromData(ReadOnlySpan<byte> data)
         {
             var x = new BaseGGUUID();
-            x.AssignFromOther(other);
+            x.AssignFromData(data);
 
             return x;
         }
 
-        protected void AssignFromOther(BaseGGUUID other)
+        public void AssignFromOther(BaseGGUUID other)
         {
             // No unions. No marshaling. Assign each manually...
             Data0 = other.Data0;
@@ -109,7 +105,7 @@ namespace Decima
             Data15 = other.Data15;
         }
 
-        protected void AssignFromData(ReadOnlySpan<byte> data)
+        private void AssignFromData(ReadOnlySpan<byte> data)
         {
             Data0 = data[0];
             Data1 = data[1];
@@ -127,54 +123,6 @@ namespace Decima
             Data13 = data[13];
             Data14 = data[14];
             Data15 = data[15];
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is BaseGGUUID gGUUID &&
-                   Data0 == gGUUID.Data0 &&
-                   Data1 == gGUUID.Data1 &&
-                   Data2 == gGUUID.Data2 &&
-                   Data3 == gGUUID.Data3 &&
-                   Data4 == gGUUID.Data4 &&
-                   Data5 == gGUUID.Data5 &&
-                   Data6 == gGUUID.Data6 &&
-                   Data7 == gGUUID.Data7 &&
-                   Data8 == gGUUID.Data8 &&
-                   Data9 == gGUUID.Data9 &&
-                   Data10 == gGUUID.Data10 &&
-                   Data11 == gGUUID.Data11 &&
-                   Data12 == gGUUID.Data12 &&
-                   Data13 == gGUUID.Data13 &&
-                   Data14 == gGUUID.Data14 &&
-                   Data15 == gGUUID.Data15;
-        }
-
-        public override int GetHashCode()
-        {
-            HashCode hash = new HashCode();
-            hash.Add(Data0);
-            hash.Add(Data1);
-            hash.Add(Data2);
-            hash.Add(Data3);
-            hash.Add(Data4);
-            hash.Add(Data5);
-            hash.Add(Data6);
-            hash.Add(Data7);
-            hash.Add(Data8);
-            hash.Add(Data9);
-            hash.Add(Data10);
-            hash.Add(Data11);
-            hash.Add(Data12);
-            hash.Add(Data13);
-            hash.Add(Data14);
-            hash.Add(Data15);
-            return hash.ToHashCode();
-        }
-        
-        public static implicit operator BaseGGUUID(string value)
-        {
-            return new BaseGGUUID().FromString(value);
         }
     }
 }

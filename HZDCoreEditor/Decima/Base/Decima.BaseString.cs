@@ -64,5 +64,10 @@ namespace Decima
         {
             return Value;
         }
+
+        public static implicit operator BaseString(string value)
+        {
+            return new BaseString(value);
+        }
     }
 }
