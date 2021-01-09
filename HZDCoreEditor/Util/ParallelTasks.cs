@@ -1,16 +1,22 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Drawing.Text;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace HZDCoreEditor.Util
 {
     public class ParallelTasks<T>
     {
-        public Action<T> Action { get; }
+        private CancellationTokenSource _tokens;
+        private Exception _error;
+
+        private Action<T> Action { get; }
         private BlockingCollection<T> Queue { get; }
         private Task[] Workers { get; }
+        
 
         public ParallelTasks(int threads, Action<T> action)
         {
@@ -24,6 +30,9 @@ namespace HZDCoreEditor.Util
 
         public void Start()
         {
+            _tokens = new CancellationTokenSource();
+            _error = null;
+
             foreach (var worker in Workers)
                 worker.Start();
         }
@@ -35,10 +44,23 @@ namespace HZDCoreEditor.Util
 
         private void Worker()
         {
-            foreach (var item in Queue.GetConsumingEnumerable())
-                Action(item);
+            try
+            {
+                while (Queue.TryTake(out var item, -1, _tokens.Token))
+                    Action(item);
+            }
+            catch (Exception ex)
+            {
+                _error = ex;
+                Stop();
+            }
         }
-        
+
+        public void Stop()
+        {
+            _tokens.Cancel();
+        }
+
         public void CompleteAdding()
         {
             Queue.CompleteAdding();
@@ -47,6 +69,9 @@ namespace HZDCoreEditor.Util
         public void WaitForComplete()
         {
             Task.WaitAll(Workers);
+
+            if (_error != null)
+                throw new Exception("Parallel tasks failed: " + _error.Message, _error);
         }
     }
 }

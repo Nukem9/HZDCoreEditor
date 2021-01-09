@@ -19,6 +19,15 @@ namespace Decima
 
         private readonly FileStream ArchiveFileHandle;
 
+        private class CompressBlock
+        {
+            public ulong DecompressedOffset;
+            public uint DecompressedSize;
+            public byte[] DataBuffer;
+            public byte[] CompressBuffer;
+            public uint Size;
+        }
+
         public PackfileWriterFast(string archivePath, bool encrypted = false, bool allowOverwrite = false)
         {
             ArchiveFileHandle = File.Open(archivePath, allowOverwrite ? FileMode.Create : FileMode.CreateNew, FileAccess.ReadWrite, FileShare.None);
@@ -118,7 +127,6 @@ namespace Decima
 
                     readBufferPos = 0;
                     readBuffer = new byte[BlockSize];
-
                     blockOffset += BlockSize;
                 }
             }
@@ -155,15 +163,6 @@ namespace Decima
 
                 BlockEntries.Add(blockEntry);
             }
-        }
-
-        private class CompressBlock
-        {
-            public ulong DecompressedOffset;
-            public uint DecompressedSize;
-            public byte[] DataBuffer;
-            public byte[] CompressBuffer;
-            public uint Size;
         }
 
         private int CalculateArchiveHeaderLength(int fileEntryCount, int blockEntryCount)
