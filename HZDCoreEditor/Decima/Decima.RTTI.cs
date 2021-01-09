@@ -89,12 +89,9 @@ namespace Decima
                     if (attribute.Game != game)
                         continue;
 
-                    typeIdLookupMap.Add(attribute.BinaryTypeId, classType);
+                    TypeIdLookupMap.Add(attribute.BinaryTypeId, classType);
                 }
             }
-
-            TypeIdLookupMap = typeIdLookupMap;
-            TypeFieldInfoCache = typeFieldInfoCache;
         }
 
         public static Type GetTypeByName(string name)

@@ -9,9 +9,9 @@ using HZDCoreEditor.Util;
 
 namespace Decima
 {
-    class CoreBinary : IEnumerable<object>
+    public class CoreBinary : IEnumerable<object>
     {
-        private List<CoreEntry> Entries;
+        private readonly List<CoreEntry> Entries = new List<CoreEntry>();
 
         /// <remarks>
         /// File data format:
@@ -79,9 +79,9 @@ namespace Decima
                 ToData(writer);
         }
 
-        public CoreBinary FromData(BinaryReader reader, bool ignoreUnknownChunks = false)
+        public static CoreBinary FromData(BinaryReader reader, bool ignoreUnknownChunks = false)
         {
-            Entries = new List<CoreEntry>();
+            var core = new CoreBinary();
 
             while (reader.StreamRemainder() > 0)
             {
@@ -117,13 +117,13 @@ namespace Decima
                 //    Debugger.Log(0, "Warn", $"Short read of a chunk while deserializing object. {reader.BaseStream.Position} < {expectedStreamPos}. TypeId = {entry.TypeId:X16}\n");
 
                 reader.BaseStream.Position = expectedStreamPos;
-                Entries.Add(entry);
+                core.Entries.Add(entry);
             }
 
-            return this;
+            return core;
         }
 
-        public CoreBinary FromFile(string filePath, bool ignoreUnknownChunks = false)
+        public static CoreBinary FromFile(string filePath, bool ignoreUnknownChunks = false)
         {
             using (var reader = new BinaryReader(File.OpenRead(filePath)))
                 return FromData(reader, ignoreUnknownChunks);
@@ -140,7 +140,7 @@ namespace Decima
 
         public void RemoveObject(object obj)
         {
-            Entries.Remove(Entries.Where(x => x.ContainedObject == obj).Single());
+            Entries.Remove(Entries.Single(x => x.ContainedObject == obj));
         }
 
         public List<BaseRef> GetAllReferences()

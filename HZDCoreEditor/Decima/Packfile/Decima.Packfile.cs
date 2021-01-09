@@ -12,7 +12,6 @@ namespace Decima
 {
     public abstract class Packfile : IDisposable
     {
-    {
         public PackfileHeader Header { protected set; get; }
         public List<FileEntry> FileEntries { protected set; get; }
         public List<BlockEntry> BlockEntries { protected set; get; }

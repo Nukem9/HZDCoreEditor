@@ -2,7 +2,7 @@
 using System.Reflection;
 using Utility;
 
-namespace HZDCoreEditor.UI
+namespace HZDCoreEditorUI.UI
 {
     public class TreeDataRefNode : TreeDataNode
 	{

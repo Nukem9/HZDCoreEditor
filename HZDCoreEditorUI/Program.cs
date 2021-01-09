@@ -23,8 +23,7 @@ namespace HZDCoreEditorUI
 
             if (args.Length > 0)
             {
-                var core = new CoreBinary().FromFile(args[0]);
-                Application.Run(new UI.FormCoreView(core.ToList()));
+                Application.Run(new UI.FormCoreView(args[0]));
 
                 return;
             }
@@ -263,9 +262,7 @@ namespace HZDCoreEditorUI
             TestsHZD.DecodeQuickArchivesTest();
             TestsHZD.DecodeAllArchivesTest();
             */
-
-            RTTI.SetGameMode(GameType.HZD);
-
+            
             //ExtractHZDLocalization();
 
             Application.Run(new UI.FormCoreView());
@@ -284,7 +281,7 @@ namespace HZDCoreEditorUI
 
         static void RebuildLinksForFile(Decima.HZD.PrefetchList prefetchList, string fileName, string physicalFilePath)
         {
-            RebuildLinksForFile(prefetchList, fileName, new CoreBinary().FromFile(physicalFilePath));
+            RebuildLinksForFile(prefetchList, fileName, CoreBinary.FromFile(physicalFilePath));
         }
 
         static void RebuildLinksForFile(Decima.HZD.PrefetchList prefetchList, string fileName, CoreBinary coreBinary)
@@ -333,7 +330,7 @@ namespace HZDCoreEditorUI
 
         static void ExtractReferences()
         {
-            var prefetchCore = new CoreBinary().FromFile(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\prefetch\fullgame.prefetch.core");
+            var prefetchCore = CoreBinary.FromFile(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\prefetch\fullgame.prefetch.core");
             var prefetchList = prefetchCore.First(x => x is Decima.HZD.PrefetchList) as Decima.HZD.PrefetchList;
 
             var files = prefetchList.Files;
@@ -352,7 +349,7 @@ namespace HZDCoreEditorUI
 
                 try
                 {
-                    var core = new CoreBinary().FromFile(Path.Combine(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\", $"{file.Path}.core"), true);
+                    var core = CoreBinary.FromFile(Path.Combine(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\", $"{file.Path}.core"), true);
 
                     foreach (var baseRef in core.GetAllReferences())
                     {
@@ -387,7 +384,7 @@ namespace HZDCoreEditorUI
                 Console.WriteLine(file);
                 bool first = true;
 
-                var core = new CoreBinary().FromFile(file);
+                var core = CoreBinary.FromFile(file);
 
                 foreach (var obj in core)
                 {
@@ -416,7 +413,7 @@ namespace HZDCoreEditorUI
             {
                 Console.WriteLine(file);
 
-                var core = new CoreBinary().FromFile(file);
+                var core = CoreBinary.FromFile(file);
 
                 foreach (var obj in core)
                 {

@@ -18,10 +18,13 @@ namespace HZDCoreEditorUI.UI
 
         private BrightIdeasSoftware.TreeListView tvMain;
         private BrightIdeasSoftware.TreeListView tvData;
-
-        public FormCoreView()
+        
+        public FormCoreView(string path = null)
         {
             InitializeComponent();
+
+            if (!String.IsNullOrEmpty(path))
+                LoadFile(path);
         }
 
         private void FormCoreView_Load(object sender, EventArgs e)
@@ -43,10 +46,15 @@ namespace HZDCoreEditorUI.UI
                 return;
             }
 
-            LoadedFilePath = ofd.FileName;
+            LoadFile(ofd.FileName);
+        }
+
+        private void LoadFile(string path)
+        {
+            LoadedFilePath = path;
             this.Text = "FormCoreView - " + LoadedFilePath;
 
-            CoreObjectList = CoreBinary.Load(ofd.FileName, true);
+            CoreObjectList = CoreBinary.FromFile(path, true).ToList();
 
             BuildObjectView();
             BuildDataView();
@@ -101,10 +109,6 @@ namespace HZDCoreEditorUI.UI
         private int SearchNext = -1;
         private int SearchIndex = -1;
         private string SearchLast = null;
-        private string[] NonExand =
-        {
-            "GGUUID"
-        };
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
@@ -157,7 +161,7 @@ namespace HZDCoreEditorUI.UI
 
         private bool SearchDataNode(TreeDataNode node)
         {
-            if (node.Children != null && !NonExand.Any(x => node.TypeName.Contains(x)))
+            if (node.Children != null)
             {
                 foreach (var subNode in node.Children)
                 {
@@ -180,12 +184,12 @@ namespace HZDCoreEditorUI.UI
             }
 
             SearchIndex++;
-
-            if (node.Value?.Contains(txtSearch.Text, StringComparison.OrdinalIgnoreCase) == true)
+            
+            if (node.Value?.ToString().Contains(txtSearch.Text, StringComparison.OrdinalIgnoreCase) == true)
             {
                 var parents = GetParents(tvData.Objects.Cast<TreeDataNode>(), node);
                 var nodeParent = parents.LastOrDefault();
-                if (nodeParent?.Value.StartsWith("Ref<") != true)
+                if (nodeParent?.Value?.ToString().StartsWith("Ref<") != true)
                 {
                     foreach (var p in parents)
                         tvData.Expand(p);

@@ -54,14 +54,14 @@ namespace Decima
 
         public override string ToString()
         {
-            return $"{{{Data3:X2}{Data2:X2}{Data1:X2}{Data0:X2}-{Data5:X2}{Data4:X2}-{Data7:X2}{Data6:X2}-{Data8:X2}{Data9:X2}-{Data10:X2}{Data11:X2}{Data12:X2}{Data13:X2}{Data14:X2}{Data15:X2}}}";
+            return $"{{{Data3:X2}{Data2:X2}{Data1:X2}{Data0:X2}-{Data5:X2}{Data4:X2}-{Data7:X2}{Data6:X2}" +
+                $"-{Data8:X2}{Data9:X2}-{Data10:X2}{Data11:X2}{Data12:X2}{Data13:X2}{Data14:X2}{Data15:X2}}}";
         }
 
         public BaseGGUUID FromData(BinaryReader reader)
         {
             return FromData(reader.ReadBytesStrict(16));
         }
-
         public BaseGGUUID FromData(ReadOnlySpan<byte> data)
         {
             AssignFromData(data);
@@ -88,7 +88,7 @@ namespace Decima
             return x;
         }
 
-        protected void AssignFromOther(BaseGGUUID other)
+        public void AssignFromOther(BaseGGUUID other)
         {
             // No unions. No marshaling. Assign each manually...
             Data0 = other.Data0;
