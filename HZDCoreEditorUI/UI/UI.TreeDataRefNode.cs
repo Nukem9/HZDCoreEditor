@@ -41,7 +41,7 @@ namespace HZDCoreEditorUI.UI
 				var fields = objectInstance.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
 				foreach (var field in fields)
-					Children.Add(CreateNode(objectInstance, new FieldOrProperty(field), NodeAttributes.HideChildren | NodeAttributes.DisableEditing));
+					Children.Add(CreateNode(objectInstance, new FieldOrProperty(field), NodeAttributes.HideChildren));
 			}
 		}
 	}
