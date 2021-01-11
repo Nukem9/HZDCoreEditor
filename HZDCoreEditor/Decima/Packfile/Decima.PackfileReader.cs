@@ -87,8 +87,9 @@ namespace Decima
                 if (Header.IsEncrypted)
                     block.XorDataBuffer(data);
 
-                if (!OodleLZ.Decompress(data, decompressedData))
-                    throw new InvalidDataException("OodleLZ block decompression failed");
+                //if the buffer is bigger then the decompressed size OodleLZ v3 doesn't decompress data correctly every time
+                //however if the buffer is the correct size it will decompress correctly but report that it failed
+                OodleLZ.Decompress(data, decompressedData, block.DecompressedSize);
 
                 // Copy data from the adjusted offset within the decompressed buffer. If the file requires another block,
                 // truncate the copy and loop again.

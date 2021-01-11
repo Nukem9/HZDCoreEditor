@@ -156,7 +156,7 @@ namespace Utility
             OodleLZ_Compress = Marshal.GetDelegateForFunctionPointer<OodleLZ_Compress_Delegate>(compressorFunc);
         }
 
-        public static bool Decompress(ReadOnlySpan<byte> inputBuffer, Span<byte> outputBuffer)
+        public static bool Decompress(ReadOnlySpan<byte> inputBuffer, Span<byte> outputBuffer, uint decompressLength)
         {
             long result = -1;
 
@@ -169,7 +169,7 @@ namespace Utility
                         input,
                         (UIntPtr)inputBuffer.Length,
                         output,
-                        (UIntPtr)outputBuffer.Length,
+                        (UIntPtr)decompressLength,
                         OodleLZ_FuzzSafe.Yes,
                         OodleLZ_CheckCRC.No,
                         OodleLZ_Verbosity.None,
@@ -186,9 +186,9 @@ namespace Utility
             return result == 0;
         }
 
-        public static bool Decompress(byte[] inputBuffer, byte[] outputBuffer)
+        public static bool Decompress(byte[] inputBuffer, byte[] outputBuffer, uint decompressLength)
         {
-            return Decompress(inputBuffer.AsSpan(), outputBuffer.AsSpan());
+            return Decompress(inputBuffer.AsSpan(), outputBuffer.AsSpan(), decompressLength);
         }
 
         public static long Compress(Span<byte> inputBuffer, Span<byte> outputBuffer)
