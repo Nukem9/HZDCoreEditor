@@ -36,7 +36,12 @@ namespace HZDCoreEditor.Util
             foreach (var worker in Workers)
                 worker.Start();
         }
-
+        
+        public void AddItems(IEnumerable<T> items)
+        {
+            foreach (var item in items)
+                Queue.Add(item);
+        }
         public void AddItem(T item)
         {
             Queue.Add(item);
