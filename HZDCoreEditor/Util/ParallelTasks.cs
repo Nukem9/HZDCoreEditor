@@ -73,6 +73,9 @@ namespace HZDCoreEditor.Util
 
         public void WaitForComplete()
         {
+            if (!Queue.IsAddingCompleted)
+                Queue.CompleteAdding();
+
             Task.WaitAll(Workers);
 
             if (_error != null)

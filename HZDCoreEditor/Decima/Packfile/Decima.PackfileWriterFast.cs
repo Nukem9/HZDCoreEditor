@@ -72,8 +72,7 @@ namespace Decima
             tasks.Start();
 
             AddFiles(physicalPathRoot, sourceFiles, tasks);
-
-            tasks.CompleteAdding();
+            
             tasks.WaitForComplete();
 
             using var archiveWriter = new BinaryWriter(ArchiveFileHandle, Encoding.UTF8, true);
