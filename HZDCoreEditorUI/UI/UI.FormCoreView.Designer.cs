@@ -122,6 +122,7 @@ namespace HZDCoreEditorUI.UI
             // 
             // FormCoreView
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1570, 877);
@@ -133,8 +134,10 @@ namespace HZDCoreEditorUI.UI
             this.Controls.Add(this.btnOpen);
             this.Controls.Add(this.splitContainer);
             this.Name = "FormCoreView";
-            this.Text = "FormCoreView";
+            this.Text = "Core Viewer";
             this.Load += new System.EventHandler(this.FormCoreView_Load);
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.FormCoreView_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.FormCoreView_DragEnter);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
             this.splitContainer.ResumeLayout(false);
             this.ResumeLayout(false);

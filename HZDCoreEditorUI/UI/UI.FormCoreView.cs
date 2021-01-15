@@ -31,20 +31,16 @@ namespace HZDCoreEditorUI.UI
         {
             Task.Run(() =>
             {
-                this.BeginInvoke(new Action(() => OpenFile(true)));
+                this.BeginInvoke(new Action(OpenFile));
             });
         }
 
-        private void OpenFile(bool exit = false)
+        private void OpenFile()
         {
             SearchLast = null;
             var ofd = new OpenFileDialog();
             if (ofd.ShowDialog() != DialogResult.OK)
-            {
-                if (exit)
-                    Application.Exit();
                 return;
-            }
 
             LoadFile(ofd.FileName);
         }
@@ -52,7 +48,7 @@ namespace HZDCoreEditorUI.UI
         private void LoadFile(string path)
         {
             LoadedFilePath = path;
-            this.Text = "FormCoreView - " + LoadedFilePath;
+            this.Text = "Core Viewer - " + LoadedFilePath;
 
             CoreObjectList = CoreBinary.FromFile(path, true).ToList();
 
@@ -264,6 +260,27 @@ namespace HZDCoreEditorUI.UI
         {
             tvMain.ExpandAll();
             tvData.ExpandAll();
+        }
+
+        private void FormCoreView_DragDrop(object sender, DragEventArgs e)
+        {
+            var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+            try
+            {
+                if (files.Any())
+                    LoadFile(files.First());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed to load file");
+            }
+        }
+
+        private void FormCoreView_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop)) 
+                e.Effect = DragDropEffects.Copy;
         }
     }
 }
