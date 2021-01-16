@@ -57,10 +57,8 @@ namespace HZDCoreSearch
                 try
                 {
                     var byteSearches = CurrentSearches.Select((x, i) => (i.ToString(), ToBytes(x))).ToList();
-
-                    var sw = new Stopwatch();sw.Start();
+                    
                     SearchDirs(tbDir.Text, byteSearches);
-                    MessageBox.Show(sw.Elapsed.TotalSeconds.ToString());
                 }
                 catch (Exception ex)
                 {
