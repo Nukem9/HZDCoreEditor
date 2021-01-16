@@ -58,7 +58,9 @@ namespace HZDCoreSearch
                 {
                     var byteSearches = CurrentSearches.Select((x, i) => (i.ToString(), ToBytes(x))).ToList();
 
+                    var sw = new Stopwatch();sw.Start();
                     SearchDirs(tbDir.Text, byteSearches);
+                    MessageBox.Show(sw.Elapsed.TotalSeconds.ToString());
                 }
                 catch (Exception ex)
                 {
@@ -72,16 +74,17 @@ namespace HZDCoreSearch
         
         private void SearchDirs(string dir, List<(string Key, byte[] Data)> patterns)
         {
-            var matches = new ConcurrentBag<string>();
+            var bm = patterns.Select(x => new BoyerMoore(x.Data)).ToList();
+
             var ptq = new ParallelTasks<string>(Environment.ProcessorCount, f =>
             {
                 var data = File.ReadAllBytes(f);
-                foreach (var pattern in patterns)
+                for (int i = 0; i < patterns.Count; i++)
                 {
-                    var pos = SearchBytePattern(pattern.Data, data);
+                    var pos = bm[i].SearchAll(data);
                     if (pos.Any())
                     {
-                        var text = $"{pattern.Key} - {f} - {String.Join(", ", pos)}";
+                        var text = $"{patterns[i].Key} - {f} - {String.Join(", ", pos)}";
                         this.BeginInvoke(new Action(() =>
                         {
                             lbMatches.Items.Add(text);
