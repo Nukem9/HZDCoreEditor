@@ -57,7 +57,8 @@ namespace HZDCoreSearch
         public unsafe List<int> SearchAll(byte[] searchArray, int startIndex = 0)
         {
             if (_patternLength > searchArray.Length)
-                throw new Exception("Search Pattern length exceeds search array length.");
+                return new List<int>();
+            
             var index = startIndex;
             var limit = searchArray.Length - _patternLength;
             var patternLengthMinusOne = _patternLength - 1;
