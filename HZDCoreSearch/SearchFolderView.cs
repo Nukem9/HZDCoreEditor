@@ -142,9 +142,27 @@ namespace HZDCoreSearch
 
         private void lbMatches_DoubleClick(object sender, EventArgs e)
         {
+            var (path, idx) = GetSelectedItem();
+            
+            if (path != null && !String.IsNullOrEmpty(_sourceProcess))
+                Process.Start(_sourceProcess, $"\"{path}\" -s \"{CurrentSearches[idx]}\"");
+        }
+
+        private void lbMatches_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Control && e.KeyCode == Keys.C)
+            {
+                var (path, idx) = GetSelectedItem();
+                if (path != null)
+                    Clipboard.SetData(DataFormats.StringFormat, path);
+            }
+        }
+
+        private (string File, int Index) GetSelectedItem()
+        {
             var selected = lbMatches.SelectedItem?.ToString();
             if (String.IsNullOrEmpty(selected))
-                return;
+                return (null, -1);
 
             var si = selected.IndexOf(" - ") + 3;
             var ei = selected.LastIndexOf(" - ");
@@ -153,9 +171,7 @@ namespace HZDCoreSearch
             var path = Path.Combine(tbDir.Text, file);
 
             var idx = int.Parse(selected.Substring(0, si - 3));
-
-            if (!String.IsNullOrEmpty(_sourceProcess))
-                Process.Start(_sourceProcess, $"\"{path}\" -s \"{CurrentSearches[idx]}\"");
+            return (path, idx);
         }
     }
 }

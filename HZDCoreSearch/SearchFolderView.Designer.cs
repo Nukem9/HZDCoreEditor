@@ -102,6 +102,7 @@ namespace HZDCoreSearch
             this.lbMatches.Size = new System.Drawing.Size(1170, 604);
             this.lbMatches.TabIndex = 5;
             this.lbMatches.DoubleClick += new System.EventHandler(this.lbMatches_DoubleClick);
+            this.lbMatches.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lbMatches_KeyDown);
             // 
             // btnSearch
             // 
