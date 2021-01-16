@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Decima
 {
-    class SaveGameProfile
+    public class SaveGameProfile
     {
         private const uint HardcodedMagic = 0x50504747; // 'GGPP'
         private const uint HardcodedGameVersion = 46;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -19,20 +20,22 @@ namespace HZDCoreEditorUI.UI
         private BrightIdeasSoftware.TreeListView tvMain;
         private BrightIdeasSoftware.TreeListView tvData;
         
-        public FormCoreView(string path = null)
+        public FormCoreView(string path, string search)
         {
             InitializeComponent();
 
+            var fileLoaded = false;
             if (!String.IsNullOrEmpty(path))
-                LoadFile(path);
-        }
-
-        private void FormCoreView_Load(object sender, EventArgs e)
-        {
-            Task.Run(() =>
             {
-                this.BeginInvoke(new Action(OpenFile));
-            });
+                LoadFile(path);
+                fileLoaded = true;
+            }
+            if (!String.IsNullOrEmpty(search))
+            {
+                txtSearch.Text = search;
+                if (fileLoaded)
+                    btnSearch_Click(null, null);
+            }
         }
 
         private void OpenFile()
@@ -273,7 +276,7 @@ namespace HZDCoreEditorUI.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Failed to load file");
+                MessageBox.Show("Failed to load file: " + ex.Message);
             }
         }
 
@@ -281,6 +284,11 @@ namespace HZDCoreEditorUI.UI
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop)) 
                 e.Effect = DragDropEffects.Copy;
+        }
+
+        private void btnSearchAll_Click(object sender, EventArgs e)
+        {
+            Process.Start("HZDCoreSearch.exe", Process.GetCurrentProcess().ProcessName);
         }
     }
 }
