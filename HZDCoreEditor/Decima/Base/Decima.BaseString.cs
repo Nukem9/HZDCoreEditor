@@ -69,5 +69,9 @@ namespace Decima
         {
             return new BaseString(value);
         }
+        public static implicit operator string(BaseString value)
+        {
+            return value?.Value;
+        }
     }
 }
