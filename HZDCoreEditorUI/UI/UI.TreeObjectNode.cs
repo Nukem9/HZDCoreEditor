@@ -75,7 +75,7 @@ namespace HZDCoreEditorUI.UI
 
             foreach (var obj in childObjects)
             {
-                string typeString = obj.GetType().Name;
+                string typeString = obj.GetType().GetFriendlyName();
 
                 if (!categorizedObjects.TryGetValue(typeString, out List<object> categoryList))
                 {

@@ -178,6 +178,11 @@ namespace Decima
             return new BaseGGUUID().FromString(value);
         }
 
+        public static implicit operator BaseGGUUID(Guid value)
+        {
+            return new BaseGGUUID().FromData(value.ToByteArray());
+        }
+
         public static bool operator ==(BaseGGUUID left, BaseGGUUID right)
         {
             return EqualityComparer<BaseGGUUID>.Default.Equals(left, right);
