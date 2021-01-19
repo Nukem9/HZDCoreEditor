@@ -10,7 +10,7 @@ using Utility;
 
 namespace Decima
 {
-    public abstract class Packfile : IDisposable
+    public abstract class Packfile
     {
         public PackfileHeader Header { protected set; get; }
         public List<FileEntry> FileEntries { protected set; get; }
@@ -325,22 +325,7 @@ namespace Decima
         protected Packfile()
         {
         }
-
-        /// <summary>
-        /// Destructor
-        /// </summary>
-        ~Packfile()
-        {
-            Dispose();
-        }
-
-        /// <summary>
-        /// Called when file handles should be cleaned up
-        /// </summary>
-        public virtual void Dispose()
-        {
-        }
-
+        
         /// <summary>
         /// Checks if a Decima-formatted path is valid for this archive
         /// </summary>

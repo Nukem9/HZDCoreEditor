@@ -9,15 +9,15 @@ namespace Decima
 {
     public class PackfileReader : Packfile
     {
+        private readonly string _archivePath;
         private const uint ReaderBlockSizeThreshold = 256 * 1024;
-
-        private readonly FileStream ArchiveFileHandle;
 
         public PackfileReader(string archivePath)
         {
-            ArchiveFileHandle = File.Open(archivePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            _archivePath = archivePath;
+            using var handle = File.OpenRead(_archivePath);
 
-            using var reader = new BinaryReader(ArchiveFileHandle, Encoding.UTF8, true);
+            using var reader = new BinaryReader(handle, Encoding.UTF8, true);
 
             Header = new PackfileHeader().FromData(reader);
             FileEntries = new List<FileEntry>((int)Header.FileEntryCount);
@@ -38,12 +38,6 @@ namespace Decima
             }
         }
 
-        public override void Dispose()
-        {
-            ArchiveFileHandle.Close();
-            base.Dispose();
-        }
-
         public void ExtractFile(string path, string destinationPath, bool allowOverwrite = false)
         {
             ExtractFile(GetHashForPath(path), destinationPath, allowOverwrite);
@@ -56,6 +50,8 @@ namespace Decima
         }
         public void ExtractFile(ulong pathId, Stream stream)
         {
+            using var handle = File.OpenRead(_archivePath);
+
             // Hashed path -> file entry -> block entries
             int fileIndex = GetFileEntryIndex(pathId);
             var fileEntry = FileEntries[fileIndex];
@@ -63,7 +59,7 @@ namespace Decima
             int firstBlock = GetBlockEntryIndex(fileEntry.DecompressedOffset);
             int lastBlock = GetBlockEntryIndex(fileEntry.DecompressedOffset + fileEntry.DecompressedSize - 1);
 
-            using var reader = new BinaryReader(ArchiveFileHandle, Encoding.UTF8, true);
+            using var reader = new BinaryReader(handle, Encoding.UTF8, true);
             using var writer = new BinaryWriter(stream, new UTF8Encoding(false, true), true);
 
             // Keep a small cache sitting around to avoid excessive allocations
@@ -112,6 +108,8 @@ namespace Decima
         /// </summary>
         public void Validate()
         {
+            using var handle = File.OpenRead(_archivePath);
+
             ulong previousOffset = 0;
             ulong previousPathHash = 0;
 
@@ -121,7 +119,7 @@ namespace Decima
                 if (entry.DecompressedOffset < previousOffset)
                     throw new InvalidDataException("Archive block entry array isn't sorted properly.");
 
-                if ((entry.Offset + entry.Size) > (ulong)ArchiveFileHandle.Length)
+                if ((entry.Offset + entry.Size) > (ulong)handle.Length)
                     throw new InvalidDataException("Archive data truncated. A block entry header exceeds the file size.");
 
                 previousOffset = entry.DecompressedOffset;

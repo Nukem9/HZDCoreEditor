@@ -17,7 +17,8 @@ namespace Decima
     {
         private const uint BlockSize = 256 * 1024;
 
-        private readonly FileStream ArchiveFileHandle;
+        private readonly string _archivePath;
+        private readonly bool _allowOverwrite;
 
         private class CompressBlock
         {
@@ -30,19 +31,14 @@ namespace Decima
 
         public PackfileWriterFast(string archivePath, bool encrypted = false, bool allowOverwrite = false)
         {
-            ArchiveFileHandle = File.Open(archivePath, allowOverwrite ? FileMode.Create : FileMode.CreateNew, FileAccess.ReadWrite, FileShare.None);
+            _archivePath = archivePath;
+            _allowOverwrite = allowOverwrite;
 
             Header = new PackfileHeader();
             FileEntries = new List<FileEntry>();
             BlockEntries = new List<BlockEntry>();
 
             Header.IsEncrypted = encrypted;
-        }
-
-        public override void Dispose()
-        {
-            ArchiveFileHandle.Close();
-            base.Dispose();
         }
 
         public void BuildFromFileList(string physicalPathRoot, string[] sourceFiles)
@@ -75,7 +71,8 @@ namespace Decima
             
             tasks.WaitForComplete();
 
-            using var archiveWriter = new BinaryWriter(ArchiveFileHandle, Encoding.UTF8, true);
+            using var fs = File.Open(_archivePath, _allowOverwrite ? FileMode.Create : FileMode.CreateNew, FileAccess.ReadWrite, FileShare.None);
+            using var archiveWriter = new BinaryWriter(fs, Encoding.UTF8, true);
 
             archiveWriter.BaseStream.Position = CalculateArchiveHeaderLength(sourceFiles.Length, compressedBlocks.Count);
             WriteBlockEntries(archiveWriter, compressedBlocks);
