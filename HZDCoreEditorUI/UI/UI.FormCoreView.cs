@@ -42,6 +42,13 @@ namespace HZDCoreEditorUI.UI
         {
             SearchLast = null;
             var ofd = new OpenFileDialog();
+
+            if (!String.IsNullOrEmpty(LoadedFilePath))
+            {
+                ofd.InitialDirectory = Path.GetDirectoryName(LoadedFilePath);
+                ofd.FileName = Path.GetFileName(LoadedFilePath);
+            }
+
             if (ofd.ShowDialog() != DialogResult.OK)
                 return;
 
@@ -289,6 +296,11 @@ namespace HZDCoreEditorUI.UI
         private void btnSearchAll_Click(object sender, EventArgs e)
         {
             Process.Start("HZDCoreSearch.exe", Process.GetCurrentProcess().ProcessName);
+        }
+
+        private void txtSearch_MouseClick(object sender, MouseEventArgs e)
+        {
+            txtSearch.SelectAll();
         }
     }
 }

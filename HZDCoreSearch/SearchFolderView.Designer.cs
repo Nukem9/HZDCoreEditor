@@ -77,9 +77,9 @@ namespace HZDCoreSearch
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(12, 45);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(49, 15);
+            this.label2.Size = new System.Drawing.Size(112, 15);
             this.label2.TabIndex = 3;
-            this.label2.Text = "Seaches";
+            this.label2.Text = "Seaches (Guid, Text)";
             // 
             // label3
             // 
