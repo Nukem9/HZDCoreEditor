@@ -12,6 +12,8 @@ namespace Decima
 {
     public abstract class Packfile
     {
+        public const string CoreExt = ".core";
+
         public PackfileHeader Header { protected set; get; }
         public List<FileEntry> FileEntries { protected set; get; }
         public List<BlockEntry> BlockEntries { protected set; get; }
@@ -333,10 +335,17 @@ namespace Decima
         {
             return GetFileEntryIndex(path) != int.MaxValue;
         }
-
+        
+        public static string EnsureExt(string path)
+        {
+            if (!path.EndsWith(CoreExt, StringComparison.OrdinalIgnoreCase))
+                path += CoreExt;
+            return path;
+        }
         public static ulong GetHashForPath(string path)
         {
-            SMHasher.MurmurHash3_x64_128(Encoding.UTF8.GetBytes(path.Replace('\\', '/') + char.MinValue), 42, out ulong[] hash);
+            path = EnsureExt(path).Replace('\\', '/');
+            SMHasher.MurmurHash3_x64_128(Encoding.UTF8.GetBytes(path + char.MinValue), 42, out ulong[] hash);
             return hash[0];
         }
 
