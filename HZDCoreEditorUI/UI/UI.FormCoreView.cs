@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Decima;
 using HZDCoreEditor.Util;
+using HZDCoreEditorUI.Util;
 using Newtonsoft.Json;
 
 namespace HZDCoreEditorUI.UI
@@ -58,7 +59,16 @@ namespace HZDCoreEditorUI.UI
         private void LoadFile(string path)
         {
             LoadedFilePath = path;
-            this.Text = "Core Viewer - " + LoadedFilePath;
+            this.Text = "Core - " + Path.GetFileName(LoadedFilePath);
+
+            var fullPath = Path.GetFullPath(LoadedFilePath);
+            var nameRoots = Names.RootNames.Select(x => fullPath.IndexOf(x)).Where(x => x >= 0).ToList();
+            if (!nameRoots.Any())
+                txtFile.Text = LoadedFilePath;
+            else
+            {
+                txtFile.Text = Path.ChangeExtension(fullPath, null).Substring(nameRoots.Min()).Replace("\\", "/");
+            }
 
             CoreObjectList = CoreBinary.FromFile(path, true).ToList();
 
@@ -77,8 +87,8 @@ namespace HZDCoreEditorUI.UI
             tvMain.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
             TreeObjectNode.SetupTree(tvMain, CoreObjectList);
 
-            splitContainer.Panel1.Controls.Clear();
-            splitContainer.Panel1.Controls.Add(tvMain);
+            pnlMain.Controls.Clear();
+            pnlMain.Controls.Add(tvMain);
         }
 
         private void TreeListView_ItemSelected(object sender, EventArgs e)
@@ -89,6 +99,7 @@ namespace HZDCoreEditorUI.UI
             {
                 tvData.Clear();
                 TreeDataNode.SetupTree(tvData, underlying);
+                txtType.Text = underlying.GetType().GetFriendlyName();
             }
         }
 
@@ -102,8 +113,8 @@ namespace HZDCoreEditorUI.UI
             tvData.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
             TreeDataNode.SetupTree(tvData, CoreObjectList[0]);
 
-            splitContainer.Panel2.Controls.Clear();
-            splitContainer.Panel2.Controls.Add(tvData);
+            pnlData.Controls.Clear();
+            pnlData.Controls.Add(tvData);
         }
 
         private void btnOpen_Click(object sender, EventArgs e)
@@ -298,9 +309,8 @@ namespace HZDCoreEditorUI.UI
             Process.Start("HZDCoreSearch.exe", Process.GetCurrentProcess().ProcessName);
         }
 
-        private void txtSearch_MouseClick(object sender, MouseEventArgs e)
-        {
-            txtSearch.SelectAll();
-        }
+        private void txtSearch_MouseClick(object sender, MouseEventArgs e) => ((TextBox)sender).SelectAll();
+        private void txtFile_MouseClick(object sender, MouseEventArgs e) => ((TextBox)sender).SelectAll();
+        private void txtType_MouseClick(object sender, MouseEventArgs e) => ((TextBox)sender).SelectAll();
     }
 }

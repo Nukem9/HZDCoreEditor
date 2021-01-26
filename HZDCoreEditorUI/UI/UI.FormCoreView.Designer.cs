@@ -35,6 +35,10 @@ namespace HZDCoreEditorUI.UI
         private void InitializeComponent()
         {
             this.splitContainer = new System.Windows.Forms.SplitContainer();
+            this.txtFile = new System.Windows.Forms.TextBox();
+            this.pnlMain = new System.Windows.Forms.Panel();
+            this.pnlData = new System.Windows.Forms.Panel();
+            this.txtType = new System.Windows.Forms.TextBox();
             this.btnOpen = new System.Windows.Forms.Button();
             this.btnSearch = new System.Windows.Forms.Button();
             this.txtSearch = new System.Windows.Forms.TextBox();
@@ -43,6 +47,8 @@ namespace HZDCoreEditorUI.UI
             this.btnExpand = new System.Windows.Forms.Button();
             this.btnSearchAll = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
+            this.splitContainer.Panel1.SuspendLayout();
+            this.splitContainer.Panel2.SuspendLayout();
             this.splitContainer.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -51,12 +57,64 @@ namespace HZDCoreEditorUI.UI
             this.splitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.splitContainer.Location = new System.Drawing.Point(0, 41);
+            this.splitContainer.Location = new System.Drawing.Point(0, 34);
             this.splitContainer.Name = "splitContainer";
-            this.splitContainer.Size = new System.Drawing.Size(1570, 835);
+            // 
+            // splitContainer.Panel1
+            // 
+            this.splitContainer.Panel1.Controls.Add(this.txtFile);
+            this.splitContainer.Panel1.Controls.Add(this.pnlMain);
+            // 
+            // splitContainer.Panel2
+            // 
+            this.splitContainer.Panel2.Controls.Add(this.pnlData);
+            this.splitContainer.Panel2.Controls.Add(this.txtType);
+            this.splitContainer.Size = new System.Drawing.Size(1570, 842);
             this.splitContainer.SplitterDistance = 523;
             this.splitContainer.TabIndex = 0;
             this.splitContainer.Text = "splitContainer1";
+            // 
+            // txtFile
+            // 
+            this.txtFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtFile.Location = new System.Drawing.Point(0, 0);
+            this.txtFile.Name = "txtFile";
+            this.txtFile.ReadOnly = true;
+            this.txtFile.Size = new System.Drawing.Size(523, 23);
+            this.txtFile.TabIndex = 2;
+            this.txtFile.MouseClick += new System.Windows.Forms.MouseEventHandler(this.txtFile_MouseClick);
+            // 
+            // pnlMain
+            // 
+            this.pnlMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlMain.Location = new System.Drawing.Point(0, 29);
+            this.pnlMain.Name = "pnlMain";
+            this.pnlMain.Size = new System.Drawing.Size(523, 813);
+            this.pnlMain.TabIndex = 1;
+            // 
+            // pnlData
+            // 
+            this.pnlData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlData.Location = new System.Drawing.Point(0, 29);
+            this.pnlData.Name = "pnlData";
+            this.pnlData.Size = new System.Drawing.Size(1043, 813);
+            this.pnlData.TabIndex = 0;
+            // 
+            // txtType
+            // 
+            this.txtType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtType.Location = new System.Drawing.Point(0, 0);
+            this.txtType.Name = "txtType";
+            this.txtType.ReadOnly = true;
+            this.txtType.Size = new System.Drawing.Size(1043, 23);
+            this.txtType.TabIndex = 1;
+            this.txtType.MouseClick += new System.Windows.Forms.MouseEventHandler(this.txtType_MouseClick);
             // 
             // btnOpen
             // 
@@ -151,6 +209,10 @@ namespace HZDCoreEditorUI.UI
             this.Text = "Core Viewer";
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.FormCoreView_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.FormCoreView_DragEnter);
+            this.splitContainer.Panel1.ResumeLayout(false);
+            this.splitContainer.Panel1.PerformLayout();
+            this.splitContainer.Panel2.ResumeLayout(false);
+            this.splitContainer.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
             this.splitContainer.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -168,5 +230,9 @@ namespace HZDCoreEditorUI.UI
         private System.Windows.Forms.CheckBox cbExportTypes;
         private System.Windows.Forms.Button btnExpand;
         private System.Windows.Forms.Button btnSearchAll;
+        private System.Windows.Forms.Panel pnlData;
+        private System.Windows.Forms.TextBox txtType;
+        private System.Windows.Forms.Panel pnlMain;
+        private System.Windows.Forms.TextBox txtFile;
     }
 }
