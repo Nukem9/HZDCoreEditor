@@ -18,12 +18,17 @@ namespace HZDCoreEditorUI.UI
         private List<object> CoreObjectList;
         private string LoadedFilePath;
 
+        private List<object> UndoLog = new List<object>();
+        private int UndoPosition = 0;
+        private bool IgnoreUndo = false;
+
         private BrightIdeasSoftware.TreeListView tvMain;
         private BrightIdeasSoftware.TreeListView tvData;
         
         public FormCoreView(string path, string search)
         {
             InitializeComponent();
+            BindMouseEvents(this);
 
             var fileLoaded = false;
             if (!String.IsNullOrEmpty(path))
@@ -58,6 +63,8 @@ namespace HZDCoreEditorUI.UI
 
         private void LoadFile(string path)
         {
+            UndoLog.Clear();
+            UndoPosition = 0;
             LoadedFilePath = path;
             this.Text = "Core - " + Path.GetFileName(LoadedFilePath);
 
@@ -78,11 +85,15 @@ namespace HZDCoreEditorUI.UI
 
         private void BuildObjectView()
         {
+            if (tvMain != null)
+                tvMain.MouseDown -= FormCoreView_MouseDown;
+
             tvMain = new BrightIdeasSoftware.TreeListView();
             tvMain.FullRowSelect = true;
             tvMain.Dock = DockStyle.Fill;
 
             tvMain.ItemSelectionChanged += TreeListView_ItemSelected;
+            tvMain.MouseDown += FormCoreView_MouseDown;
 
             tvMain.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
             TreeObjectNode.SetupTree(tvMain, CoreObjectList);
@@ -97,6 +108,15 @@ namespace HZDCoreEditorUI.UI
 
             if (underlying != null)
             {
+                if (!IgnoreUndo)
+                {
+                    if (UndoLog.Count - (UndoPosition + 1) > 0)     
+                        UndoLog.RemoveRange(UndoPosition + 1, UndoLog.Count - (UndoPosition + 1));
+                    if (UndoLog.Count > 0)
+                        UndoPosition++;
+                    UndoLog.Add(tvMain.SelectedObject);
+                }
+
                 tvData.Clear();
                 TreeDataNode.SetupTree(tvData, underlying);
                 txtType.Text = underlying.GetType().GetFriendlyName();
@@ -105,10 +125,14 @@ namespace HZDCoreEditorUI.UI
 
         private void BuildDataView()
         {
+            if (tvData != null)
+                tvData.MouseDown -= FormCoreView_MouseDown;
             tvData = new BrightIdeasSoftware.TreeListView();
             tvData.FullRowSelect = true;
             tvData.Dock = DockStyle.Fill;
             tvData.VirtualMode = true;
+
+            tvData.MouseDown += FormCoreView_MouseDown;
 
             tvData.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
             TreeDataNode.SetupTree(tvData, CoreObjectList[0]);
@@ -129,20 +153,28 @@ namespace HZDCoreEditorUI.UI
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            SearchIndex = 0;
-            if (SearchLast != txtSearch.Text)
-                SearchNext = -1;
-            SearchLast = txtSearch.Text;
-
-            foreach (var node in tvMain.Objects.Cast<TreeObjectNode>())
+            try
             {
-                tvMain.Expand(node);
-                if (SearchNode(node))
-                    return;
-            }
+                IgnoreUndo = true;
+                SearchIndex = 0;
+                if (SearchLast != txtSearch.Text)
+                    SearchNext = -1;
+                SearchLast = txtSearch.Text;
 
-            SearchNext = -1;
-            MessageBox.Show("No more entries found");
+                foreach (var node in tvMain.Objects.Cast<TreeObjectNode>())
+                {
+                    tvMain.Expand(node);
+                    if (SearchNode(node))
+                        return;
+                }
+
+                SearchNext = -1;
+                MessageBox.Show("No more entries found");
+            }
+            finally
+            {
+                IgnoreUndo = false;
+            }
         }
 
         private bool SearchNode(TreeObjectNode node)
@@ -312,5 +344,84 @@ namespace HZDCoreEditorUI.UI
         private void txtSearch_MouseClick(object sender, MouseEventArgs e) => ((TextBox)sender).SelectAll();
         private void txtFile_MouseClick(object sender, MouseEventArgs e) => ((TextBox)sender).SelectAll();
         private void txtType_MouseClick(object sender, MouseEventArgs e) => ((TextBox)sender).SelectAll();
+
+        private void cmsData_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            cmsData.Items[0].Enabled = GetSelectedRef() != null;
+        }
+
+        private void tsmFollow_Click(object sender, EventArgs e)
+        {
+            var selected = GetSelectedRef();
+            if (selected.Type == BaseRef.Types.LocalCoreUUID || selected.Type == BaseRef.Types.UUIDRef)
+            {
+                bool search(IEnumerable<TreeObjectNode> nodes)
+                {
+                    foreach (var node in nodes)
+                    {
+                        tvMain.Expand(node);
+                        if (node.Children != null && search(node.Children))
+                            return true;
+
+                        var id = node.UUID;
+                        if (id != null && id == selected.GUID)
+                        {
+                            tvMain.SelectObject(node, true);
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+                search(tvMain.Objects.Cast<TreeObjectNode>());
+            }
+        }
+
+        private BaseRef GetSelectedRef()
+        {
+            if (tvData?.SelectedObject is TreeDataNode selected)
+            {
+                if (selected.Value is BaseRef cr)
+                    return cr;
+                if (selected.ParentObject is BaseRef pr)
+                    return pr;
+            }
+
+            return null;
+        }
+
+        private void FormCoreView_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.XButton1)
+            {
+                IgnoreUndo = true;
+                if (UndoPosition > 0)
+                {
+                    UndoPosition--;
+                    tvMain.SelectObject(UndoLog[UndoPosition], true);
+                }
+                IgnoreUndo = false;
+            }
+            else if (e.Button == MouseButtons.XButton2)
+            {
+                IgnoreUndo = true;
+                if (UndoPosition < UndoLog.Count - 1)
+                {
+                    UndoPosition++;
+                    tvMain.SelectObject(UndoLog[UndoPosition], true);
+                }
+                IgnoreUndo = false;
+            }
+        }
+
+        public void BindMouseEvents(Control control)
+        {
+            control.MouseDown += FormCoreView_MouseDown;
+
+            foreach (Control c in control.Controls)
+            {
+                BindMouseEvents(c);
+            }
+        }
     }
 }

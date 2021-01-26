@@ -34,10 +34,13 @@ namespace HZDCoreEditorUI.UI
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.txtFile = new System.Windows.Forms.TextBox();
             this.pnlMain = new System.Windows.Forms.Panel();
             this.pnlData = new System.Windows.Forms.Panel();
+            this.cmsData = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsmFollow = new System.Windows.Forms.ToolStripMenuItem();
             this.txtType = new System.Windows.Forms.TextBox();
             this.btnOpen = new System.Windows.Forms.Button();
             this.btnSearch = new System.Windows.Forms.Button();
@@ -50,6 +53,7 @@ namespace HZDCoreEditorUI.UI
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
             this.splitContainer.SuspendLayout();
+            this.cmsData.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer
@@ -100,10 +104,27 @@ namespace HZDCoreEditorUI.UI
             this.pnlData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlData.ContextMenuStrip = this.cmsData;
             this.pnlData.Location = new System.Drawing.Point(0, 29);
             this.pnlData.Name = "pnlData";
             this.pnlData.Size = new System.Drawing.Size(1043, 813);
             this.pnlData.TabIndex = 0;
+            // 
+            // cmsData
+            // 
+            this.cmsData.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmFollow});
+            this.cmsData.Name = "cmsData";
+            this.cmsData.ShowImageMargin = false;
+            this.cmsData.Size = new System.Drawing.Size(140, 26);
+            this.cmsData.Opening += new System.ComponentModel.CancelEventHandler(this.cmsData_Opening);
+            // 
+            // tsmFollow
+            // 
+            this.tsmFollow.Name = "tsmFollow";
+            this.tsmFollow.Size = new System.Drawing.Size(139, 22);
+            this.tsmFollow.Text = "Follow Reference";
+            this.tsmFollow.Click += new System.EventHandler(this.tsmFollow_Click);
             // 
             // txtType
             // 
@@ -209,12 +230,14 @@ namespace HZDCoreEditorUI.UI
             this.Text = "Core Viewer";
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.FormCoreView_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.FormCoreView_DragEnter);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FormCoreView_MouseDown);
             this.splitContainer.Panel1.ResumeLayout(false);
             this.splitContainer.Panel1.PerformLayout();
             this.splitContainer.Panel2.ResumeLayout(false);
             this.splitContainer.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
             this.splitContainer.ResumeLayout(false);
+            this.cmsData.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -234,5 +257,7 @@ namespace HZDCoreEditorUI.UI
         private System.Windows.Forms.TextBox txtType;
         private System.Windows.Forms.Panel pnlMain;
         private System.Windows.Forms.TextBox txtFile;
+        private System.Windows.Forms.ContextMenuStrip cmsData;
+        private System.Windows.Forms.ToolStripMenuItem tsmFollow;
     }
 }

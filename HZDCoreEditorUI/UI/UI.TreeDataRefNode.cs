@@ -12,16 +12,15 @@ namespace HZDCoreEditorUI.UI
 		public override bool HasChildren => Children.Count > 0;
 		public override List<TreeDataNode> Children { get; }
         public override bool IsEditable => false;
-
-        private readonly object ParentObject;
+		
 		private readonly FieldOrProperty ParentFieldEntry;
 
 		public TreeDataRefNode(object parent, FieldOrProperty member, NodeAttributes attributes)
+		    : base(parent)
 		{
 			Name = member.GetName();
 			TypeName = member.GetMemberType().GetFriendlyName();
-
-			ParentObject = parent;
+			
 			ParentFieldEntry = member;
 
             if (!attributes.HasFlag(NodeAttributes.HideChildren))

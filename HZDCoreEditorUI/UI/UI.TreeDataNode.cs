@@ -25,10 +25,13 @@ namespace HZDCoreEditorUI.UI
         public virtual bool HasChildren { get { return false; } }
         public virtual List<TreeDataNode> Children { get { return null; } }
 
+        public object ParentObject { get; protected set; }
+
         public virtual bool IsEditable { get { return true; } }
 
-        protected TreeDataNode()
+        protected TreeDataNode(object parent)
         {
+            ParentObject = parent;
         }
 
         public static TreeDataNode CreateNode(object parent, FieldOrProperty member, NodeAttributes attributes = NodeAttributes.None)

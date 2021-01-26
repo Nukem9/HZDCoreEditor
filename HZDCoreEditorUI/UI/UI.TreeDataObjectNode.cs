@@ -19,6 +19,7 @@ namespace HZDCoreEditorUI.UI
         private readonly object ObjectInstance;
 
         public TreeDataObjectNode(object instance, string name, NodeAttributes attributes)
+            : base(null)
         {
             if (instance == null)
                 throw new ArgumentNullException("Not supported. Use TreeDataClassMemberHolder instead if objects are potentially null.", nameof(instance));

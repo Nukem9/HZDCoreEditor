@@ -17,15 +17,14 @@ namespace HZDCoreEditorUI.UI
         public override List<TreeDataNode> Children { get; }
         public override bool IsEditable => false;
 
-        private readonly object ParentObject;
         private readonly FieldOrProperty ParentFieldEntry;
 
         public TreeDataArrayNode(object parent, FieldOrProperty member, NodeAttributes attributes)
+            : base(parent)
         {
             Name = member.GetName();
             TypeName = member.GetMemberType().GetFriendlyName();
 
-            ParentObject = parent;
             ParentFieldEntry = member;
 
             if (!attributes.HasFlag(NodeAttributes.HideChildren))
@@ -62,24 +61,23 @@ namespace HZDCoreEditorUI.UI
         public override bool HasChildren => ObjectWrapperNode.HasChildren;
         public override List<TreeDataNode> Children => ObjectWrapperNode.Children;
         public override bool IsEditable => ObjectWrapperNode.IsEditable;
-
-        private readonly Array ParentObject;
+        
         private readonly int ParentArrayIndex;
         private TreeDataNode ObjectWrapperNode;
 
         // Property is needed in order to get a FieldOrProperty handle
         private object ObjectWrapper
         {
-            get { return ParentObject.GetValue(ParentArrayIndex); }
-            set { ParentObject.SetValue(value, ParentArrayIndex); }
+            get { return ((Array)ParentObject).GetValue(ParentArrayIndex); }
+            set { ((Array)ParentObject).SetValue(value, ParentArrayIndex); }
         }
 
         public TreeDataArrayIndexNode(Array parent, int index)
+            : base(parent)
         {
             Name = $"[{index}]";
             TypeName = parent.GetType().GetElementType().GetFriendlyName();
-
-            ParentObject = parent;
+            
             ParentArrayIndex = index;
 
             AddObjectChildren();
