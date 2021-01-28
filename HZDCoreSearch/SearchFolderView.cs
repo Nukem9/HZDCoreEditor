@@ -16,6 +16,7 @@ namespace HZDCoreSearch
         private readonly string _sourceProcess;
         private bool _loading = true;
         private string[] CurrentSearches;
+        private ParallelTasks<string> SearchTasks;
 
         public SearchFolderView(string sourceProcess)
         {
@@ -45,14 +46,24 @@ namespace HZDCoreSearch
             await SettingsManager.Save();
         }
 
-        private async void btnSearch_Click(object sender, EventArgs e)
+        private void btnSearch_Click(object sender, EventArgs e)
         {
-            btnSearch.Enabled = false;
+            if (btnSearch.Text == "Stop Search")
+            {
+                if (SearchTasks != null)
+                {
+                    SearchTasks.Stop();
+                    SearchTasks.WaitForComplete();
+                }
+                return;
+            }
+
+            btnSearch.Text = "Stop Search";
 
             CurrentSearches = tbSearch.Text.Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
             lbMatches.Items.Clear();
 
-            await Task.Run(() =>
+            Task.Run(() =>
             {
                 try
                 {
@@ -65,16 +76,18 @@ namespace HZDCoreSearch
                     if (!(ex?.InnerException is OperationCanceledException))
                         MessageBox.Show("Search Error: " + ex.Message);
                 }
+
+                SearchTasks = null;
+                BeginInvoke(new Action(() => btnSearch.Text = "Search"));
             });
 
-            btnSearch.Enabled = true;
         }
         
         private void SearchDirs(string dir, List<(string Key, byte[] Data)> patterns)
         {
             var bm = patterns.Select(x => new BoyerMoore(x.Data)).ToList();
-
-            var ptq = new ParallelTasks<string>(Environment.ProcessorCount, f =>
+            
+            SearchTasks = new ParallelTasks<string>(Environment.ProcessorCount, f =>
             {
                 var data = File.ReadAllBytes(f);
                 for (int i = 0; i < patterns.Count; i++)
@@ -90,12 +103,12 @@ namespace HZDCoreSearch
                     }
                 }
             });
-            ptq.Start();
 
-            RecurseDirs(dir, f => ptq.AddItem(f));
+            SearchTasks.Start();
 
-            ptq.CompleteAdding();
-            ptq.WaitForComplete();
+            RecurseDirs(dir, f => SearchTasks.AddItem(f));
+
+            SearchTasks.WaitForComplete();
         }
 
         private static byte[] ToBytes(string data)

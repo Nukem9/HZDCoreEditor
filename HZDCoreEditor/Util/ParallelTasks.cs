@@ -12,9 +12,10 @@ namespace HZDCoreEditor.Util
     {
         private CancellationTokenSource _tokens;
         private Exception _error;
+        private bool _stopping;
 
         private Action<T> Action { get; }
-        private BlockingCollection<T> Queue { get; }
+        private BlockingCollection<T> Queue { get; set; }
         private Task[] Workers { get; }
         
 
@@ -32,19 +33,26 @@ namespace HZDCoreEditor.Util
         {
             _tokens = new CancellationTokenSource();
             _error = null;
+            _stopping = false;
 
             foreach (var worker in Workers)
                 worker.Start();
         }
         
-        public void AddItems(IEnumerable<T> items)
+        public bool AddItems(IEnumerable<T> items)
         {
             foreach (var item in items)
-                Queue.Add(item);
+            {
+                if (!AddItem(item))
+                    return false;
+            }
+            return true;
         }
-        public void AddItem(T item)
+        public bool AddItem(T item)
         {
+            if (_stopping) return false;
             Queue.Add(item);
+            return true;
         }
 
         private void Worker()
@@ -63,6 +71,7 @@ namespace HZDCoreEditor.Util
 
         public void Stop()
         {
+            _stopping = true;
             _tokens.Cancel();
         }
 
@@ -78,7 +87,7 @@ namespace HZDCoreEditor.Util
 
             Task.WaitAll(Workers);
 
-            if (_error != null)
+            if (_error != null && !(_error is OperationCanceledException))
                 throw new Exception("Parallel tasks failed: " + _error.Message, _error);
         }
     }
