@@ -38,6 +38,7 @@ namespace HZDCoreEditorUI.UI
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.txtFile = new System.Windows.Forms.TextBox();
             this.pnlMain = new System.Windows.Forms.Panel();
+            this.txtNotes = new System.Windows.Forms.TextBox();
             this.pnlData = new System.Windows.Forms.Panel();
             this.cmsData = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmFollow = new System.Windows.Forms.ToolStripMenuItem();
@@ -71,10 +72,11 @@ namespace HZDCoreEditorUI.UI
             // 
             // splitContainer.Panel2
             // 
+            this.splitContainer.Panel2.Controls.Add(this.txtNotes);
             this.splitContainer.Panel2.Controls.Add(this.pnlData);
             this.splitContainer.Panel2.Controls.Add(this.txtType);
-            this.splitContainer.Size = new System.Drawing.Size(1570, 842);
-            this.splitContainer.SplitterDistance = 523;
+            this.splitContainer.Size = new System.Drawing.Size(1784, 842);
+            this.splitContainer.SplitterDistance = 750;
             this.splitContainer.TabIndex = 0;
             this.splitContainer.Text = "splitContainer1";
             // 
@@ -85,7 +87,7 @@ namespace HZDCoreEditorUI.UI
             this.txtFile.Location = new System.Drawing.Point(0, 0);
             this.txtFile.Name = "txtFile";
             this.txtFile.ReadOnly = true;
-            this.txtFile.Size = new System.Drawing.Size(523, 23);
+            this.txtFile.Size = new System.Drawing.Size(750, 23);
             this.txtFile.TabIndex = 2;
             this.txtFile.MouseClick += new System.Windows.Forms.MouseEventHandler(this.txtFile_MouseClick);
             // 
@@ -96,8 +98,18 @@ namespace HZDCoreEditorUI.UI
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlMain.Location = new System.Drawing.Point(0, 29);
             this.pnlMain.Name = "pnlMain";
-            this.pnlMain.Size = new System.Drawing.Size(523, 813);
+            this.pnlMain.Size = new System.Drawing.Size(750, 813);
             this.pnlMain.TabIndex = 1;
+            // 
+            // txtNotes
+            // 
+            this.txtNotes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtNotes.Location = new System.Drawing.Point(346, 0);
+            this.txtNotes.Name = "txtNotes";
+            this.txtNotes.Size = new System.Drawing.Size(684, 23);
+            this.txtNotes.TabIndex = 2;
+            this.txtNotes.TextChanged += new System.EventHandler(this.txtNotes_TextChanged);
             // 
             // pnlData
             // 
@@ -107,7 +119,7 @@ namespace HZDCoreEditorUI.UI
             this.pnlData.ContextMenuStrip = this.cmsData;
             this.pnlData.Location = new System.Drawing.Point(0, 29);
             this.pnlData.Name = "pnlData";
-            this.pnlData.Size = new System.Drawing.Size(1043, 813);
+            this.pnlData.Size = new System.Drawing.Size(1030, 813);
             this.pnlData.TabIndex = 0;
             // 
             // cmsData
@@ -133,7 +145,7 @@ namespace HZDCoreEditorUI.UI
             this.txtType.Location = new System.Drawing.Point(0, 0);
             this.txtType.Name = "txtType";
             this.txtType.ReadOnly = true;
-            this.txtType.Size = new System.Drawing.Size(1043, 23);
+            this.txtType.Size = new System.Drawing.Size(340, 23);
             this.txtType.TabIndex = 1;
             this.txtType.MouseClick += new System.Windows.Forms.MouseEventHandler(this.txtType_MouseClick);
             // 
@@ -150,7 +162,7 @@ namespace HZDCoreEditorUI.UI
             // btnSearch
             // 
             this.btnSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSearch.Location = new System.Drawing.Point(1241, 5);
+            this.btnSearch.Location = new System.Drawing.Point(1455, 5);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(100, 23);
             this.btnSearch.TabIndex = 2;
@@ -161,7 +173,7 @@ namespace HZDCoreEditorUI.UI
             // txtSearch
             // 
             this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSearch.Location = new System.Drawing.Point(826, 5);
+            this.txtSearch.Location = new System.Drawing.Point(1040, 5);
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(409, 23);
             this.txtSearch.TabIndex = 3;
@@ -193,7 +205,7 @@ namespace HZDCoreEditorUI.UI
             // btnExpand
             // 
             this.btnExpand.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnExpand.Location = new System.Drawing.Point(1453, 5);
+            this.btnExpand.Location = new System.Drawing.Point(1667, 5);
             this.btnExpand.Name = "btnExpand";
             this.btnExpand.Size = new System.Drawing.Size(100, 23);
             this.btnExpand.TabIndex = 6;
@@ -204,7 +216,7 @@ namespace HZDCoreEditorUI.UI
             // btnSearchAll
             // 
             this.btnSearchAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSearchAll.Location = new System.Drawing.Point(1347, 5);
+            this.btnSearchAll.Location = new System.Drawing.Point(1561, 5);
             this.btnSearchAll.Name = "btnSearchAll";
             this.btnSearchAll.Size = new System.Drawing.Size(100, 23);
             this.btnSearchAll.TabIndex = 7;
@@ -217,7 +229,7 @@ namespace HZDCoreEditorUI.UI
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1570, 877);
+            this.ClientSize = new System.Drawing.Size(1784, 877);
             this.Controls.Add(this.btnSearchAll);
             this.Controls.Add(this.btnExpand);
             this.Controls.Add(this.cbExportTypes);
@@ -259,5 +271,6 @@ namespace HZDCoreEditorUI.UI
         private System.Windows.Forms.TextBox txtFile;
         private System.Windows.Forms.ContextMenuStrip cmsData;
         private System.Windows.Forms.ToolStripMenuItem tsmFollow;
+        private System.Windows.Forms.TextBox txtNotes;
     }
 }

@@ -68,7 +68,7 @@ namespace HZDCoreEditorUI.UI
 
     public class TreeDataListIndexNode : TreeDataNode
     {
-        public override object Value { get { return ObjectWrapper?.ToString(); } }
+        public override object Value => ObjectWrapper;
 
         public override bool HasChildren => ObjectWrapperNode.HasChildren;
         public override List<TreeDataNode> Children => ObjectWrapperNode.Children;
@@ -88,7 +88,7 @@ namespace HZDCoreEditorUI.UI
             : base(parent)
         {
             Name = $"[{index}]";
-            TypeName = elementType.Name;
+            TypeName = elementType.GetFriendlyName();
             
             ParentArrayIndex = index;
 

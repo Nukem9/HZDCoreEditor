@@ -7,14 +7,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Decima;
+using Decima.HZD;
 using HZDCoreEditor.Util;
 using HZDCoreEditorUI.Util;
 using Newtonsoft.Json;
+using String = System.String;
 
 namespace HZDCoreEditorUI.UI
 {
     public partial class FormCoreView : Form
     {
+        private const string NotesFile = "notes.json";
+
         private List<object> CoreObjectList;
         private string LoadedFilePath;
 
@@ -24,9 +28,18 @@ namespace HZDCoreEditorUI.UI
 
         private BrightIdeasSoftware.TreeListView tvMain;
         private BrightIdeasSoftware.TreeListView tvData;
-        
+        private Timer _notesTimer;
+        private Dictionary<(string Path, string Id), (string Note, DateTime Date)> _notes; 
+
         public FormCoreView(string path, string search)
         {
+            _notesTimer = new Timer()
+            {
+                Interval = 500
+            };
+            _notesTimer.Tick += NotesTimer_Tick;
+            _notes = LoadNotes() ?? new Dictionary<(string Path, string Id), (string Note, DateTime Date)>();
+
             InitializeComponent();
             BindMouseEvents(this);
 
@@ -109,17 +122,18 @@ namespace HZDCoreEditorUI.UI
             if (underlying != null)
             {
                 if (!IgnoreUndo)
-                {
-                    if (UndoLog.Count - (UndoPosition + 1) > 0)     
-                        UndoLog.RemoveRange(UndoPosition + 1, UndoLog.Count - (UndoPosition + 1));
-                    if (UndoLog.Count > 0)
-                        UndoPosition++;
-                    UndoLog.Add(tvMain.SelectedObject);
-                }
+                    AddUndo();
 
                 tvData.Clear();
                 TreeDataNode.SetupTree(tvData, underlying);
                 txtType.Text = underlying.GetType().GetFriendlyName();
+
+                _saveNotes = false;
+                if (underlying is RTTIRefObject obj && _notes.TryGetValue((txtFile.Text, obj.ObjectUUID?.ToString()), out var note))
+                    txtNotes.Text = note.Note;
+                else
+                    txtNotes.Text = "";
+                _saveNotes = true;
             }
         }
 
@@ -165,7 +179,11 @@ namespace HZDCoreEditorUI.UI
                 {
                     tvMain.Expand(node);
                     if (SearchNode(node))
+                    {
+                        AddUndo();
+                        tvMain.SelectedItem?.EnsureVisible();
                         return;
+                    }
                 }
 
                 SearchNext = -1;
@@ -175,6 +193,15 @@ namespace HZDCoreEditorUI.UI
             {
                 IgnoreUndo = false;
             }
+        }
+
+        private void AddUndo()
+        {
+            if (UndoLog.Count - (UndoPosition + 1) > 0)
+                UndoLog.RemoveRange(UndoPosition + 1, UndoLog.Count - (UndoPosition + 1));
+            if (UndoLog.Count > 0)
+                UndoPosition++;
+            UndoLog.Add(tvMain.SelectedObject);
         }
 
         private bool SearchNode(TreeObjectNode node)
@@ -422,6 +449,70 @@ namespace HZDCoreEditorUI.UI
             {
                 BindMouseEvents(c);
             }
+        }
+
+        private void txtNotes_TextChanged(object sender, EventArgs e)
+        {
+            if (_saveNotes)
+            {
+                _notesTimer.Stop();
+                _notesTimer.Start();
+            }
+        }
+
+        private void NotesTimer_Tick(object sender, EventArgs e)
+        {
+            _notesTimer.Stop();
+
+            var obj = (tvMain.SelectedObject as TreeObjectNode)?.UnderlyingObject as RTTIRefObject;
+            if (obj == null)
+                return;
+
+            _notes[(txtFile.Text, obj.ObjectUUID?.ToString())] = (txtNotes.Text, DateTime.Now);
+
+            var updated = LoadNotes();
+            if (updated != null)
+            {
+                foreach (var newNote in updated)
+                {
+                    if (_notes.TryGetValue(newNote.Key, out var note))
+                    {
+                        if (newNote.Value.Item2 > note.Date)
+                            _notes[newNote.Key] = newNote.Value;
+                    }
+                    else
+                    {
+                        _notes.Add(newNote.Key, newNote.Value);
+                    }
+                }
+            }
+            
+            SaveNotes();
+        }
+
+        private bool _saveNotes = true;
+        private readonly object _noteLock = new object();
+        private void SaveNotes()
+        {
+            lock (_noteLock)
+            {
+                var json = JsonConvert.SerializeObject(_notes.Select(x=>(x.Key, x.Value)), Formatting.Indented);
+                File.WriteAllText(NotesFile, json);
+            }
+        }
+        private Dictionary<(string, string), (string, DateTime)> LoadNotes()
+        {
+            lock (_noteLock)
+            {
+                if (File.Exists(NotesFile))
+                {
+                    var json = File.ReadAllText(NotesFile);
+                    var noteList = JsonConvert.DeserializeObject<List<((string, string), (string, DateTime))>>(json);
+                    return noteList?.ToDictionary(x => x.Item1, x => x.Item2);
+                }
+            }
+
+            return null;
         }
     }
 }

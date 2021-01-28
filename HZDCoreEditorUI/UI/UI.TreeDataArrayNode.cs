@@ -56,7 +56,7 @@ namespace HZDCoreEditorUI.UI
 
     public class TreeDataArrayIndexNode : TreeDataNode
     {
-        public override object Value { get { return ObjectWrapper?.ToString(); } }
+        public override object Value => ObjectWrapper;
 
         public override bool HasChildren => ObjectWrapperNode.HasChildren;
         public override List<TreeDataNode> Children => ObjectWrapperNode.Children;
