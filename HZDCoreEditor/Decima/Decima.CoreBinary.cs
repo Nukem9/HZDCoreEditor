@@ -138,9 +138,17 @@ namespace Decima
             });
         }
 
-        public void RemoveObject(object obj)
+        public bool RemoveObject(object obj)
         {
-            Entries.Remove(Entries.Single(x => x.ContainedObject == obj));
+            var idx = Entries.FindIndex(x => x.ContainedObject == obj);
+            if (idx < 0)
+                return false;
+            Entries.RemoveAt(idx);
+            return true;
+        }
+        public int RemoveAll(Predicate<object> filter)
+        {
+            return Entries.RemoveAll(x => filter(x.ContainedObject));
         }
 
         public List<BaseRef> GetAllReferences()

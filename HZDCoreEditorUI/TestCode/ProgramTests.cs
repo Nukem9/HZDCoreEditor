@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace HZDCoreEditorUI
 {
-    class ProgramTests
+    public class ProgramTests
     {
         void TestCode()
         {
@@ -359,9 +359,9 @@ namespace HZDCoreEditorUI
             }
         }
 
-        static void ExtractHZDLocalization()
+        public static void ExtractHZDLocalization()
         {
-            var files = Directory.GetFiles(@"E:\hzd\localized\", "*.core", SearchOption.AllDirectories);
+            var files = Directory.GetFiles(@"E:\hzd9\localized\", "*.core", SearchOption.AllDirectories);
             var sb = new StringBuilder();
 
             foreach (string file in files)
@@ -382,12 +382,12 @@ namespace HZDCoreEditorUI
                             first = false;
                         }
 
-                        sb.AppendLine(asResource.ObjectUUID + asResource.GetStringForLanguage(Decima.HZD.ELanguage.English));
+                        sb.AppendLine(asResource.ObjectUUID + " " + asResource.GetStringForLanguage(Decima.HZD.ELanguage.English));
                     }
                 }
             }
 
-            File.WriteAllText(@"E:\hzd\text_data_dump.txt", sb.ToString());
+            File.WriteAllText(@"E:\hzd9\text_data_dump.txt", sb.ToString());
         }
 
         static void ExtractHZDAudio()
