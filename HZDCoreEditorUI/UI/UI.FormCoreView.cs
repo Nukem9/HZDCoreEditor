@@ -17,10 +17,12 @@ namespace HZDCoreEditorUI.UI
 {
     public partial class FormCoreView : Form
     {
+        private readonly CmdOptions _cmdOptions;
         private const string NotesFile = "notes.json";
 
         private List<object> CoreObjectList;
         private string LoadedFilePath;
+        private string RootDir;
 
         private List<object> UndoLog = new List<object>();
         private int UndoPosition = 0;
@@ -31,8 +33,9 @@ namespace HZDCoreEditorUI.UI
         private Timer _notesTimer;
         private Dictionary<(string Path, string Id), (string Note, DateTime Date)> _notes; 
 
-        public FormCoreView(string path, string search)
+        public FormCoreView(CmdOptions cmd)
         {
+            _cmdOptions = cmd;
             _notesTimer = new Timer()
             {
                 Interval = 500
@@ -44,16 +47,25 @@ namespace HZDCoreEditorUI.UI
             BindMouseEvents(this);
 
             var fileLoaded = false;
-            if (!String.IsNullOrEmpty(path))
+            if (!String.IsNullOrEmpty(cmd.File))
             {
-                LoadFile(path);
+                LoadFile(cmd.File);
                 fileLoaded = true;
             }
-            if (!String.IsNullOrEmpty(search))
+            if (!String.IsNullOrEmpty(cmd.Search))
             {
-                txtSearch.Text = search;
+                txtSearch.Text = cmd.Search;
                 if (fileLoaded)
                     btnSearch_Click(null, null);
+            }
+        }
+
+        private void FormCoreView_Load(object sender, EventArgs e)
+        {
+            if (!String.IsNullOrEmpty(_cmdOptions.ObjectId))
+            {
+                if (LoadedFilePath != null)
+                    SelectNodeById(_cmdOptions.ObjectId);
             }
         }
 
@@ -84,10 +96,14 @@ namespace HZDCoreEditorUI.UI
             var fullPath = Path.GetFullPath(LoadedFilePath);
             var nameRoots = Names.RootNames.Select(x => fullPath.IndexOf(x)).Where(x => x >= 0).ToList();
             if (!nameRoots.Any())
+            {
                 txtFile.Text = LoadedFilePath;
+                RootDir = null;
+            }
             else
             {
                 txtFile.Text = Path.ChangeExtension(fullPath, null).Substring(nameRoots.Min()).Replace("\\", "/");
+                RootDir = fullPath.Substring(0, nameRoots.Min());
             }
 
             CoreObjectList = CoreBinary.FromFile(path, true).ToList();
@@ -382,26 +398,43 @@ namespace HZDCoreEditorUI.UI
             var selected = GetSelectedRef();
             if (selected.Type == BaseRef.Types.LocalCoreUUID || selected.Type == BaseRef.Types.UUIDRef)
             {
-                bool search(IEnumerable<TreeObjectNode> nodes)
+                SelectNodeById(selected.GUID);
+            }
+            if (selected.Type == BaseRef.Types.ExternalCoreUUID || selected.Type == BaseRef.Types.StreamingRef)
+            {
+                if (RootDir == null)
                 {
-                    foreach (var node in nodes)
-                    {
-                        tvMain.Expand(node);
-                        if (node.Children != null && search(node.Children))
-                            return true;
-
-                        var id = node.UUID;
-                        if (id != null && id == selected.GUID)
-                        {
-                            tvMain.SelectObject(node, true);
-                            return true;
-                        }
-                    }
-                    return false;
+                    MessageBox.Show("Unable to find root directory.", "External Follow Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
                 }
 
-                search(tvMain.Objects.Cast<TreeObjectNode>());
+                var path = Path.Combine(RootDir, selected.ExternalFile + ".core");
+                Process.Start(Process.GetCurrentProcess().ProcessName, $"\"{path}\" -o \"{selected.GUID}\"");
             }
+        }
+
+        private void SelectNodeById(BaseGGUUID objectId)
+        {
+            bool search(IEnumerable<TreeObjectNode> nodes)
+            {
+                foreach (var node in nodes)
+                {
+                    tvMain.Expand(node);
+                    if (node.Children != null && search(node.Children))
+                        return true;
+
+                    var id = node.UUID;
+                    if (id != null && id == objectId)
+                    {
+                        tvMain.SelectObject(node, true);
+                        tvMain.SelectedItem?.EnsureVisible();
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            search(tvMain.Objects.Cast<TreeObjectNode>());
         }
 
         private BaseRef GetSelectedRef()

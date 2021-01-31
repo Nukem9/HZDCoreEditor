@@ -240,6 +240,7 @@ namespace HZDCoreEditorUI.UI
             this.Controls.Add(this.splitContainer);
             this.Name = "FormCoreView";
             this.Text = "Core Viewer";
+            this.Load += new System.EventHandler(this.FormCoreView_Load);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.FormCoreView_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.FormCoreView_DragEnter);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FormCoreView_MouseDown);

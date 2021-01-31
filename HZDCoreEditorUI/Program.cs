@@ -16,6 +16,9 @@ namespace HZDCoreEditorUI
         [Option('s', "search", HelpText = "Search for text")]
         public string Search { get; set; }
 
+        [Option('o', "object", HelpText = "Highlight object by id")]
+        public string ObjectId { get; set; }
+
         [Value(0)]
         public string File { get; set; }
     }
@@ -37,7 +40,7 @@ namespace HZDCoreEditorUI
                 .WithParsed(o => cmds = o)
                 .WithNotParsed(errs => MessageBox.Show("Unable to parse command line: {0}", String.Join(" ", args)));
 
-            Application.Run(new UI.FormCoreView(cmds.File, cmds.Search));
+            Application.Run(new UI.FormCoreView(cmds));
             
         }
     }
