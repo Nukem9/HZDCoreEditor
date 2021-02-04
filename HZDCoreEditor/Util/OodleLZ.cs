@@ -127,27 +127,35 @@ namespace Utility
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
         private static extern IntPtr LoadLibraryW(string lpFileName);
 
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool FreeLibrary(IntPtr hModule);
+
         [DllImport("kernel32.dll", CharSet = CharSet.Ansi, ExactSpelling = true, SetLastError = true)]
         private static extern IntPtr GetProcAddress(IntPtr hModule, string lpProcName);
 
-        private static readonly int OodleLZ_Version;
-        private static readonly OodleLZ_Decompress_Delegate OodleLZ_Decompress;
-        private static readonly OodleLZ_Compress_Delegate OodleLZ_Compress;
-
-        static OodleLZ()
+        private static IntPtr OodleLZ_Handle;
+        private static int OodleLZ_Version;
+        private static OodleLZ_Decompress_Delegate OodleLZ_Decompress;
+        private static OodleLZ_Compress_Delegate OodleLZ_Compress;
+        
+        private static void EnsureLoaded()
         {
+            if (OodleLZ_Handle != IntPtr.Zero)
+                return;
+
             // Can't use DllImport if I want to support multiple DLL versions. Resolve the exports by hand.
-            IntPtr oodleLibraryHandle = LoadLibraryW("oo2core_7_win64.dll");
+            OodleLZ_Handle = LoadLibraryW("oo2core_7_win64.dll");
             OodleLZ_Version = 7;
 
-            if (oodleLibraryHandle == IntPtr.Zero)
+            if (OodleLZ_Handle == IntPtr.Zero)
             {
-                oodleLibraryHandle = LoadLibraryW("oo2core_3_win64.dll");
+                OodleLZ_Handle = LoadLibraryW("oo2core_3_win64.dll");
                 OodleLZ_Version = 3;
             }
 
-            IntPtr decompressorFunc = GetProcAddress(oodleLibraryHandle, "OodleLZ_Decompress");
-            IntPtr compressorFunc = GetProcAddress(oodleLibraryHandle, "OodleLZ_Compress");
+            var decompressorFunc = GetProcAddress(OodleLZ_Handle, "OodleLZ_Decompress");
+            var compressorFunc = GetProcAddress(OodleLZ_Handle, "OodleLZ_Compress");
 
             if (decompressorFunc == IntPtr.Zero || compressorFunc == IntPtr.Zero)
                 throw new Exception("A valid oo2core DLL couldn't be found in the program directory (oo2core_3_win64.dll, oo2core_7_win64.dll)");
@@ -156,8 +164,20 @@ namespace Utility
             OodleLZ_Compress = Marshal.GetDelegateForFunctionPointer<OodleLZ_Compress_Delegate>(compressorFunc);
         }
 
+        public static void Unload()
+        {
+            if (OodleLZ_Handle == IntPtr.Zero)
+                return;
+            if (FreeLibrary(OodleLZ_Handle))
+                OodleLZ_Handle = IntPtr.Zero;
+        }
+
+        public static bool Decompress(byte[] inputBuffer, byte[] outputBuffer, uint decompressLength)
+            => Decompress(inputBuffer.AsSpan(), outputBuffer.AsSpan(), decompressLength);
         public static bool Decompress(ReadOnlySpan<byte> inputBuffer, Span<byte> outputBuffer, uint decompressLength)
         {
+            EnsureLoaded();
+
             long result = -1;
 
             unsafe
@@ -186,17 +206,14 @@ namespace Utility
             return result == 0;
         }
 
-        public static bool Decompress(byte[] inputBuffer, byte[] outputBuffer, uint decompressLength)
-        {
-            return Decompress(inputBuffer.AsSpan(), outputBuffer.AsSpan(), decompressLength);
-        }
-
-        public static long Compress(Span<byte> inputBuffer, Span<byte> outputBuffer)
-        {
-            return Compress(inputBuffer, inputBuffer.Length, outputBuffer);
-        }
+        public static long Compress(Span<byte> inputBuffer, Span<byte> outputBuffer) 
+            => Compress(inputBuffer, inputBuffer.Length, outputBuffer);
+        public static long Compress(byte[] inputBuffer, byte[] outputBuffer) 
+            => Compress(inputBuffer.AsSpan(), outputBuffer.AsSpan());
         public static long Compress(Span<byte> inputBuffer, int inputBufferLength, Span<byte> outputBuffer)
         {
+            EnsureLoaded();
+
             long result = -1;
 
             int compressor = OodleLZ_Version switch
@@ -233,11 +250,6 @@ namespace Utility
             }
 
             return result;
-        }
-
-        public static long Compress(byte[] inputBuffer, byte[] outputBuffer)
-        {
-            return Compress(inputBuffer.AsSpan(), outputBuffer.AsSpan());
         }
     }
 }
