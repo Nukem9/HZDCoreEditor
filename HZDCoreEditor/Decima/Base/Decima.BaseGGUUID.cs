@@ -55,7 +55,7 @@ namespace Decima
 
         public override string ToString()
         {
-            return new Guid(ToBytes()).ToString("B");
+            return new Guid(ToBytes()).ToString("B").ToUpper();
         }
 
         public BaseGGUUID FromData(BinaryReader reader)
