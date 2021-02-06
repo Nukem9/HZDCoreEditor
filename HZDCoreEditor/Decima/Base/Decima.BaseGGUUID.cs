@@ -55,8 +55,7 @@ namespace Decima
 
         public override string ToString()
         {
-            return $"{{{Data3:X2}{Data2:X2}{Data1:X2}{Data0:X2}-{Data5:X2}{Data4:X2}-{Data7:X2}{Data6:X2}" +
-                $"-{Data8:X2}{Data9:X2}-{Data10:X2}{Data11:X2}{Data12:X2}{Data13:X2}{Data14:X2}{Data15:X2}}}";
+            return new Guid(ToBytes()).ToString("B");
         }
 
         public BaseGGUUID FromData(BinaryReader reader)
@@ -128,6 +127,15 @@ namespace Decima
             Data13 = data[13];
             Data14 = data[14];
             Data15 = data[15];
+        }
+
+        public byte[] ToBytes()
+        {
+            return new []
+            {
+                Data0, Data1, Data2, Data3, Data4, Data5, Data6, Data7,
+                Data8, Data9, Data10, Data11, Data12, Data13, Data14, Data15
+            };
         }
 
         public override bool Equals(object obj)
