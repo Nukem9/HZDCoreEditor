@@ -106,7 +106,6 @@ namespace HZDCoreEditor.Util
 
         // Converts an ushort into an array of bytes with
         // length two.
-        [CLSCompliant(false)]
         public static byte[] GetBytes(ushort value)
         {
             byte[] bytes = new byte[sizeof(ushort)];
@@ -115,7 +114,6 @@ namespace HZDCoreEditor.Util
         }
 
         // Converts a ushort into a Span
-        [CLSCompliant(false)]
         public static bool TryWriteBytes(Span<byte> destination, ushort value)
         {
             if (destination.Length < sizeof(ushort))
@@ -127,7 +125,6 @@ namespace HZDCoreEditor.Util
 
         // Converts an uint into an array of bytes with
         // length four.
-        [CLSCompliant(false)]
         public static byte[] GetBytes(uint value)
         {
             byte[] bytes = new byte[sizeof(uint)];
@@ -136,7 +133,6 @@ namespace HZDCoreEditor.Util
         }
 
         // Converts a uint into a Span
-        [CLSCompliant(false)]
         public static bool TryWriteBytes(Span<byte> destination, uint value)
         {
             if (destination.Length < sizeof(uint))
@@ -148,7 +144,6 @@ namespace HZDCoreEditor.Util
 
         // Converts an unsigned long into an array of bytes with
         // length eight.
-        [CLSCompliant(false)]
         public static byte[] GetBytes(ulong value)
         {
             byte[] bytes = new byte[sizeof(ulong)];
@@ -157,7 +152,6 @@ namespace HZDCoreEditor.Util
         }
 
         // Converts a ulong into a Span
-        [CLSCompliant(false)]
         public static bool TryWriteBytes(Span<byte> destination, ulong value)
         {
             if (destination.Length < sizeof(ulong))
@@ -229,11 +223,9 @@ namespace HZDCoreEditor.Util
             return Unsafe.ReadUnaligned<long>(ref MemoryMarshal.GetReference(value));
         }
 
-        [CLSCompliant(false)]
         public static uint ToUInt32(byte[] value, int startIndex) => unchecked((uint)ToInt32(value, startIndex));
 
         // Convert a Span into a uint
-        [CLSCompliant(false)]
         public static uint ToUInt32(ReadOnlySpan<byte> value)
         {
             return Unsafe.ReadUnaligned<uint>(ref MemoryMarshal.GetReference(value));
@@ -241,11 +233,9 @@ namespace HZDCoreEditor.Util
 
         // Converts an array of bytes into an unsigned long.
         // 
-        [CLSCompliant(false)]
         public static ulong ToUInt64(byte[] value, int startIndex) => unchecked((ulong)ToInt64(value, startIndex));
 
         // Converts a Span into an unsigned long
-        [CLSCompliant(false)]
         public static ulong ToUInt64(ReadOnlySpan<byte> value)
         {
             return Unsafe.ReadUnaligned<ulong>(ref MemoryMarshal.GetReference(value));
