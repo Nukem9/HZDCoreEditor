@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using HZDCoreEditor.Util;
 
 namespace Decima
 {
@@ -48,7 +49,7 @@ namespace Decima
                 for (int i = dataIndex; i < block.Length; i++)
                 {
                     if (block[i] == 0)
-                        return Encoding.UTF8.GetString(block[dataIndex..i]);
+                        return Encoding.UTF8.GetString(block.Slice(dataIndex, i - dataIndex).ToArray());
                 }
 
                 return null;
@@ -79,7 +80,7 @@ namespace Decima
 
                     var table = new Table()
                     {
-                        BitShiftMask = System.Numerics.BitOperations.TrailingZeroCount(blockSize),
+                        BitShiftMask = BitOperations.TrailingZeroCount(blockSize),
                         BlockCount = blockCount,
                         BlockSize = blockSize,
                         Data = new byte[blockCount][],

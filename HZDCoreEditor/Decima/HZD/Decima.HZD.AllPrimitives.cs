@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Numerics;
 using Utility;
@@ -155,5 +156,8 @@ namespace Decima.HZD
         {
             Value = new BigInteger(reader.ReadBytesStrict(16));
         }
+        public void Serialize(BinaryWriter writer) => throw new NotImplementedException();
+        public void DeserializeStateObject(SaveState state) => throw new NotImplementedException();
+        public void SerializeStateObject(SaveState state) => throw new NotImplementedException();
     }
 }

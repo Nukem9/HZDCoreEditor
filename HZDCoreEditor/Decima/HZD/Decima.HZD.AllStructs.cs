@@ -1,3 +1,6 @@
+using System;
+using System.IO;
+
 #pragma warning disable CS0649 // warning CS0649: 'member' is never assigned to, and will always have its default value 'value'.
 #pragma warning disable CS0108 // warning CS0108: 'class' hides inherited member 'member'. Use the new keyword if hiding was intended.
 
@@ -3524,6 +3527,8 @@ namespace Decima.HZD
         [RTTI.Member(14, 0xA0, "Cover")] public uint Stride;
         [RTTI.Member(15, 0xA4, "Cover")] public bool IsForObjects;
         [RTTI.Member(16, 0xA8, "Cover", true)] public BitstreamData Data;
+        public void DeserializeExtraData(BinaryReader reader) { }
+        public void SerializeExtraData(BinaryWriter writer) => throw new NotImplementedException();
     }
 
     [RTTI.Serializable(0x70E5B7F389530D87, GameType.HZD)]
@@ -9656,6 +9661,8 @@ namespace Decima.HZD
     public class CoreScript : CoreObject, RTTI.IExtraBinaryDataCallback
     {
         [RTTI.Member(3, 0xC0, "General")] public String Name;
+        public void DeserializeExtraData(BinaryReader reader) { }
+        public void SerializeExtraData(BinaryWriter writer) => throw new NotImplementedException();
     }
 
     [RTTI.Serializable(0x1D6ACA2786C58ADC, GameType.HZD)]
@@ -20106,6 +20113,8 @@ namespace Decima.HZD
         [RTTI.Member(8, 0xC8, "General")] public Ref<InstancedMeshResource> Resource;
         [RTTI.Member(9, 0xD0, "General")] public int MeshInstanceTreeSize;
         [RTTI.Member(10, 0xE0, "General")] public int MeshInstanceTreeDrawableSetupSize;
+        public void DeserializeExtraData(BinaryReader reader) { }
+        public void SerializeExtraData(BinaryWriter writer) => throw new NotImplementedException();
     }
 
     [RTTI.Serializable(0xA5ED50DC10EEC66B, GameType.HZD)]
@@ -31184,6 +31193,8 @@ namespace Decima.HZD
     {
         [RTTI.Member(30, 0xC0, "Physics")] public Ref<PhysicsCollisionResource> MapCollisionResource;
         [RTTI.Member(31, 0xC8, "Physics")] public float Offset;
+        public void DeserializeExtraData(BinaryReader reader) { }
+        public void SerializeExtraData(BinaryWriter writer) => throw new NotImplementedException();
     }
 
     [RTTI.Serializable(0x70984C2CF4D62844, GameType.HZD)]
@@ -43708,6 +43719,8 @@ namespace Decima.HZD
         [RTTI.Member(12, 0x120, "General")] public int MeshInstanceTreeSize;
         [RTTI.Member(13, 0x130, "General")] public int MeshInstanceTreeDrawableSetupSize;
         [RTTI.Member(14, 0x140, "General")] public Ref<WaterSystemResource> WaterSystemResource;
+        public void DeserializeExtraData(BinaryReader reader) { }
+        public void SerializeExtraData(BinaryWriter writer) => throw new NotImplementedException();
     }
 
     [RTTI.Serializable(0x8A386DEA4E50B40C, GameType.HZD)]
@@ -43729,6 +43742,8 @@ namespace Decima.HZD
     {
         [RTTI.Member(5, 0x2C, "General")] public int MaxInteractiveTiles;
         [RTTI.Member(6, 0x30, "General")] public int WaterSystemDataSize;
+        public void DeserializeExtraData(BinaryReader reader) { }
+        public void SerializeExtraData(BinaryWriter writer) => throw new NotImplementedException();
     }
 
     [RTTI.Serializable(0x34EFD4D6DB36E7C6, GameType.HZD)]

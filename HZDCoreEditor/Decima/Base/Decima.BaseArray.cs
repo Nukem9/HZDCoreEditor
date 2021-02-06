@@ -72,5 +72,6 @@ namespace Decima
                 Add(newObj);
             }
         }
+        public void SerializeStateObject(SaveState state) => throw new NotImplementedException();
     }
 }

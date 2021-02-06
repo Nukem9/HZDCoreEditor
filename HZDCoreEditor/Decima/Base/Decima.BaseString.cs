@@ -59,6 +59,7 @@ namespace Decima
         {
             Value = state.ReadIndexedString();
         }
+        public void SerializeStateObject(SaveState state) => throw new NotImplementedException();
 
         public override string ToString()
         {

@@ -1,4 +1,5 @@
-﻿using Utility;
+﻿using System;
+using Utility;
 
 namespace Decima.HZD
 {
@@ -31,5 +32,6 @@ namespace Decima.HZD
             RewindCounter = state.Reader.ReadByte() > 0;//RewindCounter = state.Reader.ReadBooleanStrict();
             Version = state.ReadVariableLengthInt();
         }
+        public void SerializeStateObject(SaveState state) => throw new NotImplementedException();
     }
 }

@@ -41,5 +41,7 @@ namespace Decima
                 RTTI.SerializeType(writer, element.Value);
             }
         }
+        public void DeserializeStateObject(SaveState state) => throw new NotImplementedException();
+        public void SerializeStateObject(SaveState state) => throw new NotImplementedException();
     }
 }

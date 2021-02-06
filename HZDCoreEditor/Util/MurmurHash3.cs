@@ -42,6 +42,7 @@
 //     Debugger.Break();
 //
 using System;
+using HZDCoreEditor.Util;
 
 namespace Utility
 {
@@ -64,12 +65,12 @@ namespace Utility
 
         private static uint getblock32(ReadOnlySpan<byte> p, int i)
         {
-            return BitConverter.ToUInt32(p.Slice(i * 4, 4));
+            return Bits.ToUInt32(p.Slice(i * 4, 4));
         }
 
         private static ulong getblock64(ReadOnlySpan<byte> p, int i)
         {
-            return BitConverter.ToUInt64(p.Slice(i * 8, 8));
+            return Bits.ToUInt64(p.Slice(i * 8, 8));
         }
 
         //-----------------------------------------------------------------------------
@@ -136,7 +137,7 @@ namespace Utility
             // tail
 
             //const uint8_t* tail = (const uint8_t*)(data + nblocks * 4);
-            ReadOnlySpan<byte> tail = data[(nblocks * 4)..len];
+            ReadOnlySpan<byte> tail = data.Slice((nblocks * 4), len - (nblocks * 4));
 
             uint k1 = 0;
 
@@ -214,7 +215,7 @@ namespace Utility
             // tail
 
             //const uint8_t* tail = (const uint8_t*)(data + nblocks * 16);
-            ReadOnlySpan<byte> tail = data[(nblocks * 16)..len];
+            ReadOnlySpan<byte> tail = data.Slice((nblocks * 16), len - (nblocks * 16));
 
             uint k1 = 0;
             uint k2 = 0;
@@ -316,7 +317,7 @@ namespace Utility
             // tail
 
             //const uint8_t* tail = (const uint8_t*)(data + nblocks * 16);
-            ReadOnlySpan<byte> tail = data[(nblocks * 16)..len];
+            ReadOnlySpan<byte> tail = data.Slice((nblocks * 16), len - (nblocks * 16));
 
             ulong k1 = 0;
             ulong k2 = 0;

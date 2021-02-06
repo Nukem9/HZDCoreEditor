@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Decima.HZD
 {
@@ -27,5 +28,6 @@ namespace Decima.HZD
             });
             // MBME
         }
+        public void SerializeStateObject(SaveState state) => throw new NotImplementedException();
     }
 }
