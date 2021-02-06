@@ -1,4 +1,6 @@
-﻿namespace Decima.HZD
+﻿using System;
+
+namespace Decima.HZD
 {
     [RTTI.Serializable(0xB7FA97B1A5E636C9, GameType.HZD)]
     public class WorldPosition : RTTI.ISaveSerializable
@@ -13,5 +15,6 @@
             Y = state.Reader.ReadDouble();
             Z = state.Reader.ReadDouble();
         }
+        public void SerializeStateObject(SaveState state) => throw new NotImplementedException();
     }
 }

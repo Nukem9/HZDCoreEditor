@@ -92,7 +92,7 @@ namespace Decima
                 ulong copyOffset = fileDataOffset - block.DecompressedOffset;
                 ulong copySize = Math.Min(fileDataLength, block.DecompressedSize - copyOffset);
 
-                writer.Write(decompressedData.Slice((int)copyOffset, (int)copySize));
+                writer.Write(decompressedData.Slice((int)copyOffset, (int)copySize).ToArray());
 
                 fileDataOffset += copySize;
                 fileDataLength -= copySize;

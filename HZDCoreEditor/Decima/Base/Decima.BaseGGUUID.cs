@@ -153,25 +153,37 @@ namespace Decima
 
         public override int GetHashCode()
         {
-            var hash = new HashCode();
-            hash.Add(Data0);
-            hash.Add(Data1);
-            hash.Add(Data2);
-            hash.Add(Data3);
-            hash.Add(Data4);
-            hash.Add(Data5);
-            hash.Add(Data6);
-            hash.Add(Data7);
-            hash.Add(Data8);
-            hash.Add(Data9);
-            hash.Add(Data10);
-            hash.Add(Data11);
-            hash.Add(Data12);
-            hash.Add(Data13);
-            hash.Add(Data14);
-            hash.Add(Data15);
-            return hash.ToHashCode();
+            unchecked
+            {
+                const int p = 16777619;
+                int hash = (int)2166136261;
+                
+                hash = (hash ^ Data0) * p;
+                hash = (hash ^ Data1) * p;
+                hash = (hash ^ Data2) * p;
+                hash = (hash ^ Data3) * p;
+                hash = (hash ^ Data4) * p;
+                hash = (hash ^ Data5) * p;
+                hash = (hash ^ Data6) * p;
+                hash = (hash ^ Data7) * p;
+                hash = (hash ^ Data8) * p;
+                hash = (hash ^ Data9) * p;
+                hash = (hash ^ Data10) * p;
+                hash = (hash ^ Data11) * p;
+                hash = (hash ^ Data12) * p;
+                hash = (hash ^ Data13) * p;
+                hash = (hash ^ Data14) * p;
+                hash = (hash ^ Data15) * p;
+
+                hash += hash << 13;
+                hash ^= hash >> 7;
+                hash += hash << 3;
+                hash ^= hash >> 17;
+                hash += hash << 5;
+                return hash;
+            }
         }
+        public void SerializeStateObject(SaveState state) => throw new NotImplementedException();
 
         public static implicit operator BaseGGUUID(string value)
         {

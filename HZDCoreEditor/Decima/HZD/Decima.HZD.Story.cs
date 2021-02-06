@@ -56,5 +56,7 @@ namespace Decima.HZD
                 });
             });
         }
+
+        public void SerializeStateObject(SaveState state) => throw new NotImplementedException();
     }
 }
