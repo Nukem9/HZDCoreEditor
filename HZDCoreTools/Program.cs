@@ -33,9 +33,6 @@ namespace HZDCoreTools
                 OutputDir = cmds.OutputFolder
             };
             ex.Extract(cmds.Extract, cmds.GameDir);
-
-            while (true)
-                Console.ReadLine();
         }
     }
 }

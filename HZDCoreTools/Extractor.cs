@@ -63,6 +63,7 @@ namespace HZDCoreTools
                 tasks.Start();
                 pack.FileEntries.ForEach(x => tasks.AddItem((x.PathHash, Path.Combine(OutputDir, $"{x.PathHash}.core"))));
                 tasks.WaitForComplete();
+                Console.WriteLine("");
                 Console.WriteLine("Extraction complete");
                 return;
             }
@@ -97,40 +98,42 @@ namespace HZDCoreTools
 
         private void ExtractWithPrefetch(List<string> prefetch, Dictionary<ulong, PackfileReader> files)
         {
-
             CheckDirectory(OutputDir);
 
             Console.WriteLine($"Starting extracting {prefetch.Count} files");
-            using var progressBar = new ProgressBar();
-            progressValue = 0;
-            int lastProgress = 0;
-            progressBar.Report(0);
-            var tasks = new ParallelTasks<string>(
-                Environment.ProcessorCount, file =>
-                {
-                    var hash = Packfile.GetHashForPath(file);
-                    var output = Path.Combine(OutputDir, file + ".core");
-                    if (files.TryGetValue(hash, out var pack))
+            using (var progressBar = new ProgressBar())
+            {
+                progressValue = 0;
+                int lastProgress = 0;
+                progressBar.Report(0);
+                var tasks = new ParallelTasks<string>(
+                    Environment.ProcessorCount, file =>
                     {
-                        CheckDirectory(Path.GetDirectoryName(output));
+                        var hash = Packfile.GetHashForPath(file);
+                        var output = Path.Combine(OutputDir, file + ".core");
 
-                        Interlocked.Increment(ref progressValue);
-                        var val = (int)((progressValue * 1.0 / prefetch.Count) * 100);
-                        if (val > lastProgress)
+                        if (files.TryGetValue(hash, out var pack))
                         {
-                            lastProgress = (int)val;
-                            progressBar.Report(val / 100.0);
+                            CheckDirectory(Path.GetDirectoryName(output));
+
+                            Interlocked.Increment(ref progressValue);
+                            var val = (int)((progressValue * 1.0 / prefetch.Count) * 100);
+                            if (val > lastProgress)
+                            {
+                                lastProgress = (int)val;
+                                progressBar.Report(val / 100.0);
+                            }
+
+                            pack.ExtractFile(hash, output, true);
                         }
+                    });
 
-                        pack.ExtractFile(hash, output, true);
-                    }
-                });
-
-            tasks.Start();
-            foreach (var x in prefetch.Where(x => !Ignored.Any(x.StartsWith)))
-                tasks.AddItem(x);
-            tasks.WaitForComplete();
-            progressBar.Report(1);
+                tasks.Start();
+                foreach (var x in prefetch.Where(x => !Ignored.Any(x.StartsWith)))
+                    tasks.AddItem(x);
+                tasks.WaitForComplete();
+            }
+            Console.WriteLine("");
             Console.WriteLine("Extraction complete");
         }
 
