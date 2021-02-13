@@ -27,20 +27,19 @@ namespace HZDCoreTools
         };
         private readonly string[] Ignored =
         {
-            "sounds",
         };
 
         public string OutputDir { get; set; }
 
-        public void Extract(string path, bool game)
+        public void Extract(CmdOptions options)
         {
-            if (File.Exists(path))
-                ExtractFile(path);
-            else if (Directory.Exists(path))
-                ExtractDir(path, game);
+            if (File.Exists(options.ExtractPath))
+                ExtractFile(options.ExtractPath);
+            else if (Directory.Exists(options.ExtractPath))
+                ExtractDir(options.ExtractPath, options.GameDir, options.Streams);
             else
             {
-                Console.WriteLine("Error, path not found: " + path);
+                Console.WriteLine("Error, path not found: " + options.ExtractPath);
             }
         }
 
@@ -74,7 +73,7 @@ namespace HZDCoreTools
         }
 
         private int progressValue = 0;
-        private void ExtractDir(string path, bool game)
+        private void ExtractDir(string path, bool game, bool streams)
         {
             if (!Directory.Exists(path))
             {
@@ -93,10 +92,10 @@ namespace HZDCoreTools
             }
 
             var prefetch = LoadPrefetch(files[prefetchHash]);
-            ExtractWithPrefetch(prefetch, files);
+            ExtractWithPrefetch(prefetch, files, streams);
         }
 
-        private void ExtractWithPrefetch(List<string> prefetch, Dictionary<ulong, PackfileReader> files)
+        private void ExtractWithPrefetch(List<string> prefetch, Dictionary<ulong, PackfileReader> files, bool streams = false)
         {
             CheckDirectory(OutputDir);
 
@@ -109,22 +108,27 @@ namespace HZDCoreTools
                 var tasks = new ParallelTasks<string>(
                     Environment.ProcessorCount, file =>
                     {
-                        var hash = Packfile.GetHashForPath(file);
-                        var output = Path.Combine(OutputDir, file + ".core");
-
-                        if (files.TryGetValue(hash, out var pack))
+                        void extractFromPack(string fileName, bool stream)
                         {
-                            CheckDirectory(Path.GetDirectoryName(output));
-
-                            Interlocked.Increment(ref progressValue);
-                            var val = (int)((progressValue * 1.0 / prefetch.Count) * 100);
-                            if (val > lastProgress)
+                            var hash = Packfile.GetHashForPath(fileName, stream);
+                            var output = Path.Combine(OutputDir, fileName);
+                            if (files.TryGetValue(hash, out var pack))
                             {
-                                lastProgress = (int)val;
-                                progressBar.Report(val / 100.0);
+                                CheckDirectory(Path.GetDirectoryName(output));
+                                pack.ExtractFile(hash, output, true);
                             }
+                        }
 
-                            pack.ExtractFile(hash, output, true);
+                        extractFromPack(file + ".core", false);
+                        if (streams)
+                            extractFromPack(file + ".core.stream", true);
+
+                        Interlocked.Increment(ref progressValue);
+                        var val = (int)((progressValue * 1.0 / prefetch.Count) * 100);
+                        if (val > lastProgress)
+                        {
+                            lastProgress = (int)val;
+                            progressBar.Report(val / 100.0);
                         }
                     });
 

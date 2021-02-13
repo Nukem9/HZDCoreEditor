@@ -7,7 +7,10 @@ namespace HZDCoreTools
     public class CmdOptions
     {
         [Option('e', "extract", HelpText = "Extract folder or file")]
-        public string Extract { get; set; }
+        public string ExtractPath { get; set; }
+
+        [Option('s', "streams", HelpText = "Attempt to extract streams")]
+        public bool Streams { get; set; }
 
         [Option('g', "game", HelpText = "Director is the game directory (ignores unknown packs)")]
         public bool GameDir { get; set; }
@@ -32,7 +35,7 @@ namespace HZDCoreTools
             {
                 OutputDir = cmds.OutputFolder
             };
-            ex.Extract(cmds.Extract, cmds.GameDir);
+            ex.Extract(cmds);
         }
     }
 }

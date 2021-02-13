@@ -2,7 +2,7 @@
   "profiles": {
     "HZDCoreTools": {
       "commandName": "Project",
-      "commandLineArgs": "-e \"E:\\Games\\SteamLibrary\\steamapps\\common\\Horizon Zero Dawn\\Packed_DX12\" -g out"
+      "commandLineArgs": "-e \"E:\\Games\\SteamLibrary\\steamapps\\common\\Horizon Zero Dawn\\Packed_DX12\" -g -s out"
     }
   }
 }

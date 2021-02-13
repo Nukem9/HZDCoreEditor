@@ -2,6 +2,7 @@ using Decima;
 using NAudio.Wave;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Linq;
@@ -390,40 +391,65 @@ namespace HZDCoreEditorUI
             File.WriteAllText(@"E:\hzd9\text_data_dump.txt", sb.ToString());
         }
 
-        static void ExtractHZDAudio()
+        public static void ExtractHZDAudio()
         {
-            var files = Directory.GetFiles(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\sounds\", "*.core", SearchOption.AllDirectories);
+            var root = @"E:\hzd9\";
+            var outRoot = @"E:\hza\";
+            
+            var files = Directory.GetFiles(root + @"sounds\", "*.core", SearchOption.AllDirectories);
 
             foreach (string file in files)
             {
-                Console.WriteLine(file);
 
-                var core = CoreBinary.FromFile(file);
-
-                foreach (var obj in core)
+                try
                 {
-                    var wave = obj as Decima.HZD.WaveResource;
+                    var core = CoreBinary.FromFile(file);
 
-                    if (wave == null)
-                        continue;
-
-                    if (wave.IsStreaming)
-                        continue;
-
-                    using (var ms = new System.IO.MemoryStream(wave.WaveData.ToArray()))
+                    foreach (var obj in core)
                     {
+                        var wave = obj as Decima.HZD.WaveResource;
+
+                        if (wave == null)
+                            continue;
+
+                        string outFile = Path.Combine(outRoot,
+                            Path.GetDirectoryName(file).Substring(root.Length),
+                            wave.Name.Value + ".wav");
+                        if (File.Exists(outFile))
+                            continue;
+                        
+                        Stream s = null;
+                        if (file.Contains(@"E:\hzd9\sounds\music\menumusic\musicscape_01"))
+                            ;
+                        if (wave.IsStreaming && File.Exists(file + ".stream"))
+                            s = File.OpenRead(file + ".stream");
+                        else if (wave.WaveData.Count > 0)
+                            s = new MemoryStream(wave.WaveData.ToArray());
+
+                        if (s == null)
+                            continue;
+                        
                         RawSourceWaveStream rs = null;
 
                         if (wave.Encoding == Decima.HZD.EWaveDataEncoding.MP3)
-                            rs = new RawSourceWaveStream(ms, new Mp3WaveFormat(wave.SampleRate, wave.ChannelCount, wave.FrameSize, (int)wave.BitsPerSecond));
+                            rs = new RawSourceWaveStream(s, new Mp3WaveFormat(wave.SampleRate, wave.ChannelCount, wave.FrameSize, (int)wave.BitsPerSecond));
                         else if (wave.Encoding == Decima.HZD.EWaveDataEncoding.PCM)
-                            rs = new RawSourceWaveStream(ms, new WaveFormat(wave.SampleRate, 16, wave.ChannelCount));// This is wrong
+                            rs = new RawSourceWaveStream(s, new WaveFormat(wave.SampleRate, 16, wave.ChannelCount));// This is wrong
 
-                        string outFile = Path.Combine(Path.GetDirectoryName(file), wave.Name.Value + ".wav");
 
                         if (rs != null)
+                        {
+                            Debug.WriteLine(outFile);
+                            if (!Directory.Exists(Path.GetDirectoryName(outFile)))
+                                Directory.CreateDirectory(Path.GetDirectoryName(outFile));
                             WaveFileWriter.CreateWaveFile(outFile, rs);
+                        }
+
+                        s.Dispose();
                     }
+                }
+                catch(Exception ex) {
+                    Console.WriteLine(ex.Message);
                 }
             }
         }
