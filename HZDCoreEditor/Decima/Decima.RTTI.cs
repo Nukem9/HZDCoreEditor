@@ -72,6 +72,8 @@ namespace Decima
                 {"UInt64", "uint64"},
                 {"Single", "float"},
             };
+
+            SetGameMode(GameType.HZD);
         }
 
         public static void SetGameMode(GameType game)

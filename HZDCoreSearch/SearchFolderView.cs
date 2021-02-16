@@ -17,6 +17,7 @@ namespace HZDCoreSearch
         private bool _loading = true;
         private string[] CurrentSearches;
         private ParallelTasks<string> SearchTasks;
+        private ByteSearch Search;
 
         public SearchFolderView(string sourceProcess)
         {
@@ -46,15 +47,11 @@ namespace HZDCoreSearch
             await SettingsManager.Save();
         }
 
-        private void btnSearch_Click(object sender, EventArgs e)
+        private async void btnSearch_Click(object sender, EventArgs e)
         {
             if (btnSearch.Text == "Stop Search")
             {
-                if (SearchTasks != null)
-                {
-                    SearchTasks.Stop();
-                    SearchTasks.WaitForComplete();
-                }
+                Search?.Stop();
                 return;
             }
 
@@ -63,54 +60,28 @@ namespace HZDCoreSearch
             CurrentSearches = tbSearch.Text.Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
             lbMatches.Items.Clear();
 
-            Task.Run(() =>
+            Search = new ByteSearch(tbDir.Text);
+            try
             {
-                try
+                var byteSearches = CurrentSearches.Select((x, i) => (i.ToString(), ToBytes(x))).ToList();
+                await Search.SearchAsync(byteSearches, (key, file, positions) =>
                 {
-                    var byteSearches = CurrentSearches.Select((x, i) => (i.ToString(), ToBytes(x))).ToList();
-                    
-                    SearchDirs(tbDir.Text, byteSearches);
-                }
-                catch (Exception ex)
-                {
-                    if (!(ex?.InnerException is OperationCanceledException))
-                        MessageBox.Show("Search Error: " + ex.Message);
-                }
+                    var text = $"{key} - {file} - {String.Join(", ", positions)}";
+                    this.BeginInvoke(new Action(() =>
+                    {
+                        lbMatches.Items.Add(text);
+                    }));
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Search Error: " + ex.Message);
+            }
 
-                SearchTasks = null;
-                BeginInvoke(new Action(() => btnSearch.Text = "Search"));
-            });
-
+            Search = null;
+            btnSearch.Text = "Search";
         }
         
-        private void SearchDirs(string dir, List<(string Key, byte[] Data)> patterns)
-        {
-            var bm = patterns.Select(x => new BoyerMoore(x.Data)).ToList();
-            
-            SearchTasks = new ParallelTasks<string>(Environment.ProcessorCount, f =>
-            {
-                var data = File.ReadAllBytes(f);
-                for (int i = 0; i < patterns.Count; i++)
-                {
-                    var pos = bm[i].SearchAll(data);
-                    if (pos.Any())
-                    {
-                        var text = $"{patterns[i].Key} - {f} - {String.Join(", ", pos)}";
-                        this.BeginInvoke(new Action(() =>
-                        {
-                            lbMatches.Items.Add(text);
-                        }));
-                    }
-                }
-            });
-
-            SearchTasks.Start();
-
-            RecurseDirs(dir, f => SearchTasks.AddItem(f));
-
-            SearchTasks.WaitForComplete();
-        }
-
         private static byte[] ToBytes(string data)
         {
             if (!Guid.TryParse(data, out Guid guid))
@@ -118,42 +89,7 @@ namespace HZDCoreSearch
 
             return guid.ToByteArray();
         }
-
-        private static void RecurseDirs(string dir, Action<string> action)
-        {
-            foreach (var d in Directory.GetDirectories(dir))
-                RecurseDirs(d, action);
-            foreach (var f in Directory.GetFiles(dir))
-                action(f);
-        }
-
-        private static List<int> SearchBytePattern(byte[] pattern, byte[] bytes)
-        {
-            List<int> positions = new List<int>();
-
-            int patternLength = pattern.Length;
-            int totalLength = bytes.Length;
-            byte firstMatchByte = pattern[0];
-
-            for (int i = 0; i < totalLength; i++)
-            {
-                if (firstMatchByte == bytes[i] && totalLength - i >= patternLength)
-                {
-                    if (BytesEqual(bytes, i, pattern))
-                    {
-                        positions.Add(i);
-                        i += patternLength - 1;
-                    }
-                }
-            }
-            return positions;
-        }
-
-        private static bool BytesEqual(ReadOnlySpan<byte> b1, int b2Idx, ReadOnlySpan<byte> b2)
-        {
-            return b1.Slice(b2Idx, b2.Length).SequenceEqual(b2);
-        }
-
+        
         private void lbMatches_DoubleClick(object sender, EventArgs e)
         {
             var (path, idx) = GetSelectedItem();
