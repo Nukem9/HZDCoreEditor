@@ -64,13 +64,16 @@ namespace HZDCoreSearch
             try
             {
                 var byteSearches = CurrentSearches.Select((x, i) => (i.ToString(), ToBytes(x))).ToList();
-                await Search.SearchAsync(byteSearches, (key, file, positions) =>
+                await Search.SearchAsync(byteSearches, x =>
                 {
-                    var text = $"{key} - {file} - {String.Join(", ", positions)}";
-                    this.BeginInvoke(new Action(() =>
+                    foreach (var r in x.Results)
                     {
-                        lbMatches.Items.Add(text);
-                    }));
+                        var text = $"{r.Key} - {x.File} - {String.Join(", ", r.Positions)}";
+                        this.BeginInvoke(new Action(() =>
+                        {
+                            lbMatches.Items.Add(text);
+                        }));
+                    }
                 });
             }
             catch (Exception ex)

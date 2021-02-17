@@ -154,19 +154,22 @@ namespace Decima
         public List<BaseRef> GetAllReferences()
         {
             var refs = new List<BaseRef>();
-
-            foreach (var entry in Entries)
+            
+            VisitAllObjects<BaseRef>((baseRef, _) =>
             {
-                VisitObjectTypes(entry.ContainedObject, (BaseRef baseRef) =>
-                {
-                    refs.Add(baseRef);
-                });
-            }
+                refs.Add(baseRef);
+            });
 
             return refs;
         }
 
-        private void VisitObjectTypes<T>(object obj, Action<T> memberCallback) where T : class
+        public void VisitAllObjects<T>(Action<T, object> memberCallback) where T : class
+        {
+            foreach (var entry in Entries)
+                VisitObjectTypes(this, entry.ContainedObject, memberCallback);
+        }
+
+        private void VisitObjectTypes<T>(object parent, object obj, Action<T, object> memberCallback) where T : class
         {
             if (obj == null)
                 return;
@@ -180,7 +183,7 @@ namespace Decima
             // T, arrays, lists, then any other object
             if (objectType.Inherits(typeof(T)))
             {
-                memberCallback(obj as T);
+                memberCallback(obj as T, parent);
             }
             else if (objectType.IsArray)
             {
@@ -189,12 +192,12 @@ namespace Decima
                     return;
 
                 foreach (var arrayObj in (obj as Array))
-                    VisitObjectTypes(arrayObj, memberCallback);
+                    VisitObjectTypes(obj, arrayObj, memberCallback);
             }
             else if (objectType.InheritsGeneric(typeof(List<>)))
             {
                 foreach (var listObj in (obj as IList))
-                    VisitObjectTypes(listObj, memberCallback);
+                    VisitObjectTypes(obj, listObj, memberCallback);
             }
             else
             {
@@ -204,7 +207,7 @@ namespace Decima
                     var fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
 
                     foreach (var field in fields)
-                        VisitObjectTypes(field.GetValue(obj), memberCallback);
+                        VisitObjectTypes(obj, field.GetValue(obj), memberCallback);
                 }
             }
         }
