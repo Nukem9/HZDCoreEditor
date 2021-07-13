@@ -172,6 +172,33 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
+    <ClInclude Include="HRZ\Core\BaseResource.h" />
+    <ClInclude Include="HRZ\Core\BoundingBox3.h" />
+    <ClInclude Include="HRZ\Core\ConditionListener.h" />
+    <ClInclude Include="HRZ\Core\CoreObject.h" />
+    <ClInclude Include="HRZ\Core\Entity.h" />
+    <ClInclude Include="HRZ\Core\EntityComponent.h" />
+    <ClInclude Include="HRZ\Core\FRange.h" />
+    <ClInclude Include="HRZ\Core\GameModule.h" />
+    <ClInclude Include="HRZ\Core\HumanoidInventory.h" />
+    <ClInclude Include="HRZ\Core\Inventory.h" />
+    <ClInclude Include="HRZ\Core\InventoryEntity.h" />
+    <ClInclude Include="HRZ\Core\InventoryItemComponent.h" />
+    <ClInclude Include="HRZ\Core\ItemDescriptionComponent.h" />
+    <ClInclude Include="HRZ\Core\LocalizedTextResource.h" />
+    <ClInclude Include="HRZ\Core\Module.h" />
+    <ClInclude Include="HRZ\Core\Mover.h" />
+    <ClInclude Include="HRZ\Core\NetReplicatedObject.h" />
+    <ClInclude Include="HRZ\Core\PhysicsCollisionListener.h" />
+    <ClInclude Include="HRZ\Core\Player.h" />
+    <ClInclude Include="HRZ\Core\Resource.h" />
+    <ClInclude Include="HRZ\Core\ResourceWithoutLegacyName.h" />
+    <ClInclude Include="HRZ\Core\RTTIRefObject.h" />
+    <ClInclude Include="HRZ\Core\SlowMotionManager.h" />
+    <ClInclude Include="HRZ\Core\StreamingRefTarget.h" />
+    <ClInclude Include="HRZ\Core\ViewDependentEntity.h" />
+    <ClInclude Include="HRZ\Core\WeatherSetup.h" />
+    <ClInclude Include="HRZ\Core\WeatherSystem.h" />
     <ClInclude Include="HRZ\PCore\UUIDRef.h" />
     <ClInclude Include="HRZ\PCore\WString.h" />
     <ClInclude Include="HRZ\PGraphics3D\HwRenderBuffer.h" />
@@ -180,6 +207,12 @@
     <ClInclude Include="HRZ\PCore\HashMap.h" />
     <ClInclude Include="HRZ\PCore\Lock.h" />
     <ClInclude Include="HRZ\PCore\Ref.h" />
+    <ClInclude Include="HRZ\Core\RotMatrix.h" />
+    <ClInclude Include="HRZ\Core\RTTIObject.h" />
+    <ClInclude Include="HRZ\Core\Vec3.h" />
+    <ClInclude Include="HRZ\Core\WeakPtrTarget.h" />
+    <ClInclude Include="HRZ\Core\WorldPosition.h" />
+    <ClInclude Include="HRZ\Core\WorldTransform.h" />
     <ClInclude Include="HRZ\Core\ExportedSymbol.h" />
     <ClInclude Include="HRZ\PCore\Array.h" />
     <ClInclude Include="HRZ\PCore\Common.h" />
@@ -192,6 +225,9 @@
     <ClInclude Include="RTTICSharpExporter.h" />
     <ClInclude Include="RTTIIDAExporter.h" />
     <ClInclude Include="XUtil.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="HRZ\Core\RTTI.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
