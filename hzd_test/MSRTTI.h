@@ -18,8 +18,8 @@ namespace MSRTTI
 
 	void Initialize();
 	void Dump(FILE *File);
-	const Info *Find(const char *Name, bool Exact = true);
-	std::vector<const Info *> FindAll(const char *Name = nullptr, bool Exact = true);
+	const Info *Find(const char *Name, bool Exact);
+	std::vector<const Info *> FindAll(const char *Name, bool Exact);
 
 	namespace detail
 	{
@@ -37,7 +37,7 @@ namespace MSRTTI
 
 			uintptr_t Address()
 			{
-				return (uintptr_t)GetModuleHandle(nullptr) + Offset;
+				return reinterpret_cast<uintptr_t>(GetModuleHandleW(nullptr)) + Offset;
 			}
 
 			T Get()

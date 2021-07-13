@@ -72,8 +72,21 @@ namespace MSRTTI
 
 	const Info *Find(const char *Name, bool Exact)
 	{
-		auto results = FindAll(Name, Exact);
-		return results.at(0);
+		for (const Info& info : Tables)
+		{
+			if (Exact)
+			{
+				if (!strcmp(info.Name, Name))
+					return &info;
+			}
+			else
+			{
+				if (strcasestr(info.Name, Name))
+					return &info;
+			}
+		}
+
+		return nullptr;
 	}
 
 	std::vector<const Info *> FindAll(const char *Name, bool Exact)
@@ -125,7 +138,7 @@ namespace MSRTTI
 
 		const char *strcasestr(const char *String, const char *Substring)
 		{
-			for (; *String; *String++)
+			for (; *String; String++)
 			{
 				auto a = String;
 				auto b = Substring;
