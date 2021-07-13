@@ -1,35 +1,11 @@
 #pragma once
 
+#include <stdint.h>
+#include <vector>
 #include <functional>
-#include "common.h"
 
-class String
+namespace HRZ
 {
-private:
-	const char *m_Data = nullptr;
-
-public:
-	String()
-	{
-	}
-
-	String(const char *Value)
-	{
-		const static auto addr = g_OffsetMap["String::String"];
-		((void(__fastcall *)(String *, const char *))(addr))(this, Value);
-	}
-
-	~String()
-	{
-		const static auto addr = g_OffsetMap["String::~String"];
-		((void(__fastcall *)(String *))(addr))(this);
-	}
-
-	const char *c_str() const
-	{
-		return m_Data;
-	}
-};
 
 template<typename T>
 class Array
@@ -46,22 +22,27 @@ public:
 		T *m_Current;
 
 	public:
-		iterator(T *Current) : m_Current(Current)
+		explicit iterator(T *Current) : m_Current(Current)
 		{
 		}
 
-		iterator operator++()
+		iterator& operator++()
 		{
 			m_Current++;
 			return *this;
 		}
 
-		bool operator!=(const iterator& Other) const
+		bool operator==(iterator Other) const
+		{
+			return m_Current == Other.m_Current;
+		}
+
+		bool operator!=(iterator Other) const
 		{
 			return m_Current != Other.m_Current;
 		}
 
-		const T& operator*() const
+		T& operator *() const
 		{
 			return *m_Current;
 		}
@@ -77,6 +58,16 @@ public:
 		return iterator(&m_Entries[m_Count]);
 	}
 
+	T *data() const
+	{
+		return m_Entries;
+	}
+
+	size_t size() const
+	{
+		return m_Count;
+	}
+
 	T& operator[](size_t Pos)
 	{
 		return m_Entries[Pos];
@@ -85,11 +76,6 @@ public:
 	const T& operator[](size_t Pos) const
 	{
 		return m_Entries[Pos];
-	}
-
-	size_t size() const
-	{
-		return m_Count;
 	}
 };
 
@@ -157,4 +143,6 @@ void PCore_Quicksort(std::vector<T>& Elements, std::function<bool(const T *, con
 	auto end = &begin[Elements.size() - 1];
 
 	PCore_Quicksort_Impl<T>(begin, end, Compare, PivotSeed);
+}
+
 }

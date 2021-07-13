@@ -163,7 +163,7 @@
   <ItemGroup>
     <ClCompile Include="common.cpp" />
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="RTTI.cpp" />
+    <ClCompile Include="HRZ\Core\GGRTTI.cpp" />
     <ClCompile Include="MSRTTI.cpp" />
     <ClCompile Include="RTTICSharpExporter.cpp" />
     <ClCompile Include="RTTIIDAExporter.cpp" />
@@ -172,10 +172,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
-    <ClInclude Include="ExportedSymbol.h" />
+    <ClInclude Include="HRZ\PCore\UUIDRef.h" />
+    <ClInclude Include="HRZ\PCore\WString.h" />
+    <ClInclude Include="HRZ\PCore\HashMap.h" />
+    <ClInclude Include="HRZ\PCore\Lock.h" />
+    <ClInclude Include="HRZ\PCore\Ref.h" />
+    <ClInclude Include="HRZ\Core\ExportedSymbol.h" />
+    <ClInclude Include="HRZ\PCore\Array.h" />
+    <ClInclude Include="HRZ\PCore\Common.h" />
+    <ClInclude Include="HRZ\PCore\String.h" />
+    <ClInclude Include="HRZ\PCore\Util.h" />
+    <ClInclude Include="HRZ\PCore\UUID.h" />
     <ClInclude Include="MSRTTI.h" />
-    <ClInclude Include="PCore.h" />
-    <ClInclude Include="RTTI.h" />
+    <ClInclude Include="HRZ\Core\GGRTTI.h" />
     <ClInclude Include="RTTICSharpExporter.h" />
     <ClInclude Include="RTTIIDAExporter.h" />
     <ClInclude Include="XUtil.h" />

@@ -1,10 +1,12 @@
 #pragma once
 
 #include "common.h"
-#include "RTTI.h"
+#include "HRZ/Core/GGRTTI.h"
 
 namespace RTTICSharpExporter
 {
+	using namespace HRZ;
+
 	void ExportAll(const char *Directory);
 	void ExportFileHeader(FILE *F);
 	void ExportFileFooter(FILE *F);

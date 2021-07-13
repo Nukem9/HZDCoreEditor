@@ -2,10 +2,10 @@
 #include <stdlib.h>
 #include "common.h"
 #include "MSRTTI.h"
-#include "PCore.h"
-#include "RTTI.h"
 #include "RTTICSharpExporter.h"
 #include "RTTIIDAExporter.h"
+
+using namespace HRZ;
 
 std::unordered_set<const GGRTTI *> AllRegisteredTypeInfo;
 

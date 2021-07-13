@@ -1,8 +1,10 @@
 #include <regex>
+
+#include "HRZ/Core/GGRTTI.h"
+#include "HRZ/Core/ExportedSymbol.h"
+
 #include "common.h"
 #include "MSRTTI.h"
-#include "PCore.h"
-#include "ExportedSymbol.h"
 #include "RTTIIDAExporter.h"
 
 extern std::unordered_set<const GGRTTI *> AllRegisteredTypeInfo;

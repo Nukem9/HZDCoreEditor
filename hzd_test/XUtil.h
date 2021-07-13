@@ -2,17 +2,6 @@
 
 #include "common.h"
 
-#pragma warning(disable:4094) // untagged 'struct' declared no symbols
-
-#define static_assert_offset(Structure, Member, Offset) struct __declspec(empty_bases) : CheckOffset<offsetof(Structure, Member), Offset> { }
-
-template <size_t Offset, size_t RequiredOffset>
-struct __declspec(empty_bases) CheckOffset
-{
-	static_assert(Offset <= RequiredOffset, "Offset is larger than expected");
-	static_assert(Offset >= RequiredOffset, "Offset is smaller than expected");
-};
-
 namespace XUtil
 {
 	uintptr_t FindPattern(uintptr_t StartAddress, uintptr_t MaxSize, const char *Mask);

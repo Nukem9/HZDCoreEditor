@@ -1,5 +1,19 @@
-#include "RTTI.h"
-#include "PCore.h"
+#include "GGRTTI.h"
+
+namespace HRZ
+{
+
+#include "RTTI.inl"
+
+bool GGRTTI::IsExactKindOf(const GGRTTI *Other) const
+{
+	return this == Other;
+}
+
+bool GGRTTI::IsKindOf(const GGRTTI *Other) const
+{
+	return static_cast<TypeId>(m_RuntimeTypeId1 - Other->m_RuntimeTypeId1) <= Other->m_RuntimeTypeId2;
+}
 
 const GGRTTIContainer *GGRTTI::AsContainer() const
 {
@@ -37,6 +51,22 @@ const GGRTTI *GGRTTI::GetContainedType() const
 	return this;
 }
 
+std::string_view GGRTTI::GetRTTITypeName() const
+{
+	switch (m_InfoType)
+	{
+	case INFO_TYPE_PRIMITIVE: return "GGRTTIPrimitive";
+	case INFO_TYPE_REFERENCE: return "GGRTTIContainer";
+	case INFO_TYPE_CONTAINER: return "GGRTTIContainer";
+	case INFO_TYPE_ENUM: return "GGRTTIEnum";
+	case INFO_TYPE_CLASS: return "GGRTTIClass";
+	case INFO_TYPE_ENUM_2: return "GGRTTIEnum";
+	case INFO_TYPE_POD: return "GGRTTIPOD";
+	}
+
+	return "";
+}
+
 std::string GGRTTI::GetSymbolName() const
 {
 	switch (m_InfoType)
@@ -50,10 +80,10 @@ std::string GGRTTI::GetSymbolName() const
 		char refType[1024];
 		auto container = static_cast<const GGRTTIContainer *>(this);
 
-		if (!strcmp(*container->m_ContainerName, "cptr"))
+		if (!strcmp(container->m_Data->m_Name, "cptr"))
 			sprintf_s(refType, "CPtr<%s>", container->m_Type->GetSymbolName().c_str());
 		else
-			sprintf_s(refType, "%s<%s>", *container->m_ContainerName, container->m_Type->GetSymbolName().c_str());
+			sprintf_s(refType, "%s<%s>", container->m_Data->m_Name, container->m_Type->GetSymbolName().c_str());
 
 		return refType;
 	}
@@ -78,9 +108,7 @@ std::string GGRTTI::GetSymbolName() const
 uint64_t GGRTTI::GetCoreBinaryTypeId() const
 {
 	uint64_t hashedData[2] = {};
-
-	const static auto addr = g_OffsetMap["GGRTTI::GetCoreBinaryTypeId"];
-	((void(__fastcall *)(uint64_t *, const GGRTTI *, __int64))(addr))(hashedData, this, 2);
+	CallID<"GGRTTI::GetCoreBinaryTypeId", void(*)(uint64_t *, const GGRTTI *, __int64)>(hashedData, this, 2);
 
 	return hashedData[0];
 }
@@ -97,7 +125,7 @@ bool GGRTTIClass::MemberEntry::IsSaveStateOnly() const
 
 bool GGRTTIClass::IsPostLoadCallbackEnabled() const
 {
-	for (auto& event : ClassEventSubscriptions())
+	for (auto& event : ClassMessageHandlers())
 	{
 		if (event.m_Type->GetSymbolName() == "MsgReadBinary")
 			return true;
@@ -155,4 +183,6 @@ void GGRTTIClass::BuildFullClassMemberLayout(const GGRTTIClass *Type, std::vecto
 
 		Members.emplace_back(entry);
 	}
+}
+
 }

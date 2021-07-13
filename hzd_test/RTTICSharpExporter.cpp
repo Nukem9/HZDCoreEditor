@@ -1,7 +1,7 @@
 #include "common.h"
 #include "RTTICSharpExporter.h"
 
-extern std::unordered_set<const GGRTTI *> AllRegisteredTypeInfo;
+extern std::unordered_set<const HRZ::GGRTTI *> AllRegisteredTypeInfo;
 
 namespace RTTICSharpExporter
 {
