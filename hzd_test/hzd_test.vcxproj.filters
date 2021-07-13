@@ -85,7 +85,19 @@
     <ClInclude Include="HRZ\PCore\Lock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HRZ\PGraphics3D\RenderingDeviceDX12.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="HRZ\PCore\HashMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\PGraphics3D\SwapChainDX12.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\PGraphics3D\RenderingConfiguration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\PGraphics3D\HwRenderBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HRZ\PCore\WString.h">

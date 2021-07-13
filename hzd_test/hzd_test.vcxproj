@@ -174,6 +174,9 @@
     <ClInclude Include="common.h" />
     <ClInclude Include="HRZ\PCore\UUIDRef.h" />
     <ClInclude Include="HRZ\PCore\WString.h" />
+    <ClInclude Include="HRZ\PGraphics3D\HwRenderBuffer.h" />
+    <ClInclude Include="HRZ\PGraphics3D\RenderingConfiguration.h" />
+    <ClInclude Include="HRZ\PGraphics3D\RenderingDeviceDX12.h" />
     <ClInclude Include="HRZ\PCore\HashMap.h" />
     <ClInclude Include="HRZ\PCore\Lock.h" />
     <ClInclude Include="HRZ\PCore\Ref.h" />
@@ -183,6 +186,7 @@
     <ClInclude Include="HRZ\PCore\String.h" />
     <ClInclude Include="HRZ\PCore\Util.h" />
     <ClInclude Include="HRZ\PCore\UUID.h" />
+    <ClInclude Include="HRZ\PGraphics3D\SwapChainDX12.h" />
     <ClInclude Include="MSRTTI.h" />
     <ClInclude Include="HRZ\Core\GGRTTI.h" />
     <ClInclude Include="RTTICSharpExporter.h" />
