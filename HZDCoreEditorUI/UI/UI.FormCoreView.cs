@@ -409,7 +409,25 @@ namespace HZDCoreEditorUI.UI
                 }
 
                 var path = Path.Combine(RootDir, selected.ExternalFile + ".core");
-                Process.Start(Process.GetCurrentProcess().ProcessName, $"\"{path}\" -o \"{selected.GUID}\"");
+                if (!File.Exists(path))
+                {
+                    MessageBox.Show("Unable to find file.", "External Follow Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                //load localization text
+                if (selected.GetType().IsGenericType && selected.GetType().GetGenericArguments().Any(x => x == typeof(LocalizedTextResource)))
+                {
+                    var core = CoreBinary.FromFile(path);
+                    var match = core.FirstOrDefault(x => x is LocalizedTextResource asResource && asResource.ObjectUUID == selected.GUID) as LocalizedTextResource;
+                    var text = match == null ? "null" : match.GetStringForLanguage(ELanguage.English);
+
+                    MessageBox.Show(text, "Localization Text", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    Process.Start(Process.GetCurrentProcess().ProcessName, $"\"{path}\" -o \"{selected.GUID}\"");
+                }
             }
         }
 
