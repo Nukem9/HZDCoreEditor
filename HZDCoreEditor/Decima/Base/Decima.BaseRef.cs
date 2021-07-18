@@ -116,6 +116,7 @@ namespace Decima
 
             throw new NotImplementedException();
         }
+        public virtual void SerializeStateObject(SaveState state) => throw new NotImplementedException();
     }
 
     public class BaseStreamingRef<T> : BaseRef
@@ -152,5 +153,9 @@ namespace Decima
     public class BaseWeakPtr<T> : RTTI.ISerializable, RTTI.ISaveSerializable
     {
         // Unimplemented
+        public void Deserialize(BinaryReader reader) => throw new NotImplementedException();
+        public void Serialize(BinaryWriter writer) => throw new NotImplementedException();
+        public void DeserializeStateObject(SaveState state) => throw new NotImplementedException();
+        public void SerializeStateObject(SaveState state) => throw new NotImplementedException();
     }
 }

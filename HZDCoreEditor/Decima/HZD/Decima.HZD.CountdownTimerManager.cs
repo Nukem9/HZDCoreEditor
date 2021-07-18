@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Decima.HZD
 {
@@ -17,5 +18,6 @@ namespace Decima.HZD
                 e.Item2 = state.ReadObjectHandle() as CountdownTimerSave;
             });
         }
+        public void SerializeStateObject(SaveState state) => throw new NotImplementedException();
     }
 }

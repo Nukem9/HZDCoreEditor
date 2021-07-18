@@ -14,7 +14,7 @@ namespace Decima
         HZD,    // Horizon Zero Dawn
     }
 
-    static partial class RTTI
+    public static partial class RTTI
     {
         private static Dictionary<ulong, Type> TypeIdLookupMap;
         private static ConcurrentDictionary<Type, OrderedFieldInfo> TypeFieldInfoCache;
@@ -72,13 +72,15 @@ namespace Decima
                 {"UInt64", "uint64"},
                 {"Single", "float"},
             };
+
+            SetGameMode(GameType.HZD);
         }
 
         public static void SetGameMode(GameType game)
         {
             // Build a cache of the 64-bit type IDs to actual C# types. Previous values are erased.
-            var typeIdLookupMap = new Dictionary<ulong, Type>();
-            var typeFieldInfoCache = new ConcurrentDictionary<Type, OrderedFieldInfo>();
+            TypeIdLookupMap = new Dictionary<ulong, Type>();
+            TypeFieldInfoCache = new ConcurrentDictionary<Type, OrderedFieldInfo>();
 
             foreach (var classType in typeof(SerializableAttribute).Assembly.GetTypes())
             {
@@ -89,12 +91,9 @@ namespace Decima
                     if (attribute.Game != game)
                         continue;
 
-                    typeIdLookupMap.Add(attribute.BinaryTypeId, classType);
+                    TypeIdLookupMap.Add(attribute.BinaryTypeId, classType);
                 }
             }
-
-            TypeIdLookupMap = typeIdLookupMap;
-            TypeFieldInfoCache = typeFieldInfoCache;
         }
 
         public static Type GetTypeByName(string name)

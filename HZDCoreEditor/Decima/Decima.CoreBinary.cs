@@ -5,12 +5,13 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Utility;
+using HZDCoreEditor.Util;
 
 namespace Decima
 {
-    class CoreBinary : IEnumerable<object>
+    public class CoreBinary : IEnumerable<object>
     {
-        private List<CoreEntry> Entries;
+        private readonly List<CoreEntry> Entries = new List<CoreEntry>();
 
         /// <remarks>
         /// File data format:
@@ -78,9 +79,9 @@ namespace Decima
                 ToData(writer);
         }
 
-        public CoreBinary FromData(BinaryReader reader, bool ignoreUnknownChunks = false)
+        public static CoreBinary FromData(BinaryReader reader, bool ignoreUnknownChunks = false)
         {
-            Entries = new List<CoreEntry>();
+            var core = new CoreBinary();
 
             while (reader.StreamRemainder() > 0)
             {
@@ -116,13 +117,13 @@ namespace Decima
                 //    Debugger.Log(0, "Warn", $"Short read of a chunk while deserializing object. {reader.BaseStream.Position} < {expectedStreamPos}. TypeId = {entry.TypeId:X16}\n");
 
                 reader.BaseStream.Position = expectedStreamPos;
-                Entries.Add(entry);
+                core.Entries.Add(entry);
             }
 
-            return this;
+            return core;
         }
 
-        public CoreBinary FromFile(string filePath, bool ignoreUnknownChunks = false)
+        public static CoreBinary FromFile(string filePath, bool ignoreUnknownChunks = false)
         {
             using (var reader = new BinaryReader(File.OpenRead(filePath)))
                 return FromData(reader, ignoreUnknownChunks);
@@ -137,38 +138,38 @@ namespace Decima
             });
         }
 
-        public void RemoveObject(object obj)
+        public bool RemoveObject(object obj)
         {
-            Entries.Remove(Entries.Where(x => x.ContainedObject == obj).Single());
+            var idx = Entries.FindIndex(x => x.ContainedObject == obj);
+            if (idx < 0)
+                return false;
+            Entries.RemoveAt(idx);
+            return true;
+        }
+        public int RemoveAll(Predicate<object> filter)
+        {
+            return Entries.RemoveAll(x => filter(x.ContainedObject));
         }
 
         public List<BaseRef> GetAllReferences()
         {
             var refs = new List<BaseRef>();
-
-            foreach (var entry in Entries)
+            
+            VisitAllObjects<BaseRef>((baseRef, _) =>
             {
-                VisitObjectTypes(entry.ContainedObject, (BaseRef baseRef) =>
-                {
-                    refs.Add(baseRef);
-                });
-            }
+                refs.Add(baseRef);
+            });
 
             return refs;
         }
 
-        public IEnumerator<object> GetEnumerator()
+        public void VisitAllObjects<T>(Action<T, object> memberCallback) where T : class
         {
             foreach (var entry in Entries)
-                yield return entry.ContainedObject;
+                VisitObjectTypes(this, entry.ContainedObject, memberCallback);
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        private static void VisitObjectTypes<T>(object obj, Action<T> memberCallback) where T : class
+        private void VisitObjectTypes<T>(object parent, object obj, Action<T, object> memberCallback) where T : class
         {
             if (obj == null)
                 return;
@@ -182,7 +183,7 @@ namespace Decima
             // T, arrays, lists, then any other object
             if (objectType.Inherits(typeof(T)))
             {
-                memberCallback(obj as T);
+                memberCallback(obj as T, parent);
             }
             else if (objectType.IsArray)
             {
@@ -191,12 +192,12 @@ namespace Decima
                     return;
 
                 foreach (var arrayObj in (obj as Array))
-                    VisitObjectTypes(arrayObj, memberCallback);
+                    VisitObjectTypes(obj, arrayObj, memberCallback);
             }
             else if (objectType.InheritsGeneric(typeof(List<>)))
             {
                 foreach (var listObj in (obj as IList))
-                    VisitObjectTypes(listObj, memberCallback);
+                    VisitObjectTypes(obj, listObj, memberCallback);
             }
             else
             {
@@ -206,9 +207,20 @@ namespace Decima
                     var fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
 
                     foreach (var field in fields)
-                        VisitObjectTypes(field.GetValue(obj), memberCallback);
+                        VisitObjectTypes(obj, field.GetValue(obj), memberCallback);
                 }
             }
+        }
+
+        public IEnumerator<object> GetEnumerator()
+        {
+            foreach (var entry in Entries)
+                yield return entry.ContainedObject;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

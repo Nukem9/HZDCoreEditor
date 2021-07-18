@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Decima
 {
-    static partial class RTTI
+    public static partial class RTTI
     {
         /// <summary>
         /// Describes a class, struct, or enum that is serialized as Core binary data using reflection
@@ -61,9 +61,9 @@ namespace Decima
         /// </summary>
         public interface ISerializable
         {
-            public void Deserialize(BinaryReader reader) => throw new NotImplementedException();
+            void Deserialize(BinaryReader reader);
 
-            public void Serialize(BinaryWriter writer) => throw new NotImplementedException();
+            void Serialize(BinaryWriter writer);
         }
 
         /// <summary>
@@ -107,9 +107,9 @@ namespace Decima
         /// </remarks>
         public interface ISaveSerializable
         {
-            public void DeserializeStateObject(SaveState state) => throw new NotImplementedException();
+            void DeserializeStateObject(SaveState state);
 
-            public void SerializeStateObject(SaveState state) => throw new NotImplementedException();
+            void SerializeStateObject(SaveState state);
         }
 
         /// <summary>
@@ -117,11 +117,9 @@ namespace Decima
         /// </summary>
         public interface IExtraBinaryDataCallback
         {
-            public void DeserializeExtraData(BinaryReader reader)
-            {
-            }
+            void DeserializeExtraData(BinaryReader reader);
 
-            public void SerializeExtraData(BinaryWriter writer) => throw new NotImplementedException();
+            void SerializeExtraData(BinaryWriter writer);
         }
     }
 }

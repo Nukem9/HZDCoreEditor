@@ -1,4 +1,6 @@
-﻿namespace Decima.HZD
+﻿using System;
+
+namespace Decima.HZD
 {
     [RTTI.Serializable(0x4760E98FA8545BCF, GameType.HZD)]
     public class Vec3 : RTTI.ISaveSerializable
@@ -13,5 +15,6 @@
             Y = state.Reader.ReadSingle();
             Z = state.Reader.ReadSingle();
         }
+        public void SerializeStateObject(SaveState state) => throw new NotImplementedException();
     }
 }

@@ -10,29 +10,20 @@ namespace Decima
     {
         private const uint WriterBlockSizeThreshold = 256 * 1024;
 
-        private readonly FileStream ArchiveFileHandle;
+        private readonly string _archivePath;
+        private readonly bool _allowOverwrite;
         private ulong WriterDecompressedBlockOffset;
 
         public PackfileWriter(string archivePath, bool encrypted = false, bool allowOverwrite = false)
         {
-            ArchiveFileHandle = File.Open(archivePath, allowOverwrite ? FileMode.Create : FileMode.CreateNew, FileAccess.ReadWrite, FileShare.None);
+            _archivePath = archivePath;
+            _allowOverwrite = allowOverwrite;
 
             Header = new PackfileHeader();
             FileEntries = new List<FileEntry>();
             BlockEntries = new List<BlockEntry>();
 
             Header.IsEncrypted = encrypted;
-        }
-
-        public override void Dispose()
-        {
-            ArchiveFileHandle.Close();
-            base.Dispose();
-        }
-
-        public void AddFile(string path, string sourcePath)
-        {
-            throw new NotImplementedException();
         }
 
         public void BuildFromFileList(string physicalPathRoot, string[] sourceFiles)
@@ -44,40 +35,40 @@ namespace Decima
             int blockCount = (int)((totalBlockSize + WriterBlockSizeThreshold) / WriterBlockSizeThreshold);
             int fileCount = sourceFiles.Length;
 
-            using (var archiveWriter = new BinaryWriter(ArchiveFileHandle, Encoding.UTF8, true))
-            using (var blockStream = new MemoryStream())
+            using var fs = File.Open(_archivePath, _allowOverwrite ? FileMode.Create : FileMode.CreateNew, FileAccess.ReadWrite, FileShare.None);
+            using var archiveWriter = new BinaryWriter(fs, Encoding.UTF8, true);
+            using var blockStream = new MemoryStream();
+
+            // Reserve space for the header
+            archiveWriter.BaseStream.Position = CalculateArchiveHeaderLength(fileCount, blockCount);
+
+            // Write file data sequentially
+            ulong decompressedFileOffset = 0;
+
+            foreach (string filePath in sourceFiles)
             {
-                // Reserve space for the header
-                archiveWriter.BaseStream.Position = CalculateArchiveHeaderLength(fileCount, blockCount);
+                using var reader = new BinaryReader(File.OpenRead(Path.Combine(physicalPathRoot, filePath)));
 
-                // Write file data sequentially
-                ulong decompressedFileOffset = 0;
-
-                foreach (string filePath in sourceFiles)
+                var fileEntry = new FileEntry()
                 {
-                    using var reader = new BinaryReader(File.OpenRead(Path.Combine(physicalPathRoot, filePath)));
+                    PathHash = GetHashForPath(filePath),
+                    DecompressedOffset = decompressedFileOffset,
+                    DecompressedSize = (uint)reader.BaseStream.Length,
+                };
 
-                    var fileEntry = new FileEntry()
-                    {
-                        PathHash = GetHashForPath(filePath),
-                        DecompressedOffset = decompressedFileOffset,
-                        DecompressedSize = (uint)reader.BaseStream.Length,
-                    };
+                // This appends data until a 256KB block write/flush is triggered - combining multiple files into single block entries
+                reader.BaseStream.CopyTo(blockStream);
+                decompressedFileOffset += fileEntry.DecompressedSize;
 
-                    // This appends data until a 256KB block write/flush is triggered - combining multiple files into single block entries
-                    reader.BaseStream.CopyTo(blockStream);
-                    decompressedFileOffset += fileEntry.DecompressedSize;
-
-                    WriteBlockEntries(archiveWriter, blockStream, false, tempCompressedBuffer);
-                    FileEntries.Add(fileEntry);
-                }
-
-                WriteBlockEntries(archiveWriter, blockStream, true, tempCompressedBuffer);
-
-                // Rewind & insert headers before the compressed data
-                archiveWriter.BaseStream.Position = 0;
-                WriteArchiveHeaders(archiveWriter);
+                WriteBlockEntries(archiveWriter, blockStream, false, tempCompressedBuffer);
+                FileEntries.Add(fileEntry);
             }
+
+            WriteBlockEntries(archiveWriter, blockStream, true, tempCompressedBuffer);
+
+            // Rewind & insert headers before the compressed data
+            archiveWriter.BaseStream.Position = 0;
+            WriteArchiveHeaders(archiveWriter);
         }
 
         private void WriteBlockEntries(BinaryWriter writer, MemoryStream blockStream, bool flushAllData, byte[] compressorBufferCache)

@@ -1,3 +1,0 @@
-[submodule "Dependencies/detours"]
-	path = Dependencies/detours
-	url = https://github.com/Nukem9/detours.git

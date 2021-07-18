@@ -59,6 +59,7 @@ namespace Decima
         {
             Value = state.ReadIndexedString();
         }
+        public void SerializeStateObject(SaveState state) => throw new NotImplementedException();
 
         public override string ToString()
         {
@@ -68,6 +69,10 @@ namespace Decima
         public static implicit operator BaseString(string value)
         {
             return new BaseString(value);
+        }
+        public static implicit operator string(BaseString value)
+        {
+            return value?.Value;
         }
     }
 }

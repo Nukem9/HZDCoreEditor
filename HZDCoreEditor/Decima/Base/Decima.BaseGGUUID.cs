@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Collections.Generic;
 
 namespace Decima
 {
@@ -54,14 +55,13 @@ namespace Decima
 
         public override string ToString()
         {
-            return $"{{{Data3:X2}{Data2:X2}{Data1:X2}{Data0:X2}-{Data5:X2}{Data4:X2}-{Data7:X2}{Data6:X2}-{Data8:X2}{Data9:X2}-{Data10:X2}{Data11:X2}{Data12:X2}{Data13:X2}{Data14:X2}{Data15:X2}}}";
+            return new Guid(ToBytes()).ToString("B").ToUpper();
         }
 
         public BaseGGUUID FromData(BinaryReader reader)
         {
             return FromData(reader.ReadBytesStrict(16));
         }
-
         public BaseGGUUID FromData(ReadOnlySpan<byte> data)
         {
             AssignFromData(data);
@@ -80,8 +80,15 @@ namespace Decima
         {
             AssignFromOther(state.ReadIndexedGUID());
         }
+        public static BaseGGUUID FromOther(BaseGGUUID other)
+        {
+            var x = new BaseGGUUID();
+            x.AssignFromOther(other);
 
-        protected void AssignFromOther(BaseGGUUID other)
+            return x;
+        }
+
+        public void AssignFromOther(BaseGGUUID other)
         {
             // No unions. No marshaling. Assign each manually...
             Data0 = other.Data0;
@@ -122,9 +129,88 @@ namespace Decima
             Data15 = data[15];
         }
 
+        public byte[] ToBytes()
+        {
+            return new []
+            {
+                Data0, Data1, Data2, Data3, Data4, Data5, Data6, Data7,
+                Data8, Data9, Data10, Data11, Data12, Data13, Data14, Data15
+            };
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is BaseGGUUID gGUUID &&
+                Data0 == gGUUID.Data0 &&
+                Data1 == gGUUID.Data1 &&
+                Data2 == gGUUID.Data2 &&
+                Data3 == gGUUID.Data3 &&
+                Data4 == gGUUID.Data4 &&
+                Data5 == gGUUID.Data5 &&
+                Data6 == gGUUID.Data6 &&
+                Data7 == gGUUID.Data7 &&
+                Data8 == gGUUID.Data8 &&
+                Data9 == gGUUID.Data9 &&
+                Data10 == gGUUID.Data10 &&
+                Data11 == gGUUID.Data11 &&
+                Data12 == gGUUID.Data12 &&
+                Data13 == gGUUID.Data13 &&
+                Data14 == gGUUID.Data14 &&
+                Data15 == gGUUID.Data15;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                const int p = 16777619;
+                int hash = (int)2166136261;
+                
+                hash = (hash ^ Data0) * p;
+                hash = (hash ^ Data1) * p;
+                hash = (hash ^ Data2) * p;
+                hash = (hash ^ Data3) * p;
+                hash = (hash ^ Data4) * p;
+                hash = (hash ^ Data5) * p;
+                hash = (hash ^ Data6) * p;
+                hash = (hash ^ Data7) * p;
+                hash = (hash ^ Data8) * p;
+                hash = (hash ^ Data9) * p;
+                hash = (hash ^ Data10) * p;
+                hash = (hash ^ Data11) * p;
+                hash = (hash ^ Data12) * p;
+                hash = (hash ^ Data13) * p;
+                hash = (hash ^ Data14) * p;
+                hash = (hash ^ Data15) * p;
+
+                hash += hash << 13;
+                hash ^= hash >> 7;
+                hash += hash << 3;
+                hash ^= hash >> 17;
+                hash += hash << 5;
+                return hash;
+            }
+        }
+        public void SerializeStateObject(SaveState state) => throw new NotImplementedException();
+
         public static implicit operator BaseGGUUID(string value)
         {
             return new BaseGGUUID().FromString(value);
+        }
+
+        public static implicit operator BaseGGUUID(Guid value)
+        {
+            return new BaseGGUUID().FromData(value.ToByteArray());
+        }
+
+        public static bool operator ==(BaseGGUUID left, BaseGGUUID right)
+        {
+            return EqualityComparer<BaseGGUUID>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(BaseGGUUID left, BaseGGUUID right)
+        {
+            return !(left == right);
         }
     }
 }

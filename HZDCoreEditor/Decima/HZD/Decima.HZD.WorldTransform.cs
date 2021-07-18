@@ -49,5 +49,6 @@ namespace Decima.HZD
                     Position.DeserializeStateObject(state);
             }
         }
+        public void SerializeStateObject(SaveState state) => throw new NotImplementedException();
     }
 }

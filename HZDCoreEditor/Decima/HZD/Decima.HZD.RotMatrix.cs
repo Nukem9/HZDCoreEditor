@@ -1,4 +1,6 @@
-﻿namespace Decima.HZD
+﻿using System;
+
+namespace Decima.HZD
 {
     [RTTI.Serializable(0xC0E251CE6C81D04D, GameType.HZD)]
     public class RotMatrix : RTTI.ISaveSerializable
@@ -30,5 +32,6 @@
                 Z = state.Reader.ReadSingle(),
             };
         }
+        public void SerializeStateObject(SaveState state) => throw new NotImplementedException();
     }
 }

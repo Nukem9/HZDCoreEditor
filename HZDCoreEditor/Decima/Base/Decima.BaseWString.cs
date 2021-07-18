@@ -35,7 +35,7 @@ namespace Decima
         public void Serialize(BinaryWriter writer)
         {
             byte[] data = Encoding.Unicode.GetBytes(Value);
-            writer.Write((uint)data.Length);
+            writer.Write((uint)(data.Length / sizeof(ushort)));
 
             if (data.Length > 0)
                 writer.Write(data);
@@ -45,6 +45,7 @@ namespace Decima
         {
             Value = state.ReadIndexedWideString();
         }
+        public void SerializeStateObject(SaveState state) => throw new NotImplementedException();
 
         public override string ToString()
         {

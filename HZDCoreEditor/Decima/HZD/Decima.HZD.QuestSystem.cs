@@ -1,4 +1,5 @@
-﻿using Utility;
+﻿using System;
+using Utility;
 using System.Collections.Generic;
 
 namespace Decima.HZD
@@ -46,5 +47,6 @@ namespace Decima.HZD
                 });
             }
         }
+        public void SerializeStateObject(SaveState state) => throw new NotImplementedException();
     }
 }

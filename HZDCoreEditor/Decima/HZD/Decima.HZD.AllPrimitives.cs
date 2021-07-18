@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Numerics;
 using Utility;
@@ -48,12 +49,17 @@ namespace Decima.HZD
     /// </summary>
     public class Array<T> : BaseArray<T>
     {
-        public Array() : base()
-        {
-        }
+        public Array() 
+            : base() { }
 
-        public Array(int capacity) : base(capacity)
+        public Array(int capacity) 
+            : base(capacity) { }
+
+        public Array(T[] source)
+            : base(source.Length)
         {
+            for (int i = 0; i < source.Length; i++)
+                Add(source[i]);
         }
     }
 
@@ -155,5 +161,8 @@ namespace Decima.HZD
         {
             Value = new BigInteger(reader.ReadBytesStrict(16));
         }
+        public void Serialize(BinaryWriter writer) => throw new NotImplementedException();
+        public void DeserializeStateObject(SaveState state) => throw new NotImplementedException();
+        public void SerializeStateObject(SaveState state) => throw new NotImplementedException();
     }
 }
