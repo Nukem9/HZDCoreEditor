@@ -174,6 +174,9 @@
     <ClInclude Include="common.h" />
     <ClInclude Include="HRZ\Core\BaseResource.h" />
     <ClInclude Include="HRZ\Core\BoundingBox3.h" />
+    <ClInclude Include="HRZ\Core\Climate.h" />
+    <ClInclude Include="HRZ\Core\ClimateBase.h" />
+    <ClInclude Include="HRZ\Core\ClimateWeatherState.h" />
     <ClInclude Include="HRZ\Core\ConditionListener.h" />
     <ClInclude Include="HRZ\Core\CoreObject.h" />
     <ClInclude Include="HRZ\Core\Entity.h" />

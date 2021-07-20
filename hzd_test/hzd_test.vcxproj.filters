@@ -205,6 +205,15 @@
     <ClInclude Include="HRZ\Core\BoundingBox3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HRZ\Core\ClimateBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\Climate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\ClimateWeatherState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="HRZ\Core\RTTI.inl">
