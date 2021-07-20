@@ -164,6 +164,10 @@
     <ClCompile Include="common.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="HRZ\Core\GGRTTI.cpp" />
+    <ClCompile Include="HRZ\DebugUI\ComponentViewWindow.cpp" />
+    <ClCompile Include="HRZ\DebugUI\DebugUI.cpp" />
+    <ClCompile Include="HRZ\DebugUI\EntityWindow.cpp" />
+    <ClCompile Include="HRZ\DebugUI\WeatherWindow.cpp" />
     <ClCompile Include="MSRTTI.cpp" />
     <ClCompile Include="RTTICSharpExporter.cpp" />
     <ClCompile Include="RTTIIDAExporter.cpp" />
@@ -202,6 +206,13 @@
     <ClInclude Include="HRZ\Core\ViewDependentEntity.h" />
     <ClInclude Include="HRZ\Core\WeatherSetup.h" />
     <ClInclude Include="HRZ\Core\WeatherSystem.h" />
+    <ClInclude Include="HRZ\DebugUI\ComponentViewWindow.h" />
+    <ClInclude Include="HRZ\DebugUI\DebugUI.h" />
+    <ClInclude Include="HRZ\DebugUI\DebugUIWindow.h" />
+    <ClInclude Include="HRZ\DebugUI\DemoWindow.h" />
+    <ClInclude Include="HRZ\DebugUI\EntityWindow.h" />
+    <ClInclude Include="HRZ\DebugUI\MainMenuBar.h" />
+    <ClInclude Include="HRZ\DebugUI\WeatherWindow.h" />
     <ClInclude Include="HRZ\PCore\UUIDRef.h" />
     <ClInclude Include="HRZ\PCore\WString.h" />
     <ClInclude Include="HRZ\PGraphics3D\HwRenderBuffer.h" />

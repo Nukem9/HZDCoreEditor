@@ -39,6 +39,16 @@
     <ClCompile Include="HRZ\Core\GGRTTI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="HRZ\DebugUI\DebugUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HRZ\DebugUI\EntityWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HRZ\DebugUI\ComponentViewWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HRZ\DebugUI\WeatherWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -172,7 +182,22 @@
     <ClInclude Include="HRZ\Core\ConditionListener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HRZ\DebugUI\DebugUIWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\DebugUI\DebugUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\DebugUI\EntityWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\DebugUI\MainMenuBar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="HRZ\Core\Mover.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\DebugUI\ComponentViewWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HRZ\Core\LocalizedTextResource.h">
@@ -203,6 +228,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HRZ\Core\BoundingBox3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\DebugUI\WeatherWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\DebugUI\DemoWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HRZ\Core\ClimateBase.h">
