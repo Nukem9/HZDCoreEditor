@@ -15,7 +15,7 @@ public:
 	uint32_t m_RefCount = 0;	// 0x8
 	GGUUID m_ObjectUUID;		// 0x10
 
-	virtual const GGRTTI *GetRTTI() const override;	// 0
+	virtual const RTTI *GetRTTI() const override;	// 0
 	virtual ~RTTIRefObject() override;				// 1
 	virtual void RTTIRefObjectUnknown02();			// 2
 	virtual void RTTIRefObjectUnknown03();			// 3

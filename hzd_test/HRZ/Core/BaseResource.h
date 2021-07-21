@@ -10,7 +10,7 @@ namespace HRZ
 class BaseResource : public CoreObject
 {
 public:
-	virtual const GGRTTI *GetRTTI() const override;				// 0
+	virtual const RTTI *GetRTTI() const override;				// 0
 	virtual ~BaseResource() override;							// 1
 	virtual CoreObject *CreateResourceInstance(void *, bool);	// 16
 };

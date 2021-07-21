@@ -44,7 +44,7 @@ public:
 	float m_WetnessSaturationTime;								// 0x358
 	char _pad35C[0xA4];
 
-	virtual const GGRTTI *GetRTTI() const override;	// 0
+	virtual const RTTI *GetRTTI() const override;	// 0
 	virtual ~WeatherSystem() override;				// 1
 
 	void SetWeatherOverride(const WeatherSetup *Setup, float TransitionTime, int Unknown)

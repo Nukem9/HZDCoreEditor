@@ -25,7 +25,7 @@ public:
 	RecursiveLock m_DataLock;	// 0xE8
 	char _pad[0x18];
 
-	virtual const GGRTTI *GetRTTI() const override;			// 0
+	virtual const RTTI *GetRTTI() const override;			// 0
 	virtual ~Player() override;								// 1
 	virtual void NetReplicatedObjectUnknown04() override;	// 4
 	virtual void NetReplicatedObjectUnknown05() override;	// 5

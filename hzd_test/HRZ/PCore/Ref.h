@@ -3,7 +3,7 @@
 namespace HRZ
 {
 
-class GGRTTI;
+class RTTI;
 
 template<typename T>
 class Ref final
@@ -50,7 +50,7 @@ public:
 
 	static Ref<T> Create()
 	{
-		auto memory = reinterpret_cast<T *>(CallOffset<0x02ED220, void *(*)(const GGRTTI *)>(T::TypeInfo));
+		auto memory = reinterpret_cast<T *>(CallOffset<0x02ED220, void *(*)(const RTTI *)>(T::TypeInfo));
 
 		if (memory)
 			T::TypeInfo->AsClass()->m_Constructor(nullptr, memory);

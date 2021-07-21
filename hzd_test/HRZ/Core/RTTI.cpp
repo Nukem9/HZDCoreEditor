@@ -1,84 +1,84 @@
-#include "GGRTTI.h"
+#include "RTTI.h"
 
 namespace HRZ
 {
 
 #include "RTTI.inl"
 
-bool GGRTTI::IsExactKindOf(const GGRTTI *Other) const
+bool RTTI::IsExactKindOf(const RTTI *Other) const
 {
 	return this == Other;
 }
 
-bool GGRTTI::IsKindOf(const GGRTTI *Other) const
+bool RTTI::IsKindOf(const RTTI *Other) const
 {
 	return static_cast<TypeId>(m_RuntimeTypeId1 - Other->m_RuntimeTypeId1) <= Other->m_RuntimeTypeId2;
 }
 
-const GGRTTIContainer *GGRTTI::AsContainer() const
+const RTTIContainer *RTTI::AsContainer() const
 {
 	if (m_InfoType != INFO_TYPE_REFERENCE && m_InfoType != INFO_TYPE_CONTAINER)
 		return nullptr;
 
-	return static_cast<const GGRTTIContainer *>(this);
+	return static_cast<const RTTIContainer *>(this);
 }
 
-const GGRTTIEnum *GGRTTI::AsEnum() const
+const RTTIEnum *RTTI::AsEnum() const
 {
 	if (m_InfoType != INFO_TYPE_ENUM && m_InfoType != INFO_TYPE_ENUM_2)
 		return nullptr;
 
-	return static_cast<const GGRTTIEnum *>(this);
+	return static_cast<const RTTIEnum *>(this);
 }
 
-const GGRTTIClass *GGRTTI::AsClass() const
+const RTTIClass *RTTI::AsClass() const
 {
 	if (m_InfoType != INFO_TYPE_CLASS)
 		return nullptr;
 
-	return static_cast<const GGRTTIClass *>(this);
+	return static_cast<const RTTIClass *>(this);
 }
 
-const GGRTTI *GGRTTI::GetContainedType() const
+const RTTI *RTTI::GetContainedType() const
 {
 	switch (m_InfoType)
 	{
 	case INFO_TYPE_REFERENCE:
 	case INFO_TYPE_CONTAINER:
-		return static_cast<const GGRTTIContainer *>(this)->m_Type;
+		return static_cast<const RTTIContainer *>(this)->m_Type;
 	}
 
 	return this;
 }
 
-std::string_view GGRTTI::GetRTTITypeName() const
+std::string_view RTTI::GetRTTITypeName() const
 {
 	switch (m_InfoType)
 	{
-	case INFO_TYPE_PRIMITIVE: return "GGRTTIPrimitive";
-	case INFO_TYPE_REFERENCE: return "GGRTTIContainer";
-	case INFO_TYPE_CONTAINER: return "GGRTTIContainer";
-	case INFO_TYPE_ENUM: return "GGRTTIEnum";
-	case INFO_TYPE_CLASS: return "GGRTTIClass";
-	case INFO_TYPE_ENUM_2: return "GGRTTIEnum";
-	case INFO_TYPE_POD: return "GGRTTIPOD";
+	case INFO_TYPE_PRIMITIVE: return "RTTIPrimitive";
+	case INFO_TYPE_REFERENCE: return "RTTIContainer";
+	case INFO_TYPE_CONTAINER: return "RTTIContainer";
+	case INFO_TYPE_ENUM: return "RTTIEnum";
+	case INFO_TYPE_CLASS: return "RTTIClass";
+	case INFO_TYPE_ENUM_2: return "RTTIEnum";
+	case INFO_TYPE_POD: return "RTTIPOD";
 	}
 
 	return "";
 }
 
-std::string GGRTTI::GetSymbolName() const
+std::string RTTI::GetSymbolName() const
 {
 	switch (m_InfoType)
 	{
 	case INFO_TYPE_PRIMITIVE:
-		return static_cast<const GGRTTIPrimitive *>(this)->m_Name;
+		return static_cast<const RTTIPrimitive *>(this)->m_Name;
 
 	case INFO_TYPE_REFERENCE:
 	case INFO_TYPE_CONTAINER:
 	{
 		char refType[1024];
-		auto container = static_cast<const GGRTTIContainer *>(this);
+		auto container = static_cast<const RTTIContainer *>(this);
 
 		if (!strcmp(container->m_Data->m_Name, "cptr"))
 			sprintf_s(refType, "CPtr<%s>", container->m_Type->GetSymbolName().c_str());
@@ -90,14 +90,14 @@ std::string GGRTTI::GetSymbolName() const
 
 	case INFO_TYPE_ENUM:
 	case INFO_TYPE_ENUM_2:
-		return static_cast<const GGRTTIEnum *>(this)->m_Name;
+		return static_cast<const RTTIEnum *>(this)->m_Name;
 
 	case INFO_TYPE_CLASS:
-		return static_cast<const GGRTTIClass *>(this)->m_Name;
+		return static_cast<const RTTIClass *>(this)->m_Name;
 
 	case INFO_TYPE_POD:
 		char podType[16];
-		sprintf_s(podType, "POD%d", static_cast<const GGRTTIPOD *>(this)->m_Size);
+		sprintf_s(podType, "POD%d", static_cast<const RTTIPOD *>(this)->m_Size);
 
 		return podType;
 	}
@@ -105,25 +105,25 @@ std::string GGRTTI::GetSymbolName() const
 	return "";
 }
 
-uint64_t GGRTTI::GetCoreBinaryTypeId() const
+uint64_t RTTI::GetCoreBinaryTypeId() const
 {
 	uint64_t hashedData[2] = {};
-	CallID<"GGRTTI::GetCoreBinaryTypeId", void(*)(uint64_t *, const GGRTTI *, __int64)>(hashedData, this, 2);
+	CallID<"RTTI::GetCoreBinaryTypeId", void(*)(uint64_t *, const RTTI *, __int64)>(hashedData, this, 2);
 
 	return hashedData[0];
 }
 
-bool GGRTTIClass::MemberEntry::IsGroupMarker() const
+bool RTTIClass::MemberEntry::IsGroupMarker() const
 {
 	return m_Type == nullptr;
 }
 
-bool GGRTTIClass::MemberEntry::IsSaveStateOnly() const
+bool RTTIClass::MemberEntry::IsSaveStateOnly() const
 {
 	return (m_Flags & SAVE_STATE_ONLY) == SAVE_STATE_ONLY;
 }
 
-bool GGRTTIClass::IsPostLoadCallbackEnabled() const
+bool RTTIClass::IsPostLoadCallbackEnabled() const
 {
 	for (auto& event : ClassMessageHandlers())
 	{
@@ -134,7 +134,7 @@ bool GGRTTIClass::IsPostLoadCallbackEnabled() const
 	return false;
 }
 
-std::vector<std::tuple<const GGRTTIClass::MemberEntry *, const char *, size_t>> GGRTTIClass::GetCategorizedClassMembers() const
+std::vector<std::tuple<const RTTIClass::MemberEntry *, const char *, size_t>> RTTIClass::GetCategorizedClassMembers() const
 {
 	std::vector<SorterEntry> sortedEntries;
 	BuildFullClassMemberLayout(this, sortedEntries, 0, true);
@@ -160,7 +160,7 @@ std::vector<std::tuple<const GGRTTIClass::MemberEntry *, const char *, size_t>> 
 	return out;
 }
 
-void GGRTTIClass::BuildFullClassMemberLayout(const GGRTTIClass *Type, std::vector<SorterEntry>& Members, uint32_t Offset, bool TopLevel)
+void RTTIClass::BuildFullClassMemberLayout(const RTTIClass *Type, std::vector<SorterEntry>& Members, uint32_t Offset, bool TopLevel)
 {
 	const char *activeCategory = "";
 

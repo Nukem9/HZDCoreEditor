@@ -7,8 +7,8 @@
 namespace HRZ
 {
 
-extern const GGRTTI *RTTI_ItemDescriptionComponent;
-extern const GGRTTI *RTTI_ItemDescriptionComponentResource;
+extern const RTTI *RTTI_ItemDescriptionComponent;
+extern const RTTI *RTTI_ItemDescriptionComponentResource;
 
 class ItemPriceInfo;
 class LocalizedTextResource;
@@ -33,10 +33,10 @@ public:
 	Ref<StatsDisplayResource> m_StatsDisplayResource;				// 0x70
 	Ref<MovieResource> m_Movie;										// 0x78
 
-	virtual const GGRTTI *GetRTTI() const override;				// 0
+	virtual const RTTI *GetRTTI() const override;				// 0
 	virtual ~ItemDescriptionComponentResource() override;		// 1
-	virtual const GGRTTI *GetComponentRTTI() const override;	// 18
-	virtual const GGRTTI *GetComponentRepRTTI() const override;	// 19
+	virtual const RTTI *GetComponentRTTI() const override;		// 18
+	virtual const RTTI *GetComponentRepRTTI() const override;	// 19
 };
 assert_size(ItemDescriptionComponentResource, 0x80);
 
@@ -45,9 +45,9 @@ class ItemDescriptionComponent : public EntityComponent
 public:
 	static inline auto& TypeInfo = RTTI_ItemDescriptionComponent;
 
-	virtual const GGRTTI *GetRTTI() const override;				// 0
+	virtual const RTTI *GetRTTI() const override;				// 0
 	virtual ~ItemDescriptionComponent() override;				// 1
-	virtual const GGRTTI *GetComponentRepRTTI() const override;	// 4
+	virtual const RTTI *GetComponentRepRTTI() const override;	// 4
 };
 assert_size(ItemDescriptionComponent, 0x58);
 

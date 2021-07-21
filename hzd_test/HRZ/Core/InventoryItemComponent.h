@@ -7,8 +7,8 @@
 namespace HRZ
 {
 
-extern const GGRTTI *RTTI_InventoryItemComponent;
-extern const GGRTTI *RTTI_InventoryItemComponentResource;
+extern const RTTI *RTTI_InventoryItemComponent;
+extern const RTTI *RTTI_InventoryItemComponentResource;
 
 class EquipSlotType;
 class GraphProgramResource;
@@ -30,10 +30,10 @@ public:
 	bool m_MustBeWieldedOrDropped;									// 0xD0
 	bool m_PreventSaveToInventory;									// 0xD1
 
-	virtual const GGRTTI *GetRTTI() const override;				// 0
+	virtual const RTTI *GetRTTI() const override;				// 0
 	virtual ~InventoryItemComponentResource() override;			// 1
-	virtual const GGRTTI *GetComponentRTTI() const override;	// 18
-	virtual const GGRTTI *GetComponentRepRTTI() const override;	// 19
+	virtual const RTTI *GetComponentRTTI() const override;		// 18
+	virtual const RTTI *GetComponentRepRTTI() const override;	// 19
 	virtual bool EntityComponentResourceUnknown20() override;	// 20
 };
 assert_size(InventoryItemComponentResource, 0xD8);
@@ -47,9 +47,9 @@ public:
 	Ref<void *> m_UnknownRef60;	// 0x60
 	bool m_IsDroppable;			// 0x68
 
-	virtual const GGRTTI *GetRTTI() const override;				// 0
+	virtual const RTTI *GetRTTI() const override;				// 0
 	virtual ~InventoryItemComponent() override;					// 1
-	virtual const GGRTTI *GetComponentRepRTTI() const override;	// 4
+	virtual const RTTI *GetComponentRepRTTI() const override;	// 4
 };
 assert_size(InventoryItemComponent, 0x70);
 

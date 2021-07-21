@@ -10,7 +10,7 @@ namespace HRZ
 class CoreObject : public RTTIRefObject
 {
 public:
-	virtual const GGRTTI *GetRTTI() const override;	// 0
+	virtual const RTTI *GetRTTI() const override;	// 0
 	virtual ~CoreObject() override;					// 1
 	virtual void CoreObjectUnknown04();				// 4
 	virtual String& GetName();						// 5

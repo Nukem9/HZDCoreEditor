@@ -9,13 +9,13 @@
 namespace HRZ
 {
 
-class GGRTTIPrimitive;
-class GGRTTIContainer;
-class GGRTTIEnum;
-class GGRTTIClass;
-class GGRTTIPOD;
+class RTTIPrimitive;
+class RTTIContainer;
+class RTTIEnum;
+class RTTIClass;
+class RTTIPOD;
 
-class GGRTTI
+class RTTI
 {
 public:
 	enum TypeId : uint16_t
@@ -55,32 +55,32 @@ public:
 		};
 	};
 
-	bool IsExactKindOf(const GGRTTI *Other) const;
-	bool IsKindOf(const GGRTTI *Other) const;
+	bool IsExactKindOf(const RTTI *Other) const;
+	bool IsKindOf(const RTTI *Other) const;
 
-	const GGRTTIContainer *AsContainer() const;
-	const GGRTTIEnum *AsEnum() const;
-	const GGRTTIClass *AsClass() const;
+	const RTTIContainer *AsContainer() const;
+	const RTTIEnum *AsEnum() const;
+	const RTTIClass *AsClass() const;
 
-	const GGRTTI *GetContainedType() const;
+	const RTTI *GetContainedType() const;
 	std::string_view GetRTTITypeName() const;
 	std::string GetSymbolName() const;
 	uint64_t GetCoreBinaryTypeId() const;
 };
-assert_offset(GGRTTI, m_InfoType, 0x4);
-assert_offset(GGRTTI, m_EnumUnderlyingTypeSize, 0x5);
-assert_offset(GGRTTI, m_ClassInheritanceCount, 0x5);
-assert_offset(GGRTTI, m_EnumMemberCount, 0x6);
-assert_offset(GGRTTI, m_ClassMemberCount, 0x6);
-assert_offset(GGRTTI, m_LuaFunctionCount, 0x7);
+assert_offset(RTTI, m_InfoType, 0x4);
+assert_offset(RTTI, m_EnumUnderlyingTypeSize, 0x5);
+assert_offset(RTTI, m_ClassInheritanceCount, 0x5);
+assert_offset(RTTI, m_EnumMemberCount, 0x6);
+assert_offset(RTTI, m_ClassMemberCount, 0x6);
+assert_offset(RTTI, m_LuaFunctionCount, 0x7);
 
-class GGRTTIPrimitive : public GGRTTI
+class RTTIPrimitive : public RTTI
 {
 public:
 	// Type 0 = Primitive (float, int, bool, String)
 	char _pad0[0x8];			// +0x8
 	const char *m_Name;			// +0x10
-	GGRTTI *m_ParentType;		// +0x18
+	RTTI *m_ParentType;		// +0x18
 	void *m_DeserializeString;	// +0x20
 	void *m_SerializeString;	// +0x28
 	void *m_SwapValues;			// +0x30
@@ -93,15 +93,15 @@ public:
 	void *m_CompareByStrings;	// +0x68
 	void *m_UnknownFunction2;	// +0x70
 };
-assert_offset(GGRTTIPrimitive, m_Name, 0x10);
-assert_offset(GGRTTIPrimitive, m_ParentType, 0x18);
-assert_offset(GGRTTIPrimitive, m_DeserializeString, 0x20);
-assert_offset(GGRTTIPrimitive, m_UnknownFunction1, 0x48);
-assert_offset(GGRTTIPrimitive, m_CompareByStrings, 0x68);
-assert_offset(GGRTTIPrimitive, m_UnknownFunction2, 0x70);
-assert_size(GGRTTIPrimitive, 0x78);
+assert_offset(RTTIPrimitive, m_Name, 0x10);
+assert_offset(RTTIPrimitive, m_ParentType, 0x18);
+assert_offset(RTTIPrimitive, m_DeserializeString, 0x20);
+assert_offset(RTTIPrimitive, m_UnknownFunction1, 0x48);
+assert_offset(RTTIPrimitive, m_CompareByStrings, 0x68);
+assert_offset(RTTIPrimitive, m_UnknownFunction2, 0x70);
+assert_size(RTTIPrimitive, 0x78);
 
-class GGRTTIContainer : public GGRTTI
+class RTTIContainer : public RTTI
 {
 public:
 	class ContainerData
@@ -112,14 +112,14 @@ public:
 
 	// Type 1 = Reference/Pointer (UUIDRef<>, StreamingRef<>, WeakPtr<>)
 	// Type 2 = Container (Array<float>)
-	GGRTTI *m_Type;			// +0x8
+	RTTI *m_Type;			// +0x8
 	ContainerData *m_Data;	// +0x10
 };
-assert_offset(GGRTTIContainer, m_Type, 0x8);
-assert_offset(GGRTTIContainer, m_Data, 0x10);
-assert_size(GGRTTIContainer, 0x18);
+assert_offset(RTTIContainer, m_Type, 0x8);
+assert_offset(RTTIContainer, m_Data, 0x10);
+assert_size(RTTIContainer, 0x18);
 
-class GGRTTIEnum : public GGRTTI
+class RTTIEnum : public RTTI
 {
 public:
 	class EnumEntry
@@ -145,23 +145,23 @@ public:
 		return std::span{ m_Values, m_EnumMemberCount };
 	}
 };
-assert_offset(GGRTTIEnum, m_Name, 0x10);
-assert_offset(GGRTTIEnum, m_Values, 0x18);
-assert_size(GGRTTIEnum, 0x28);
+assert_offset(RTTIEnum, m_Name, 0x10);
+assert_offset(RTTIEnum, m_Values, 0x18);
+assert_size(RTTIEnum, 0x28);
 
-class GGRTTIClass : public GGRTTI
+class RTTIClass : public RTTI
 {
 public:
 	using ConstructFunctionPfn = void *(*)(void *, void *);
 	using DestructFunctionPfn = void(*)(void *, void *);
 	using DeserializeFromStringPfn = void(*)();
 	using SerializeToStringPfn = void(*)();
-	using ExportedSymbolsGetterPfn = const GGRTTI *(*)();
+	using ExportedSymbolsGetterPfn = const RTTI *(*)();
 
 	class InheritanceEntry
 	{
 	public:
-		GGRTTI *m_Type;
+		RTTI *m_Type;
 		uint32_t m_Offset;
 	};
 	assert_size(InheritanceEntry, 0x10);
@@ -176,7 +176,7 @@ public:
 			SAVE_STATE_ONLY = 2,
 		};
 
-		GGRTTI *m_Type;
+		RTTI *m_Type;
 		uint16_t m_Offset;
 		Flags m_Flags;
 		const char *m_Name;
@@ -208,7 +208,7 @@ public:
 	class MessageHandlerEntry
 	{
 	public:
-		GGRTTI *m_Type;		// MsgReadBinary/MsgInit/MsgXXX
+		RTTI *m_Type;		// MsgReadBinary/MsgInit/MsgXXX
 		void *m_Callback;	// Handler
 	};
 	assert_size(MessageHandlerEntry, 0x10);
@@ -217,8 +217,8 @@ public:
 	{
 	public:
 		bool m_Unknown;
-		GGRTTI *m_Type;
-		GGRTTI *m_ClassType;
+		RTTI *m_Type;
+		RTTI *m_ClassType;
 	};
 	assert_size(InheritedMessageEntry, 0x18);
 
@@ -282,22 +282,22 @@ private:
 		bool m_TopLevel;
 	};
 
-	static void BuildFullClassMemberLayout(const GGRTTIClass *Type, std::vector<SorterEntry>& Members, uint32_t Offset, bool TopLevel);
+	static void BuildFullClassMemberLayout(const RTTIClass *Type, std::vector<SorterEntry>& Members, uint32_t Offset, bool TopLevel);
 };
-assert_offset(GGRTTIClass, m_MessageHandlerCount, 0x8);
-assert_offset(GGRTTIClass, m_Size, 0x10);
-assert_offset(GGRTTIClass, m_Constructor, 0x18);
-assert_offset(GGRTTIClass, m_Name, 0x38);
-assert_offset(GGRTTIClass, m_InheritanceTable, 0x58);
-assert_offset(GGRTTIClass, m_MemberTable, 0x60);
-assert_offset(GGRTTIClass, m_GetExportedSymbols, 0x80);
+assert_offset(RTTIClass, m_MessageHandlerCount, 0x8);
+assert_offset(RTTIClass, m_Size, 0x10);
+assert_offset(RTTIClass, m_Constructor, 0x18);
+assert_offset(RTTIClass, m_Name, 0x38);
+assert_offset(RTTIClass, m_InheritanceTable, 0x58);
+assert_offset(RTTIClass, m_MemberTable, 0x60);
+assert_offset(RTTIClass, m_GetExportedSymbols, 0x80);
 
-class GGRTTIPOD : public GGRTTI
+class RTTIPOD : public RTTI
 {
 public:
 	// Type 6 = Plain old data. Doesn't exist in static RTTI. They're generated at runtime by combining fields for optimization purposes.
 	uint32_t m_Size; // +0x8
 };
-assert_offset(GGRTTIPOD, m_Size, 0x8);
+assert_offset(RTTIPOD, m_Size, 0x8);
 
 }

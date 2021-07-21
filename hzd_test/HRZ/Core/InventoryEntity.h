@@ -12,7 +12,7 @@ class InventoryEntity : public ViewDependentEntity
 public:
 	char _pad2C0[0x50];
 
-	virtual const GGRTTI *GetRTTI() const override;	// 0
+	virtual const RTTI *GetRTTI() const override;	// 0
 	virtual ~InventoryEntity() override;			// 1
 	virtual void InventoryEntityUnknown39();		// 39
 	virtual void InventoryEntityUnknown40();		// 40

@@ -5,17 +5,17 @@
 #include "../PCore/Common.h"
 
 #include "RTTIObject.h"
-#include "GGRTTI.h"
+#include "RTTI.h"
 #include "WeakPtrTarget.h"
 #include "Resource.h"
 
 namespace HRZ
 {
 
-extern const GGRTTI *RTTI_EntityComponent;
-extern const GGRTTI *RTTI_EntityComponentContainer;
-extern const GGRTTI *RTTI_EntityComponentRep;
-extern const GGRTTI *RTTI_EntityComponentResource;
+extern const RTTI *RTTI_EntityComponent;
+extern const RTTI *RTTI_EntityComponentContainer;
+extern const RTTI *RTTI_EntityComponentRep;
+extern const RTTI *RTTI_EntityComponentResource;
 
 class Entity;
 class NetEntityComponentState;
@@ -25,10 +25,10 @@ class EntityComponentResource : public Resource
 public:
 	static inline auto& TypeInfo = RTTI_EntityComponentResource;
 
-	virtual const GGRTTI *GetRTTI() const override;		// 0
+	virtual const RTTI *GetRTTI() const override;		// 0
 	virtual ~EntityComponentResource() override;		// 1
-	virtual const GGRTTI *GetComponentRTTI() const;		// 18
-	virtual const GGRTTI *GetComponentRepRTTI() const;	// 19
+	virtual const RTTI *GetComponentRTTI() const;		// 18
+	virtual const RTTI *GetComponentRepRTTI() const;	// 19
 	virtual bool EntityComponentResourceUnknown20();	// 20
 };
 assert_size(EntityComponentResource, 0x28);
@@ -42,7 +42,7 @@ public:
 	void *m_Unknown20 = nullptr;
 	void *m_Unknown28 = nullptr;
 
-	virtual const GGRTTI *GetRTTI() const override;	// 0
+	virtual const RTTI *GetRTTI() const override;	// 0
 	virtual ~EntityComponentRep() override;			// 1
 };
 assert_offset(EntityComponentRep, m_Unknown18, 0x18);
@@ -61,9 +61,9 @@ public:
 	Entity *m_Entity = nullptr;
 	uint32_t m_Unknown50 = -1;// Component index?
 
-	virtual const GGRTTI *GetRTTI() const override;						// 0
+	virtual const RTTI *GetRTTI() const override;						// 0
 	virtual ~EntityComponent() override;								// 1
-	virtual const GGRTTI *GetComponentRepRTTI() const;					// 4
+	virtual const RTTI *GetComponentRepRTTI() const;					// 4
 	virtual void SetEntity(Entity *Entity);								// 5
 	virtual void SetResource(Ref<EntityComponentResource> Resource);	// 6
 	virtual void EntityComponentUnknown07();							// 7
@@ -91,9 +91,9 @@ public:
 	static inline auto& TypeInfo = RTTI_EntityComponentContainer;
 
 	Array<EntityComponent *> m_Components;		// Grouped by component type
-	Array<GGRTTI::TypeId> m_ComponentRTTITypes;	// Sorted for quick binary searches. Each entry index corresponds to a m_Components entry.
+	Array<RTTI::TypeId> m_ComponentRTTITypes;	// Sorted for quick binary searches. Each entry index corresponds to a m_Components entry.
 
-	bool GetFirstComponentIndexByType(const GGRTTI *Type, size_t& Index)
+	bool GetFirstComponentIndexByType(const RTTI *Type, size_t& Index)
 	{
 		// Binary search on array by finding the lowest bound first (multiple entries with the same type are possible)
 		ptrdiff_t lowBound = 0;
@@ -117,7 +117,7 @@ public:
 		Index = lowBound;
 		bool result = m_Components[Index]->GetRTTI()->IsKindOf(Type);
 
-		auto test = Call<EntityComponent *(*)(EntityComponentContainer *, const GGRTTI *)>((uintptr_t)GetModuleHandleW(nullptr) + 0x0B5BAB0, this, Type);
+		auto test = Call<EntityComponent *(*)(EntityComponentContainer *, const RTTI *)>((uintptr_t)GetModuleHandleW(nullptr) + 0x0B5BAB0, this, Type);
 
 		if (result && test != m_Components[Index])
 			__debugbreak();
@@ -127,7 +127,7 @@ public:
 		return result;
 	}
 
-	EntityComponent *FindComponentByType(const GGRTTI *Type)
+	EntityComponent *FindComponentByType(const RTTI *Type)
 	{
 		if (size_t index; GetFirstComponentIndexByType(Type, index))
 			return m_Components[index];
@@ -141,7 +141,7 @@ public:
 		return static_cast<T *>(FindComponentByType(T::TypeInfo));
 	}
 
-	std::span<EntityComponent *> FindComponentsByType(const GGRTTI *Type)
+	std::span<EntityComponent *> FindComponentsByType(const RTTI *Type)
 	{
 		__debugbreak();
 		__assume(0);

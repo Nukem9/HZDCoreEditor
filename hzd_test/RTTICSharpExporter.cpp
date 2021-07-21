@@ -1,7 +1,7 @@
 #include "common.h"
 #include "RTTICSharpExporter.h"
 
-extern std::unordered_set<const HRZ::GGRTTI *> AllRegisteredTypeInfo;
+extern std::unordered_set<const HRZ::RTTI *> AllRegisteredTypeInfo;
 
 namespace RTTICSharpExporter
 {
@@ -10,21 +10,21 @@ namespace RTTICSharpExporter
 		CreateDirectoryA(Directory, nullptr);
 
 		// Build a list of all {classes|enums}, sorted by name
-		std::vector<const GGRTTI *> sortedTypes;
+		std::vector<const RTTI *> sortedTypes;
 
 		for (auto& type : AllRegisteredTypeInfo)
 		{
 			switch (type->m_InfoType)
 			{
-			case GGRTTI::INFO_TYPE_CLASS:
-			case GGRTTI::INFO_TYPE_ENUM:
-			case GGRTTI::INFO_TYPE_ENUM_2:
+			case RTTI::INFO_TYPE_CLASS:
+			case RTTI::INFO_TYPE_ENUM:
+			case RTTI::INFO_TYPE_ENUM_2:
 				sortedTypes.emplace_back(type);
 				break;
 			}
 		}
 
-		std::sort(sortedTypes.begin(), sortedTypes.end(), [](const GGRTTI *A, const GGRTTI *B)
+		std::sort(sortedTypes.begin(), sortedTypes.end(), [](const RTTI *A, const RTTI *B)
 		{
 			return A->GetSymbolName() < B->GetSymbolName();
 		});
@@ -88,7 +88,7 @@ namespace RTTICSharpExporter
 			"WwiseWemResource",
 		};
 
-		sortedTypes.erase(std::remove_if(sortedTypes.begin(), sortedTypes.end(), [Directory, separatedTypes](const GGRTTI *Type)
+		sortedTypes.erase(std::remove_if(sortedTypes.begin(), sortedTypes.end(), [Directory, separatedTypes](const RTTI *Type)
 		{
 			for (auto name : separatedTypes)
 			{
@@ -191,7 +191,7 @@ namespace RTTICSharpExporter
 		fputs(data, F);
 	}
 
-	void ExportRTTIEnum(FILE *F, const GGRTTIEnum *Type)
+	void ExportRTTIEnum(FILE *F, const RTTIEnum *Type)
 	{
 		// Attributes/decl
 		fprintf(F, "[RTTI.Serializable(0x%llX, GameType.%s)]\n", Type->GetCoreBinaryTypeId(), g_GamePrefix);
@@ -228,7 +228,7 @@ namespace RTTICSharpExporter
 		fprintf(F, "}\n\n");
 	}
 
-	void ExportRTTIClass(FILE *F, const GGRTTIClass *Type)
+	void ExportRTTIClass(FILE *F, const RTTIClass *Type)
 	{
 		// C# doesn't support multiple base classes, so pick one based on the order in RTTI data and treat the others as members (manual composition)
 		char inheritanceDecl[1024] = {};
@@ -329,7 +329,7 @@ namespace RTTICSharpExporter
 		fprintf(F, "}\n\n");
 	}
 
-	bool IsBaseClassSuperfluous(const GGRTTIClass *Type)
+	bool IsBaseClassSuperfluous(const RTTIClass *Type)
 	{
 		// Returns true if this type and all subtypes have no members listed in the binary format
 		for (auto& base : Type->ClassInheritance())
@@ -347,7 +347,7 @@ namespace RTTICSharpExporter
 		return true;
 	}
 
-	bool IsMemberNameDuplicated(const GGRTTIClass *Type, const GGRTTIClass::MemberEntry *MemberInfo)
+	bool IsMemberNameDuplicated(const RTTIClass *Type, const RTTIClass::MemberEntry *MemberInfo)
 	{
 		for (auto& member : Type->ClassMembers())
 		{
@@ -361,7 +361,7 @@ namespace RTTICSharpExporter
 		return false;
 	}
 
-	const char *EnumTypeToString(const GGRTTIEnum *Type)
+	const char *EnumTypeToString(const RTTIEnum *Type)
 	{
 		switch (Type->m_EnumUnderlyingTypeSize)
 		{

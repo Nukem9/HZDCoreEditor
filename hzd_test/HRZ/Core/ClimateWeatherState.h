@@ -20,7 +20,7 @@ public:
 	float m_TimeOfDayStart;				// 0x38
 	float m_TimeOfDayEnd;				// 0x3C
 
-	virtual const GGRTTI *GetRTTI() const override;	// 0
+	virtual const RTTI *GetRTTI() const override;	// 0
 	virtual ~ClimateWeatherState() override;		// 1
 };
 assert_size(ClimateWeatherState, 0x40);

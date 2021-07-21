@@ -18,7 +18,7 @@ public:
 	SlowMotionManager *m_SlowMotionManager;
 	char _pad990[0xF0];
 
-	virtual const GGRTTI *GetRTTI() const override;	// 0
+	virtual const RTTI *GetRTTI() const override;	// 0
 	virtual ~GameModule() override;					// 1
 	virtual bool Initialize() override;				// 16
 	virtual void Shutdown() override;				// 17

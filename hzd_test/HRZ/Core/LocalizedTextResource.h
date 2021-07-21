@@ -14,7 +14,7 @@ public:
 	uint16_t m_TextDataLength;		// 0x28
 	void *m_UnknownLinkedList30;	// 0x30 Linked list where elements are 56 bytes in size
 
-	virtual const GGRTTI *GetRTTI() const override;		// 0
+	virtual const RTTI *GetRTTI() const override;		// 0
 	virtual ~LocalizedTextResource() override;			// 1
 
 	WString GetTranslation() const

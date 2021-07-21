@@ -10,7 +10,7 @@ class NetReplicatedObject : public RTTIObject
 public:
 	char _pad8[0x38];
 
-	virtual const GGRTTI *GetRTTI() const override;	// 0
+	virtual const RTTI *GetRTTI() const override;	// 0
 	virtual ~NetReplicatedObject() override;		// 1
 	virtual void NetReplicatedObjectUnknown02();	// 2
 	virtual void NetReplicatedObjectUnknown03();	// 3

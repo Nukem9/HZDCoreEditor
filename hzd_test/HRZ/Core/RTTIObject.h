@@ -5,12 +5,12 @@
 namespace HRZ
 {
 
-class GGRTTI;
+class RTTI;
 
 class RTTIObject
 {
 public:
-	virtual const GGRTTI *GetRTTI() const;			// 0
+	virtual const RTTI *GetRTTI() const;			// 0
 	virtual ~RTTIObject();							// 1
 };
 assert_size(RTTIObject, 0x8);

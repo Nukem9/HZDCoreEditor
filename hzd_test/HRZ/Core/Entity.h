@@ -44,14 +44,14 @@ assert_size(Queue, 0x20);
 class EntityResource : public Resource, public StreamingRefTarget
 {
 public:
-	virtual const GGRTTI *GetRTTI() const override;							// 0
+	virtual const RTTI *GetRTTI() const override;							// 0
 	virtual ~EntityResource() override;										// 1
 	virtual bool CoreObjectUnknown06() override;							// 6
 	virtual void CoreObjectUnknown07() override;							// 7 GetAnimatorResource()?
 	virtual void CoreObjectUnknown08() override;							// 8 SetAnimatorResource(Ref<>)?
-	virtual const GGRTTI *GetInstanceRTTI() const;							// 18
-	virtual const GGRTTI *GetRepRTTI() const;								// 19
-	virtual const GGRTTI *GetNetRTTI() const;								// 20
+	virtual const RTTI *GetInstanceRTTI() const;							// 18
+	virtual const RTTI *GetRepRTTI() const;									// 19
+	virtual const RTTI *GetNetRTTI() const;									// 20
 	virtual Entity *CreateInstance(const WorldTransform& Transform);		// 21
 	virtual Entity *EntityResourceUnknown22();								// 22 CreateInstance() with specific settings?
 	virtual int EntityResourceUnknown23();									// 23
@@ -108,7 +108,7 @@ public:
 	EntityComponentContainer m_Components;				// +0x288 Lock
 	char _pad290[0x18];
 
-	virtual const GGRTTI *GetRTTI() const override;													// 0
+	virtual const RTTI *GetRTTI() const override;													// 0
 	virtual ~Entity() override;																		// 1
 	virtual String& GetName() override;																// 5
 	virtual void CoreObjectUnknown09() override;													// 9

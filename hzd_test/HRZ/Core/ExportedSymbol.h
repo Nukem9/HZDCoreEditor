@@ -5,7 +5,7 @@
 namespace HRZ
 {
 
-class GGRTTI;
+class RTTI;
 
 class ExportedSymbolMember
 {
@@ -50,7 +50,7 @@ public:
 
 	MemberType m_Type;
 	char _pad0[0x4];
-	const GGRTTI *m_TypeInfo;
+	const RTTI *m_TypeInfo;
 	const char *m_SymbolNamespace;
 	const char *m_SymbolName;
 	char _pad1[0x8];
@@ -69,9 +69,9 @@ public:
 	bool m_AlwaysExport;
 	const char *m_Namespace;
 	Array<ExportedSymbolMember> m_Members;
-	Array<const GGRTTI *> m_Dependents;
+	Array<const RTTI *> m_Dependents;
 
-	virtual const GGRTTI *GetRTTI() const;
+	virtual const RTTI *GetRTTI() const;
 	virtual ~ExportedSymbolGroup();
 	virtual void RegisterSymbols() = 0;
 };

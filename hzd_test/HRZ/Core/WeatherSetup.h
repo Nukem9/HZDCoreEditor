@@ -9,8 +9,8 @@
 namespace HRZ
 {
 
-extern const GGRTTI *RTTI_WeatherSetup;
-extern const GGRTTI *RTTI_WeatherSetupSettings;
+extern const RTTI *RTTI_WeatherSetup;
+extern const RTTI *RTTI_WeatherSetupSettings;
 
 class Texture;
 class WeatherAmbienceCycle;
@@ -64,7 +64,7 @@ public:
 	Ref<WeatherAmbienceCycle> m_AmbienceCycle;	// 0xC0
 	Ref<Texture> m_CustomWeatherMap;			// 0xC8
 
-	virtual const GGRTTI *GetRTTI() const override;	// 0
+	virtual const RTTI *GetRTTI() const override;	// 0
 	virtual ~WeatherSetup() override;				// 1
 	virtual String& GetName() override;				// 5
 	virtual void SetName(String Name);				// 16

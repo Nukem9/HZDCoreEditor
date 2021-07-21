@@ -1,14 +1,14 @@
 #include <regex>
 #include <format>
 
-#include "HRZ/Core/GGRTTI.h"
+#include "HRZ/Core/RTTI.h"
 #include "HRZ/Core/ExportedSymbol.h"
 
 #include "common.h"
 #include "MSRTTI.h"
 #include "RTTIIDAExporter.h"
 
-extern std::unordered_set<const HRZ::GGRTTI *> AllRegisteredTypeInfo;
+extern std::unordered_set<const HRZ::RTTI *> AllRegisteredTypeInfo;
 
 namespace RTTIIDAExporter
 {
@@ -127,7 +127,7 @@ constexpr uintptr_t IDABaseAddressFullgame = 0x180000000;
 	}
 #define REFL_MEMBER(Member) WriteMemberT<decltype(StructType::Member)>(F, #Member, offsetof(StructType, Member), nullptr)
 
-		REFL_STRUCT(GGRTTI,
+		REFL_STRUCT(RTTI,
 		{
 			REFL_MEMBER(m_RuntimeTypeId1);
 			REFL_MEMBER(m_RuntimeTypeId2);
@@ -136,9 +136,9 @@ constexpr uintptr_t IDABaseAddressFullgame = 0x180000000;
 			REFL_MEMBER(m_EnumMemberCount);
 		})
 
-		REFL_STRUCT(GGRTTIPrimitive,
+		REFL_STRUCT(RTTIPrimitive,
 		{
-			WriteMemberT<GGRTTI>(F, "base", 0, "GGRTTI");
+			WriteMemberT<RTTI>(F, "base", 0, "RTTI");
 			REFL_MEMBER(m_Name);
 			REFL_MEMBER(m_ParentType);
 			REFL_MEMBER(m_DeserializeString);
@@ -154,34 +154,34 @@ constexpr uintptr_t IDABaseAddressFullgame = 0x180000000;
 			REFL_MEMBER(m_UnknownFunction2);
 		});
 
-		REFL_STRUCT(GGRTTIContainer,
+		REFL_STRUCT(RTTIContainer,
 		{
-			WriteMemberT<GGRTTI>(F, "base", 0, "GGRTTI");
+			WriteMemberT<RTTI>(F, "base", 0, "RTTI");
 			REFL_MEMBER(m_Type);
 			REFL_MEMBER(m_Data);
 		});
 
-		REFL_STRUCT(GGRTTIContainer::ContainerData,
+		REFL_STRUCT(RTTIContainer::ContainerData,
 		{
 			REFL_MEMBER(m_Name);
 		});
 
-		REFL_STRUCT(GGRTTIEnum,
+		REFL_STRUCT(RTTIEnum,
 		{
-			WriteMemberT<GGRTTI>(F, "base", 0, "GGRTTI");
+			WriteMemberT<RTTI>(F, "base", 0, "RTTI");
 			REFL_MEMBER(m_Name);
 			REFL_MEMBER(m_Values);
 		});
 
-		REFL_STRUCT(GGRTTIEnum::EnumEntry,
+		REFL_STRUCT(RTTIEnum::EnumEntry,
 		{
 			REFL_MEMBER(m_Value);
 			REFL_MEMBER(m_Name);
 		});
 
-		REFL_STRUCT(GGRTTIClass,
+		REFL_STRUCT(RTTIClass,
 		{
-			WriteMemberT<GGRTTI>(F, "base", 0, "GGRTTI");
+			WriteMemberT<RTTI>(F, "base", 0, "RTTI");
 			REFL_MEMBER(m_MessageHandlerCount);
 			REFL_MEMBER(m_Size);
 			REFL_MEMBER(m_Alignment);
@@ -199,13 +199,13 @@ constexpr uintptr_t IDABaseAddressFullgame = 0x180000000;
 			REFL_MEMBER(m_GetExportedSymbols);
 		});
 
-		REFL_STRUCT(GGRTTIClass::InheritanceEntry,
+		REFL_STRUCT(RTTIClass::InheritanceEntry,
 		{
 			REFL_MEMBER(m_Type);
 			REFL_MEMBER(m_Offset);
 		});
 
-		REFL_STRUCT(GGRTTIClass::MemberEntry,
+		REFL_STRUCT(RTTIClass::MemberEntry,
 		{
 			REFL_MEMBER(m_Type);
 			REFL_MEMBER(m_Offset);
@@ -215,7 +215,7 @@ constexpr uintptr_t IDABaseAddressFullgame = 0x180000000;
 			REFL_MEMBER(m_PropertySetter);
 		});
 
-		REFL_STRUCT(GGRTTIClass::LuaFunctionEntry,
+		REFL_STRUCT(RTTIClass::LuaFunctionEntry,
 		{
 			REFL_MEMBER(m_ReturnValueType);
 			REFL_MEMBER(m_Name);
@@ -223,22 +223,22 @@ constexpr uintptr_t IDABaseAddressFullgame = 0x180000000;
 			REFL_MEMBER(m_Function);
 		});
 
-		REFL_STRUCT(GGRTTIClass::MessageHandlerEntry,
+		REFL_STRUCT(RTTIClass::MessageHandlerEntry,
 		{
 			REFL_MEMBER(m_Type);
 			REFL_MEMBER(m_Callback);
 		});
 
-		REFL_STRUCT(GGRTTIClass::InheritedMessageEntry,
+		REFL_STRUCT(RTTIClass::InheritedMessageEntry,
 		{
 			REFL_MEMBER(m_Unknown);
 			REFL_MEMBER(m_Type);
 			REFL_MEMBER(m_ClassType);
 		});
 
-		REFL_STRUCT(GGRTTIPOD,
+		REFL_STRUCT(RTTIPOD,
 		{
-			WriteMemberT<GGRTTI>(F, "base", 0, "GGRTTI");
+			WriteMemberT<RTTI>(F, "base", 0, "RTTI");
 			REFL_MEMBER(m_Size);
 		});
 
@@ -248,7 +248,7 @@ constexpr uintptr_t IDABaseAddressFullgame = 0x180000000;
 
 	void ExportGGRTTI(FILE *F)
 	{
-		std::unordered_set<const GGRTTI *> visitedRTTITypes;
+		std::unordered_set<const RTTI *> visitedRTTITypes;
 
 		// RTTI metadata
 		for (auto& type : AllRegisteredTypeInfo)
@@ -274,7 +274,7 @@ constexpr uintptr_t IDABaseAddressFullgame = 0x180000000;
 				pprint(Span.data(), "set_name(0x{0:X}, \"{1:}::{2:}_{0:X}\");", Symbol, Name);
 			};
 
-			std::function<void(const GGRTTI *)> visitType = [&](const GGRTTI *Type)
+			std::function<void(const RTTI *)> visitType = [&](const RTTI *Type)
 			{
 				if (visitedRTTITypes.contains(type))
 					return;
@@ -286,7 +286,7 @@ constexpr uintptr_t IDABaseAddressFullgame = 0x180000000;
 
 				pprint(type, "del_items(0x{0:X}, DELIT_SIMPLE, get_struc_size(get_struc_id(\"{1:}\")));", rttiTypeName);
 				pprint(type, "create_struct(0x{0:X}, -1, \"{1:}\");", rttiTypeName);
-				pprint(type, "set_name(0x{0:X}, \"GGRTTI_{1:}_{0:X}\", SN_CHECK);// 0x{2:X}", symbolName, type->GetCoreBinaryTypeId());
+				pprint(type, "set_name(0x{0:X}, \"RTTI_{1:}_{0:X}\", SN_CHECK);// 0x{2:X}", symbolName, type->GetCoreBinaryTypeId());
 
 				if (auto asEnum = type->AsEnum(); asEnum)
 				{
@@ -410,7 +410,7 @@ constexpr uintptr_t IDABaseAddressFullgame = 0x180000000;
 		{
 			if (auto asClass = type->AsClass(); asClass)
 			{
-				fprintf(F, "const GGRTTI *RTTI_%s = ResolveOffset<const GGRTTI *>(0x%llX);\n", asClass->GetSymbolName().c_str(), reinterpret_cast<uintptr_t>(asClass) - g_ModuleBase);
+				fprintf(F, "const RTTI *RTTI_%s = ResolveOffset<const RTTI *>(0x%llX);\n", asClass->GetSymbolName().c_str(), reinterpret_cast<uintptr_t>(asClass) - g_ModuleBase);
 			}
 		}
 
@@ -516,14 +516,14 @@ constexpr uintptr_t IDABaseAddressFullgame = 0x180000000;
 		{
 			for (auto& member : group->m_Members)
 			{
-				// Dump functions and variables only - everything else is handled by GGRTTI
+				// Dump functions and variables only - everything else is handled by RTTI
 				if (member.m_Type != ExportedSymbolMember::MEMBER_TYPE_FUNCTION && member.m_Type != ExportedSymbolMember::MEMBER_TYPE_VARIABLE)
 					continue;
 
 				for (auto& info : member.m_Infos)
 				{
 					auto fullDeclaration = BuildGameSymbolFunctionDecl(info, false);
-					fprintf(F, "set_name(0x%llX, \"%s\");// %s;\n", reinterpret_cast<uintptr_t>(info.m_Address) - g_ModuleBase + 0x140000000, member.m_SymbolName, fullDeclaration.c_str());
+					fprintf(F, "set_name(0x%llX, \"%s\");// %s;\n", reinterpret_cast<uintptr_t>(info.m_Address) - g_ModuleBase + IDABaseAddressExe, member.m_SymbolName, fullDeclaration.c_str());
 
 					// Skip multiple localization entries for now
 					break;
@@ -563,7 +563,7 @@ constexpr uintptr_t IDABaseAddressFullgame = 0x180000000;
 		for (uintptr_t i = (baseAddress + 0xA465FE0); i < (baseAddress + 0xA46A000); i++)
 		{
 			auto symbolPointer = *reinterpret_cast<uintptr_t *>(i);
-			auto asRTTI = reinterpret_cast<const GGRTTI *>(symbolPointer);
+			auto asRTTI = reinterpret_cast<const RTTI *>(symbolPointer);
 
 			if (auto itr = symbolAddressMap.find(symbolPointer); itr != symbolAddressMap.end())
 			{
@@ -573,7 +573,7 @@ constexpr uintptr_t IDABaseAddressFullgame = 0x180000000;
 
 			if (AllRegisteredTypeInfo.contains(asRTTI))
 			{
-				fprintf(F, "set_name(0x%llX, \"GGRTTI_%s\", SN_FORCE);\n", i - baseAddress + IDABaseAddressFullgame, asRTTI->GetSymbolName().c_str());
+				fprintf(F, "set_name(0x%llX, \"RTTI_%s\", SN_FORCE);\n", i - baseAddress + IDABaseAddressFullgame, asRTTI->GetSymbolName().c_str());
 			}
 		}
 	}

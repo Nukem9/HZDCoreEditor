@@ -12,7 +12,7 @@ class Module : public CoreObject
 public:
 	int m_SuspendCount;
 
-	virtual const GGRTTI *GetRTTI() const override;	// 0
+	virtual const RTTI *GetRTTI() const override;	// 0
 	virtual ~Module() override;						// 1
 	virtual bool Initialize() = 0;					// 16
 	virtual void Shutdown() = 0;					// 17

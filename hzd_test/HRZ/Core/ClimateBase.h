@@ -16,7 +16,7 @@ public:
 	float m_NightTemperature;			// 0x28
 	float m_DayTemperature;				// 0x2C
 
-	virtual const GGRTTI *GetRTTI() const override;	// 0
+	virtual const RTTI *GetRTTI() const override;	// 0
 	virtual ~ClimateBase() override;				// 1
 	virtual void ClimateBaseUnknown16() = 0;		// 16
 };
