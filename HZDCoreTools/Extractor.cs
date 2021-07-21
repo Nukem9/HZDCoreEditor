@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using Decima;
 using Decima.HZD;
@@ -25,14 +26,17 @@ namespace HZDCoreTools
             "Remainder_English.bin",
             "Patch.bin"
         };
-        private readonly string[] Ignored =
-        {
+        private List<Regex> Ignored = new List<Regex>() {
+
         };
 
         public string OutputDir { get; set; }
 
         public void Extract(CmdOptions options)
         {
+            if (!String.IsNullOrEmpty(options.Ignore))
+                Ignored.Add(new Regex(options.Ignore));
+
             if (File.Exists(options.ExtractPath))
                 ExtractFile(options.ExtractPath);
             else if (Directory.Exists(options.ExtractPath))
@@ -133,8 +137,8 @@ namespace HZDCoreTools
                     });
 
                 tasks.Start();
-                foreach (var x in prefetch.Where(x => !Ignored.Any(x.StartsWith)))
-                    tasks.AddItem(x);
+                foreach (var file in prefetch.Where(x => !Ignored.Any(i => i.IsMatch(x))))
+                    tasks.AddItem(file);
                 tasks.WaitForComplete();
             }
             Console.WriteLine("");

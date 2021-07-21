@@ -12,8 +12,11 @@ namespace HZDCoreTools
         [Option('s', "streams", HelpText = "Attempt to extract streams")]
         public bool Streams { get; set; }
 
-        [Option('g', "game", HelpText = "Director is the game directory (ignores unknown packs)")]
+        [Option('g', "game", HelpText = "Directory is the game directory (ignores unknown packs)")]
         public bool GameDir { get; set; }
+        
+        [Option('i', "ignore", HelpText = "Ignored files regex")]
+        public string Ignore { get; set; }
 
         [Value(0, Required = true, HelpText = "Output folder")]
         public string OutputFolder { get; set; }
