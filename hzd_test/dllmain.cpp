@@ -73,7 +73,9 @@ void __fastcall hk_RTTIFactory__RegisterTypeInfo(__int64 a1, RTTI *TypeInfo)
 		RegisterTypeInfoRecursively(reinterpret_cast<RTTI *>(g_OffsetMap["RTTI_EVertexElementStorageType"]));
 
 		RTTIIDAExporter::ExportAll("C:\\ggrtti_export");
-		RTTICSharpExporter::ExportAll("C:\\ggrtti_export");
+
+		RTTICSharpExporter csExporter;
+		csExporter.ExportAll("C:\\ggrtti_export");
 	}
 	else if (g_GameType == GameType::HorizonZeroDawn && listIndex == 30644)
 	{
@@ -86,7 +88,9 @@ void __fastcall hk_RTTIFactory__RegisterTypeInfo(__int64 a1, RTTI *TypeInfo)
 		RegisterTypeInfoRecursively(reinterpret_cast<RTTI *>(g_OffsetMap["RTTI_ED3D12CommandListType"]));
 
 		RTTIIDAExporter::ExportAll("C:\\ggrtti_export");
-		RTTICSharpExporter::ExportAll("C:\\ggrtti_export");
+
+		RTTICSharpExporter csExporter;
+		csExporter.ExportAll("C:\\ggrtti_export");
 	}
 
 	RTTIFactory__RegisterTypeInfo(a1, TypeInfo);

@@ -1,20 +1,36 @@
 #pragma once
 
-#include "common.h"
+#include <string_view>
+#include <format>
+#include <stdio.h>
+
 #include "HRZ/Core/RTTI.h"
 
-namespace RTTICSharpExporter
+class RTTICSharpExporter
 {
-	using namespace HRZ;
+private:
+	FILE *m_FileHandle = nullptr;
 
-	void ExportAll(const char *Directory);
-	void ExportFileHeader(FILE *F);
-	void ExportFileFooter(FILE *F);
-	void ExportRTTIEnum(FILE *F, const RTTIEnum *Type);
-	void ExportRTTIClass(FILE *F, const RTTIClass *Type);
+public:
+	void ExportAll(std::string_view Directory);
 
-	bool IsBaseClassSuperfluous(const RTTIClass *Type);
-	bool IsMemberNameDuplicated(const RTTIClass *Type, const RTTIClass::MemberEntry *MemberInfo);
-	const char *EnumTypeToString(const RTTIEnum *Type);
-	void FilterMemberNameString(std::string& Name);
-}
+private:
+	void ExportFileHeader();
+	void ExportFileFooter();
+	void ExportRTTIEnum(const HRZ::RTTIEnum *Type);
+	void ExportRTTIClass(const HRZ::RTTIClass *Type);
+
+	template<typename... TArgs>
+	void Print(const std::string_view Format, TArgs&&... Args)
+	{
+		char buffer[1024];
+		*std::format_to_n(buffer, std::size(buffer) - 1, Format, std::forward<TArgs>(Args)...).out = '\0';
+
+		fputs(buffer, m_FileHandle);
+	}
+
+	static bool IsBaseClassSuperfluous(const HRZ::RTTIClass *Type);
+	static bool IsMemberNameDuplicated(const HRZ::RTTIClass *Type, const HRZ::RTTIClass::MemberEntry *MemberInfo);
+	static std::string_view EnumTypeToString(const HRZ::RTTIEnum *Type);
+	static void FilterMemberNameString(std::string& Name);
+};
