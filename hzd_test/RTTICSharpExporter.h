@@ -23,7 +23,7 @@ private:
 	template<typename... TArgs>
 	void Print(const std::string_view Format, TArgs&&... Args)
 	{
-		char buffer[1024];
+		char buffer[2048];
 		*std::format_to_n(buffer, std::size(buffer) - 1, Format, std::forward<TArgs>(Args)...).out = '\0';
 
 		fputs(buffer, m_FileHandle);

@@ -18,12 +18,8 @@ void hk_RunCoreLibraryInitializer(const String& ImportFunctionName, CoreLibraryI
 
 	((void(__fastcall *)(const String&, CoreLibraryInitializerPfn))(addr))(ImportFunctionName, Callback);
 
-	FILE *f = fopen("C:\\mytest.idc", "w");
-	fprintf(f, "#include <idc.idc>\n\n");
-	fprintf(f, "static main()\n{\n");
-	RTTIIDAExporter::ExportFullgameScriptSymbols(f);
-	fprintf(f, "}\n");
-	fclose(f);
+	RTTIIDAExporter idaExporter;
+	idaExporter.ExportFullgameTypes("C:\\ggrtti_export");
 }
 
 void RegisterTypeInfoRecursively(const RTTI *Info)
@@ -72,7 +68,8 @@ void __fastcall hk_RTTIFactory__RegisterTypeInfo(__int64 a1, RTTI *TypeInfo)
 	{
 		RegisterTypeInfoRecursively(reinterpret_cast<RTTI *>(g_OffsetMap["RTTI_EVertexElementStorageType"]));
 
-		RTTIIDAExporter::ExportAll("C:\\ggrtti_export");
+		RTTIIDAExporter idaExporter;
+		idaExporter.ExportRTTITypes("C:\\ggrtti_export");
 
 		RTTICSharpExporter csExporter;
 		csExporter.ExportAll("C:\\ggrtti_export");
@@ -87,7 +84,8 @@ void __fastcall hk_RTTIFactory__RegisterTypeInfo(__int64 a1, RTTI *TypeInfo)
 		RegisterTypeInfoRecursively(reinterpret_cast<RTTI *>(g_OffsetMap["RTTI_EDX12HeapType"]));
 		RegisterTypeInfoRecursively(reinterpret_cast<RTTI *>(g_OffsetMap["RTTI_ED3D12CommandListType"]));
 
-		RTTIIDAExporter::ExportAll("C:\\ggrtti_export");
+		RTTIIDAExporter idaExporter;
+		idaExporter.ExportRTTITypes("C:\\ggrtti_export");
 
 		RTTICSharpExporter csExporter;
 		csExporter.ExportAll("C:\\ggrtti_export");
