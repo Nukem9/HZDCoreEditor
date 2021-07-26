@@ -14,7 +14,10 @@ namespace HZDCoreTools
 
         [Option('g', "game", HelpText = "Directory is the game directory (ignores unknown packs)")]
         public bool GameDir { get; set; }
-        
+
+        [Option('l', "language", HelpText = "Extract language files to text")]
+        public bool ExtractLanguage { get; set; }
+
         [Option('i', "ignore", HelpText = "Ignored files regex")]
         public string Ignore { get; set; }
 
@@ -38,7 +41,10 @@ namespace HZDCoreTools
             {
                 OutputDir = cmds.OutputFolder
             };
-            ex.Extract(cmds);
+            if (cmds.ExtractLanguage)
+                ex.ExtractHZDLocalization();
+            else
+                ex.Extract(cmds);
         }
     }
 }

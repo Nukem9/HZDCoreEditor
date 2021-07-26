@@ -26,9 +26,7 @@ namespace HZDCoreTools
             "Remainder_English.bin",
             "Patch.bin"
         };
-        private List<Regex> Ignored = new List<Regex>() {
-
-        };
+        private List<Regex> Ignored = new List<Regex>();
 
         public string OutputDir { get; set; }
 
@@ -200,6 +198,37 @@ namespace HZDCoreTools
                 return;
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
+        }
+
+        public void ExtractHZDLocalization()
+        {
+            var files = Directory.GetFiles(Path.Combine(OutputDir, @"localized\"), "*.core", SearchOption.AllDirectories);
+            var sb = new StringBuilder();
+
+            foreach (string file in files)
+            {
+                Console.WriteLine(file);
+                bool first = true;
+
+                var core = CoreBinary.FromFile(file);
+
+                foreach (var obj in core)
+                {
+                    if (obj is Decima.HZD.LocalizedTextResource asResource)
+                    {
+                        if (first)
+                        {
+                            sb.AppendLine();
+                            sb.AppendLine(file);
+                            first = false;
+                        }
+
+                        sb.AppendLine(asResource.ObjectUUID + " " + asResource.GetStringForLanguage(Decima.HZD.ELanguage.English));
+                    }
+                }
+            }
+
+            File.WriteAllText(Path.Combine(OutputDir, @"text_data_dump.txt"), sb.ToString());
         }
     }
 }
