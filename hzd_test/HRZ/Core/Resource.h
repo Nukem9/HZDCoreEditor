@@ -7,9 +7,13 @@
 namespace HRZ
 {
 
+DECL_RTTI(Resource);
+
 class Resource : public BaseResource
 {
 public:
+	TYPE_RTTI(Resource);
+
 	String m_Name; // 0x20
 
 	virtual const RTTI *GetRTTI() const override;				// 0

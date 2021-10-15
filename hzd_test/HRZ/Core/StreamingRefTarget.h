@@ -2,14 +2,18 @@
 
 #include "../PCore/Common.h"
 
+#include "RTTI.h"
+
 namespace HRZ
 {
 
-class RTTI;
+DECL_RTTI(StreamingRefTarget);
 
 class StreamingRefTarget
 {
 public:
+	TYPE_RTTI(StreamingRefTarget);
+
 	String m_Location; // 0x8
 
 	virtual const RTTI *GetRTTI() const;	// 0

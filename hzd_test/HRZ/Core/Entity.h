@@ -1,5 +1,7 @@
 #pragma once
 
+#include <mutex>
+
 #include "../PCore/Common.h"
 
 #include "WorldPosition.h"
@@ -16,12 +18,17 @@ namespace HRZ
 class AIEntity;
 class AIFaction;
 class AttackEventContext;
+class CameraPropertiesSet;
 class Destructibility;
 class EntityActivationPolicy;
 class InstigatorData;
 class Model;
 class Mover;
 class MoverResource;
+
+DECL_RTTI(Entity);
+DECL_RTTI(EntityRep);
+DECL_RTTI(EntityResource);
 
 template<typename T>
 class ListNode
@@ -44,6 +51,10 @@ assert_size(Queue, 0x20);
 class EntityResource : public Resource, public StreamingRefTarget
 {
 public:
+	TYPE_RTTI(EntityResource);
+
+	char _pad38[0xF8];
+
 	virtual const RTTI *GetRTTI() const override;							// 0
 	virtual ~EntityResource() override;										// 1
 	virtual bool CoreObjectUnknown06() override;							// 6
@@ -60,15 +71,22 @@ public:
 	virtual void EntityResourceUnknown26();									// 26
 	virtual void EntityResourceUnknown27();									// 27 Creates attack event?
 };
-//assert_size(EntityResource, 0x130);
+assert_size(EntityResource, 0x130);
+
+class EntityRep
+{
+public:
+	TYPE_RTTI(EntityRep);
+};
 
 class Entity : public CoreObject, public WeakPtrTarget, public PhysicsCollisionListener
 {
 public:
+	TYPE_RTTI(Entity);
+
 	enum EntityFlag : uint32_t
 	{
-		// WorldTransformChanged = 0x1, ?
-		// PreviousWorldTransformChanged = 0x8000000, ?
+		WorldTransformChanged = 0x1,
 		IsVisible = 0x2,
 		IsDead = 0x80,
 		IsSleeping = 0x100,
@@ -76,6 +94,7 @@ public:
 		IsDispensable = 0x800,
 		HasCollisionVolume = 0x4000,
 		VisualBoundsUpdatePending = 0x800000,
+		// PreviousWorldTransformChanged = 0x8000000, ?
 		PreventComponentModification = 0x80000000,
 	};
 
@@ -86,7 +105,7 @@ public:
 	char _pad78[0x10];
 	uint32_t m_UpdateStepTicks;							// +0x88
 	char _pad90[0x50];
-	WorldTransform m_UnknownTransform;					// +0xE0
+	WorldTransform m_PreviousOrientation;				// +0xE0 Used by EntityRep code (MsgUpdateBlending)
 	WorldTransform m_Orientation;						// +0x120 Lock
 	char _pad160[0x20];
 	StreamingRef<EntityResource> m_Resource;			// +0x180
@@ -102,9 +121,9 @@ public:
 	AIFaction *m_Faction;								// +0x228
 	uint32_t m_Flags;									// +0x230
 	char _pad238[0x8];
-	InstigatorData *m_InstigatorData;					// +0x240 Lock
+	InstigatorData *m_InstigatorData;					// +0x240 Lock WeakPtr<>
 	char _pad248[0x38];
-	AttackEventContext *m_AttackEventContext;			// +0x280 Lock
+	Ref<AttackEventContext> m_AttackEventContext;		// +0x280 Lock
 	EntityComponentContainer m_Components;				// +0x288 Lock
 	char _pad290[0x18];
 
@@ -144,6 +163,14 @@ public:
 	virtual void OnPhysicsContactRemoved() override;												// 4
 	virtual bool OnPhysicsExitBroadPhase() override;												// 5
 
+	void SetTransform(const WorldTransform& Transform)
+	{
+		std::lock_guard lock(m_DataLock);
+
+		m_Orientation = Transform;
+		m_Flags |= WorldTransformChanged;
+	}
+
 	void AddComponent(EntityComponent *Component)
 	{
 		return CallID<"Entity::AddComponent", void(*)(Entity *, EntityComponent *)>(this, Component);
@@ -157,7 +184,7 @@ public:
 assert_offset(Entity, m_Name, 0x38);
 assert_offset(Entity, m_DataLock, 0x50);
 assert_offset(Entity, m_UpdateStepTicks, 0x88);
-assert_offset(Entity, m_UnknownTransform, 0xE0);
+assert_offset(Entity, m_PreviousOrientation, 0xE0);
 assert_offset(Entity, m_Orientation, 0x120);
 assert_offset(Entity, m_Resource, 0x180);
 assert_offset(Entity, m_ActivationPolicy, 0x1A0);

@@ -245,6 +245,39 @@
     <ClInclude Include="HRZ\Core\ClimateWeatherState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HRZ\Core\RTTIBinaryReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\DebugUI\LogWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\DebugSettings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\Application.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\WorldState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\StateObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\PropertyContainerData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\PropertyContainer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\CursorManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\CameraEntity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\ThirdPersonPlayerCameraComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="HRZ\Core\RTTI.inl">

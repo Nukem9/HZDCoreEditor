@@ -9,6 +9,9 @@
 namespace HRZ
 {
 
+#define DECL_RTTI(Type) extern const RTTI *RTTI_##Type
+#define TYPE_RTTI(Type) static inline auto& TypeInfo = RTTI_##Type
+
 class RTTIPrimitive;
 class RTTIContainer;
 class RTTIEnum;
@@ -66,6 +69,22 @@ public:
 	std::string_view GetRTTITypeName() const;
 	std::string GetSymbolName() const;
 	uint64_t GetCoreBinaryTypeId() const;
+
+	template<typename T, typename U>
+	static T *Cast(U *Other)
+	{
+		if (Other->GetRTTI()->IsKindOf(T::TypeInfo))
+			return static_cast<T *>(Other);
+
+		return nullptr;
+	}
+
+	template<typename T, typename U>
+	static T *DynamicCast(U *Other)
+	{
+		__debugbreak();
+		return nullptr;
+	}
 };
 assert_offset(RTTI, m_InfoType, 0x4);
 assert_offset(RTTI, m_EnumUnderlyingTypeSize, 0x5);
@@ -80,7 +99,7 @@ public:
 	// Type 0 = Primitive (float, int, bool, String)
 	char _pad0[0x8];			// +0x8
 	const char *m_Name;			// +0x10
-	RTTI *m_ParentType;		// +0x18
+	RTTI *m_ParentType;			// +0x18
 	void *m_DeserializeString;	// +0x20
 	void *m_SerializeString;	// +0x28
 	void *m_SwapValues;			// +0x30

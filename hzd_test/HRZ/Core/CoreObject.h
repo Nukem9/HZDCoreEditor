@@ -7,9 +7,13 @@
 namespace HRZ
 {
 
+DECL_RTTI(CoreObject);
+
 class CoreObject : public RTTIRefObject
 {
 public:
+	TYPE_RTTI(CoreObject);
+
 	virtual const RTTI *GetRTTI() const override;	// 0
 	virtual ~CoreObject() override;					// 1
 	virtual void CoreObjectUnknown04();				// 4

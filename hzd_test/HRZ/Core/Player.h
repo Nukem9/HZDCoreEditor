@@ -9,11 +9,16 @@ namespace HRZ
 {
 
 class AIFaction;
+class CameraEntity;
 class Entity;
+
+DECL_RTTI(Player);
 
 class Player : public NetReplicatedObject, public WeakPtrTarget
 {
 public:
+	TYPE_RTTI(Player);
+
 	char _pad50[0x8];
 	String m_Name;				// 0x58
 	String m_Unknown60;			// 0x60 Clan tag?
@@ -44,6 +49,12 @@ public:
 	virtual void PlayerUnknown23();							// 23
 	virtual void SerializeToStream(void *Stream);			// 24
 	virtual void DeserializeFromStream(void *Stream);		// 25
+
+	// WARNING: Do NOT call this function while other entity locks are held. It can deadlock the main thread.
+	CameraEntity *GetLastActivatedCamera() const
+	{
+		return CallOffset<0x0C267E0, CameraEntity *(*)(const Player *)>(this);
+	}
 
 	static Player *GetLocalPlayer(int Index = 0)
 	{

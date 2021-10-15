@@ -7,9 +7,6 @@
 namespace HRZ
 {
 
-extern const RTTI *RTTI_ItemDescriptionComponent;
-extern const RTTI *RTTI_ItemDescriptionComponentResource;
-
 class ItemPriceInfo;
 class LocalizedTextResource;
 class LootItemDescriptionResource;
@@ -17,10 +14,13 @@ class MovieResource;
 class StatsDisplayResource;
 class UITexture;
 
+DECL_RTTI(ItemDescriptionComponent);
+DECL_RTTI(ItemDescriptionComponentResource);
+
 class ItemDescriptionComponentResource : public EntityComponentResource
 {
 public:
-	static inline auto& TypeInfo = RTTI_ItemDescriptionComponentResource;
+	TYPE_RTTI(ItemDescriptionComponentResource);
 
 	Ref<LocalizedTextResource> m_LocalizedItemName;					// 0x28
 	Ref<LocalizedTextResource> m_LocalizedItemDescription;			// 0x30
@@ -43,7 +43,7 @@ assert_size(ItemDescriptionComponentResource, 0x80);
 class ItemDescriptionComponent : public EntityComponent
 {
 public:
-	static inline auto& TypeInfo = RTTI_ItemDescriptionComponent;
+	TYPE_RTTI(ItemDescriptionComponent);
 
 	virtual const RTTI *GetRTTI() const override;				// 0
 	virtual ~ItemDescriptionComponent() override;				// 1

@@ -9,29 +9,33 @@ template<typename T>
 class Ref final
 {
 private:
-	T *m_Ptr;
+	T *m_Ptr = nullptr;
 
 public:
-	Ref() = delete;
-
-	Ref(T *Pointer) : m_Ptr(Pointer)
+	Ref()
 	{
-		if (m_Ptr)
-			m_Ptr->IncRef();
 	}
 
-	Ref(const Ref<T>&) = delete;
+	Ref(T *Pointer)
+	{
+		Assign(Pointer);
+	}
+
+	Ref(const Ref<T>& Other)
+	{
+		Assign(Other.m_Ptr);
+	}
 
 	~Ref()
 	{
-		auto temp = m_Ptr;
-		m_Ptr = nullptr;
-
-		if (temp)
-			temp->DecRef();
+		Assign(nullptr);
 	}
 
-	Ref<T>& operator=(const Ref<T>&) = delete;
+	Ref<T>& operator=(const Ref<T>& Other)
+	{
+		Assign(Other.m_Ptr);
+		return *this;
+	}
 
 	T *get() const
 	{
@@ -56,6 +60,20 @@ public:
 			T::TypeInfo->AsClass()->m_Constructor(nullptr, memory);
 
 		return Ref<T>(memory);
+	}
+
+private:
+	void Assign(T *Pointer)
+	{
+		auto temp = m_Ptr;
+
+		if (Pointer)
+			Pointer->IncRef();
+
+		m_Ptr = Pointer;
+
+		if (temp)
+			temp->DecRef();
 	}
 };
 

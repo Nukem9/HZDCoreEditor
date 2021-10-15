@@ -7,9 +7,13 @@
 namespace HRZ
 {
 
+DECL_RTTI(InventoryEntity);
+
 class InventoryEntity : public ViewDependentEntity
 {
 public:
+	TYPE_RTTI(InventoryEntity);
+
 	char _pad2C0[0x50];
 
 	virtual const RTTI *GetRTTI() const override;	// 0
