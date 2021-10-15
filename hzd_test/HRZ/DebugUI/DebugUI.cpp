@@ -4,6 +4,8 @@
 #include <imgui_impl_dx12.h>
 #include <imgui_impl_win32.h>
 
+#include "../Core/Application.h"
+#include "../Core/CursorManager.h"
 #include "../PGraphics3D/RenderingDeviceDX12.h"
 #include "../PGraphics3D/RenderingConfiguration.h"
 #include "../PGraphics3D/SwapChainDX12.h"
@@ -23,7 +25,9 @@ std::vector<std::unique_ptr<Window>> m_Windows;
 std::array<ID3D12CommandAllocator *, SwapChainDX12::BackBufferCount> CommandAllocators;
 ID3D12GraphicsCommandList *CommandList;
 ID3D12DescriptorHeap *SrvDescHeap;
+
 WNDPROC OriginalWndProc;
+bool InterceptInput;
 
 LRESULT WINAPI WndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 
@@ -56,6 +60,9 @@ void Initialize(const SwapChainDX12 *SwapChain)
 	ImGui::CreateContext();
 	ImGui::StyleColorsDark();
 
+	auto& style = ImGui::GetStyle();
+	style.FrameBorderSize = 1;
+
 	auto& io = ImGui::GetIO();
 	io.MouseDrawCursor = false;
 
@@ -73,19 +80,17 @@ void RenderUI()
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
-	{
-		// Can't use iterators. Adding a window might invalidate them.
-		for (size_t i = 0; i < m_Windows.size(); i++)
-			m_Windows[i]->Render();
+	// Can't use iterators. Adding a window might invalidate them.
+	for (size_t i = 0; i < m_Windows.size(); i++)
+		m_Windows[i]->Render();
 
-		// Remove all windows that are closed and will no longer render
-		for (auto itr = m_Windows.begin(); itr != m_Windows.end();)
-		{
-			if (itr->get()->Close())
-				itr = m_Windows.erase(itr);
-			else
-				itr++;
-		}
+	// Remove all windows that are closed and will no longer render
+	for (auto itr = m_Windows.begin(); itr != m_Windows.end();)
+	{
+		if (itr->get()->Close())
+			itr = m_Windows.erase(itr);
+		else
+			itr++;
 	}
 
 	ImGui::Render();
@@ -128,10 +133,54 @@ void AddWindow(std::unique_ptr<Window> Handle)
 
 LRESULT WINAPI WndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
-	if (ImGui_ImplWin32_WndProcHandler(hWnd, Msg, wParam, lParam))
-		return true;
+	switch (Msg)
+	{
+	case WM_KEYDOWN:
+		if (wParam == VK_OEM_3 || wParam == VK_F12)
+		{
+			// Toggle input blocking (~ or F12)
+			InterceptInput = !InterceptInput;
+			auto cursorManager = Application::Instance().m_CursorManager;
 
+			if (InterceptInput)
+			{
+				ImGui::GetIO().MouseDrawCursor = true;
+
+				cursorManager->m_UnlockCursorBounds = true;
+				cursorManager->m_ForceHideCursor = true;
+
+				CallWindowProcW(OriginalWndProc, hWnd, WM_ACTIVATEAPP, 0, 0);
+			}
+			else
+			{
+				ImGui::GetIO().MouseDrawCursor = false;
+
+				cursorManager->m_UnlockCursorBounds = false;
+				cursorManager->m_ForceHideCursor = false;
+
+				CallWindowProcW(OriginalWndProc, hWnd, WM_ACTIVATEAPP, 1, 0);
+			}
+
+			return 0;
+		}
+		break;
+
+	case WM_ACTIVATEAPP:
+		if (InterceptInput)
+		{
+			// Prevent alt-tab from interfering with input blocking
+			return 0;
+		}
+		break;
+	}
+
+	ImGui_ImplWin32_WndProcHandler(hWnd, Msg, wParam, lParam);
 	return CallWindowProcW(OriginalWndProc, hWnd, Msg, wParam, lParam);
+}
+
+bool ShouldInterceptInput()
+{
+	return InterceptInput;
 }
 
 }

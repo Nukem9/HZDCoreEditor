@@ -6,7 +6,69 @@
 #include "RTTICSharpExporter.h"
 #include "RTTIIDAExporter.h"
 
+#include "HRZ/Core/RTTIBinaryReader.h"
+#include "HRZ/Core/RTTIObject.h"
+#include "HRZ/Core/LocalizedTextResource.h"
+#include "HRZ/Core/DebugSettings.h"
+#include "HRZ/Core/Application.h"
+#include "HRZ/Core/ThirdPersonPlayerCameraComponent.h"
+
+#include "HRZ/DebugUI/LogWindow.h"
+#include "HRZ/DebugUI/MainMenuBar.h"
+
 using namespace HRZ;
+
+constexpr auto test = GGUUID::Parse("40e36691-5fd0-4a79-b3b3-87b2a3d13e9c");
+constexpr auto test2 = GGUUID::Parse("{40e36691-5fd0-4a79-b3b3-87b2a3d13e9c}");
+constexpr auto test3 = GGUUID::Parse("{40E36691-5FD0-4A79-B3B3-87B2A3D13E9C}");
+
+void PostLoadObjectHook(RTTIBinaryReader *Reader)
+{
+	auto object = Reader->m_CurrentObject;
+	Reader->OnObjectPostInit(object);
+
+	auto test = RTTI::Cast<LocalizedTextResource>(object);
+
+	DebugUI::LogWindow::AddLog("[Asset] Loaded %s at address 0x%p (%s)\n", object->GetRTTI()->GetSymbolName().c_str(), object, Reader->m_FullFilePath.c_str());
+}
+
+void NodeGraphAlert(const char *Message, bool Unknown)
+{
+	DebugUI::LogWindow::AddLog("[Alert] %s\n", Message);
+}
+
+void NodeGraphAlertWithName(const char *Category, const char *Severity, const char *Message, bool Unknown)
+{
+	DebugUI::LogWindow::AddLog("[Alert] [%s] [%s] %s\n", Category, Severity, Message);
+}
+
+void NodeGraphTrace(const char *UUID, const char *Message)
+{
+	DebugUI::LogWindow::AddLog("[Trace] [%s] %s\n", UUID, Message);
+}
+
+void InternalEngineLog(const char *Format, ...)
+{
+	va_list va;
+	char buffer[2048];
+
+	va_start(va, Format);
+	int len = _vsnprintf_s(buffer, _TRUNCATE, Format, va);
+	va_end(va);
+
+	if (len > 1 && buffer[len - 1] == '\n')
+		DebugUI::LogWindow::AddLog("[Engine] %s", buffer);
+	else
+		DebugUI::LogWindow::AddLog("[Engine] %s\n", buffer);
+}
+
+void PackFileDevice_MountArchive(class PackFileDevice *Device, const String& BinPath, uint32_t Priority)
+{
+	const static auto addr = g_ModuleBase + 0x0147790;
+	((void(__fastcall *)(PackFileDevice *, const String&, uint32_t))(addr))(Device, BinPath, Priority);
+
+	DebugUI::LogWindow::AddLog("[PackFileDevice] Mounted archive %s with priority %u\n", BinPath.c_str(), Priority);
+}
 
 std::unordered_set<const RTTI *> AllRegisteredTypeInfo;
 
@@ -177,6 +239,14 @@ void LoadSignatures()
 	}
 }
 
+void hk_call_1413AB8FC(class CameraEntity *Entity, WorldTransform& Transform)
+{
+	if (DebugUI::MainMenuBar::m_FreeCamMode == DebugUI::MainMenuBar::FreeCamMode::Free)
+		return;
+
+	CallOffset<0x0BB41A0, void(*)(CameraEntity *, WorldTransform&)>(Entity, Transform);
+}
+
 void ApplyHooks()
 {
 	if (g_GameType == GameType::DeathStranding)
@@ -205,6 +275,26 @@ void ApplyHooks()
 		XUtil::PatchMemory(g_ModuleBase + 0x037AD22, { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 });// Force disable exception handler
 
 		XUtil::DetourCall(g_ModuleBase + 0x023BBD0, &hk_SwapChainDX12_Present);
+
+		XUtil::PatchMemoryNop(g_ModuleBase + 0x4A7F82, 7);// Rewriting instructions since the 5 byte call doesn't fit
+		XUtil::DetourCall(g_ModuleBase + 0x4A7F82, &PostLoadObjectHook);
+
+		XUtil::DetourJump(g_ModuleBase + 0x0603D00, NodeGraphAlert);
+		XUtil::DetourJump(g_ModuleBase + 0x0603D10, NodeGraphAlertWithName);
+		XUtil::DetourJump(g_ModuleBase + 0x0603D30, NodeGraphTrace);
+		XUtil::DetourJump(g_ModuleBase + 0x031AEF0, InternalEngineLog);
+		XUtil::DetourJump(g_ModuleBase + 0x03716B0, InternalEngineLog);
+		XUtil::DetourJump(g_ModuleBase + 0x03714A0, InternalEngineLog);
+		//*(bool *)(g_ModuleBase + 0x71158F0) = true; audio logging
+
+		XUtil::DetourCall(g_ModuleBase + 0x01405F2, PackFileDevice_MountArchive);
+		XUtil::DetourCall(g_ModuleBase + 0x014065E, PackFileDevice_MountArchive);
+
+		// Function to set 3rd person camera position
+		XUtil::DetourCall(g_ModuleBase + 0x13AB8FC, hk_call_1413AB8FC);
+
+		// Kill one of the out of bounds checks
+		XUtil::PatchMemoryNop(g_ModuleBase + 0xEF5A4D, 2);
 	}
 }
 
@@ -212,12 +302,6 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpReserved)
 {
 	if (fdwReason == DLL_PROCESS_ATTACH)
 	{
-		if (AllocConsole())
-		{
-			freopen("CONOUT$", "w", stdout);
-			freopen("CONOUT$", "w", stderr);
-		}
-
 		auto moduleBase = reinterpret_cast<uintptr_t>(GetModuleHandle(nullptr));
 		auto ntHeaders = reinterpret_cast<PIMAGE_NT_HEADERS64>(moduleBase + reinterpret_cast<PIMAGE_DOS_HEADER>(moduleBase)->e_lfanew);
 
