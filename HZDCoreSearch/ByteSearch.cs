@@ -1,11 +1,11 @@
-﻿using System;
+﻿using HZDCoreEditor.Util;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace HZDCoreEditor.Util
+namespace HZDCoreSearch
 {
     public class ByteSearchResult<T>
     {

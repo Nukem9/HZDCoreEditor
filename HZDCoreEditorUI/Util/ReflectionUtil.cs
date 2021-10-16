@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HZDCoreEditor.Util
+namespace HZDCoreEditorUI.Util
 {
     internal static class ReflectionUtil
     {
