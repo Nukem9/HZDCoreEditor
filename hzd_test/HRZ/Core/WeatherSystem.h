@@ -16,10 +16,12 @@ class RenderEffectResource;
 class WeatherSetup;
 class WindSimulationForceField;
 
+DECL_RTTI(WeatherSystem);
+
 class WeatherSystem : public CoreObject
 {
 public:
-	static inline auto*& Instance = *ResolveOffset<WeatherSystem **>(0x2F39098);
+	TYPE_RTTI(WeatherSystem);
 
 	char _pad20[0x110];
 	SharedLock m_Mutex;											// 0x130

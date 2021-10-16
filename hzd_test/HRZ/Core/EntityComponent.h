@@ -12,18 +12,18 @@
 namespace HRZ
 {
 
-extern const RTTI *RTTI_EntityComponent;
-extern const RTTI *RTTI_EntityComponentContainer;
-extern const RTTI *RTTI_EntityComponentRep;
-extern const RTTI *RTTI_EntityComponentResource;
-
 class Entity;
 class NetEntityComponentState;
+
+DECL_RTTI(EntityComponent);
+DECL_RTTI(EntityComponentContainer);
+DECL_RTTI(EntityComponentRep);
+DECL_RTTI(EntityComponentResource);
 
 class EntityComponentResource : public Resource
 {
 public:
-	static inline auto& TypeInfo = RTTI_EntityComponentResource;
+	TYPE_RTTI(EntityComponentResource);
 
 	virtual const RTTI *GetRTTI() const override;		// 0
 	virtual ~EntityComponentResource() override;		// 1
@@ -36,7 +36,7 @@ assert_size(EntityComponentResource, 0x28);
 class EntityComponentRep : public RTTIObject, public WeakPtrTarget
 {
 public:
-	static inline auto& TypeInfo = RTTI_EntityComponentRep;
+	TYPE_RTTI(EntityComponentRep);
 
 	uint16_t m_Unknown18 = 0;
 	void *m_Unknown20 = nullptr;
@@ -53,7 +53,7 @@ assert_size(EntityComponentRep, 0x30);
 class EntityComponent : public RTTIRefObject, public WeakPtrTarget
 {
 public:
-	static inline auto& TypeInfo = RTTI_EntityComponent;
+	TYPE_RTTI(EntityComponent);
 
 	Ref<EntityComponentResource> m_Resource;
 	bool m_Unknown38 = false;
@@ -88,7 +88,7 @@ assert_size(EntityComponent, 0x58);
 class EntityComponentContainer
 {
 public:
-	static inline auto& TypeInfo = RTTI_EntityComponentContainer;
+	TYPE_RTTI(EntityComponentContainer);
 
 	Array<EntityComponent *> m_Components;		// Grouped by component type
 	Array<RTTI::TypeId> m_ComponentRTTITypes;	// Sorted for quick binary searches. Each entry index corresponds to a m_Components entry.

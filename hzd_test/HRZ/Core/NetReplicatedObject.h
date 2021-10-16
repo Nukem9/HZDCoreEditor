@@ -5,9 +5,13 @@
 namespace HRZ
 {
 
+DECL_RTTI(NetReplicatedObject);
+
 class NetReplicatedObject : public RTTIObject
 {
 public:
+	TYPE_RTTI(NetReplicatedObject);
+
 	char _pad8[0x38];
 
 	virtual const RTTI *GetRTTI() const override;	// 0

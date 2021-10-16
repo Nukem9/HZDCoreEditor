@@ -9,9 +9,13 @@
 namespace HRZ
 {
 
+DECL_RTTI(RTTIRefObject);
+
 class RTTIRefObject : public RTTIObject
 {
 public:
+	TYPE_RTTI(RTTIRefObject);
+
 	uint32_t m_RefCount = 0;	// 0x8
 	GGUUID m_ObjectUUID;		// 0x10
 

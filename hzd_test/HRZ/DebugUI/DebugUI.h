@@ -19,5 +19,6 @@ void Initialize(const SwapChainDX12 *SwapChain);
 void RenderUI();
 void RenderUID3D(const SwapChainDX12 *SwapChain);
 void AddWindow(std::unique_ptr<Window> Handle);
+bool ShouldInterceptInput();
 
 }

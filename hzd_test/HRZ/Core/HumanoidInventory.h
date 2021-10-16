@@ -8,12 +8,12 @@
 namespace HRZ
 {
 
-extern const RTTI *RTTI_HumanoidInventory;
+DECL_RTTI(HumanoidInventory);
 
 class HumanoidInventory : public Inventory, public ConditionListener
 {
 public:
-	static inline auto& TypeInfo = RTTI_HumanoidInventory;
+	TYPE_RTTI(HumanoidInventory);
 
 	char _padD8[0xD0];
 

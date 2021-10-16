@@ -2,10 +2,12 @@
 
 #include "../PCore/Common.h"
 
+#include "RTTI.h"
+
 namespace HRZ
 {
 
-class RTTI;
+DECL_RTTI(ExportedSymbolGroup);
 
 class ExportedSymbolMember
 {
@@ -66,6 +68,8 @@ assert_size(ExportedSymbolMember, 0x178);
 class ExportedSymbolGroup
 {
 public:
+	TYPE_RTTI(ExportedSymbolGroup);
+
 	bool m_AlwaysExport;
 	const char *m_Namespace;
 	Array<ExportedSymbolMember> m_Members;

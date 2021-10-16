@@ -9,16 +9,16 @@
 namespace HRZ
 {
 
-extern const RTTI *RTTI_WeatherSetup;
-extern const RTTI *RTTI_WeatherSetupSettings;
-
 class Texture;
 class WeatherAmbienceCycle;
+
+DECL_RTTI(WeatherSetup);
+DECL_RTTI(WeatherSetupSettings);
 
 class WeatherSetupSettings
 {
 public:
-	static inline auto& TypeInfo = RTTI_WeatherSetupSettings;
+	TYPE_RTTI(WeatherSetupSettings);
 
 	float m_CloudCoverage;						// 0x0
 	float m_CloudCoverageVariation;				// 0x4
@@ -57,7 +57,7 @@ assert_size(WeatherSetupSettings, 0x88);
 class WeatherSetup : public CoreObject, public StreamingRefTarget
 {
 public:
-	static inline auto& TypeInfo = RTTI_WeatherSetup;
+	TYPE_RTTI(WeatherSetup);
 
 	String m_Name;								// 0x30
 	WeatherSetupSettings m_Settings;			// 0x38

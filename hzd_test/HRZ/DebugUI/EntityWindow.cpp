@@ -64,15 +64,6 @@ void EntityWindow::Render()
 	valueChanged |= ImGui::InputFloat("Velocity Y", &velocity.Y, 1.0f, 20.0f, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue);
 	valueChanged |= ImGui::InputFloat("Velocity Z", &velocity.Z, 1.0f, 20.0f, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue);
 
-	static bool enablec = false;
-	ImGui::Checkbox("Force zero gravity", &enablec);
-
-	if (enablec)
-	{
-		valueChanged = true;
-		velocity.Z = 0.0f;
-	}
-
 	if (valueChanged && m_Entity->m_Mover)
 		m_Entity->m_Mover->SetVelocity(velocity);
 

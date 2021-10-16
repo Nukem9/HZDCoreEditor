@@ -7,17 +7,17 @@
 namespace HRZ
 {
 
-extern const RTTI *RTTI_InventoryItemComponent;
-extern const RTTI *RTTI_InventoryItemComponentResource;
-
 class EquipSlotType;
 class GraphProgramResource;
 class SoundResource;
 
+DECL_RTTI(InventoryItemComponent);
+DECL_RTTI(InventoryItemComponentResource);
+
 class InventoryItemComponentResource : public ItemDescriptionComponentResource
 {
 public:
-	static inline auto& TypeInfo = RTTI_InventoryItemComponentResource;
+	TYPE_RTTI(InventoryItemComponentResource);
 
 	Array<Ref<EquipSlotType>> m_EquipSlotTypes;						// 0x80
 	bool m_IsDroppable;												// 0x90
@@ -41,7 +41,7 @@ assert_size(InventoryItemComponentResource, 0xD8);
 class InventoryItemComponent : public ItemDescriptionComponent
 {
 public:
-	static inline auto& TypeInfo = RTTI_InventoryItemComponent;
+	TYPE_RTTI(InventoryItemComponent);
 
 	char _pad58[0x8];			// 0x58
 	Ref<void *> m_UnknownRef60;	// 0x60

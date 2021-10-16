@@ -11,9 +11,13 @@ namespace HRZ
 class Entity;
 class EntityResource;
 
+DECL_RTTI(Inventory);
+
 class Inventory : public EntityComponent
 {
 public:
+	TYPE_RTTI(Inventory);
+
 	Array<InventoryEntity *> m_Items; // 0x58
 	char _pad68[0x68];
 

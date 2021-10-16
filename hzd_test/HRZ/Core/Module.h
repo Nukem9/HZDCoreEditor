@@ -7,9 +7,13 @@
 namespace HRZ
 {
 
+DECL_RTTI(Module);
+
 class Module : public CoreObject
 {
 public:
+	TYPE_RTTI(Module);
+
 	int m_SuspendCount;
 
 	virtual const RTTI *GetRTTI() const override;	// 0

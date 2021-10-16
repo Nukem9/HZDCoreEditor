@@ -10,9 +10,13 @@ namespace HRZ
 class ClimateWeatherState;
 class WorldDataType;
 
+DECL_RTTI(Climate);
+
 class Climate : public ClimateBase
 {
 public:
+	TYPE_RTTI(Climate);
+
 	Array<Ref<ClimateWeatherState>> m_WeatherStates;// 0x30
 	Ref<WorldDataType> m_WorldDataType;				// 0x40
 

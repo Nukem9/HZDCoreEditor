@@ -1,5 +1,7 @@
 #include <imgui.h>
 
+#include "../Core/Application.h"
+#include "../Core/GameModule.h"
 #include "../Core/WeatherSetup.h"
 #include "../Core/WeatherSystem.h"
 #include "../Core/Climate.h"
@@ -21,8 +23,8 @@ void WeatherWindow::Render()
 		return;
 	}
 
-	auto setup = WeatherSystem::Instance->m_CurrentWeatherSetup.get();
-	auto system = WeatherSystem::Instance;
+	auto system = Application::Instance().m_GameModule->m_WeatherSystem.get();
+	auto setup = system->m_CurrentWeatherSetup.get();
 	bool changed = false;
 
 	ImGui::Text("Climate: %s", system->m_Climate ? system->m_Climate->GetName().c_str() : "<None>");
@@ -69,9 +71,7 @@ void WeatherWindow::Render()
 #undef DO_FLOAT_INPUT
 
 	if (changed)
-	{
-		WeatherSystem::Instance->SetWeatherOverride(setup, 1.0f, 0);
-	}
+		system->SetWeatherOverride(setup, 1.0f, 0);
 
 	ImGui::End();
 }

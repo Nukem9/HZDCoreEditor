@@ -127,7 +127,7 @@
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;NOMINMAX;HZDTEST_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>false</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
@@ -145,7 +145,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;NOMINMAX;HZDTEST_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>false</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
@@ -176,13 +176,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
+    <ClInclude Include="HRZ\Core\Application.h" />
     <ClInclude Include="HRZ\Core\BaseResource.h" />
     <ClInclude Include="HRZ\Core\BoundingBox3.h" />
+    <ClInclude Include="HRZ\Core\CameraEntity.h" />
     <ClInclude Include="HRZ\Core\Climate.h" />
     <ClInclude Include="HRZ\Core\ClimateBase.h" />
     <ClInclude Include="HRZ\Core\ClimateWeatherState.h" />
     <ClInclude Include="HRZ\Core\ConditionListener.h" />
     <ClInclude Include="HRZ\Core\CoreObject.h" />
+    <ClInclude Include="HRZ\Core\CursorManager.h" />
+    <ClInclude Include="HRZ\Core\DebugSettings.h" />
     <ClInclude Include="HRZ\Core\Entity.h" />
     <ClInclude Include="HRZ\Core\EntityComponent.h" />
     <ClInclude Include="HRZ\Core\FRange.h" />
@@ -198,19 +202,26 @@
     <ClInclude Include="HRZ\Core\NetReplicatedObject.h" />
     <ClInclude Include="HRZ\Core\PhysicsCollisionListener.h" />
     <ClInclude Include="HRZ\Core\Player.h" />
+    <ClInclude Include="HRZ\Core\PropertyContainer.h" />
+    <ClInclude Include="HRZ\Core\PropertyContainerData.h" />
     <ClInclude Include="HRZ\Core\Resource.h" />
     <ClInclude Include="HRZ\Core\ResourceWithoutLegacyName.h" />
+    <ClInclude Include="HRZ\Core\RTTIBinaryReader.h" />
     <ClInclude Include="HRZ\Core\RTTIRefObject.h" />
     <ClInclude Include="HRZ\Core\SlowMotionManager.h" />
+    <ClInclude Include="HRZ\Core\StateObject.h" />
     <ClInclude Include="HRZ\Core\StreamingRefTarget.h" />
+    <ClInclude Include="HRZ\Core\ThirdPersonPlayerCameraComponent.h" />
     <ClInclude Include="HRZ\Core\ViewDependentEntity.h" />
     <ClInclude Include="HRZ\Core\WeatherSetup.h" />
     <ClInclude Include="HRZ\Core\WeatherSystem.h" />
+    <ClInclude Include="HRZ\Core\WorldState.h" />
     <ClInclude Include="HRZ\DebugUI\ComponentViewWindow.h" />
     <ClInclude Include="HRZ\DebugUI\DebugUI.h" />
     <ClInclude Include="HRZ\DebugUI\DebugUIWindow.h" />
     <ClInclude Include="HRZ\DebugUI\DemoWindow.h" />
     <ClInclude Include="HRZ\DebugUI\EntityWindow.h" />
+    <ClInclude Include="HRZ\DebugUI\LogWindow.h" />
     <ClInclude Include="HRZ\DebugUI\MainMenuBar.h" />
     <ClInclude Include="HRZ\DebugUI\WeatherWindow.h" />
     <ClInclude Include="HRZ\PCore\UUIDRef.h" />

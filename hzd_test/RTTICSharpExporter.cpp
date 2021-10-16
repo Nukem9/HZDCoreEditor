@@ -150,7 +150,7 @@ void RTTICSharpExporter::ExportAll(std::string_view Directory)
 void RTTICSharpExporter::ExportFileHeader()
 {
 	const char *data =
-		"{\n"
+		"\n"
 		"    using int8 = System.SByte;\n"
 		"    using uint8 = System.Byte;\n"
 		"    using int16 = System.Int16;\n"
@@ -179,14 +179,14 @@ void RTTICSharpExporter::ExportFileHeader()
 	Print("#pragma warning disable CS0649 // warning CS0649: 'member' is never assigned to, and will always have its default value 'value'.\n");
 	Print("#pragma warning disable CS0108 // warning CS0108: 'class' hides inherited member 'member'. Use the new keyword if hiding was intended.\n");
 	Print("\n");
-	Print("namespace Decima.{0:}\n", g_GamePrefix);
+	Print("namespace Decima.{0:}\n{{", g_GamePrefix);
 	Print(data);
 }
 
 void RTTICSharpExporter::ExportFileFooter()
 {
 	const char *data =
-		"}\n";
+		"}}\n";
 
 	Print(data);
 }
@@ -195,7 +195,7 @@ void RTTICSharpExporter::ExportRTTIEnum(const RTTIEnum *Type)
 {
 	// Attributes/decl
 	Print("[RTTI.Serializable(0x{0:X}, GameType.{1:})]\n", Type->GetCoreBinaryTypeId(), g_GamePrefix);
-	Print("public enum {0:} : {1:}\n{\n", Type->GetSymbolName(), EnumTypeToString(Type));
+	Print("public enum {0:} : {1:}\n{{\n", Type->GetSymbolName(), EnumTypeToString(Type));
 
 	// Members
 	size_t index = 0;
@@ -225,7 +225,7 @@ void RTTICSharpExporter::ExportRTTIEnum(const RTTIEnum *Type)
 		index++;
 	}
 
-	Print("}\n\n");
+	Print("}}\n\n");
 }
 
 void RTTICSharpExporter::ExportRTTIClass(const RTTIClass *Type)
@@ -264,7 +264,7 @@ void RTTICSharpExporter::ExportRTTIClass(const RTTIClass *Type)
 	// [RTTI.Serializable(0xDC3D43D192F22E9B, GameType.HZD)]
 	//
 	Print("[RTTI.Serializable(0x{0:X}, GameType.{1:})]\n", Type->GetCoreBinaryTypeId(), g_GamePrefix);
-	Print("{0:}\n{\n", fullDecl);
+	Print("{0:}\n{{\n", fullDecl);
 
 	//
 	// Possible members:
@@ -322,7 +322,7 @@ void RTTICSharpExporter::ExportRTTIClass(const RTTIClass *Type)
 		Print("\t{0:} public {1:} {2:};\n", attributeDecl, typeName, memberName);
 	}
 
-	Print("}\n\n");
+	Print("}}\n\n");
 }
 
 bool RTTICSharpExporter::IsBaseClassSuperfluous(const RTTIClass *Type)

@@ -2,14 +2,18 @@
 
 #include "../PCore/Common.h"
 
+#include "RTTI.h"
+
 namespace HRZ
 {
 
-class RTTI;
+DECL_RTTI(RTTIObject);
 
 class RTTIObject
 {
 public:
+	TYPE_RTTI(RTTIObject);
+
 	virtual const RTTI *GetRTTI() const;			// 0
 	virtual ~RTTIObject();							// 1
 };

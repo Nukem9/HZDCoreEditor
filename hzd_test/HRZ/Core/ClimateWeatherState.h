@@ -10,9 +10,13 @@ namespace HRZ
 
 class WeatherSetup;
 
+DECL_RTTI(ClimateWeatherState);
+
 class ClimateWeatherState : public CoreObject
 {
 public:
+	TYPE_RTTI(ClimateWeatherState);
+
 	Ref<WeatherSetup> m_WeatherSetup;	// 0x20
 	FRange m_DurationInMinutes;			// 0x28
 	float m_TransitionTime;				// 0x30

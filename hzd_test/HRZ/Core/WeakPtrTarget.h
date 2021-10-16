@@ -2,14 +2,18 @@
 
 #include "../PCore/Util.h"
 
+#include "RTTI.h"
+
 namespace HRZ
 {
 
-class RTTI;
+DECL_RTTI(WeakPtrTarget);
 
 class WeakPtrTarget
 {
 public:
+	TYPE_RTTI(WeakPtrTarget);
+
 	void *m_UnknownList = nullptr;
 
 	virtual const RTTI *GetRTTI() const;	// 0
