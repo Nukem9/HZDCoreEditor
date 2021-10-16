@@ -42,11 +42,10 @@
 //     Debugger.Break();
 //
 using System;
-using HZDCoreEditor.Util;
 
-namespace Utility
+namespace HZDCoreEditor.Util
 {
-    public static class SMHasher
+    internal static class SMHasher
     {
         private static ulong BIG_CONSTANT(ulong x)
         {

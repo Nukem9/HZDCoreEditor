@@ -1,4 +1,4 @@
-﻿using Utility;
+﻿using HZDCoreEditor.Util;
 
 namespace Decima.HZD
 {

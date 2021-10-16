@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace HZDCoreEditor.Util
 {
-    public static class BitOperations
+    internal static class BitOperations
     {
         private static readonly int[] _lookup =
         {

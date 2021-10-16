@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Utility
+namespace HZDCoreEditor.Util
 {
-    public static class PCore
+    internal static class PCore
     {
         public static void Quicksort<T>(T[] array, Func<T, T, bool> compare)
         {

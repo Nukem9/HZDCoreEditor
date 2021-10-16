@@ -1,13 +1,11 @@
-﻿using System;
+﻿using HZDCoreEditor.Util;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Numerics;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
-using HZDCoreEditor.Util;
-using Utility;
 
 namespace Decima
 {

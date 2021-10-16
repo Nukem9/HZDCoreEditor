@@ -1,8 +1,8 @@
-﻿using System;
+﻿using HZDCoreEditor.Util;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using Utility;
 
 namespace Decima
 {

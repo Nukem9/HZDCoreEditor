@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Reflection;
 
-namespace Utility
+namespace HZDCoreEditor.Util
 {
-    public static class ReflectionUtil
+    internal static class ReflectionUtil
     {
         public static bool Inherits(this Type objectType, Type baseType)
         {

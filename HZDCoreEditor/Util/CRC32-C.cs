@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Utility
+namespace HZDCoreEditor.Util
 {
-    static class CRC32C
+    internal static class CRC32C
     {
         private static readonly uint[] LookupTable;
 

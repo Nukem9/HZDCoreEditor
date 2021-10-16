@@ -91,7 +91,7 @@ namespace Decima
                 };
 
                 // Compress
-                long compressedSize = Utility.OodleLZ.Compress(blockStream.GetBuffer().AsSpan().Slice(readPosition, dataRemainder), compressorBufferCache);
+                long compressedSize = HZDCoreEditor.Util.OodleLZ.Compress(blockStream.GetBuffer().AsSpan().Slice(readPosition, dataRemainder), compressorBufferCache);
 
                 if (compressedSize == -1)
                     throw new Exception("Buffer compression failed");

@@ -1,8 +1,8 @@
 ﻿using System.IO;
 
-namespace Utility
+namespace HZDCoreEditor.Util
 {
-    public static class BinaryStreamExtensions
+    internal static class BinaryStreamExtensions
     {
         public static long StreamLength(this BinaryReader reader)
         {

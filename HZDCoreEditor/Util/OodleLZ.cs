@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace Utility
+namespace HZDCoreEditor.Util
 {
-    public static class OodleLZ
+    internal static class OodleLZ
     {
         private enum OodleLZ_Compressor_V3 : int
         {

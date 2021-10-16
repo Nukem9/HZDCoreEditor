@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using HZDCoreEditorUI.Util;
+using System.Collections.Generic;
 using System.Reflection;
-using HZDCoreEditorUI.Util;
-using Utility;
 
 namespace HZDCoreEditorUI.UI
 {

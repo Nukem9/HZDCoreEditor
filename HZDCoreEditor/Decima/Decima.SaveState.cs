@@ -1,9 +1,8 @@
-﻿using Utility;
+﻿using HZDCoreEditor.Util;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using HZDCoreEditor.Util;
 
 namespace Decima
 {

@@ -51,7 +51,7 @@ namespace Decima
                     block.CompressBuffer = new byte[BlockSize * 2];
 
                     // Compress
-                    long compressedSize = Utility.OodleLZ.Compress(
+                    long compressedSize = HZDCoreEditor.Util.OodleLZ.Compress(
                         block.DataBuffer.AsSpan(), 
                         (int)block.DecompressedSize,
                         block.CompressBuffer.AsSpan());

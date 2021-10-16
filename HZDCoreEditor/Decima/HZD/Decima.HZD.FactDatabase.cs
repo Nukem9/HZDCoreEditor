@@ -1,5 +1,5 @@
 ﻿using System;
-using Utility;
+using HZDCoreEditor.Util;
 using System.Collections.Generic;
 
 namespace Decima.HZD
