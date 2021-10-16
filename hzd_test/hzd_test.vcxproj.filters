@@ -1,0 +1,254 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MSRTTI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RTTICSharpExporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RTTIIDAExporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="XUtil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="winhttp_exports.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HRZ\Core\RTTI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HRZ\DebugUI\DebugUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HRZ\DebugUI\EntityWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HRZ\DebugUI\ComponentViewWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HRZ\DebugUI\WeatherWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\ExportedSymbol.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\RTTI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MSRTTI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RTTICSharpExporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RTTIIDAExporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="XUtil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\PCore\String.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\PCore\Array.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\PCore\Util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\PCore\Common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\PCore\UUID.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\RTTIObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\WorldPosition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\RotMatrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\Vec3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\WorldTransform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\WeakPtrTarget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\CoreObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\Entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\PhysicsCollisionListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\EntityComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\PCore\Ref.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\PCore\Lock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\PGraphics3D\RenderingDeviceDX12.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\PCore\HashMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\StreamingRefTarget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\Player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\NetReplicatedObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\RTTIRefObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\PGraphics3D\SwapChainDX12.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\PGraphics3D\RenderingConfiguration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\PGraphics3D\HwRenderBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\GameModule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\BaseResource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\SlowMotionManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\Module.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\Inventory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\ViewDependentEntity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\InventoryEntity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\HumanoidInventory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\ConditionListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\DebugUI\DebugUIWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\DebugUI\DebugUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\DebugUI\EntityWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\DebugUI\MainMenuBar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\Mover.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\DebugUI\ComponentViewWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\LocalizedTextResource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\ResourceWithoutLegacyName.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\PCore\WString.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\ItemDescriptionComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\PCore\UUIDRef.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\InventoryItemComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\WeatherSetup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\FRange.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\WeatherSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\BoundingBox3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\DebugUI\WeatherWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\DebugUI\DemoWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\ClimateBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\Climate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\ClimateWeatherState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="HRZ\Core\RTTI.inl">
+      <Filter>Header Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>
