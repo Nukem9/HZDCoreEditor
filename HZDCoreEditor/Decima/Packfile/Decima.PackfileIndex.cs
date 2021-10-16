@@ -74,8 +74,8 @@ namespace Decima
 
         public PackfileIndex FromFile(string filePath)
         {
-            using (var reader = new BinaryReader(File.OpenRead(filePath)))
-                return FromData(reader);
+            using var reader = new BinaryReader(File.OpenRead(filePath));
+            return FromData(reader);
         }
 
         public bool ResolvePathByHash(ulong hash, out string path)

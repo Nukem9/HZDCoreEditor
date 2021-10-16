@@ -15,7 +15,7 @@ namespace HZDCoreEditor.Util
         private Action<T> Action { get; }
         private BlockingCollection<T> Queue { get; set; }
         private Task[] Workers { get; }
-        
+
 
         public ParallelTasks(int threads, Action<T> action)
         {
@@ -36,7 +36,7 @@ namespace HZDCoreEditor.Util
             foreach (var worker in Workers)
                 worker.Start();
         }
-        
+
         public bool AddItems(IEnumerable<T> items)
         {
             foreach (var item in items)

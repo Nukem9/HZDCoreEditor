@@ -12,7 +12,7 @@ namespace HZDCoreEditorUI.UI
         public override bool HasChildren => Children?.Count > 0;
         public override List<TreeDataNode> Children { get; }
         public override bool IsEditable => AllowEdits;
-        
+
         private readonly FieldOrProperty ParentFieldEntry;
         private readonly bool AllowEdits;
 

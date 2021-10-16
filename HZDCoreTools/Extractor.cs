@@ -1,13 +1,13 @@
-﻿using System;
+﻿using Decima;
+using Decima.HZD;
+using HZDCoreEditor.Util;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using Decima;
-using Decima.HZD;
-using HZDCoreEditor.Util;
 using String = System.String;
 
 namespace HZDCoreTools
@@ -173,7 +173,7 @@ namespace HZDCoreTools
         private List<string> LoadPrefetch(PackfileReader pack)
         {
             var prefetchHash = Packfile.GetHashForPath(Prefetch);
-            
+
             using var ms = new MemoryStream();
             pack.ExtractFile(prefetchHash, ms);
             ms.Position = 0;
@@ -182,7 +182,7 @@ namespace HZDCoreTools
             var core = CoreBinary.FromData(br, true);
 
             return (core.First(x => x is PrefetchList) as PrefetchList).Files
-                .Select(x=>x.Path?.Value)
+                .Select(x => x.Path?.Value)
                 .ToList();
         }
 

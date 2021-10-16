@@ -17,7 +17,7 @@ namespace HZDCoreEditorUI.UI
         public virtual string Name { get; protected set; }
         public virtual object Value { get { return "UNTYPED MEMBER FIELD"; } }
         public virtual string TypeName { get; protected set; }
-        
+
         public virtual bool HasChildren { get { return false; } }
         public virtual List<TreeDataNode> Children { get { return null; } }
 

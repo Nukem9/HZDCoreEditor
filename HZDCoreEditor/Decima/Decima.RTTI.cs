@@ -16,13 +16,13 @@ namespace Decima
 
     public static partial class RTTI
     {
-        private static Dictionary<ulong, Type> TypeIdLookupMap;
-        private static ConcurrentDictionary<Type, OrderedFieldInfo> TypeFieldInfoCache;
-        private static readonly Dictionary<string, string> DotNetTypeToDecima;
+        private static Dictionary<ulong, Type> _typeIdLookupMap;
+        private static ConcurrentDictionary<Type, OrderedFieldInfo> _typeFieldInfoCache;
+        private static readonly Dictionary<string, string> _dotNetTypeToDecima;
 
         public class OrderedFieldInfo
         {
-            public struct Entry
+            public sealed class Entry
             {
                 public readonly FieldInfo MIBase;
                 public readonly FieldInfo Field;
@@ -59,7 +59,7 @@ namespace Decima
 
         static RTTI()
         {
-            DotNetTypeToDecima = new Dictionary<string, string>()
+            _dotNetTypeToDecima = new Dictionary<string, string>()
             {
                 {"Boolean", "bool"},
                 {"SByte", "int8"},
@@ -79,8 +79,8 @@ namespace Decima
         public static void SetGameMode(GameType game)
         {
             // Build a cache of the 64-bit type IDs to actual C# types. Previous values are erased.
-            TypeIdLookupMap = new Dictionary<ulong, Type>();
-            TypeFieldInfoCache = new ConcurrentDictionary<Type, OrderedFieldInfo>();
+            _typeIdLookupMap = new Dictionary<ulong, Type>();
+            _typeFieldInfoCache = new ConcurrentDictionary<Type, OrderedFieldInfo>();
 
             foreach (var classType in typeof(SerializableAttribute).Assembly.GetTypes())
             {
@@ -91,7 +91,7 @@ namespace Decima
                     if (attribute.Game != game)
                         continue;
 
-                    TypeIdLookupMap.Add(attribute.BinaryTypeId, classType);
+                    _typeIdLookupMap.Add(attribute.BinaryTypeId, classType);
                 }
             }
         }
@@ -99,7 +99,7 @@ namespace Decima
         public static Type GetTypeByName(string name)
         {
             // Slow
-            var type = TypeIdLookupMap.Values
+            var type = _typeIdLookupMap.Values
                 .Where(x => x.Name == name)
                 .Single();
 
@@ -108,7 +108,7 @@ namespace Decima
 
         public static Type GetTypeById(ulong typeId)
         {
-            if (TypeIdLookupMap.TryGetValue(typeId, out Type objectType))
+            if (_typeIdLookupMap.TryGetValue(typeId, out Type objectType))
                 return objectType;
 
             return null;
@@ -128,7 +128,7 @@ namespace Decima
 
                 if (!genericType.IsGenericType)
                 {
-                    if (DotNetTypeToDecima.TryGetValue(typeName, out string translatedName))
+                    if (_dotNetTypeToDecima.TryGetValue(typeName, out string translatedName))
                         return translatedName;
 
                     return typeName;
@@ -171,12 +171,12 @@ namespace Decima
 
         public static OrderedFieldInfo GetOrderedFieldsForClass(Type type)
         {
-            if (TypeFieldInfoCache.TryGetValue(type, out OrderedFieldInfo info))
+            if (_typeFieldInfoCache.TryGetValue(type, out OrderedFieldInfo info))
                 return info;
 
             if (!type.IsDefined(typeof(SerializableAttribute)))
             {
-                TypeFieldInfoCache.TryAdd(type, null);
+                _typeFieldInfoCache.TryAdd(type, null);
                 return null;
             }
 
@@ -248,7 +248,7 @@ namespace Decima
             info = new OrderedFieldInfo(miBases, members);
 
             // Another thread might insert this entry before we do, but it doesn't matter as long as the data is identical
-            TypeFieldInfoCache.TryAdd(type, info);
+            _typeFieldInfoCache.TryAdd(type, info);
             return info;
         }
 

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace HZDCoreEditorUI.Util
+﻿namespace HZDCoreEditorUI.Util
 {
     public class Names
     {

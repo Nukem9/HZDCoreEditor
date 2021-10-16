@@ -1,13 +1,7 @@
-using Decima;
-using NAudio.Wave;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using CommandLine;
+using Decima;
+using System;
+using System.Windows.Forms;
 
 namespace HZDCoreEditorUI
 {
@@ -41,7 +35,7 @@ namespace HZDCoreEditorUI
                 .WithNotParsed(errs => MessageBox.Show("Unable to parse command line: {0}", String.Join(" ", args)));
 
             Application.Run(new UI.FormCoreView(cmds));
-            
+
         }
     }
 }

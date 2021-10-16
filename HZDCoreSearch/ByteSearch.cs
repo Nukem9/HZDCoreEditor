@@ -34,7 +34,7 @@ namespace HZDCoreSearch
         }
 
         public async Task SearchAsync<T>(
-            List<(T Key, byte[] Data)> byteSearches, 
+            List<(T Key, byte[] Data)> byteSearches,
             Action<ByteSearchResult<T>> fileSearched)
         {
             await Task.Run(() =>
@@ -102,7 +102,7 @@ namespace HZDCoreSearch
 
             _searchTasks.WaitForComplete();
         }
-        
+
         private void RecurseDirs(string dir, Action<string> action)
         {
             foreach (var d in Directory.GetDirectories(dir))

@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Decima;
+﻿using Decima;
 using Decima.HZD;
 using HZDCoreEditor.Util;
 using HZDCoreEditorUI.Util;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Windows.Forms;
 using String = System.String;
 
 namespace HZDCoreEditorUI.UI
@@ -31,7 +29,7 @@ namespace HZDCoreEditorUI.UI
         private BrightIdeasSoftware.TreeListView tvMain;
         private BrightIdeasSoftware.TreeListView tvData;
         private Timer _notesTimer;
-        private Dictionary<(string Path, string Id), (string Note, DateTime Date)> _notes; 
+        private Dictionary<(string Path, string Id), (string Note, DateTime Date)> _notes;
 
         public FormCoreView(CmdOptions cmd)
         {
@@ -276,7 +274,7 @@ namespace HZDCoreEditorUI.UI
             }
 
             SearchIndex++;
-            
+
             if (node.Value?.ToString().Contains(txtSearch.Text, StringComparison.OrdinalIgnoreCase) == true)
             {
                 var parents = GetParents(tvData.Objects.Cast<TreeDataNode>(), node);
@@ -375,7 +373,7 @@ namespace HZDCoreEditorUI.UI
 
         private void FormCoreView_DragEnter(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop)) 
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
                 e.Effect = DragDropEffects.Copy;
         }
 
@@ -537,7 +535,7 @@ namespace HZDCoreEditorUI.UI
                     }
                 }
             }
-            
+
             SaveNotes();
         }
 
@@ -547,7 +545,7 @@ namespace HZDCoreEditorUI.UI
         {
             lock (_noteLock)
             {
-                var json = JsonConvert.SerializeObject(_notes.Select(x=>(x.Key, x.Value)), Formatting.Indented);
+                var json = JsonConvert.SerializeObject(_notes.Select(x => (x.Key, x.Value)), Formatting.Indented);
                 File.WriteAllText(NotesFile, json);
             }
         }

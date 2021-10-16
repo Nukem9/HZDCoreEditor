@@ -4,7 +4,7 @@ namespace HZDCoreEditor.Util
 {
     internal static class BitOperations
     {
-        private static readonly int[] _lookup =
+        private static readonly int[] _tzLookup =
         {
             32, 0, 1, 26, 2, 23, 27, 0, 3, 16, 24, 30, 28, 11, 0, 13, 4, 7, 17,
             0, 25, 22, 31, 15, 29, 10, 12, 6, 0, 21, 14, 9, 5, 20, 8, 19, 18
@@ -22,7 +22,7 @@ namespace HZDCoreEditor.Util
 
         public static int TrailingZeroCount(int blockSize)
         {
-            return _lookup[(blockSize & -blockSize) % 37];
+            return _tzLookup[(blockSize & -blockSize) % 37];
         }
     }
 }

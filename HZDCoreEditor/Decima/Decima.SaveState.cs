@@ -10,17 +10,17 @@ namespace Decima
     {
         public BinaryReader Reader { get; private set; }
         public uint SaveVersion { get; private set; }
-        private uint SaveDataOffset;
-        private uint SaveDataLength;
+        private uint _saveDataOffset;
+        private uint _saveDataLength;
 
-        private StringTableContainer StringPool;                // Strings/char
-        private WideStringTableContainer WideStringPool;        // Wide strings/wchar_t
-        private GUIDTableContainer GUIDPool;                    // GUIDs/16 bytes
+        private StringTableContainer _stringPool;                   // Strings/char
+        private WideStringTableContainer _wideStringPool;           // Wide strings/wchar_t
+        private GUIDTableContainer _GUIDPool;                       // GUIDs/16 bytes
 
-        private Dictionary<int, object> LocalSaveObjects;       // Object instances created from this save data (HashMap<int, RTTIObject>)
-        private Dictionary<int, BaseGGUUID> GameDataObjects;  // Object instances stored in the game files (StreamingManager)
-        private RTTIMapContainer RTTIContainer;                 // Stored class layouts
-        private List<string> PrefetchFilePaths;                 // Preload/cache core files that will be needed soon
+        private Dictionary<int, object> _localSaveObjects;          // Object instances created from this save data (HashMap<int, RTTIObject>)
+        private Dictionary<int, BaseGGUUID> _gameDataObjects;       // Object instances stored in the game files (StreamingManager)
+        private RTTIMapContainer _RTTIContainer;                     // Stored class layouts
+        private List<string> _prefetchFilePaths;                    // Preload/cache core files that will be needed soon
 
         private class StringTableContainer
         {
@@ -33,11 +33,11 @@ namespace Decima
                 public byte[] UnknownData;
             };
 
-            private readonly List<Table> Tables = new List<Table>();
+            private readonly List<Table> _tables = new List<Table>();
 
             public string LookupString(int index, int offset)
             {
-                Table stringTable = Tables[index];
+                Table stringTable = _tables[index];
 
                 int blockIndex = offset >> stringTable.BitShiftMask;
                 int dataIndex = offset & (stringTable.BlockSize - 1);
@@ -97,7 +97,7 @@ namespace Decima
                     table.UnknownData = reader.ReadBytesStrict(unknownCount * 8);
 
                     // Insert
-                    container.Tables.Add(table);
+                    container._tables.Add(table);
                 }
 
                 return container;
@@ -106,11 +106,11 @@ namespace Decima
 
         private class WideStringTableContainer
         {
-            private readonly List<string> Table = new List<string>();
+            private readonly List<string> _table = new List<string>();
 
             public string LookupString(int index)
             {
-                return Table[index];
+                return _table[index];
             }
 
             public static WideStringTableContainer FromData(SaveState state)
@@ -123,7 +123,7 @@ namespace Decima
                     int stringLength = state.ReadVariableLengthOffset() * sizeof(short);
                     string str = Encoding.Unicode.GetString(state.Reader.ReadBytesStrict(stringLength));
 
-                    container.Table.Add(str);
+                    container._table.Add(str);
                 }
 
                 return container;
@@ -133,17 +133,17 @@ namespace Decima
         private class GUIDTableContainer
         {
             private const int HardcodedTableCount = 256;
-            private readonly List<BaseGGUUID>[] Tables = new List<BaseGGUUID>[HardcodedTableCount];
+            private readonly List<BaseGGUUID>[] _tables = new List<BaseGGUUID>[HardcodedTableCount];
 
             public GUIDTableContainer()
             {
-                for (int i = 0; i < Tables.Length; i++)
-                    Tables[i] = new List<BaseGGUUID>();
+                for (int i = 0; i < _tables.Length; i++)
+                    _tables[i] = new List<BaseGGUUID>();
             }
 
             public BaseGGUUID LookupGUID(int index, int offset)
             {
-                return Tables[index][offset];
+                return _tables[index][offset];
             }
 
             public static GUIDTableContainer FromData(SaveState state)
@@ -156,7 +156,7 @@ namespace Decima
                     int guidCount = state.ReadVariableLengthOffset();
 
                     for (int j = 0; j < guidCount; j++)
-                        container.Tables[i].Add(new BaseGGUUID().FromData(state.Reader));
+                        container._tables[i].Add(new BaseGGUUID().FromData(state.Reader));
                 }
 
                 return container;
@@ -205,38 +205,38 @@ namespace Decima
         {
             Reader = reader;
             SaveVersion = saveVersion;
-            SaveDataOffset = saveDataOffset;
-            SaveDataLength = saveDataLength;
+            _saveDataOffset = saveDataOffset;
+            _saveDataLength = saveDataLength;
 
             ReadHeaderData();
         }
 
         private void ReadHeaderData()
         {
-            Reader.BaseStream.Position = SaveDataOffset + SaveDataLength - 0x8;
+            Reader.BaseStream.Position = _saveDataOffset + _saveDataLength - 0x8;
             uint typeDataChunkOffset = Reader.ReadUInt32();
             uint rawDataChunkOffset = Reader.ReadUInt32();
 
             // String/GUID tables
-            Reader.BaseStream.Position = SaveDataOffset + rawDataChunkOffset;
+            Reader.BaseStream.Position = _saveDataOffset + rawDataChunkOffset;
             {
                 // UTF-8 strings
-                StringPool = StringTableContainer.FromData(this);
+                _stringPool = StringTableContainer.FromData(this);
 
                 // UTF-16 strings
-                WideStringPool = WideStringTableContainer.FromData(this);
+                _wideStringPool = WideStringTableContainer.FromData(this);
 
                 // GUIDs
                 if (SaveVersion >= 26)
-                    GUIDPool = GUIDTableContainer.FromData(this);
+                    _GUIDPool = GUIDTableContainer.FromData(this);
             }
 
             // Serialized type information and object instances
-            Reader.BaseStream.Position = SaveDataOffset + typeDataChunkOffset;
+            Reader.BaseStream.Position = _saveDataOffset + typeDataChunkOffset;
             {
                 // Create basic objects that are immediately registered with the engine
                 int objectInstanceTypeCount = ReadVariableLengthOffset();
-                LocalSaveObjects = new Dictionary<int, object>();
+                _localSaveObjects = new Dictionary<int, object>();
 
                 for (int i = 0; i < objectInstanceTypeCount; i++)
                 {
@@ -247,34 +247,34 @@ namespace Decima
                     {
                         int objectId = ReadVariableLengthOffset();
 
-                        LocalSaveObjects.Add(objectId, RTTI.CreateObjectInstance(objectType));
+                        _localSaveObjects.Add(objectId, RTTI.CreateObjectInstance(objectType));
                     }
                 }
 
                 // Handles to game data objects
                 int gameDataObjectCount = ReadVariableLengthOffset();
-                GameDataObjects = new Dictionary<int, BaseGGUUID>();
+                _gameDataObjects = new Dictionary<int, BaseGGUUID>();
 
                 for (int i = 0; i < gameDataObjectCount; i++)
                 {
                     int objectId = ReadVariableLengthOffset();
                     var guid = new BaseGGUUID().FromData(Reader);
 
-                    GameDataObjects.Add(objectId, guid);
+                    _gameDataObjects.Add(objectId, guid);
                 }
 
                 // RTTI/class member layouts
-                RTTIContainer = RTTIMapContainer.FromData(this);
+                _RTTIContainer = RTTIMapContainer.FromData(this);
 
                 // File prefetch
                 int prefetchFileCount = ReadVariableLengthOffset();
-                PrefetchFilePaths = new List<string>(prefetchFileCount);
+                _prefetchFilePaths = new List<string>(prefetchFileCount);
 
                 for (int i = 0; i < prefetchFileCount; i++)
-                    PrefetchFilePaths.Add(ReadIndexedString());
+                    _prefetchFilePaths.Add(ReadIndexedString());
             }
 
-            Reader.BaseStream.Position = SaveDataOffset;
+            Reader.BaseStream.Position = _saveDataOffset;
         }
 
         public T DeserializeType<T>()
@@ -330,7 +330,7 @@ namespace Decima
         public void DeserializeObjectClassMembers(Type type, object objectInstance)
         {
             int typeIndex = ReadVariableLengthInt();
-            var rtti = RTTIContainer.LookupRTTI(typeIndex);
+            var rtti = _RTTIContainer.LookupRTTI(typeIndex);
 
             if (rtti.ClassType != type)
                 throw new InvalidDataException("Trying to deserialize an object that does not match the binary data type");
@@ -394,14 +394,14 @@ namespace Decima
             int index = ReadVariableLengthInt();
             int offset = ReadVariableLengthInt();
 
-            return StringPool.LookupString(index, offset);
+            return _stringPool.LookupString(index, offset);
         }
 
         public string ReadIndexedWideString()
         {
             int index = ReadVariableLengthInt();
 
-            return WideStringPool.LookupString(index);
+            return _wideStringPool.LookupString(index);
         }
 
         public BaseGGUUID ReadIndexedGUID()
@@ -421,7 +421,7 @@ namespace Decima
             int index = (value >> 8) & 0xFF;
             int offset = value & 0xFF;
 
-            return GUIDPool.LookupGUID(index, offset);
+            return _GUIDPool.LookupGUID(index, offset);
         }
 
         public object ReadObjectHandle()
@@ -433,13 +433,13 @@ namespace Decima
 
             if ((objectId & 1) == 0)
             {
-                var gameDataGUID = GameDataObjects[objectId];
+                var gameDataGUID = _gameDataObjects[objectId];
 
                 // Need core files to be loaded in order to resolve GUID
                 return new object();
             }
 
-            var savedObject = LocalSaveObjects[objectId];
+            var savedObject = _localSaveObjects[objectId];
             byte loadType = Reader.ReadByte();
 
             if (loadType == 1)

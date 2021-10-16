@@ -1,7 +1,7 @@
-﻿using System;
+﻿using HZDCoreEditor.Util;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using HZDCoreEditor.Util;
 
 namespace Decima
 {
@@ -29,7 +29,7 @@ namespace Decima
 
             if (itemCount == 0)
                 return;
-            
+
             if (typeof(T) == typeof(int))
             {
                 var bytes = reader.ReadBytesStrict(itemCount * sizeof(int));
@@ -72,6 +72,7 @@ namespace Decima
                 Add(newObj);
             }
         }
+
         public void SerializeStateObject(SaveState state) => throw new NotImplementedException();
     }
 }

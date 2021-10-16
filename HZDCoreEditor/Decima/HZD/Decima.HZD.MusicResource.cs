@@ -3,11 +3,11 @@ using System.IO;
 
 namespace Decima.HZD
 {
-	using uint32 = System.UInt32;
+    using uint32 = System.UInt32;
 
-	[RTTI.Serializable(0x873D69111E6F7262, GameType.HZD)]
-	public class MusicResource : Resource, RTTI.IExtraBinaryDataCallback
-	{
+    [RTTI.Serializable(0x873D69111E6F7262, GameType.HZD)]
+    public class MusicResource : Resource, RTTI.IExtraBinaryDataCallback
+    {
         [RTTI.Member(9, 0x48)] public Array<uint32> StreamingDataHash;
         [RTTI.Member(4, 0x58)] public int BitRate;
         [RTTI.Member(5, 0x5C)] public bool StripSilence;

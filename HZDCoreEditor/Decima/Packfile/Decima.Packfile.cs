@@ -327,7 +327,7 @@ namespace Decima
         protected Packfile()
         {
         }
-        
+
         /// <summary>
         /// Checks if a Decima-formatted path is valid for this archive
         /// </summary>
@@ -335,15 +335,18 @@ namespace Decima
         {
             return GetFileEntryIndex(path) != int.MaxValue;
         }
-        
+
         public static string EnsureExt(string path, bool stream)
         {
             if (stream && !path.EndsWith(StreamExt, StringComparison.OrdinalIgnoreCase))
                 path += StreamExt;
+
             if (!stream && !path.EndsWith(CoreExt, StringComparison.OrdinalIgnoreCase))
                 path += CoreExt;
+
             return path;
         }
+
         public static ulong GetHashForPath(string path, bool stream = false)
         {
             path = EnsureExt(path, stream).Replace('\\', '/');

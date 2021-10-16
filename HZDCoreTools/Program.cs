@@ -1,6 +1,6 @@
-﻿using System;
-using CommandLine;
+﻿using CommandLine;
 using Decima;
+using System;
 
 namespace HZDCoreTools
 {

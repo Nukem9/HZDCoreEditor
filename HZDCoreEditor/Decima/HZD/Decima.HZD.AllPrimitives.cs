@@ -49,14 +49,15 @@ namespace Decima.HZD
     /// </summary>
     public class Array<T> : BaseArray<T>
     {
-        public Array() 
-            : base() { }
+        public Array() : base()
+        {
+        }
 
-        public Array(int capacity) 
-            : base(capacity) { }
+        public Array(int capacity) : base(capacity)
+        {
+        }
 
-        public Array(T[] source)
-            : base(source.Length)
+        public Array(T[] source) : base(source.Length)
         {
             for (int i = 0; i < source.Length; i++)
                 Add(source[i]);
@@ -145,7 +146,7 @@ namespace Decima.HZD
     }
 
     /// <summary>
-    /// Typedef alias for BasedWString
+    /// Typedef alias for BaseWString
     /// </summary>
     public class WString : BaseWString
     {
@@ -161,6 +162,7 @@ namespace Decima.HZD
         {
             Value = new BigInteger(reader.ReadBytesStrict(16));
         }
+
         public void Serialize(BinaryWriter writer) => throw new NotImplementedException();
         public void DeserializeStateObject(SaveState state) => throw new NotImplementedException();
         public void SerializeStateObject(SaveState state) => throw new NotImplementedException();

@@ -13,7 +13,7 @@ namespace HZDCoreEditorUI.UI
         public override bool HasChildren => GetListLength() > 0;
         public override List<TreeDataNode> Children { get; }
         public override bool IsEditable => false;
-        
+
         private readonly FieldOrProperty ParentFieldEntry;
 
         public TreeDataListNode(object parent, FieldOrProperty member, NodeAttributes attributes)
@@ -69,7 +69,7 @@ namespace HZDCoreEditorUI.UI
         public override bool HasChildren => ObjectWrapperNode.HasChildren;
         public override List<TreeDataNode> Children => ObjectWrapperNode.Children;
         public override bool IsEditable => ObjectWrapperNode.IsEditable;
-        
+
         private readonly int ParentArrayIndex;
         private TreeDataNode ObjectWrapperNode;
 
@@ -85,7 +85,7 @@ namespace HZDCoreEditorUI.UI
         {
             Name = $"[{index}]";
             TypeName = elementType.GetFriendlyName();
-            
+
             ParentArrayIndex = index;
 
             AddObjectChildren(elementType);

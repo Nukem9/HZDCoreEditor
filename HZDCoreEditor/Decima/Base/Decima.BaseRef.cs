@@ -98,6 +98,8 @@ namespace Decima
                 Type = Types.Null;
         }
 
+        public virtual void SerializeStateObject(SaveState state) => throw new NotImplementedException();
+
         public override string ToString()
         {
             switch (Type)
@@ -116,7 +118,6 @@ namespace Decima
 
             throw new NotImplementedException();
         }
-        public virtual void SerializeStateObject(SaveState state) => throw new NotImplementedException();
     }
 
     public class BaseStreamingRef<T> : BaseRef

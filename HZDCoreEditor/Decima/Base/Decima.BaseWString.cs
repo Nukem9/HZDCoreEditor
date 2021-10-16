@@ -45,6 +45,7 @@ namespace Decima
         {
             Value = state.ReadIndexedWideString();
         }
+
         public void SerializeStateObject(SaveState state) => throw new NotImplementedException();
 
         public override string ToString()

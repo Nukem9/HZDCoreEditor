@@ -1,12 +1,10 @@
-﻿using System;
+﻿using HZDCoreEditor.Util;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Decima.HZD;
-using HZDCoreEditor.Util;
 
 namespace Decima
 {
@@ -52,7 +50,7 @@ namespace Decima
 
                     // Compress
                     long compressedSize = HZDCoreEditor.Util.OodleLZ.Compress(
-                        block.DataBuffer.AsSpan(), 
+                        block.DataBuffer.AsSpan(),
                         (int)block.DecompressedSize,
                         block.CompressBuffer.AsSpan());
 
@@ -68,7 +66,7 @@ namespace Decima
             tasks.Start();
 
             AddFiles(physicalPathRoot, sourceFiles, tasks);
-            
+
             tasks.WaitForComplete();
 
             using var fs = File.Open(_archivePath, _allowOverwrite ? FileMode.Create : FileMode.CreateNew, FileAccess.ReadWrite, FileShare.None);

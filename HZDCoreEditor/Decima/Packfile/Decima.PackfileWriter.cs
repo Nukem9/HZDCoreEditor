@@ -12,7 +12,7 @@ namespace Decima
 
         private readonly string _archivePath;
         private readonly bool _allowOverwrite;
-        private ulong WriterDecompressedBlockOffset;
+        private ulong _writerDecompressedBlockOffset;
 
         public PackfileWriter(string archivePath, bool encrypted = false, bool allowOverwrite = false)
         {
@@ -28,7 +28,7 @@ namespace Decima
 
         public void BuildFromFileList(string physicalPathRoot, string[] sourceFiles)
         {
-            WriterDecompressedBlockOffset = 0;
+            _writerDecompressedBlockOffset = 0;
             byte[] tempCompressedBuffer = new byte[WriterBlockSizeThreshold * 2];
 
             long totalBlockSize = sourceFiles.Sum(file => new FileInfo(Path.Combine(physicalPathRoot, file)).Length);
@@ -85,7 +85,7 @@ namespace Decima
 
                 var blockEntry = new BlockEntry()
                 {
-                    DecompressedOffset = WriterDecompressedBlockOffset,
+                    DecompressedOffset = _writerDecompressedBlockOffset,
                     DecompressedSize = (uint)dataRemainder,
                     Offset = (ulong)writer.BaseStream.Position,
                 };
@@ -105,7 +105,7 @@ namespace Decima
                 // Write to disk
                 writer.Write(compressorBufferCache, 0, (int)blockEntry.Size);
 
-                WriterDecompressedBlockOffset += blockEntry.DecompressedSize;
+                _writerDecompressedBlockOffset += blockEntry.DecompressedSize;
                 readPosition += dataRemainder;
 
                 BlockEntries.Add(blockEntry);

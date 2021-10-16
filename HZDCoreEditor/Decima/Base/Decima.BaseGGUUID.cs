@@ -1,8 +1,8 @@
 ﻿using HZDCoreEditor.Util;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Collections.Generic;
 
 namespace Decima
 {
@@ -62,6 +62,7 @@ namespace Decima
         {
             return FromData(reader.ReadBytesStrict(16));
         }
+
         public BaseGGUUID FromData(ReadOnlySpan<byte> data)
         {
             AssignFromData(data);
@@ -80,6 +81,7 @@ namespace Decima
         {
             AssignFromOther(state.ReadIndexedGUID());
         }
+
         public static BaseGGUUID FromOther(BaseGGUUID other)
         {
             var x = new BaseGGUUID();
@@ -131,7 +133,7 @@ namespace Decima
 
         public byte[] ToBytes()
         {
-            return new []
+            return new[]
             {
                 Data0, Data1, Data2, Data3, Data4, Data5, Data6, Data7,
                 Data8, Data9, Data10, Data11, Data12, Data13, Data14, Data15
@@ -165,7 +167,7 @@ namespace Decima
             {
                 const int p = 16777619;
                 int hash = (int)2166136261;
-                
+
                 hash = (hash ^ Data0) * p;
                 hash = (hash ^ Data1) * p;
                 hash = (hash ^ Data2) * p;
@@ -191,6 +193,7 @@ namespace Decima
                 return hash;
             }
         }
+
         public void SerializeStateObject(SaveState state) => throw new NotImplementedException();
 
         public static implicit operator BaseGGUUID(string value)

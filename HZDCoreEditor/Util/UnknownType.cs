@@ -5,10 +5,10 @@
         public ulong TypeId { get; }
         public byte[] Data { get; }
 
-        public UnknownType(byte[] data, ulong typeId)
+        public UnknownType(ulong typeId, byte[] data)
         {
-            Data = data;
             TypeId = typeId;
+            Data = data;
         }
 
     }

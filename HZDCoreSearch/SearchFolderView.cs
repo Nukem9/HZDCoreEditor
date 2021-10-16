@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using HZDCoreEditor.Util;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using HZDCoreEditor.Util;
 
 namespace HZDCoreSearch
 {
@@ -84,7 +81,7 @@ namespace HZDCoreSearch
             Search = null;
             btnSearch.Text = "Search";
         }
-        
+
         private static byte[] ToBytes(string data)
         {
             if (!Guid.TryParse(data, out Guid guid))
@@ -92,11 +89,11 @@ namespace HZDCoreSearch
 
             return guid.ToByteArray();
         }
-        
+
         private void lbMatches_DoubleClick(object sender, EventArgs e)
         {
             var (path, idx) = GetSelectedItem();
-            
+
             if (path != null && !String.IsNullOrEmpty(_sourceProcess))
                 Process.Start(_sourceProcess, $"\"{path}\" -s \"{CurrentSearches[idx]}\"");
         }

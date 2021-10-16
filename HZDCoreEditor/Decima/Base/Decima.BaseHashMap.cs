@@ -11,7 +11,6 @@ namespace Decima
     /// UInt32        (+0) Item count
     /// <UInt32, T>[] (+4) (Optional) Array items
     /// </remarks>
-    [DebuggerDisplay("{Value}")]
     public class BaseHashMap<T> : Dictionary<uint, T>, RTTI.ISerializable, RTTI.ISaveSerializable
     {
         public void Deserialize(BinaryReader reader)
@@ -41,6 +40,7 @@ namespace Decima
                 RTTI.SerializeType(writer, element.Value);
             }
         }
+
         public void DeserializeStateObject(SaveState state) => throw new NotImplementedException();
         public void SerializeStateObject(SaveState state) => throw new NotImplementedException();
     }

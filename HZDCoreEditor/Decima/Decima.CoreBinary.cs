@@ -73,8 +73,8 @@ namespace Decima
 
         public void ToFile(string filePath)
         {
-            using (var writer = new BinaryWriter(File.Open(filePath, FileMode.Create, FileAccess.ReadWrite, FileShare.None)))
-                ToData(writer);
+            using var writer = new BinaryWriter(File.Open(filePath, FileMode.Create, FileAccess.ReadWrite, FileShare.None));
+            ToData(writer);
         }
 
         public static CoreBinary FromData(BinaryReader reader, bool ignoreUnknownChunks = false)
@@ -123,8 +123,8 @@ namespace Decima
 
         public static CoreBinary FromFile(string filePath, bool ignoreUnknownChunks = false)
         {
-            using (var reader = new BinaryReader(File.OpenRead(filePath)))
-                return FromData(reader, ignoreUnknownChunks);
+            using var reader = new BinaryReader(File.OpenRead(filePath));
+            return FromData(reader, ignoreUnknownChunks);
         }
 
         public void AddObject(object obj)
@@ -139,11 +139,14 @@ namespace Decima
         public bool RemoveObject(object obj)
         {
             var idx = Entries.FindIndex(x => x.ContainedObject == obj);
+
             if (idx < 0)
                 return false;
+
             Entries.RemoveAt(idx);
             return true;
         }
+
         public int RemoveAll(Predicate<object> filter)
         {
             return Entries.RemoveAll(x => filter(x.ContainedObject));
@@ -152,7 +155,7 @@ namespace Decima
         public List<BaseRef> GetAllReferences()
         {
             var refs = new List<BaseRef>();
-            
+
             VisitAllObjects<BaseRef>((baseRef, _) =>
             {
                 refs.Add(baseRef);

@@ -17,7 +17,7 @@ namespace HZDCoreSearch
             {
                 lock (_lock)
                 {
-                    var json = File.ReadAllText(SettingsFile); 
+                    var json = File.ReadAllText(SettingsFile);
                     Settings = JsonConvert.DeserializeObject<Settings>(json);
                 }
                 return;
@@ -39,7 +39,7 @@ namespace HZDCoreSearch
             });
         }
     }
-    
+
     public class Settings
     {
         public string SearchFolderDir { get; set; }

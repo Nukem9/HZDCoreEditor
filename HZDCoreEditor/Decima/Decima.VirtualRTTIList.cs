@@ -10,10 +10,10 @@ namespace Decima
         public class VirtualRTTIList
         {
             public Type ClassType { get; private set; }
-            public IReadOnlyList<OrderedFieldInfo.Entry> ResolvedMembers { get { return _ResolvedMembers.AsReadOnly(); } }
+            public IReadOnlyList<OrderedFieldInfo.Entry> ResolvedMembers { get { return _resolvedMembers.AsReadOnly(); } }
 
-            private readonly List<Entry> Members;
-            private readonly List<OrderedFieldInfo.Entry> _ResolvedMembers;
+            private readonly List<Entry> _members;
+            private readonly List<OrderedFieldInfo.Entry> _resolvedMembers;
 
             public struct Entry
             {
@@ -25,13 +25,13 @@ namespace Decima
             public VirtualRTTIList(string className, int capacity = 0)
             {
                 ClassType = GetTypeByName(className);
-                Members = new List<Entry>(capacity);
-                _ResolvedMembers = new List<OrderedFieldInfo.Entry>();
+                _members = new List<Entry>(capacity);
+                _resolvedMembers = new List<OrderedFieldInfo.Entry>();
             }
 
             public void Add(string type, string category, string name)
             {
-                Members.Add(new Entry
+                _members.Add(new Entry
                 {
                     Type = type,
                     Category = category,
@@ -43,13 +43,13 @@ namespace Decima
             {
                 var info = GetOrderedFieldsForClass(ClassType);
 
-                foreach (var virtualMember in Members)
+                foreach (var virtualMember in _members)
                 {
                     var resolvedMember = info.Members
                         .Where(x => MatchField(x.Field, virtualMember.Type, virtualMember.Category, virtualMember.Name))
                         .Single();
 
-                    _ResolvedMembers.Add(resolvedMember);
+                    _resolvedMembers.Add(resolvedMember);
                 }
             }
 

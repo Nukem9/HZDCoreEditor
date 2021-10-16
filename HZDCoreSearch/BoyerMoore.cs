@@ -57,7 +57,7 @@ namespace HZDCoreSearch
         {
             if (_patternLength > searchArray.Length)
                 return new List<int>();
-            
+
             var index = startIndex;
             var limit = searchArray.Length - _patternLength;
             var patternLengthMinusOne = _patternLength - 1;

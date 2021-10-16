@@ -4,10 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace HZDCoreEditorUI
 {
@@ -250,9 +249,9 @@ namespace HZDCoreEditorUI
             TestsHZD.DecodeQuickArchivesTest();
             TestsHZD.DecodeAllArchivesTest();
             */
-            
+
             //ExtractHZDLocalization();
-            
+
             /*
             ExtractHZDLocalization();
             ExtractHZDAudio();
@@ -395,7 +394,7 @@ namespace HZDCoreEditorUI
         {
             var root = @"E:\hzd9\";
             var outRoot = @"E:\hza\";
-            
+
             var files = Directory.GetFiles(root + @"sounds\", "*.core", SearchOption.AllDirectories);
 
             foreach (string file in files)
@@ -417,7 +416,7 @@ namespace HZDCoreEditorUI
                             wave.Name.Value + ".wav");
                         if (File.Exists(outFile))
                             continue;
-                        
+
                         Stream s = null;
                         if (file.Contains(@"E:\hzd9\sounds\music\menumusic\musicscape_01"))
                             ;
@@ -428,7 +427,7 @@ namespace HZDCoreEditorUI
 
                         if (s == null)
                             continue;
-                        
+
                         RawSourceWaveStream rs = null;
 
                         if (wave.Encoding == Decima.HZD.EWaveDataEncoding.MP3)
@@ -448,7 +447,8 @@ namespace HZDCoreEditorUI
                         s.Dispose();
                     }
                 }
-                catch(Exception ex) {
+                catch (Exception ex)
+                {
                     Console.WriteLine(ex.Message);
                 }
             }

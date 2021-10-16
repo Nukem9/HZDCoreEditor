@@ -134,46 +134,47 @@ namespace HZDCoreEditor.Util
         [DllImport("kernel32.dll", CharSet = CharSet.Ansi, ExactSpelling = true, SetLastError = true)]
         private static extern IntPtr GetProcAddress(IntPtr hModule, string lpProcName);
 
-        private static IntPtr OodleLZ_Handle;
-        private static int OodleLZ_Version;
-        private static OodleLZ_Decompress_Delegate OodleLZ_Decompress;
-        private static OodleLZ_Compress_Delegate OodleLZ_Compress;
-        
+        private static IntPtr _oodleLZ_Handle;
+        private static int _oodleLZ_Version;
+        private static OodleLZ_Decompress_Delegate _oodleLZ_Decompress;
+        private static OodleLZ_Compress_Delegate _oodleLZ_Compress;
+
         private static void EnsureLoaded()
         {
-            if (OodleLZ_Handle != IntPtr.Zero)
+            if (_oodleLZ_Handle != IntPtr.Zero)
                 return;
 
             // Can't use DllImport if I want to support multiple DLL versions. Resolve the exports by hand.
-            OodleLZ_Handle = LoadLibraryW("oo2core_7_win64.dll");
-            OodleLZ_Version = 7;
+            _oodleLZ_Handle = LoadLibraryW("oo2core_7_win64.dll");
+            _oodleLZ_Version = 7;
 
-            if (OodleLZ_Handle == IntPtr.Zero)
+            if (_oodleLZ_Handle == IntPtr.Zero)
             {
-                OodleLZ_Handle = LoadLibraryW("oo2core_3_win64.dll");
-                OodleLZ_Version = 3;
+                _oodleLZ_Handle = LoadLibraryW("oo2core_3_win64.dll");
+                _oodleLZ_Version = 3;
             }
 
-            var decompressorFunc = GetProcAddress(OodleLZ_Handle, "OodleLZ_Decompress");
-            var compressorFunc = GetProcAddress(OodleLZ_Handle, "OodleLZ_Compress");
+            var decompressorFunc = GetProcAddress(_oodleLZ_Handle, "OodleLZ_Decompress");
+            var compressorFunc = GetProcAddress(_oodleLZ_Handle, "OodleLZ_Compress");
 
             if (decompressorFunc == IntPtr.Zero || compressorFunc == IntPtr.Zero)
                 throw new Exception("A valid oo2core DLL couldn't be found in the program directory (oo2core_3_win64.dll, oo2core_7_win64.dll)");
 
-            OodleLZ_Decompress = Marshal.GetDelegateForFunctionPointer<OodleLZ_Decompress_Delegate>(decompressorFunc);
-            OodleLZ_Compress = Marshal.GetDelegateForFunctionPointer<OodleLZ_Compress_Delegate>(compressorFunc);
+            _oodleLZ_Decompress = Marshal.GetDelegateForFunctionPointer<OodleLZ_Decompress_Delegate>(decompressorFunc);
+            _oodleLZ_Compress = Marshal.GetDelegateForFunctionPointer<OodleLZ_Compress_Delegate>(compressorFunc);
         }
 
         public static void Unload()
         {
-            if (OodleLZ_Handle == IntPtr.Zero)
+            if (_oodleLZ_Handle == IntPtr.Zero)
                 return;
-            if (FreeLibrary(OodleLZ_Handle))
-                OodleLZ_Handle = IntPtr.Zero;
+            if (FreeLibrary(_oodleLZ_Handle))
+                _oodleLZ_Handle = IntPtr.Zero;
         }
 
         public static bool Decompress(byte[] inputBuffer, byte[] outputBuffer, uint decompressLength)
             => Decompress(inputBuffer.AsSpan(), outputBuffer.AsSpan(), decompressLength);
+
         public static bool Decompress(ReadOnlySpan<byte> inputBuffer, Span<byte> outputBuffer, uint decompressLength)
         {
             EnsureLoaded();
@@ -185,7 +186,7 @@ namespace HZDCoreEditor.Util
                 fixed (byte* input = inputBuffer)
                 fixed (byte* output = outputBuffer)
                 {
-                    result = OodleLZ_Decompress(
+                    result = _oodleLZ_Decompress(
                         input,
                         (UIntPtr)inputBuffer.Length,
                         output,
@@ -206,24 +207,26 @@ namespace HZDCoreEditor.Util
             return result == 0;
         }
 
-        public static long Compress(Span<byte> inputBuffer, Span<byte> outputBuffer) 
+        public static long Compress(Span<byte> inputBuffer, Span<byte> outputBuffer)
             => Compress(inputBuffer, inputBuffer.Length, outputBuffer);
-        public static long Compress(byte[] inputBuffer, byte[] outputBuffer) 
+
+        public static long Compress(byte[] inputBuffer, byte[] outputBuffer)
             => Compress(inputBuffer.AsSpan(), outputBuffer.AsSpan());
+
         public static long Compress(Span<byte> inputBuffer, int inputBufferLength, Span<byte> outputBuffer)
         {
             EnsureLoaded();
 
             long result = -1;
 
-            int compressor = OodleLZ_Version switch
+            int compressor = _oodleLZ_Version switch
             {
                 3 => (int)OodleLZ_Compressor_V3.Kraken,
                 7 => (int)OodleLZ_Compressor_V7.Kraken,
                 _ => throw new NotImplementedException(),
             };
 
-            int compression = OodleLZ_Version switch
+            int compression = _oodleLZ_Version switch
             {
                 3 => (int)OodleLZ_Compression_V3.Optimal1,
                 7 => (int)OodleLZ_Compression_V7.Optimal1,
@@ -235,7 +238,7 @@ namespace HZDCoreEditor.Util
                 fixed (byte* input = inputBuffer)
                 fixed (byte* output = outputBuffer)
                 {
-                    result = OodleLZ_Compress(
+                    result = _oodleLZ_Compress(
                         compressor,
                         input,
                         (UIntPtr)inputBufferLength,

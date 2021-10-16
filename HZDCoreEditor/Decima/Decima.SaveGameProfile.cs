@@ -10,24 +10,24 @@ namespace Decima
         private const uint HardcodedGameVersion = 46;
         private const string HardcodedGameVersionString = "HRZ-PCR 46/5910010 09:47 - Thu Aug 27 2020";
 
-        private FileStream FileHandle;
+        private FileStream _fileHandle;
         public HZD.PlayerProfile Profile;
 
         public SaveGameProfile(string savePath, FileMode mode = FileMode.Open)
         {
             if (mode == FileMode.Open)
-                FileHandle = File.Open(savePath, mode, FileAccess.Read, FileShare.Read);
+                _fileHandle = File.Open(savePath, mode, FileAccess.Read, FileShare.Read);
             else if (mode == FileMode.Create || mode == FileMode.CreateNew)
-                FileHandle = File.Open(savePath, mode, FileAccess.Write, FileShare.None);
+                _fileHandle = File.Open(savePath, mode, FileAccess.Write, FileShare.None);
             else
                 throw new NotImplementedException("File mode must be Open, Create, or CreateNew");
         }
 
         public void ReadProfile()
         {
-            FileHandle.Position = 0;
+            _fileHandle.Position = 0;
 
-            using (var reader = new BinaryReader(FileHandle, Encoding.UTF8, true))
+            using (var reader = new BinaryReader(_fileHandle, Encoding.UTF8, true))
             {
                 uint magic = reader.ReadUInt32();
 
@@ -56,9 +56,9 @@ namespace Decima
 
         public void WriteProfile()
         {
-            FileHandle.Position = 0;
+            _fileHandle.Position = 0;
 
-            using (var writer = new BinaryWriter(FileHandle, Encoding.UTF8, true))
+            using (var writer = new BinaryWriter(_fileHandle, Encoding.UTF8, true))
             {
                 throw new NotImplementedException();
             }
