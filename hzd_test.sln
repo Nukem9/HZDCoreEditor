@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HZDCoreEditorUI", "HZDCoreE
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HZDCoreSearch", "HZDCoreSearch\HZDCoreSearch.csproj", "{3FEF5EF1-1BE5-4833-8C08-B9418A0E22F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HZDCoreTools", "HZDCoreTools\HZDCoreTools.csproj", "{17221F14-54F8-415A-8581-494B6DD47CE7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HZDCoreTools", "HZDCoreTools\HZDCoreTools.csproj", "{17221F14-54F8-415A-8581-494B6DD47CE7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hzd_test", "hzd_test\hzd_test.vcxproj", "{382C4D97-6C0A-422D-A1E5-6632D5649201}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +71,16 @@ Global
 		{17221F14-54F8-415A-8581-494B6DD47CE7}.Release|x64.Build.0 = Release|Any CPU
 		{17221F14-54F8-415A-8581-494B6DD47CE7}.Release|x86.ActiveCfg = Release|Any CPU
 		{17221F14-54F8-415A-8581-494B6DD47CE7}.Release|x86.Build.0 = Release|Any CPU
+		{382C4D97-6C0A-422D-A1E5-6632D5649201}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{382C4D97-6C0A-422D-A1E5-6632D5649201}.Debug|x64.ActiveCfg = Debug|x64
+		{382C4D97-6C0A-422D-A1E5-6632D5649201}.Debug|x64.Build.0 = Debug|x64
+		{382C4D97-6C0A-422D-A1E5-6632D5649201}.Debug|x86.ActiveCfg = Debug|Win32
+		{382C4D97-6C0A-422D-A1E5-6632D5649201}.Debug|x86.Build.0 = Debug|Win32
+		{382C4D97-6C0A-422D-A1E5-6632D5649201}.Release|Any CPU.ActiveCfg = Release|Win32
+		{382C4D97-6C0A-422D-A1E5-6632D5649201}.Release|x64.ActiveCfg = Release|x64
+		{382C4D97-6C0A-422D-A1E5-6632D5649201}.Release|x64.Build.0 = Release|x64
+		{382C4D97-6C0A-422D-A1E5-6632D5649201}.Release|x86.ActiveCfg = Release|Win32
+		{382C4D97-6C0A-422D-A1E5-6632D5649201}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
