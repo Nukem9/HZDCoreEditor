@@ -64,12 +64,12 @@ namespace HZDCoreEditor.Util
 
         private static uint getblock32(ReadOnlySpan<byte> p, int i)
         {
-            return Bits.ToUInt32(p.Slice(i * 4, 4));
+            return BitConverter.ToUInt32(p.Slice(i * 4, 4));
         }
 
         private static ulong getblock64(ReadOnlySpan<byte> p, int i)
         {
-            return Bits.ToUInt64(p.Slice(i * 8, 8));
+            return BitConverter.ToUInt64(p.Slice(i * 8, 8));
         }
 
         //-----------------------------------------------------------------------------
