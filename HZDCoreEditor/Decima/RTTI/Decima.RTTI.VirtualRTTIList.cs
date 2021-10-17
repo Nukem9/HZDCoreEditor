@@ -5,17 +5,20 @@ using System.Reflection;
 
 namespace Decima
 {
-    static partial class RTTI
+    public static partial class RTTI
     {
-        public class VirtualRTTIList
+        /// <summary>
+        /// Helper for mapping save game (SaveState) types to game RTTI types.
+        /// </summary>
+        public sealed class VirtualRTTIList
         {
-            public Type ClassType { get; private set; }
-            public IReadOnlyList<OrderedFieldInfo.Entry> ResolvedMembers { get { return _resolvedMembers.AsReadOnly(); } }
+            public readonly Type ClassType;
+            public IReadOnlyList<OrderedFieldInfo.Entry> ResolvedMembers { get => _resolvedMembers.AsReadOnly(); }
 
             private readonly List<Entry> _members;
             private readonly List<OrderedFieldInfo.Entry> _resolvedMembers;
 
-            public struct Entry
+            private class Entry
             {
                 public string Type;
                 public string Category;
