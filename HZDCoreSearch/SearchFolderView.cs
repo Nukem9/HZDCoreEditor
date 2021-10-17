@@ -13,7 +13,6 @@ namespace HZDCoreSearch
         private readonly string _sourceProcess;
         private bool _loading = true;
         private string[] CurrentSearches;
-        private ParallelTasks<string> SearchTasks;
         private ByteSearch Search;
 
         public SearchFolderView(string sourceProcess)

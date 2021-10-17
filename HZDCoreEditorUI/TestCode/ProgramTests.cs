@@ -418,8 +418,8 @@ namespace HZDCoreEditorUI
                             continue;
 
                         Stream s = null;
-                        if (file.Contains(@"E:\hzd9\sounds\music\menumusic\musicscape_01"))
-                            ;
+                        //if (file.Contains(@"E:\hzd9\sounds\music\menumusic\musicscape_01"))
+                        //    ;
                         if (wave.IsStreaming && File.Exists(file + ".stream"))
                             s = File.OpenRead(file + ".stream");
                         else if (wave.WaveData.Count > 0)
