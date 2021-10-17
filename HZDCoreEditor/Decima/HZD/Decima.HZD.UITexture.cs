@@ -7,35 +7,41 @@ namespace Decima.HZD
     {
         [RTTI.Member(5, 0x30, "Logic")] public String TextureName;
         [RTTI.Member(6, 0x38, "Logic")] public ISize Size;
-        public uint HiResDataSize;
-        public uint LowResDataSize;
-        public Texture HiResTexture;   // Screen res >  1920x1080 (Default if low res not present)
-        public Texture LowResTexture;  // Screen res <= 1920x1080
+        public Texture LowResTexture;  // Screen res <= 1920x1080 (Default if high res not present)
+        public Texture HiResTexture;   // Screen res >  1920x1080
 
         public void DeserializeExtraData(BinaryReader reader)
         {
-            HiResDataSize = reader.ReadUInt32();
-            LowResDataSize = reader.ReadUInt32();
+            uint lowResDataSize = reader.ReadUInt32();
+            uint hiResDataSize = reader.ReadUInt32();
 
-            HiResTexture = new Texture();
-            HiResTexture.DeserializeExtraData(reader);
+            LowResTexture = new Texture();
+            LowResTexture.DeserializeExtraData(reader);
 
-            if (LowResDataSize > 0)
+            if (hiResDataSize > 0)
             {
-                LowResTexture = new Texture();
-                LowResTexture.DeserializeExtraData(reader);
+                HiResTexture = new Texture();
+                HiResTexture.DeserializeExtraData(reader);
             }
         }
 
         public void SerializeExtraData(BinaryWriter writer)
         {
-            writer.Write(HiResDataSize);
-            writer.Write(LowResDataSize);
+            // Write to a separate buffer in order to get the block lengths
+            using var ms = new MemoryStream();
+            using var bw = new BinaryWriter(ms);
 
-            HiResTexture.SerializeExtraData(writer);
+            LowResTexture.SerializeExtraData(bw);
+            long lowResDataSize = ms.Length;
 
-            if (LowResTexture != null)
-                LowResTexture.SerializeExtraData(writer);
+            if (HiResTexture != null)
+                HiResTexture.SerializeExtraData(bw);
+
+            long hiResDataSize = ms.Length - lowResDataSize;
+
+            writer.Write(lowResDataSize);
+            writer.Write(hiResDataSize);
+            ms.WriteTo(writer.BaseStream);
         }
     }
 }
