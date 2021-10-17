@@ -20,8 +20,8 @@ namespace Decima
             _allowOverwrite = allowOverwrite;
 
             Header = new PackfileHeader();
-            FileEntries = new List<FileEntry>();
-            BlockEntries = new List<BlockEntry>();
+            _fileEntries = new List<FileEntry>();
+            _blockEntries = new List<BlockEntry>();
 
             Header.IsEncrypted = encrypted;
         }
@@ -61,7 +61,7 @@ namespace Decima
                 decompressedFileOffset += fileEntry.DecompressedSize;
 
                 WriteBlockEntries(archiveWriter, blockStream, false, tempCompressedBuffer);
-                FileEntries.Add(fileEntry);
+                _fileEntries.Add(fileEntry);
             }
 
             WriteBlockEntries(archiveWriter, blockStream, true, tempCompressedBuffer);
@@ -108,7 +108,7 @@ namespace Decima
                 _writerDecompressedBlockOffset += blockEntry.DecompressedSize;
                 readPosition += dataRemainder;
 
-                BlockEntries.Add(blockEntry);
+                _blockEntries.Add(blockEntry);
             }
 
             // Free MemoryStream data that was already written to prevent excessive memory consumption
@@ -121,26 +121,19 @@ namespace Decima
 
         private void WriteArchiveHeaders(BinaryWriter writer)
         {
-            FileEntries.Sort((x, y) => x.PathHash.CompareTo(y.PathHash));
-            Header.FileEntryCount = (uint)FileEntries.Count;
+            _fileEntries.Sort((x, y) => x.PathHash.CompareTo(y.PathHash));
+            Header.FileEntryCount = (uint)_fileEntries.Count;
 
-            BlockEntries.Sort((x, y) => x.DecompressedOffset.CompareTo(y.DecompressedOffset));
-            Header.BlockEntryCount = (uint)BlockEntries.Count;
+            _blockEntries.Sort((x, y) => x.DecompressedOffset.CompareTo(y.DecompressedOffset));
+            Header.BlockEntryCount = (uint)_blockEntries.Count;
 
             Header.ToData(writer);
 
-            foreach (var entry in FileEntries)
+            foreach (var entry in _fileEntries)
                 entry.ToData(writer, Header);
 
-            foreach (var entry in BlockEntries)
+            foreach (var entry in _blockEntries)
                 entry.ToData(writer, Header);
-        }
-
-        private int CalculateArchiveHeaderLength(int fileEntryCount, int blockEntryCount)
-        {
-            return PackfileHeader.DataHeaderSize +
-                (FileEntry.DataHeaderSize * fileEntryCount) +
-                (BlockEntry.DataHeaderSize * blockEntryCount);
         }
     }
 }

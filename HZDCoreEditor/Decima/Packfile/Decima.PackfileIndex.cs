@@ -12,9 +12,9 @@ namespace Decima
     /// </summary>
     public class PackfileIndex
     {
-        public Dictionary<ulong, IndexEntry> Entries { get; private set; }
-
         private const uint HardcodedMagic = 0x10203040;
+
+        public Dictionary<ulong, IndexEntry> Entries { get; private set; }
 
         /// <remarks>
         /// File data format:
@@ -42,10 +42,9 @@ namespace Decima
                 {
                     // Strings are expected to be lowercase and prefixed with "cache:"
                     var fullPath = Encoding.UTF8.GetString(reader.ReadBytesStrict(pathLength));
-                    FilePath = fullPath.Replace("cache:", "");
 
-                    SMHasher.MurmurHash3_x64_128(Encoding.UTF8.GetBytes(FilePath + char.MinValue), 42, out ulong[] hash);
-                    PathHash = hash[0];
+                    FilePath = fullPath.Replace("cache:", "");
+                    PathHash = Packfile.GetHashForPath(FilePath);
                 }
 
                 GUID = new BaseGGUUID().FromData(reader);

@@ -62,7 +62,8 @@ namespace HZDCoreTools
                 var tasks = new ParallelTasks<(ulong Hash, string Output)>(
                     Environment.ProcessorCount, data => pack.ExtractFile(data.Hash, data.Output));
                 tasks.Start();
-                pack.FileEntries.ForEach(x => tasks.AddItem((x.PathHash, Path.Combine(OutputDir, $"{x.PathHash}.core"))));
+                foreach (var x in pack.FileEntries)
+                    tasks.AddItem((x.PathHash, Path.Combine(OutputDir, $"{x.PathHash}.core")));
                 tasks.WaitForComplete();
                 Console.WriteLine("");
                 Console.WriteLine("Extraction complete");

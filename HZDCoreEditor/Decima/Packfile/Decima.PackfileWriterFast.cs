@@ -33,8 +33,8 @@ namespace Decima
             _allowOverwrite = allowOverwrite;
 
             Header = new PackfileHeader();
-            FileEntries = new List<FileEntry>();
-            BlockEntries = new List<BlockEntry>();
+            _fileEntries = new List<FileEntry>();
+            _blockEntries = new List<BlockEntry>();
 
             Header.IsEncrypted = encrypted;
         }
@@ -100,7 +100,7 @@ namespace Decima
 
                 decompressedFileOffset += fileEntry.DecompressedSize;
 
-                FileEntries.Add(fileEntry);
+                _fileEntries.Add(fileEntry);
 
                 // This appends data until a 256KB block write/flush is triggered - combining multiple files into single block entries
                 int read;
@@ -155,31 +155,24 @@ namespace Decima
                 // Write to disk
                 writer.Write(block.CompressBuffer, 0, (int)blockEntry.Size);
 
-                BlockEntries.Add(blockEntry);
+                _blockEntries.Add(blockEntry);
             }
-        }
-
-        private int CalculateArchiveHeaderLength(int fileEntryCount, int blockEntryCount)
-        {
-            return PackfileHeader.DataHeaderSize +
-                (FileEntry.DataHeaderSize * fileEntryCount) +
-                (BlockEntry.DataHeaderSize * blockEntryCount);
         }
 
         private void WriteArchiveHeaders(BinaryWriter writer)
         {
-            FileEntries.Sort((x, y) => x.PathHash.CompareTo(y.PathHash));
-            Header.FileEntryCount = (uint)FileEntries.Count;
+            _fileEntries.Sort((x, y) => x.PathHash.CompareTo(y.PathHash));
+            Header.FileEntryCount = (uint)_fileEntries.Count;
 
-            BlockEntries.Sort((x, y) => x.DecompressedOffset.CompareTo(y.DecompressedOffset));
-            Header.BlockEntryCount = (uint)BlockEntries.Count;
+            _blockEntries.Sort((x, y) => x.DecompressedOffset.CompareTo(y.DecompressedOffset));
+            Header.BlockEntryCount = (uint)_blockEntries.Count;
 
             Header.ToData(writer);
 
-            foreach (var entry in FileEntries)
+            foreach (var entry in _fileEntries)
                 entry.ToData(writer, Header);
 
-            foreach (var entry in BlockEntries)
+            foreach (var entry in _blockEntries)
                 entry.ToData(writer, Header);
         }
     }

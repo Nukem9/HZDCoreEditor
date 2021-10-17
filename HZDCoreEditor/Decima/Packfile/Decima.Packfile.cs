@@ -13,13 +13,17 @@ namespace Decima
     {
         public const string CoreExt = ".core";
         public const string StreamExt = ".core.stream";
+        protected const int InvalidEntryIndex = int.MaxValue;
 
         public PackfileHeader Header { protected set; get; }
-        public List<FileEntry> FileEntries { protected set; get; }
-        public List<BlockEntry> BlockEntries { protected set; get; }
+        public IReadOnlyList<FileEntry> FileEntries => _fileEntries.AsReadOnly();
+        public IReadOnlyList<BlockEntry> BlockEntries => _blockEntries.AsReadOnly();
+
+        protected List<FileEntry> _fileEntries;
+        protected List<BlockEntry> _blockEntries;
 
         /// <summary>
-        /// Main header for *.bin files
+        /// Main header for *.bin files.
         /// </summary>
         public class PackfileHeader
         {
@@ -74,7 +78,7 @@ namespace Decima
                         break;
 
                     default:
-                        throw new InvalidDataException("Unknown header magic");
+                        throw new InvalidDataException("Unknown Packfile header magic");
                 }
 
                 if (IsEncrypted)
@@ -117,9 +121,9 @@ namespace Decima
         /// Data structure that comes directly after the <see cref="PackfileHeader"/> header.
         /// </summary>
         /// <remarks>
-        /// <see cref="FileEntry.PathHash"/> is calculated from the MurmurHash3 of the file path with
+        /// <see cref="PathHash"/> is calculated from the MurmurHash3 of the file path with
         /// the null terminator included. Entries must be sorted from smallest to largest based on
-        /// <see cref="FileEntry.PathHash"/>.
+        /// <see cref="PathHash"/>.
         /// </remarks>
         public class FileEntry
         {
@@ -189,7 +193,7 @@ namespace Decima
         /// chunks of compressed data.
         /// </summary>
         /// <remarks>
-        /// Entries must be sorted from smallest to largest based on <see cref="BlockEntry.DecompressedOffset"/>.
+        /// Entries must be sorted from smallest to largest based on <see cref="DecompressedOffset"/>.
         /// </remarks>
         public class BlockEntry
         {
@@ -203,7 +207,7 @@ namespace Decima
             public uint XorKey2;
 
             // There's no guarantee MD5 will be thread safe, so use a per-thread instance instead
-            private static readonly ThreadLocal<MD5> MD5Context = new ThreadLocal<MD5>(() =>
+            private static readonly ThreadLocal<MD5> _localMD5Context = new ThreadLocal<MD5>(() =>
             {
                 return MD5.Create();
             });
@@ -311,31 +315,34 @@ namespace Decima
                 BitConverter.TryWriteBytes(seed.Slice(0), hash[0]);
                 BitConverter.TryWriteBytes(seed.Slice(8), hash[1]);
 
-                // XOR the seed with the data key
+                // XOR the seed with the data key. Pulled from ds.exe.
                 var key = new byte[] { 0x37, 0x4A, 0x08, 0x6C, 0x95, 0x9D, 0x15, 0x7E, 0xE8, 0xF7, 0x5A, 0x3D, 0x3F, 0x7D, 0xAA, 0x18 };
 
                 for (int i = 0; i < key.Length; i++)
                     key[i] ^= seed[i];
 
-                return MD5Context.Value.ComputeHash(key);
+                return _localMD5Context.Value.ComputeHash(key);
             }
         }
 
         /// <summary>
-        /// Constructor
+        /// Constructor.
         /// </summary>
         protected Packfile()
         {
         }
 
         /// <summary>
-        /// Checks if a Decima-formatted path is valid for this archive
+        /// Checks if a Decima-formatted path is valid for this archive. Case sensitive.
         /// </summary>
         public bool ContainsFile(string path)
         {
-            return GetFileEntryIndex(path) != int.MaxValue;
+            return GetFileEntryIndex(path) != InvalidEntryIndex;
         }
 
+        /// <summary>
+        /// Format a Decima path to be the correct extension.
+        /// </summary>
         public static string EnsureExt(string path, bool stream)
         {
             if (stream && !path.EndsWith(StreamExt, StringComparison.OrdinalIgnoreCase))
@@ -347,10 +354,15 @@ namespace Decima
             return path;
         }
 
+        /// <summary>
+        /// Convert a Decima-formatted path to a hashed path. Hashes are case sensitive.
+        /// </summary>
         public static ulong GetHashForPath(string path, bool stream = false)
         {
             path = EnsureExt(path, stream).Replace('\\', '/');
-            SMHasher.MurmurHash3_x64_128(Encoding.UTF8.GetBytes(path + char.MinValue), 42, out ulong[] hash);
+            path += char.MinValue;
+
+            SMHasher.MurmurHash3_x64_128(Encoding.UTF8.GetBytes(path), 42, out ulong[] hash);
             return hash[0];
         }
 
@@ -362,35 +374,42 @@ namespace Decima
         protected int GetFileEntryIndex(ulong pathId)
         {
             int l = 0;
-            int r = FileEntries.Count - 1;
+            int r = _fileEntries.Count - 1;
 
             // Binary search
             while (l <= r)
             {
                 int mid = l + (r - l) / 2;
 
-                if (FileEntries[mid].PathHash == pathId)
+                if (_fileEntries[mid].PathHash == pathId)
                     return mid;
-                else if (FileEntries[mid].PathHash < pathId)
+                else if (_fileEntries[mid].PathHash < pathId)
                     l = mid + 1;
                 else
                     r = mid - 1;
             }
 
-            return int.MaxValue;
+            return InvalidEntryIndex;
         }
 
         protected int GetBlockEntryIndex(ulong offset)
         {
             // TODO: Binary search
-            for (int i = 0; i < BlockEntries.Count; i++)
+            for (int i = 0; i < _blockEntries.Count; i++)
             {
-                if (offset >= BlockEntries[i].DecompressedOffset &&
-                    offset < (BlockEntries[i].DecompressedOffset + BlockEntries[i].DecompressedSize))
+                if (offset >= _blockEntries[i].DecompressedOffset &&
+                    offset < (_blockEntries[i].DecompressedOffset + _blockEntries[i].DecompressedSize))
                     return i;
             }
 
-            return int.MaxValue;
+            return InvalidEntryIndex;
+        }
+
+        protected int CalculateArchiveHeaderLength(int fileEntryCount, int blockEntryCount)
+        {
+            return PackfileHeader.DataHeaderSize +
+                (FileEntry.DataHeaderSize * fileEntryCount) +
+                (BlockEntry.DataHeaderSize * blockEntryCount);
         }
     }
 }
