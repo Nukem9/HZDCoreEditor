@@ -83,7 +83,9 @@ namespace Decima
 
             while (reader.StreamRemainder() > 0)
             {
-                //Debugger.Log(0, "Info", $"Beginning chunk parse at {reader.BaseStream.Position:X}");
+#if DEBUG
+                Debugger.Log(0, "Info", $"Beginning chunk parse at {reader.BaseStream.Position:X}");
+#endif
 
                 var entry = RTTI.DeserializeType<CoreEntry>(reader);
                 var topLevelObjectType = RTTI.GetTypeById(entry.TypeId);
@@ -111,8 +113,10 @@ namespace Decima
                 else if (reader.BaseStream.Position < expectedStreamPos)
                     throw new Exception("Short read of a chunk while deserializing object");
 
-                //if (reader.BaseStream.Position < expectedStreamPos)
-                //    Debugger.Log(0, "Warn", $"Short read of a chunk while deserializing object. {reader.BaseStream.Position} < {expectedStreamPos}. TypeId = {entry.TypeId:X16}\n");
+#if DEBUG
+                if (reader.BaseStream.Position < expectedStreamPos)
+                    Debugger.Log(0, "Warn", $"Short read of a chunk while deserializing object. {reader.BaseStream.Position} < {expectedStreamPos}. TypeId = {entry.TypeId:X16}\n");
+#endif
 
                 reader.BaseStream.Position = expectedStreamPos;
                 core.Entries.Add(entry);
@@ -175,11 +179,7 @@ namespace Decima
             if (obj == null)
                 return;
 
-            // Ignore all primitives
             var objectType = obj.GetType();
-
-            if (Type.GetTypeCode(objectType) != TypeCode.Object)
-                return;
 
             // T, arrays, lists, then any other object
             if (objectType.Inherits(typeof(T)))
@@ -188,8 +188,8 @@ namespace Decima
             }
             else if (objectType.IsArray)
             {
-                // Skip large byte arrays (pure data)
-                if (obj is byte[])
+                // Skip large primitive arrays (pure data)
+                if (!objectType.GetElementType().IsClass)
                     return;
 
                 foreach (var arrayObj in (obj as Array))
@@ -197,6 +197,10 @@ namespace Decima
             }
             else if (objectType.InheritsGeneric(typeof(List<>)))
             {
+                // Same as above
+                if (!objectType.GetGenericArguments()[0].IsClass)
+                    return;
+
                 foreach (var listObj in (obj as IList))
                     VisitObjectTypes(obj, listObj, memberCallback);
             }
@@ -205,6 +209,10 @@ namespace Decima
                 // Recursively gather all public and private instance members
                 for (var type = objectType; type != null; type = type.BaseType)
                 {
+                    // ...but ignore any inherited System types
+                    if (type.Namespace.StartsWith("System"))
+                        break;
+
                     var fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
 
                     foreach (var field in fields)
