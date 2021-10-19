@@ -9,7 +9,7 @@ namespace HZDCoreEditorTests
     public class PackfileTests
     {
         private static readonly string GameDataPath = @"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12";
-        private static readonly string ExtractedGameDataPath = @"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted";
+        private static readonly string GameDataPathExtracted = @"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted";
         private static readonly string GameRootArchive = "Initial.bin";
 
         private static readonly string[] QuickTestArchives = new string[]
@@ -96,13 +96,13 @@ namespace HZDCoreEditorTests
             Assert.IsTrue(testStream.Length > 0);
         }
 
-        [TestCategory("GameSlow")]
+        [TestCategory("GameBasic")]
         [TestMethod]
         public void TestPackAndUnpackTrivial()
         {
             // Generate a couple useless files to pack
             var tempPath = Path.GetTempPath();
-            var tempFiles = new List<(string, string, string)>();
+            var tempFiles = new List<(string Path, string Text, string CoreName)>();
 
             for (int i = 0; i < 15; i++)
             {
@@ -124,15 +124,15 @@ namespace HZDCoreEditorTests
             var readArchive = new Decima.PackfileReader(packedArchivePath);
             readArchive.Validate();
 
-            foreach (var (path, text, coreName) in tempFiles)
+            foreach (var file in tempFiles)
             {
-                Assert.IsTrue(readArchive.ContainsFile(coreName));
+                Assert.IsTrue(readArchive.ContainsFile(file.CoreName));
 
-                readArchive.ExtractFile(coreName, path, true);
+                readArchive.ExtractFile(file.CoreName, file.Path, true);
 
-                Assert.IsTrue(File.ReadAllText(path).Equals(text));
+                Assert.IsTrue(File.ReadAllText(file.Path).Equals(file.Text));
 
-                File.Delete(path);
+                File.Delete(file.Path);
             }
 
             File.Delete(packedArchivePath);
@@ -144,7 +144,7 @@ namespace HZDCoreEditorTests
         {
             // Gather 500 random files to throw into a bin
             var archivePath = Path.Combine(Path.GetTempPath(), $"{nameof(TestPackAndUnpack)}_packed_archive.bin");
-            var targetDir = ExtractedGameDataPath;
+            var targetDir = GameDataPathExtracted;
 
             if (!targetDir.EndsWith('\\'))
                 targetDir += "\\";

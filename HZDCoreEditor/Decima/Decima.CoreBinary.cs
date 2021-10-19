@@ -84,7 +84,7 @@ namespace Decima
             while (reader.StreamRemainder() > 0)
             {
 #if DEBUG
-                Debugger.Log(0, "Info", $"Beginning chunk parse at {reader.BaseStream.Position:X}");
+                System.Diagnostics.Debugger.Log(0, "Info", $"Beginning chunk parse at {reader.BaseStream.Position:X}");
 #endif
 
                 var entry = RTTI.DeserializeType<CoreEntry>(reader);
@@ -115,7 +115,7 @@ namespace Decima
 
 #if DEBUG
                 if (reader.BaseStream.Position < expectedStreamPos)
-                    Debugger.Log(0, "Warn", $"Short read of a chunk while deserializing object. {reader.BaseStream.Position} < {expectedStreamPos}. TypeId = {entry.TypeId:X16}\n");
+                    System.Diagnostics.Debugger.Log(0, "Warn", $"Short read of a chunk while deserializing object. {reader.BaseStream.Position} < {expectedStreamPos}. TypeId = {entry.TypeId:X16}\n");
 #endif
 
                 reader.BaseStream.Position = expectedStreamPos;
