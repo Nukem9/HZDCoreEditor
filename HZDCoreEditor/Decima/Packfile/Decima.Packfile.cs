@@ -335,40 +335,48 @@ namespace Decima
         /// <summary>
         /// Checks if a Decima-formatted path is valid for this archive. Case sensitive.
         /// </summary>
-        public bool ContainsFile(string path)
+        public bool ContainsFile(string corePath)
         {
-            return GetFileEntryIndex(path) != InvalidEntryIndex;
+            return GetFileEntryIndex(corePath) != InvalidEntryIndex;
+        }
+
+        /// <summary>
+        /// Checks if a hashed path is valid for this archive.
+        /// </summary>
+        public bool ContainsFile(ulong pathId)
+        {
+            return GetFileEntryIndex(pathId) != InvalidEntryIndex;
         }
 
         /// <summary>
         /// Format a Decima path to be the correct extension.
         /// </summary>
-        public static string EnsureExt(string path, bool stream)
+        public static string EnsureExt(string corePath, bool stream)
         {
-            if (stream && !path.EndsWith(StreamExt, StringComparison.OrdinalIgnoreCase))
-                path += StreamExt;
+            if (stream && !corePath.EndsWith(StreamExt, StringComparison.OrdinalIgnoreCase))
+                corePath += StreamExt;
 
-            if (!stream && !path.EndsWith(CoreExt, StringComparison.OrdinalIgnoreCase))
-                path += CoreExt;
+            if (!stream && !corePath.EndsWith(CoreExt, StringComparison.OrdinalIgnoreCase))
+                corePath += CoreExt;
 
-            return path;
+            return corePath;
         }
 
         /// <summary>
         /// Convert a Decima-formatted path to a hashed path. Hashes are case sensitive.
         /// </summary>
-        public static ulong GetHashForPath(string path, bool stream = false)
+        public static ulong GetHashForPath(string corePath, bool stream = false)
         {
-            path = EnsureExt(path, stream).Replace('\\', '/');
-            path += char.MinValue;
+            corePath = EnsureExt(corePath, stream).Replace('\\', '/');
+            corePath += char.MinValue;
 
-            SMHasher.MurmurHash3_x64_128(Encoding.UTF8.GetBytes(path), 42, out ulong[] hash);
+            SMHasher.MurmurHash3_x64_128(Encoding.UTF8.GetBytes(corePath), 42, out ulong[] hash);
             return hash[0];
         }
 
-        protected int GetFileEntryIndex(string path)
+        protected int GetFileEntryIndex(string corePath)
         {
-            return GetFileEntryIndex(GetHashForPath(path));
+            return GetFileEntryIndex(GetHashForPath(corePath));
         }
 
         protected int GetFileEntryIndex(ulong pathId)
@@ -394,12 +402,21 @@ namespace Decima
 
         protected int GetBlockEntryIndex(ulong offset)
         {
-            // TODO: Binary search
-            for (int i = 0; i < _blockEntries.Count; i++)
+            int l = 0;
+            int r = _blockEntries.Count - 1;
+
+            // Binary search
+            while (l <= r)
             {
-                if (offset >= _blockEntries[i].DecompressedOffset &&
-                    offset < (_blockEntries[i].DecompressedOffset + _blockEntries[i].DecompressedSize))
-                    return i;
+                int mid = l + (r - l) / 2;
+                ulong decompressedOffset = _blockEntries[mid].DecompressedOffset;
+
+                if (offset >= decompressedOffset && offset < (decompressedOffset + _blockEntries[mid].DecompressedSize))
+                    return mid;
+                else if (decompressedOffset < offset)
+                    l = mid + 1;
+                else
+                    r = mid - 1;
             }
 
             return InvalidEntryIndex;

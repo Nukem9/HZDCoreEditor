@@ -38,15 +38,20 @@ namespace Decima
             }
         }
 
-        public void ExtractFile(string path, string destinationPath, bool allowOverwrite = false)
+        public void ExtractFile(string corePath, string destinationPath, bool allowOverwrite = false)
         {
-            ExtractFile(GetHashForPath(path), destinationPath, allowOverwrite);
+            ExtractFile(GetHashForPath(corePath), destinationPath, allowOverwrite);
         }
 
         public void ExtractFile(ulong pathId, string destinationPath, bool allowOverwrite = false)
         {
             using var fs = File.Open(destinationPath, allowOverwrite ? FileMode.Create : FileMode.CreateNew, FileAccess.Write);
             ExtractFile(pathId, fs);
+        }
+
+        public void ExtractFile(string corePath, Stream stream)
+        {
+            ExtractFile(GetHashForPath(corePath), stream);
         }
 
         public void ExtractFile(ulong pathId, Stream stream)
