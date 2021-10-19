@@ -74,7 +74,7 @@ namespace Decima
                 // Read from the bin, decrypt, and decompress
                 handle.Position = (long)block.Offset;
 
-                if (handle.Read(compressedData, 0, compressedData.Length) != compressedData.Length)
+                if (handle.Read(compressedData, 0, (int)block.Size) != block.Size)
                     throw new EndOfStreamException("Short read of archive data");
 
                 if (Header.IsEncrypted)
