@@ -31,7 +31,7 @@ namespace HZDCoreTools
                 throw new ArgumentException($"Invalid path supplied. Supported file extension(s): {string.Join(',', acceptedExtensions)}", nameof(inputPath));
 
             return Directory.EnumerateFiles(basePath, filePart, SearchOption.AllDirectories)
-                .Select(x => (Path.Combine(basePath, x), x.Substring(basePath.Length)));
+                .Select(x => (x, x.Substring(basePath.Length)));
         }
 
         public static string RemoveMountPrefixes(string path)
