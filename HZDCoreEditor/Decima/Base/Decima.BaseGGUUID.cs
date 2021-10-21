@@ -58,18 +58,20 @@ namespace Decima
             return new Guid(ToBytes()).ToString("B").ToUpper();
         }
 
-        public BaseGGUUID FromData(BinaryReader reader)
+        public static BaseGGUUID FromData(BinaryReader reader)
         {
             return FromData(reader.ReadBytesStrict(16));
         }
 
-        public BaseGGUUID FromData(ReadOnlySpan<byte> data)
+        public static BaseGGUUID FromData(ReadOnlySpan<byte> data)
         {
-            AssignFromData(data);
-            return this;
+            var guid = new BaseGGUUID();
+            guid.AssignFromData(data);
+
+            return guid;
         }
 
-        public BaseGGUUID FromString(string value)
+        public static BaseGGUUID FromString(string value)
         {
             if (!Guid.TryParse(value, out Guid guid))
                 throw new ArgumentException("Invalid GUID", nameof(value));
@@ -77,20 +79,15 @@ namespace Decima
             return FromData(guid.ToByteArray());
         }
 
-        public void DeserializeStateObject(SaveState state)
-        {
-            AssignFromOther(state.ReadIndexedGUID());
-        }
-
         public static BaseGGUUID FromOther(BaseGGUUID other)
         {
-            var x = new BaseGGUUID();
-            x.AssignFromOther(other);
+            var guid = new BaseGGUUID();
+            guid.AssignFromOther(other);
 
-            return x;
+            return guid;
         }
 
-        public void AssignFromOther(BaseGGUUID other)
+        protected void AssignFromOther(BaseGGUUID other)
         {
             // No unions. No marshaling. Assign each manually...
             Data0 = other.Data0;
@@ -194,16 +191,21 @@ namespace Decima
             }
         }
 
+        public void DeserializeStateObject(SaveState state)
+        {
+            AssignFromOther(state.ReadIndexedGUID());
+        }
+
         public void SerializeStateObject(SaveState state) => throw new NotImplementedException();
 
         public static implicit operator BaseGGUUID(string value)
         {
-            return new BaseGGUUID().FromString(value);
+            return FromString(value);
         }
 
         public static implicit operator BaseGGUUID(Guid value)
         {
-            return new BaseGGUUID().FromData(value.ToByteArray());
+            return FromData(value.ToByteArray());
         }
 
         public static bool operator ==(BaseGGUUID left, BaseGGUUID right)

@@ -70,6 +70,7 @@ namespace Decima
 
         public static HwTexture FromData(BinaryReader reader)
         {
+            var texture = new HwTexture();
             var header = new TextureHeader();
 
             // 32 byte texture header
@@ -109,14 +110,13 @@ namespace Decima
             header.Flags = reader.ReadByte();                       // 13
             header.Unknown4 = reader.ReadByte();                    // 14 Something to do with mips. Autogen?
             header.Unknown5 = reader.ReadByte();                    // 15
-            header.ResourceGUID = new BaseGGUUID().FromData(reader);// 16
+            header.ResourceGUID = BaseGGUUID.FromData(reader);// 16
 
-            var x = new HwTexture();
-            x.Header = header;
+            texture.Header = header;
             uint hwTextureSize = reader.ReadUInt32();
-            x.HwTextureData = reader.ReadBytesStrict(hwTextureSize);
+            texture.HwTextureData = reader.ReadBytesStrict(hwTextureSize);
 
-            return x;
+            return texture;
         }
     }
 }

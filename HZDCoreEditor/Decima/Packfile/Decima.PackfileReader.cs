@@ -18,7 +18,7 @@ namespace Decima
             using var handle = File.OpenRead(_archivePath);
             using var reader = new BinaryReader(handle, Encoding.UTF8, true);
 
-            Header = new PackfileHeader().FromData(reader);
+            Header = PackfileHeader.FromData(reader);
             _fileEntries = new List<FileEntry>((int)Header.FileEntryCount);
             _blockEntries = new List<BlockEntry>((int)Header.BlockEntryCount);
 
@@ -28,13 +28,13 @@ namespace Decima
             for (int i = 0; i < Header.FileEntryCount; i++)
             {
                 var data = fileData.Slice(i * FileEntry.DataHeaderSize);
-                _fileEntries.Add(new FileEntry().FromData(data, Header));
+                _fileEntries.Add(FileEntry.FromData(data, Header));
             }
 
             for (int i = 0; i < Header.BlockEntryCount; i++)
             {
                 var data = blockData.Slice(i * BlockEntry.DataHeaderSize);
-                _blockEntries.Add(new BlockEntry().FromData(data, Header));
+                _blockEntries.Add(BlockEntry.FromData(data, Header));
             }
         }
 

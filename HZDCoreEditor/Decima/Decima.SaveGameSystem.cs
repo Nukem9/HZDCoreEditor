@@ -59,10 +59,10 @@ namespace Decima
                     int unknown1 = reader.ReadInt32();// Sign extended
                     int saveType = reader.ReadInt32();// Sign extended { 1 = manual, 2 = quick, 4 = auto, 8 = NG+ start point }
 
-                    var gameModuleGUID = new GGUUID().FromData(reader);    // Field from `class GameModule`
-                    var uniqueSaveGUID = new GGUUID().FromData(reader);    // CoCreateGuid() on save
-                    var gameLoadGUID = new GGUUID().FromData(reader);      // CoCreateGuid() on game start
-                    var systemTypeGUID = new GGUUID().FromData(reader);    // Possibly GUID for Win32System or physics
+                    var gameModuleGUID = GGUUID.FromData(reader);    // Field from `class GameModule`
+                    var uniqueSaveGUID = GGUUID.FromData(reader);    // CoCreateGuid() on save
+                    var gameLoadGUID = GGUUID.FromData(reader);      // CoCreateGuid() on game start
+                    var systemTypeGUID = GGUUID.FromData(reader);    // Possibly GUID for Win32System or physics
 
                     double playTimeInSeconds = reader.ReadDouble();
                     _ = reader.ReadBytesStrict(108);

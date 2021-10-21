@@ -53,13 +53,13 @@ namespace Decima
 
         public static HwVertexArray FromData(BinaryReader reader, GameType gameType)
         {
-            var x = new HwVertexArray();
+            var array = new HwVertexArray();
 
-            x.VertexCount = reader.ReadUInt32();
+            array.VertexCount = reader.ReadUInt32();
             uint streamCount = reader.ReadUInt32();
-            x.IsStreaming = reader.ReadBooleanStrict();
+            array.IsStreaming = reader.ReadBooleanStrict();
 
-            x.Streams = new List<VertexStream>((int)streamCount);
+            array.Streams = new List<VertexStream>((int)streamCount);
 
             for (uint i = 0; i < streamCount; i++)
             {
@@ -82,13 +82,13 @@ namespace Decima
                     });
                 }
 
-                stream.GUID = new BaseGGUUID().FromData(reader);
-                stream.Buffer = HwBuffer.FromVertexData(reader, gameType, x.IsStreaming, byteStride, x.VertexCount);
+                stream.GUID = BaseGGUUID.FromData(reader);
+                stream.Buffer = HwBuffer.FromVertexData(reader, gameType, array.IsStreaming, byteStride, array.VertexCount);
 
-                x.Streams.Add(stream);
+                array.Streams.Add(stream);
             }
 
-            return x;
+            return array;
         }
     }
 }

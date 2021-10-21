@@ -37,24 +37,28 @@ namespace Decima
                 throw new NotImplementedException();
             }
 
-            public IndexEntry FromData(BinaryReader reader)
+            public static IndexEntry FromData(BinaryReader reader)
             {
+                var entry = new IndexEntry();
+
                 // Strings are prefixed with their mount type ("cache:", "appdir:", ...)
                 uint filePathLen = reader.ReadUInt32();
 
                 if (filePathLen > 0)
-                    FilePath = Encoding.UTF8.GetString(reader.ReadBytesStrict(filePathLen));
+                    entry.FilePath = Encoding.UTF8.GetString(reader.ReadBytesStrict(filePathLen));
 
-                FileDataHash = reader.ReadBytesStrict(16);
-                DecompressedOffset = reader.ReadUInt64();
-                DecompressedSize = reader.ReadUInt64();
+                entry.FileDataHash = reader.ReadBytesStrict(16);
+                entry.DecompressedOffset = reader.ReadUInt64();
+                entry.DecompressedSize = reader.ReadUInt64();
 
-                return this;
+                return entry;
             }
         }
 
-        public PackfileIndex FromData(BinaryReader reader)
+        public static PackfileIndex FromData(BinaryReader reader)
         {
+            var index = new PackfileIndex();
+
             uint magic = reader.ReadUInt32();
             uint entryCount = reader.ReadUInt32();
 
@@ -62,12 +66,12 @@ namespace Decima
                 throw new InvalidDataException("Unknown header magic");
 
             for (uint i = 0; i < entryCount; i++)
-                _entries.Add(new IndexEntry().FromData(reader));
+                index._entries.Add(IndexEntry.FromData(reader));
 
-            return this;
+            return index;
         }
 
-        public PackfileIndex FromFile(string filePath)
+        public static PackfileIndex FromFile(string filePath)
         {
             using var reader = new BinaryReader(File.OpenRead(filePath));
             return FromData(reader);

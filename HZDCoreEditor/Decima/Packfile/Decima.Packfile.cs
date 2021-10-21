@@ -65,13 +65,15 @@ namespace Decima
                 writer.Write(data.ToArray());
             }
 
-            public PackfileHeader FromData(BinaryReader reader)
+            public static PackfileHeader FromData(BinaryReader reader)
             {
-                Span<byte> xorData = reader.ReadBytes(DataHeaderSize);
-                Magic = BitConverter.ToUInt32(xorData.Slice(0));            // 0x0
-                XorKey = BitConverter.ToUInt32(xorData.Slice(4));           // 0x4
+                var header = new PackfileHeader();
 
-                switch (Magic)
+                Span<byte> xorData = reader.ReadBytes(DataHeaderSize);
+                header.Magic = BitConverter.ToUInt32(xorData.Slice(0));     // 0x0
+                header.XorKey = BitConverter.ToUInt32(xorData.Slice(4));    // 0x4
+
+                switch (header.Magic)
                 {
                     case HardcodedMagic:
                     case HardcodedMagicEncrypted:
@@ -81,10 +83,10 @@ namespace Decima
                         throw new InvalidDataException("Unknown Packfile header magic");
                 }
 
-                if (IsEncrypted)
+                if (header.IsEncrypted)
                 {
-                    var key1 = BuildXorKey(BitConverter.GetBytes(XorKey));
-                    var key2 = BuildXorKey(BitConverter.GetBytes(XorKey + 1));
+                    var key1 = header.BuildXorKey(BitConverter.GetBytes(header.XorKey));
+                    var key2 = header.BuildXorKey(BitConverter.GetBytes(header.XorKey + 1));
 
                     for (int i = 0; i < 16; i++)
                         xorData[i + 8] ^= key1[i];// XOR bytes 8 to 24
@@ -93,12 +95,12 @@ namespace Decima
                         xorData[i + 24] ^= key2[i];// XOR bytes 24 to 40
                 }
 
-                //_ = Bits.ToUInt32(xorData.Slice(8));                      // 0x8 - 0x18 Not used?
-                FileEntryCount = BitConverter.ToUInt32(xorData.Slice(24));  // 0x18
-                BlockEntryCount = BitConverter.ToUInt32(xorData.Slice(32)); // 0x20
-                //_ = Bits.ToUInt32(xorData.Slice(36));                     // 0x24 Not used?
+                //_ = Bits.ToUInt32(xorData.Slice(8));                              // 0x8 - 0x18 Not used?
+                header.FileEntryCount = BitConverter.ToUInt32(xorData.Slice(24));   // 0x18
+                header.BlockEntryCount = BitConverter.ToUInt32(xorData.Slice(32));  // 0x20
+                //_ = Bits.ToUInt32(xorData.Slice(36));                             // 0x24 Not used?
 
-                return this;
+                return header;
             }
 
             public byte[] BuildXorKey(ReadOnlySpan<byte> mixData)
@@ -160,15 +162,17 @@ namespace Decima
                 writer.Write(data.ToArray());
             }
 
-            public FileEntry FromData(Span<byte> xorData, PackfileHeader header)
+            public static FileEntry FromData(Span<byte> xorData, PackfileHeader header)
             {
+                var entry = new FileEntry();
+
                 if (header.IsEncrypted)
                 {
-                    XorKey1 = BitConverter.ToUInt32(xorData.Slice(4));          // 0x4
-                    XorKey2 = BitConverter.ToUInt32(xorData.Slice(28));         // 0x1C
+                    entry.XorKey1 = BitConverter.ToUInt32(xorData.Slice(4));    // 0x4
+                    entry.XorKey2 = BitConverter.ToUInt32(xorData.Slice(28));   // 0x1C
 
-                    var key1 = header.BuildXorKey(BitConverter.GetBytes(XorKey1));
-                    var key2 = header.BuildXorKey(BitConverter.GetBytes(XorKey2));
+                    var key1 = header.BuildXorKey(BitConverter.GetBytes(entry.XorKey1));
+                    var key2 = header.BuildXorKey(BitConverter.GetBytes(entry.XorKey2));
 
                     for (int i = 0; i < 16; i++)
                         xorData[i + 0] ^= key1[i];// XOR bytes 0 to 16
@@ -179,12 +183,12 @@ namespace Decima
                     // The XOR keys at offset 0x4 and 0x1C in xorData are trashed now. They seem to ignore it.
                 }
 
-                //_ = Bits.ToUInt32(xorData.Slice(0));                          // 0x0 Not used?
-                PathHash = BitConverter.ToUInt64(xorData.Slice(8));             // 0x8
-                DecompressedOffset = BitConverter.ToUInt64(xorData.Slice(16));  // 0x10
-                DecompressedSize = BitConverter.ToUInt32(xorData.Slice(24));    // 0x18
+                //_ = Bits.ToUInt32(xorData.Slice(0));                                  // 0x0 Not used?
+                entry.PathHash = BitConverter.ToUInt64(xorData.Slice(8));               // 0x8
+                entry.DecompressedOffset = BitConverter.ToUInt64(xorData.Slice(16));    // 0x10
+                entry.DecompressedSize = BitConverter.ToUInt32(xorData.Slice(24));      // 0x18
 
-                return this;
+                return entry;
             }
         }
 
@@ -238,15 +242,17 @@ namespace Decima
                 writer.Write(data.ToArray());
             }
 
-            public BlockEntry FromData(Span<byte> xorData, PackfileHeader header)
+            public static BlockEntry FromData(Span<byte> xorData, PackfileHeader header)
             {
+                var entry = new BlockEntry();
+
                 if (header.IsEncrypted)
                 {
-                    XorKey1 = BitConverter.ToUInt32(xorData.Slice(12));         // 0xC
-                    XorKey2 = BitConverter.ToUInt32(xorData.Slice(28));         // 0x1C
+                    entry.XorKey1 = BitConverter.ToUInt32(xorData.Slice(12));         // 0xC
+                    entry.XorKey2 = BitConverter.ToUInt32(xorData.Slice(28));         // 0x1C
 
-                    var key1 = header.BuildXorKey(BitConverter.GetBytes(XorKey1));
-                    var key2 = header.BuildXorKey(BitConverter.GetBytes(XorKey2));
+                    var key1 = header.BuildXorKey(BitConverter.GetBytes(entry.XorKey1));
+                    var key2 = header.BuildXorKey(BitConverter.GetBytes(entry.XorKey2));
 
                     for (int i = 0; i < 16; i++)
                         xorData[i + 0] ^= key1[i];// XOR bytes 0 to 16
@@ -257,12 +263,12 @@ namespace Decima
                     // The XOR keys at offset 0xC and 0x1C in xorData are trashed now. They are manually restored in game code.
                 }
 
-                DecompressedOffset = BitConverter.ToUInt64(xorData.Slice(0));   // 0x0
-                DecompressedSize = BitConverter.ToUInt32(xorData.Slice(8));     // 0x8
-                Offset = BitConverter.ToUInt64(xorData.Slice(16));              // 0x10
-                Size = BitConverter.ToUInt32(xorData.Slice(24));                // 0x18
+                entry.DecompressedOffset = BitConverter.ToUInt64(xorData.Slice(0));   // 0x0
+                entry.DecompressedSize = BitConverter.ToUInt32(xorData.Slice(8));     // 0x8
+                entry.Offset = BitConverter.ToUInt64(xorData.Slice(16));              // 0x10
+                entry.Size = BitConverter.ToUInt32(xorData.Slice(24));                // 0x18
 
-                return this;
+                return entry;
             }
 
             public void XorDataBuffer(byte[] data)

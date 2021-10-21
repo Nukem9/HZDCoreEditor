@@ -24,13 +24,13 @@ namespace Decima
 
         public static HwDataBuffer FromData(BinaryReader reader, GameType gameType)
         {
-            var x = new HwDataBuffer();
+            var buffer = new HwDataBuffer();
             uint bufferElementCount = reader.ReadUInt32();
 
             if (bufferElementCount > 0)
             {
                 uint isStreaming = reader.ReadUInt32();
-                x.Flags = reader.ReadUInt32();
+                buffer.Flags = reader.ReadUInt32();
                 var format = (BaseDataBufferFormat)reader.ReadUInt32();
                 uint bufferStride = reader.ReadUInt32();
 
@@ -40,10 +40,10 @@ namespace Decima
                 if (format != BaseDataBufferFormat.Structured)
                     bufferStride = HwBuffer.GetStrideForFormat(format);
 
-                x.Buffer = HwBuffer.FromData(reader, gameType, format, isStreaming != 0, bufferStride, bufferElementCount);
+                buffer.Buffer = HwBuffer.FromData(reader, gameType, format, isStreaming != 0, bufferStride, bufferElementCount);
             }
 
-            return x;
+            return buffer;
         }
     }
 }

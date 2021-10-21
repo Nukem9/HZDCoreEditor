@@ -14,7 +14,7 @@ namespace Decima.DS
 
         public static implicit operator GGUUID(string value)
         {
-            return (GGUUID)(new GGUUID().FromString(value));
+            return new GGUUID(FromString(value));
         }
     }
 }

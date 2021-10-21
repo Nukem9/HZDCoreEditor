@@ -33,23 +33,23 @@ namespace Decima
 
         public static HwIndexArray FromData(BinaryReader reader, GameType gameType)
         {
-            var x = new HwIndexArray();
+            var array = new HwIndexArray();
             uint indexElementCount = reader.ReadUInt32();
 
             if (indexElementCount > 0)
             {
-                x.Flags = reader.ReadUInt32();
+                array.Flags = reader.ReadUInt32();
                 var format = (BaseIndexFormat)reader.ReadUInt32();
                 uint isStreaming = reader.ReadUInt32();
 
                 if (isStreaming != 0 && isStreaming != 1)
                     throw new InvalidDataException("Must be true or false");
 
-                x.ResourceGUID = new BaseGGUUID().FromData(reader);
-                x.Buffer = HwBuffer.FromIndexData(reader, gameType, format, isStreaming != 0, indexElementCount);
+                array.ResourceGUID = BaseGGUUID.FromData(reader);
+                array.Buffer = HwBuffer.FromIndexData(reader, gameType, format, isStreaming != 0, indexElementCount);
             }
 
-            return x;
+            return array;
         }
     }
 }

@@ -156,7 +156,7 @@ namespace Decima
                     int guidCount = state.ReadVariableLengthOffset();
 
                     for (int j = 0; j < guidCount; j++)
-                        container._tables[i].Add(new BaseGGUUID().FromData(state.Reader));
+                        container._tables[i].Add(BaseGGUUID.FromData(state.Reader));
                 }
 
                 return container;
@@ -258,7 +258,7 @@ namespace Decima
                 for (int i = 0; i < gameDataObjectCount; i++)
                 {
                     int objectId = ReadVariableLengthOffset();
-                    var guid = new BaseGGUUID().FromData(Reader);
+                    var guid = BaseGGUUID.FromData(Reader);
 
                     _gameDataObjects.Add(objectId, guid);
                 }
@@ -409,7 +409,7 @@ namespace Decima
             if (SaveVersion < 26)
             {
                 // Inline read of 16 bytes
-                return new BaseGGUUID().FromData(Reader);
+                return BaseGGUUID.FromData(Reader);
             }
 
             // GUID pool lookup

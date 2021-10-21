@@ -45,12 +45,12 @@ namespace Decima
 
                 case Types.LocalCoreUUID:
                 case Types.UUIDRef:
-                    GUID = new BaseGGUUID().FromData(reader);
+                    GUID = BaseGGUUID.FromData(reader);
                     break;
 
                 case Types.ExternalCoreUUID:
                 case Types.StreamingRef:
-                    GUID = new BaseGGUUID().FromData(reader);
+                    GUID = BaseGGUUID.FromData(reader);
 
                     // This could be a Filename instance - no way to determine the type
                     ExternalFile = new BaseString();

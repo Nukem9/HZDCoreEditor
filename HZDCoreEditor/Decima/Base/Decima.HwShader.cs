@@ -54,30 +54,30 @@ namespace Decima
 
             public static ProgramEntry FromData(BinaryReader reader, GameType gameType)
             {
-                var x = new ProgramEntry();
+                var entry = new ProgramEntry();
 
-                x.Unknown1 = reader.ReadUInt32();
-                x.Unknown2 = reader.ReadUInt32();
-                x.Unknown3 = reader.ReadUInt32();
-                x.Unknown4 = reader.ReadUInt32();
-                x.Unknown5 = reader.ReadUInt32();
-                x.HlslProgramType = (BaseProgramType)reader.ReadUInt32();
+                entry.Unknown1 = reader.ReadUInt32();
+                entry.Unknown2 = reader.ReadUInt32();
+                entry.Unknown3 = reader.ReadUInt32();
+                entry.Unknown4 = reader.ReadUInt32();
+                entry.Unknown5 = reader.ReadUInt32();
+                entry.HlslProgramType = (BaseProgramType)reader.ReadUInt32();
 
                 if (gameType == GameType.DS)
-                    x.HlslModelVersion = reader.ReadUInt32();
+                    entry.HlslModelVersion = reader.ReadUInt32();
                 else
-                    x.HlslModelVersion = 5;
+                    entry.HlslModelVersion = 5;
 
-                x.Unknown6 = reader.ReadUInt32();
-                x.Unknown7 = reader.ReadUInt32();
-                x.Unknown8 = reader.ReadUInt32();
-                x.Unknown9 = reader.ReadUInt32();
-                x.Unknown10 = reader.ReadUInt32();
+                entry.Unknown6 = reader.ReadUInt32();
+                entry.Unknown7 = reader.ReadUInt32();
+                entry.Unknown8 = reader.ReadUInt32();
+                entry.Unknown9 = reader.ReadUInt32();
+                entry.Unknown10 = reader.ReadUInt32();
 
                 uint shaderDataLength = reader.ReadUInt32();
-                x.HlslData = reader.ReadBytesStrict(shaderDataLength);
+                entry.HlslData = reader.ReadBytesStrict(shaderDataLength);
 
-                return x;
+                return entry;
             }
         }
 
@@ -107,15 +107,15 @@ namespace Decima
 
         public static HwShader FromData(BinaryReader reader, GameType gameType)
         {
-            var x = new HwShader();
+            var shader = new HwShader();
 
             // shaderDataLength is discarded
             uint shaderDataLength = reader.ReadUInt32();
-            x.ResourceGUID = new BaseGGUUID().FromData(reader);
+            shader.ResourceGUID = BaseGGUUID.FromData(reader);
 
-            x.Unknown1 = reader.ReadUInt32();
-            x.TypeMask = (BaseProgramTypeMask)reader.ReadUInt32();
-            x.Unknown2 = reader.ReadUInt32();// Related to type mask
+            shader.Unknown1 = reader.ReadUInt32();
+            shader.TypeMask = (BaseProgramTypeMask)reader.ReadUInt32();
+            shader.Unknown2 = reader.ReadUInt32();// Related to type mask
 
             // Horizon Zero Dawn has it hardcoded for some reason
             uint shaderEntryCount = gameType switch
@@ -125,15 +125,15 @@ namespace Decima
                 _ => throw new NotImplementedException(),
             };
 
-            x.Programs = new List<ProgramEntry>((int)shaderEntryCount);
+            shader.Programs = new List<ProgramEntry>((int)shaderEntryCount);
 
             for (uint i = 0; i < shaderEntryCount; i++)
-                x.Programs.Add(ProgramEntry.FromData(reader, gameType));
+                shader.Programs.Add(ProgramEntry.FromData(reader, gameType));
 
             uint rootSignatureDataLength = reader.ReadUInt32();
-            x.RootSignatureData = reader.ReadBytesStrict(rootSignatureDataLength);
+            shader.RootSignatureData = reader.ReadBytesStrict(rootSignatureDataLength);
 
-            return x;
+            return shader;
         }
     }
 }

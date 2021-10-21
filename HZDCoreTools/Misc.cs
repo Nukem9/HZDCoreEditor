@@ -122,7 +122,7 @@ namespace HZDCoreTools
 
             foreach (var (indexPath, _) in sourceIndexes)
             {
-                var packfileIndex = new PackfileIndex().FromFile(indexPath);
+                var packfileIndex = PackfileIndex.FromFile(indexPath);
 
                 foreach (string corePath in packfileIndex.Entries.Select(x => x.FilePath))
                 {
