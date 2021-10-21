@@ -42,5 +42,13 @@ namespace Decima.HZD
 
             return Encoding.UTF8.GetString(TextData[(int)language - 1]);
         }
+
+        public void SetStringForLanguage(ELanguage language, string value)
+        {
+            if (language == ELanguage.Unknown)
+                throw new ArgumentException("Invalid language", nameof(language));
+
+            TextData[(int)language - 1] = Encoding.UTF8.GetBytes(value);
+        }
     }
 }
