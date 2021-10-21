@@ -349,28 +349,35 @@ namespace Decima
         }
 
         /// <summary>
-        /// Format a Decima path to be the correct extension.
+        /// Formats a path to match Decima's core file paths. Backslashes are replaced with forward
+        /// slashes. Leading slashes are removed. An optional extension is applied if one is not present.
         /// </summary>
-        public static string EnsureExt(string corePath, bool stream)
+        public static string SanitizePath(string path, string defaultExt = CoreExt)
         {
-            if (stream && !corePath.EndsWith(StreamExt, StringComparison.OrdinalIgnoreCase))
-                corePath += StreamExt;
+            path = path.Replace("\\", "/");
 
-            if (!stream && !corePath.EndsWith(CoreExt, StringComparison.OrdinalIgnoreCase))
-                corePath += CoreExt;
+            // Cannot start with leading '/'
+            if (path.Length > 0 && path[0] == '/')
+                path = path.Substring(1);
 
-            return corePath;
+            // '.' must come before the final path separator
+            int sepIndex = path.LastIndexOf('/');
+            int extIndex = path.LastIndexOf('.');
+
+            if (extIndex == -1 || (extIndex < sepIndex))
+                path += defaultExt;
+
+            return path;
         }
 
         /// <summary>
         /// Convert a Decima-formatted path to a hashed path. Hashes are case sensitive.
         /// </summary>
-        public static ulong GetHashForPath(string corePath, bool stream = false)
+        public static ulong GetHashForPath(string corePath)
         {
-            corePath = EnsureExt(corePath, stream).Replace('\\', '/');
-            corePath += char.MinValue;
+            var data = Encoding.UTF8.GetBytes(corePath + char.MinValue);
 
-            SMHasher.MurmurHash3_x64_128(Encoding.UTF8.GetBytes(corePath), 42, out ulong[] hash);
+            SMHasher.MurmurHash3_x64_128(data, 42, out ulong[] hash);
             return hash[0];
         }
 

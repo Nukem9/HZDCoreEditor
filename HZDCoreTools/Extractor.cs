@@ -113,7 +113,7 @@ namespace HZDCoreTools
                     {
                         void extractFromPack(string fileName, bool stream)
                         {
-                            var hash = Packfile.GetHashForPath(fileName, stream);
+                            var hash = Packfile.GetHashForPath(Packfile.SanitizePath(fileName, Packfile.StreamExt));
                             var output = Path.Combine(OutputDir, fileName);
                             if (files.TryGetValue(hash, out var pack))
                             {
