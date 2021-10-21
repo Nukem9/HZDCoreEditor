@@ -39,8 +39,8 @@ namespace Decima.HZD
 
             long hiResDataSize = ms.Length - lowResDataSize;
 
-            writer.Write(lowResDataSize);
-            writer.Write(hiResDataSize);
+            writer.Write((uint)lowResDataSize);
+            writer.Write((uint)hiResDataSize);
             ms.WriteTo(writer.BaseStream);
         }
     }
