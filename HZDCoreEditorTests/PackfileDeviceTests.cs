@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.IO;
 using System.Linq;
 
@@ -32,7 +33,8 @@ namespace HZDCoreEditorTests
             Assert.IsTrue(device.Mount(Path.Combine(GameDataPath, "initial.bin")));
             Assert.IsTrue(device.Mount(Path.Combine(GameDataPath, "dlc1.bin")));
             Assert.IsTrue(device.Mount(Path.Combine(GameDataPath, "Remainder_English.bin")));
-            Assert.IsFalse(device.Mount(Path.Combine(GameDataPath, "Remainder_English.bin")), "Should fail to mount duplicates");
+            Assert.IsFalse(device.Mount(Path.Combine(GameDataPath, "patch_debug.bin")));
+            Assert.ThrowsException<ArgumentException>(() => device.Mount(Path.Combine(GameDataPath, "Remainder_English.bin")), "Should fail to mount duplicates");
 
             var order = device.ActiveArchives.ToArray();
             Assert.IsTrue(order.Length == 4);
@@ -41,10 +43,10 @@ namespace HZDCoreEditorTests
             Assert.IsTrue(order[2].Equals("remainder_english.bin"));
             Assert.IsTrue(order[3].Equals("patch.bin"));
 
-            Assert.IsTrue(device.Unmount("INITIAL.BIN"));
-            Assert.IsTrue(device.Unmount("patch.bin"));
-            Assert.IsFalse(device.Unmount("patch.bin"));
-            Assert.IsTrue(device.Unmount("dlc1.bin"));
+            device.Unmount("INITIAL.BIN");
+            device.Unmount("patch.bin");
+            Assert.ThrowsException<ArgumentException>(() => device.Unmount("patch.bin"), "Unmounting file that's not loaded");
+            device.Unmount("dlc1.bin");
 
             order = device.ActiveArchives.ToArray();
             Assert.IsTrue(order.Length == 1);

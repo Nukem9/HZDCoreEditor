@@ -33,7 +33,8 @@ namespace Decima
         }
 
         /// <summary>
-        /// Load an archive so it can be read and used.
+        /// Load an archive so it can be read and used. Returns false when the file doesn't exist
+        /// or when it's a debug archive.
         /// </summary>
         public bool Mount(string archivePath)
         {
@@ -63,7 +64,7 @@ namespace Decima
 
                 // Don't allow duplicate archives to be loaded
                 if (compare == 0)
-                    return false;
+                    throw new ArgumentException($"Attempting to load an archive that's already loaded: {filePart}", nameof(archivePath));
 
                 if (compare < 0)
                     break;
@@ -139,17 +140,15 @@ namespace Decima
         /// <summary>
         /// Unload an archive.
         /// </summary>
-        public bool Unmount(string archiveName)
+        public void Unmount(string archiveName)
         {
             var entry = _mountedArchives.SingleOrDefault(x => x.ArchiveName.Equals(archiveName.ToLower()));
 
             if (entry == null)
-                return false;
+                throw new ArgumentException($"Trying to unmount an archive that's not loaded: {archiveName}", nameof(archiveName));
 
             _mountedArchives.Remove(entry);
-
             RebuildCorePathLookupTable();
-            return true;
         }
 
         /// <summary>
