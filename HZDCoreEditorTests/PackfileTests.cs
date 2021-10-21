@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Decima;
 
 namespace HZDCoreEditorTests
 {
@@ -26,7 +27,7 @@ namespace HZDCoreEditorTests
         [TestMethod]
         public void TestValidateSingleBin()
         {
-            var archive = new Decima.PackfileReader(Path.Combine(GameDataPath, GameRootArchive));
+            var archive = new PackfileReader(Path.Combine(GameDataPath, GameRootArchive));
             archive.Validate();
         }
 
@@ -36,7 +37,7 @@ namespace HZDCoreEditorTests
         {
             foreach (var archiveName in QuickTestArchives)
             {
-                var archive = new Decima.PackfileReader(Path.Combine(GameDataPath, archiveName));
+                var archive = new PackfileReader(Path.Combine(GameDataPath, archiveName));
                 archive.Validate();
             }
         }
@@ -45,13 +46,13 @@ namespace HZDCoreEditorTests
         [TestMethod]
         public void TestFileExists()
         {
-            var archive = new Decima.PackfileReader(Path.Combine(GameDataPath, GameRootArchive));
+            var archive = new PackfileReader(Path.Combine(GameDataPath, GameRootArchive));
 
-            Assert.IsTrue(archive.ContainsFile("prefetch/fullgame.prefetch"));
             Assert.IsTrue(archive.ContainsFile("prefetch/fullgame.prefetch.core"));
-            Assert.IsTrue(archive.ContainsFile("prefetch\\fullgame.prefetch.core"));
+            Assert.IsTrue(archive.ContainsFile(Packfile.SanitizePath("prefetch/fullgame.prefetch")));
+            Assert.IsTrue(archive.ContainsFile(Packfile.SanitizePath("prefetch\\fullgame.prefetch.core")));
             //Assert.IsTrue(archive.ContainsFile("models/weapons/heavy_machinegun/model/model.core.stream")); - need to find a file present in Initial.bin
-            //Assert.IsTrue(archive.ContainsFile("sounds/effects/world/weather/habitats/fields/weather_fields.soundbank.core.stream"));
+            //Assert.IsTrue(archive.ContainsFile("sounds/effects/world/weather/habitats/fields/weather_fields.soundbank", ".core.stream"));
 
             Assert.IsFalse(archive.ContainsFile("PREFETCH/fullgame.prefetch.core"));
             Assert.IsFalse(archive.ContainsFile("prefetch\\FULLGAME.prefetch.core"));
@@ -62,9 +63,9 @@ namespace HZDCoreEditorTests
         [TestMethod]
         public void TestFileExistsByPathId()
         {
-            var archive = new Decima.PackfileReader(Path.Combine(GameDataPath, GameRootArchive));
+            var archive = new PackfileReader(Path.Combine(GameDataPath, GameRootArchive));
 
-            Assert.IsTrue(Decima.Packfile.GetHashForPath("prefetch/fullgame.prefetch") == 0x2FFF5AF65CD64C0A);
+            Assert.IsTrue(Packfile.GetHashForPath(Packfile.SanitizePath("prefetch/fullgame.prefetch")) == 0x2FFF5AF65CD64C0A);
             Assert.IsTrue(archive.ContainsFile(0x2FFF5AF65CD64C0A));
         }
 
@@ -72,7 +73,7 @@ namespace HZDCoreEditorTests
         [TestMethod]
         public void TestExtractSingleFile()
         {
-            var archive = new Decima.PackfileReader(Path.Combine(GameDataPath, GameRootArchive));
+            var archive = new PackfileReader(Path.Combine(GameDataPath, GameRootArchive));
             var tempPath = Path.Combine(Path.GetTempPath(), $"{nameof(TestExtractSingleFile)}_extracted.core");
 
             if (File.Exists(tempPath))
@@ -88,7 +89,7 @@ namespace HZDCoreEditorTests
         [TestMethod]
         public void TestExtractSingleFileToStream()
         {
-            var archive = new Decima.PackfileReader(Path.Combine(GameDataPath, GameRootArchive));
+            var archive = new PackfileReader(Path.Combine(GameDataPath, GameRootArchive));
             var testStream = new MemoryStream();
 
             archive.ExtractFile("prefetch/fullgame.prefetch.core", testStream);
@@ -117,11 +118,11 @@ namespace HZDCoreEditorTests
             // Write out compressed bin
             var packedArchivePath = Path.Combine(tempPath, $"{nameof(TestPackAndUnpackTrivial)}_packed_archive.bin");
 
-            var writeArchive = new Decima.PackfileWriter(packedArchivePath, false, true);
+            var writeArchive = new PackfileWriter(packedArchivePath, false, true);
             writeArchive.BuildFromFileList(tempPath, tempFiles.Select(x => x.Item3).ToArray());
 
             // Open it back up and validate its contents
-            var readArchive = new Decima.PackfileReader(packedArchivePath);
+            var readArchive = new PackfileReader(packedArchivePath);
             readArchive.Validate();
 
             foreach (var file in tempFiles)
@@ -155,11 +156,11 @@ namespace HZDCoreEditorTests
                 .Select(f => f.Substring(targetDir.Length))
                 .ToArray();
 
-            var writeArchive = new Decima.PackfileWriter(archivePath, false, true);
+            var writeArchive = new PackfileWriter(archivePath, false, true);
             writeArchive.BuildFromFileList(targetDir, filesToCombine);
 
             // Re-extract all of the contained files into memory
-            var readArchive = new Decima.PackfileReader(archivePath);
+            var readArchive = new PackfileReader(archivePath);
             readArchive.Validate();
 
             var tempMS = new MemoryStream();

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Numerics;
 using System.Security.Cryptography;
 using System.Text;
@@ -13,6 +14,16 @@ namespace Decima
     {
         public const string CoreExt = ".core";
         public const string StreamExt = ".core.stream";
+
+        public static readonly string[] ValidFileExtensions = new string[]
+        {
+            ".core",
+            ".stream",
+            ".coretext",
+            ".coredebug",
+            ".dep",
+        };
+
         protected const int InvalidEntryIndex = int.MaxValue;
 
         public PackfileHeader Header { protected set; get; }
@@ -366,11 +377,10 @@ namespace Decima
             if (path.Length > 0 && path[0] == '/')
                 path = path.Substring(1);
 
-            // '.' must come before the final path separator
-            int sepIndex = path.LastIndexOf('/');
-            int extIndex = path.LastIndexOf('.');
+            // Must end with one of the valid extensions
+            string ext = Path.GetExtension(path);
 
-            if (extIndex == -1 || (extIndex < sepIndex))
+            if (ext.Length == 0 || !ValidFileExtensions.Any(x => ext.Equals(x)))
                 path += defaultExt;
 
             return path;

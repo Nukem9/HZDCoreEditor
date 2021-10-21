@@ -87,6 +87,9 @@ namespace HZDCoreTools
                     //
                     // Possible extensions to check for:
                     // path/to/file.core
+                    // path/to/file.coredebug
+                    // path/to/file.coretext
+                    // path/to/file.dep
                     // path/to/file.core.stream
                     // path/to/file.language.stream
                     //
@@ -96,8 +99,10 @@ namespace HZDCoreTools
                             allValidPaths.TryAdd(p, true);
                     }
 
-                    testPath($"{pathStr}.core");
                     testPath($"{pathStr}.core.stream");
+
+                    foreach (string ext in Packfile.ValidFileExtensions)
+                        testPath($"{pathStr}{ext}");
 
                     foreach (string lang in possibleLanguages)
                         testPath($"{pathStr}.{lang}.stream");
@@ -112,7 +117,6 @@ namespace HZDCoreTools
                 File.WriteAllLines(options.OutputPath, allStrings.Keys.OrderBy(x => x));
                 Console.WriteLine($"Total lines extracted: {allStrings.Count}");
             }
-
         }
 
         public static void ExportIndexFiles(ExportIndexFilesCommand options)
