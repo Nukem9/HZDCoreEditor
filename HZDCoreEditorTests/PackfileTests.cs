@@ -79,7 +79,7 @@ namespace HZDCoreEditorTests
             if (File.Exists(tempPath))
                 File.Delete(tempPath);
 
-            archive.ExtractFile("prefetch/fullgame.prefetch.core", tempPath, false);
+            archive.ExtractFile("prefetch/fullgame.prefetch.core", tempPath);
             Assert.IsTrue(File.Exists(tempPath));
 
             File.Delete(tempPath);
@@ -118,7 +118,7 @@ namespace HZDCoreEditorTests
             // Write out compressed bin
             var packedArchivePath = Path.Combine(tempPath, $"{nameof(TestPackAndUnpackTrivial)}_packed_archive.bin");
 
-            var writeArchive = new PackfileWriter(packedArchivePath, false, true);
+            var writeArchive = new PackfileWriter(packedArchivePath, false, FileMode.Create);
             writeArchive.BuildFromFileList(tempPath, tempFiles.Select(x => x.Item3).ToArray());
 
             // Open it back up and validate its contents
@@ -129,7 +129,7 @@ namespace HZDCoreEditorTests
             {
                 Assert.IsTrue(readArchive.ContainsFile(file.CoreName));
 
-                readArchive.ExtractFile(file.CoreName, file.Path, true);
+                readArchive.ExtractFile(file.CoreName, file.Path, FileMode.Create);
 
                 Assert.IsTrue(File.ReadAllText(file.Path).Equals(file.Text));
 
@@ -156,7 +156,7 @@ namespace HZDCoreEditorTests
                 .Select(f => f.Substring(targetDir.Length))
                 .ToArray();
 
-            var writeArchive = new PackfileWriter(archivePath, false, true);
+            var writeArchive = new PackfileWriter(archivePath, false, FileMode.Create);
             writeArchive.BuildFromFileList(targetDir, filesToCombine);
 
             // Re-extract all of the contained files into memory

@@ -177,7 +177,7 @@ namespace HZDCoreEditor
         {
             string archivePath = Path.Combine(GameDataPath, "test_packed_archive.tmp");
 
-            var testArchive = new PackfileWriter(archivePath, false, true);
+            var testArchive = new PackfileWriter(archivePath, false, FileMode.Create);
             testArchive.BuildFromFileList(GameDataPathExtracted, QuickTestFiles);
 
             var testArchive2 = new PackfileReader(archivePath);
@@ -188,7 +188,7 @@ namespace HZDCoreEditor
             {
                 string tempFilePath = Path.Combine(GameDataPathExtracted, $"{file}.tmp");
 
-                testArchive2.ExtractFile(file, tempFilePath, true);
+                testArchive2.ExtractFile(file, tempFilePath, FileMode.Create);
                 File.Delete(tempFilePath);
             }
 
@@ -209,7 +209,7 @@ namespace HZDCoreEditor
                 .Select(f => f.Substring(targetDir.Length))
                 .ToArray();
 
-            var testArchive = new PackfileWriter(archivePath, false, true);
+            var testArchive = new PackfileWriter(archivePath, false, FileMode.Create);
             testArchive.BuildFromFileList(targetDir, filesToCombine);
 
             var testArchive2 = new PackfileReader(archivePath);
@@ -220,7 +220,7 @@ namespace HZDCoreEditor
             {
                 string tempFilePath = Path.Combine(targetDir, $"{file}.tmp");
 
-                testArchive2.ExtractFile(file, tempFilePath, true);
+                testArchive2.ExtractFile(file, tempFilePath, FileMode.Create);
                 File.Delete(tempFilePath);
             }
 

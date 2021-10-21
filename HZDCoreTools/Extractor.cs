@@ -118,7 +118,7 @@ namespace HZDCoreTools
                             if (files.TryGetValue(hash, out var pack))
                             {
                                 CheckDirectory(Path.GetDirectoryName(output));
-                                pack.ExtractFile(hash, output, true);
+                                pack.ExtractFile(hash, output, FileMode.Create);
                             }
                         }
 

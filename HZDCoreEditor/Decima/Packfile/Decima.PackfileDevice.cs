@@ -168,19 +168,19 @@ namespace Decima
         }
 
         /// <summary>
-        /// Forwarder for <see cref="PackfileReader.ExtractFile(string, string, bool)"/>
+        /// Forwarder for <see cref="PackfileReader.ExtractFile(string, string, FileMode)"/>
         /// </summary>
-        public void ExtractFile(string corePath, string destinationPath, bool allowOverwrite = false)
+        public void ExtractFile(string corePath, string destinationPath, FileMode mode = FileMode.CreateNew)
         {
-            ExtractFile(Packfile.GetHashForPath(corePath), destinationPath, allowOverwrite);
+            ExtractFile(Packfile.GetHashForPath(corePath), destinationPath, mode);
         }
 
         /// <summary>
-        /// Forwarder for <see cref="PackfileReader.ExtractFile(ulong, string, bool)"/>
+        /// Forwarder for <see cref="PackfileReader.ExtractFile(ulong, string, FileMode)"/>
         /// </summary>
-        public void ExtractFile(ulong pathId, string destinationPath, bool allowOverwrite = false)
+        public void ExtractFile(ulong pathId, string destinationPath, FileMode mode = FileMode.CreateNew)
         {
-            using var fs = File.Open(destinationPath, allowOverwrite ? FileMode.Create : FileMode.CreateNew, FileAccess.Write);
+            using var fs = File.Open(destinationPath, mode, FileAccess.Write);
             ExtractFile(pathId, fs);
         }
 

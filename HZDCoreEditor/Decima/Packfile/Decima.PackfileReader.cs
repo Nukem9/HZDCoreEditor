@@ -38,14 +38,14 @@ namespace Decima
             }
         }
 
-        public void ExtractFile(string corePath, string destinationPath, bool allowOverwrite = false)
+        public void ExtractFile(string corePath, string destinationPath, FileMode mode = FileMode.CreateNew)
         {
-            ExtractFile(GetHashForPath(corePath), destinationPath, allowOverwrite);
+            ExtractFile(GetHashForPath(corePath), destinationPath, mode);
         }
 
-        public void ExtractFile(ulong pathId, string destinationPath, bool allowOverwrite = false)
+        public void ExtractFile(ulong pathId, string destinationPath, FileMode mode = FileMode.CreateNew)
         {
-            using var fs = File.Open(destinationPath, allowOverwrite ? FileMode.Create : FileMode.CreateNew, FileAccess.Write);
+            using var fs = File.Open(destinationPath, mode, FileAccess.Write);
             ExtractFile(pathId, fs);
         }
 

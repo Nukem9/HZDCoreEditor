@@ -11,13 +11,13 @@ namespace Decima
         private const uint WriterBlockSizeThreshold = 256 * 1024;
 
         private readonly string _archivePath;
-        private readonly bool _allowOverwrite;
+        private readonly FileMode _fileMode;
         private ulong _writerDecompressedBlockOffset;
 
-        public PackfileWriter(string archivePath, bool encrypted = false, bool allowOverwrite = false)
+        public PackfileWriter(string archivePath, bool encrypted = false, FileMode mode = FileMode.CreateNew)
         {
             _archivePath = archivePath;
-            _allowOverwrite = allowOverwrite;
+            _fileMode = mode;
 
             Header = new PackfileHeader();
             _fileEntries = new List<FileEntry>();
@@ -35,7 +35,7 @@ namespace Decima
             int blockCount = (int)((totalBlockSize + WriterBlockSizeThreshold) / WriterBlockSizeThreshold);
             int fileCount = sourceFiles.Length;
 
-            using var fs = File.Open(_archivePath, _allowOverwrite ? FileMode.Create : FileMode.CreateNew, FileAccess.ReadWrite, FileShare.None);
+            using var fs = File.Open(_archivePath, _fileMode, FileAccess.ReadWrite, FileShare.None);
             using var archiveWriter = new BinaryWriter(fs, Encoding.UTF8, true);
             using var blockStream = new MemoryStream();
 

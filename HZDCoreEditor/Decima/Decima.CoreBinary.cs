@@ -71,9 +71,9 @@ namespace Decima
             }
         }
 
-        public void ToFile(string filePath)
+        public void ToFile(string filePath, FileMode mode = FileMode.CreateNew)
         {
-            using var writer = new BinaryWriter(File.Open(filePath, FileMode.Create, FileAccess.ReadWrite, FileShare.None));
+            using var writer = new BinaryWriter(File.Open(filePath, mode, FileAccess.ReadWrite, FileShare.None));
             ToData(writer);
         }
 

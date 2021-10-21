@@ -84,16 +84,16 @@ namespace HZDCoreEditorTests
                 var tempPath = Path.ChangeExtension(fullPath, ".tmp");
 
                 var core = Decima.CoreBinary.FromFile(fullPath);
-                core.ToFile(tempPath);
+                core.ToFile(tempPath, FileMode.Create);
 
                 var d1 = File.ReadAllBytes(fullPath);
                 var d2 = File.ReadAllBytes(tempPath);
 
-                Assert.IsTrue(d1.Length == d2.Length, $"Re-serialized binary file length doesn't match ({d1.Length} != {d2.Length}");
+                Assert.IsTrue(d1.Length == d2.Length, $"Re-serialized binary file length doesn't match {file} ({d1.Length} != {d2.Length})");
 
                 for (int i = 0; i < d1.Length; i++)
                 {
-                    Assert.IsTrue(d1[i] == d2[i], $"File data doesn't match at offset {i:X} in new file");
+                    Assert.IsTrue(d1[i] == d2[i], $"File data doesn't match at offset {i:X} in {file}");
                 }
 
                 File.Delete(tempPath);
@@ -111,16 +111,16 @@ namespace HZDCoreEditorTests
                 var tempPath = Path.ChangeExtension(file, ".tmp");
 
                 var core = Decima.CoreBinary.FromFile(file, true);
-                core.ToFile(tempPath);
+                core.ToFile(tempPath, FileMode.Create);
 
                 var d1 = File.ReadAllBytes(file);
                 var d2 = File.ReadAllBytes(tempPath);
 
-                Assert.IsTrue(d1.Length == d2.Length, $"Re-serialized binary file length doesn't match ({d1.Length} != {d2.Length}");
+                Assert.IsTrue(d1.Length == d2.Length, $"Re-serialized binary file length doesn't match {file} ({d1.Length} != {d2.Length})");
 
                 for (int i = 0; i < d1.Length; i++)
                 {
-                    Assert.IsTrue(d1[i] == d2[i], $"File data doesn't match at offset {i:X} in new file");
+                    Assert.IsTrue(d1[i] == d2[i], $"File data doesn't match at offset {i:X} in {file}");
                 }
 
                 File.Delete(tempPath);
