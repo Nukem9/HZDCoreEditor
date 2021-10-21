@@ -14,7 +14,9 @@ namespace Decima
     {
         private const uint HardcodedMagic = 0x10203040;
 
-        public Dictionary<ulong, IndexEntry> Entries { get; private set; }
+        public IReadOnlyList<IndexEntry> Entries => _entries.AsReadOnly();
+
+        private List<IndexEntry> _entries = new List<IndexEntry>();
 
         /// <remarks>
         /// File data format:
@@ -26,8 +28,9 @@ namespace Decima
         public class IndexEntry
         {
             public string FilePath;
-            public ulong PathHash;
-            public BaseGGUUID GUID;
+            public byte[] FileDataHash;
+            public ulong DecompressedOffset;
+            public ulong DecompressedSize;
 
             public void ToData(BinaryWriter writer)
             {
@@ -36,19 +39,15 @@ namespace Decima
 
             public IndexEntry FromData(BinaryReader reader)
             {
-                uint pathLength = reader.ReadUInt32();
+                // Strings are prefixed with their mount type ("cache:", "appdir:", ...)
+                uint filePathLen = reader.ReadUInt32();
 
-                if (pathLength > 0)
-                {
-                    // Strings are expected to be lowercase and prefixed with "cache:"
-                    var fullPath = Encoding.UTF8.GetString(reader.ReadBytesStrict(pathLength));
+                if (filePathLen > 0)
+                    FilePath = Encoding.UTF8.GetString(reader.ReadBytesStrict(filePathLen));
 
-                    FilePath = fullPath.Replace("cache:", "");
-                    PathHash = Packfile.GetHashForPath(FilePath);
-                }
-
-                GUID = new BaseGGUUID().FromData(reader);
-                var unknown = reader.ReadBytesStrict(16);
+                FileDataHash = reader.ReadBytesStrict(16);
+                DecompressedOffset = reader.ReadUInt64();
+                DecompressedSize = reader.ReadUInt64();
 
                 return this;
             }
@@ -63,10 +62,7 @@ namespace Decima
                 throw new InvalidDataException("Unknown header magic");
 
             for (uint i = 0; i < entryCount; i++)
-            {
-                var entry = new IndexEntry().FromData(reader);
-                Entries[entry.PathHash] = entry;
-            }
+                _entries.Add(new IndexEntry().FromData(reader));
 
             return this;
         }
@@ -79,11 +75,12 @@ namespace Decima
 
         public bool ResolvePathByHash(ulong hash, out string path)
         {
+            /*
             if (Entries.TryGetValue(hash, out IndexEntry entry))
             {
                 path = entry.FilePath;
                 return true;
-            }
+            }*/
 
             path = null;
             return false;
