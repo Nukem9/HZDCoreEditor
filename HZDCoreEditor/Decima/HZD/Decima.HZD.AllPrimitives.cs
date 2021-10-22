@@ -150,6 +150,23 @@ namespace Decima.HZD
     /// </summary>
     public class WString : BaseWString
     {
+        public WString() : this("")
+        {
+        }
+
+        public WString(string value) : base(value)
+        {
+        }
+
+        public static implicit operator string(WString value)
+        {
+            return value.Value;
+        }
+
+        public static implicit operator WString(string value)
+        {
+            return new WString(value);
+        }
     }
 
     [DebuggerDisplay("{Value}")]

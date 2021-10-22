@@ -17,6 +17,15 @@ namespace Decima
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public string Value;
 
+        public BaseWString() : this("")
+        {
+        }
+
+        public BaseWString(string value)
+        {
+            Value = value;
+        }
+
         public void Deserialize(BinaryReader reader)
         {
             uint readLength = reader.ReadUInt32() * sizeof(ushort);
@@ -27,7 +36,6 @@ namespace Decima
             if (readLength > 0)
             {
                 byte[] data = reader.ReadBytesStrict(readLength);
-
                 Value = Encoding.Unicode.GetString(data);
             }
         }
