@@ -108,7 +108,7 @@ namespace HZDCoreTools
 
             coresToExtract.AsParallel().ForAll(file =>
             {
-                var coreBinary = CoreBinary.FromData(new BinaryReader(file.Stream), true);
+                var coreBinary = CoreBinary.FromData(new BinaryReader(file.Stream));
 
                 // Dump all instances of LocalizedTextResource
                 foreach (var textResource in coreBinary.OfType<Decima.HZD.LocalizedTextResource>())
@@ -165,7 +165,7 @@ namespace HZDCoreTools
 
             coresToModify.AsParallel().ForAll(file =>
             {
-                var coreBinary = CoreBinary.FromData(new BinaryReader(file.Stream), true);
+                var coreBinary = CoreBinary.FromData(new BinaryReader(file.Stream));
                 bool updated = false;
 
                 foreach (var translation in translationData[file.corePath])

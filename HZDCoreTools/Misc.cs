@@ -57,7 +57,7 @@ namespace HZDCoreTools
                 try
                 {
                     stream.Position = 0;
-                    var coreBinary = CoreBinary.FromData(new BinaryReader(stream), true);
+                    var coreBinary = CoreBinary.FromData(new BinaryReader(stream));
 
                     coreBinary.VisitAllObjects((string str, object _) =>
                     {

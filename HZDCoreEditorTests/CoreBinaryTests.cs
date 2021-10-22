@@ -57,7 +57,7 @@ namespace HZDCoreEditorTests
             {
                 var fullPath = Path.Combine(GameDataPathExtracted, file);
 
-                var core = Decima.CoreBinary.FromFile(fullPath, true);
+                var core = Decima.CoreBinary.FromFile(fullPath);
             }
         }
 
@@ -70,7 +70,7 @@ namespace HZDCoreEditorTests
 
             foreach (string file in files)
             {
-                var core = Decima.CoreBinary.FromFile(file, true);
+                var core = Decima.CoreBinary.FromFile(file);
             }
         }
 
@@ -110,7 +110,7 @@ namespace HZDCoreEditorTests
             {
                 var tempPath = Path.ChangeExtension(file, ".tmp");
 
-                var core = Decima.CoreBinary.FromFile(file, true);
+                var core = Decima.CoreBinary.FromFile(file);
                 core.ToFile(tempPath, FileMode.Create);
 
                 var d1 = File.ReadAllBytes(file);
@@ -147,7 +147,7 @@ namespace HZDCoreEditorTests
             Assert.ThrowsException<InvalidDataException>(() => _ = Decima.CoreBinary.FromFile(tempCorePath, false));
 
             // Otherwise ignore them
-            _ = Decima.CoreBinary.FromFile(tempCorePath, true);
+            _ = Decima.CoreBinary.FromFile(tempCorePath);
         }
     }
 }

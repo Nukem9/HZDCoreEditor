@@ -180,7 +180,7 @@ namespace HZDCoreTools
             ms.Position = 0;
 
             using var br = new BinaryReader(ms, Encoding.UTF8, true);
-            var core = CoreBinary.FromData(br, true);
+            var core = CoreBinary.FromData(br);
 
             return (core.First(x => x is PrefetchList) as PrefetchList).Files
                 .Select(x => x.Path?.Value)

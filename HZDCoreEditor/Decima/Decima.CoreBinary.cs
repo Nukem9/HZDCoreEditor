@@ -77,7 +77,7 @@ namespace Decima
             ToData(writer);
         }
 
-        public static CoreBinary FromData(BinaryReader reader, bool ignoreUnknownChunks = false)
+        public static CoreBinary FromData(BinaryReader reader, bool ignoreUnknownChunks = true)
         {
             var core = new CoreBinary();
 
@@ -125,7 +125,7 @@ namespace Decima
             return core;
         }
 
-        public static CoreBinary FromFile(string filePath, bool ignoreUnknownChunks = false)
+        public static CoreBinary FromFile(string filePath, bool ignoreUnknownChunks = true)
         {
             using var reader = new BinaryReader(File.OpenRead(filePath));
             return FromData(reader, ignoreUnknownChunks);
