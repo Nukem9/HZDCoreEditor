@@ -182,7 +182,7 @@ namespace HZDCoreTools
             using var br = new BinaryReader(ms, Encoding.UTF8, true);
             var core = CoreBinary.FromData(br);
 
-            return (core.First(x => x is PrefetchList) as PrefetchList).Files
+            return (core.Objects.First(x => x is PrefetchList) as PrefetchList).Files
                 .Select(x => x.Path?.Value)
                 .ToList();
         }
@@ -213,7 +213,7 @@ namespace HZDCoreTools
 
                 var core = CoreBinary.FromFile(file);
 
-                foreach (var obj in core)
+                foreach (var obj in core.Objects)
                 {
                     if (obj is Decima.HZD.LocalizedTextResource asResource)
                     {

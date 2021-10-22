@@ -104,7 +104,7 @@ namespace HZDCoreEditorUI.UI
                 RootDir = fullPath.Substring(0, nameRoots.Min());
             }
 
-            CoreObjectList = CoreBinary.FromFile(path, true).ToList();
+            CoreObjectList = CoreBinary.FromFile(path, true).Objects.ToList();
 
             BuildObjectView();
             BuildDataView();
@@ -417,7 +417,7 @@ namespace HZDCoreEditorUI.UI
                 if (selected.GetType().IsGenericType && selected.GetType().GetGenericArguments().Any(x => x == typeof(LocalizedTextResource)))
                 {
                     var core = CoreBinary.FromFile(path);
-                    var match = core.FirstOrDefault(x => x is LocalizedTextResource asResource && asResource.ObjectUUID == selected.GUID) as LocalizedTextResource;
+                    var match = core.Objects.FirstOrDefault(x => x is LocalizedTextResource asResource && asResource.ObjectUUID == selected.GUID) as LocalizedTextResource;
                     var text = match == null ? "null" : match.GetStringForLanguage(ELanguage.English);
 
                     MessageBox.Show(text, "Localization Text", MessageBoxButtons.OK, MessageBoxIcon.Information);

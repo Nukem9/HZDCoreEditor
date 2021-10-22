@@ -111,7 +111,7 @@ namespace HZDCoreTools
                 var coreBinary = CoreBinary.FromData(new BinaryReader(file.Stream));
 
                 // Dump all instances of LocalizedTextResource
-                foreach (var textResource in coreBinary.OfType<Decima.HZD.LocalizedTextResource>())
+                foreach (var textResource in coreBinary.Objects.OfType<Decima.HZD.LocalizedTextResource>())
                 {
                     var delim = options.Delimiter;
                     var data = textResource.GetStringForLanguage(options.Language);
@@ -170,7 +170,7 @@ namespace HZDCoreTools
 
                 foreach (var translation in translationData[file.corePath])
                 {
-                    var textResource = coreBinary
+                    var textResource = coreBinary.Objects
                         .OfType<Decima.HZD.LocalizedTextResource>()
                         .Single(x => x.ObjectUUID == translation.ObjectUUID);
 

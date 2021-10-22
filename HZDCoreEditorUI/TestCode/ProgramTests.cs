@@ -316,7 +316,7 @@ namespace HZDCoreEditorUI
         static void ExtractReferences()
         {
             var prefetchCore = CoreBinary.FromFile(@"C:\Program Files (x86)\Steam\steamapps\common\Horizon Zero Dawn\Packed_DX12\extracted\prefetch\fullgame.prefetch.core");
-            var prefetchList = prefetchCore.First(x => x is Decima.HZD.PrefetchList) as Decima.HZD.PrefetchList;
+            var prefetchList = prefetchCore.Objects.First(x => x is Decima.HZD.PrefetchList) as Decima.HZD.PrefetchList;
 
             var files = prefetchList.Files;
             var fileRefMap = new HashSet<int>[files.Count];
@@ -371,7 +371,7 @@ namespace HZDCoreEditorUI
 
                 var core = CoreBinary.FromFile(file);
 
-                foreach (var obj in core)
+                foreach (var obj in core.Objects)
                 {
                     if (obj is Decima.HZD.LocalizedTextResource asResource)
                     {
@@ -404,7 +404,7 @@ namespace HZDCoreEditorUI
                 {
                     var core = CoreBinary.FromFile(file);
 
-                    foreach (var obj in core)
+                    foreach (var obj in core.Objects)
                     {
                         var wave = obj as Decima.HZD.WaveResource;
 
