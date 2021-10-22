@@ -67,6 +67,8 @@ namespace HZDCoreEditorTests
 
             Assert.IsTrue(Packfile.GetHashForPath(Packfile.SanitizePath("prefetch/fullgame.prefetch")) == 0x2FFF5AF65CD64C0A);
             Assert.IsTrue(archive.ContainsFile(0x2FFF5AF65CD64C0A));
+
+            Assert.ThrowsException<FileNotFoundException>(() => archive.ExtractFile(0xDEADC0DEDEADBEEF, new MemoryStream()));
         }
 
         [TestCategory("GameBasic")]

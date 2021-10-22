@@ -11,6 +11,10 @@ namespace Decima
     {
         private readonly string _archivePath;
 
+        /// <summary>
+        /// Open an archive (.bin) file and prepare for reading
+        /// </summary>
+        /// <param name="archivePath">Disk path</param>
         public PackfileReader(string archivePath)
         {
             _archivePath = archivePath;
@@ -38,22 +42,44 @@ namespace Decima
             }
         }
 
+        /// <summary>
+        /// Extract a file contained in the archive.
+        /// </summary>
+        /// <param name="corePath">Source Decima core path</param>
+        /// <param name="destinationPath">Destination disk path</param>
+        /// <param name="mode">File overwrite mode</param>
         public void ExtractFile(string corePath, string destinationPath, FileMode mode = FileMode.CreateNew)
         {
             ExtractFile(GetHashForPath(corePath), destinationPath, mode);
         }
 
+        /// <summary>
+        /// Extract a file contained in the archive.
+        /// </summary>
+        /// <param name="pathId">Source hashed Decima core path</param>
+        /// <param name="destinationPath">Destination disk path</param>
+        /// <param name="mode">File overwrite mode</param>
         public void ExtractFile(ulong pathId, string destinationPath, FileMode mode = FileMode.CreateNew)
         {
             using var fs = File.Open(destinationPath, mode, FileAccess.Write);
             ExtractFile(pathId, fs);
         }
 
+        /// <summary>
+        /// Extract a file contained in the archive.
+        /// </summary>
+        /// <param name="corePath">Source Decima core path</param>
+        /// <param name="stream">Destination stream</param>
         public void ExtractFile(string corePath, Stream stream)
         {
             ExtractFile(GetHashForPath(corePath), stream);
         }
 
+        /// <summary>
+        /// Extract a file contained in the archive.
+        /// </summary>
+        /// <param name="pathId">Source hashed Decima core path</param>
+        /// <param name="stream">Destination stream</param>
         public void ExtractFile(ulong pathId, Stream stream)
         {
             using var handle = File.OpenRead(_archivePath);
@@ -61,6 +87,9 @@ namespace Decima
             // Hashed path -> file entry -> block entries
             int fileIndex = GetFileEntryIndex(pathId);
             var fileEntry = _fileEntries[fileIndex];
+
+            if (fileIndex == InvalidEntryIndex)
+                throw new FileNotFoundException($"Unable to extract file with path ID {pathId}");
 
             int firstBlock = GetBlockEntryIndex(fileEntry.DecompressedOffset);
             int lastBlock = GetBlockEntryIndex(fileEntry.DecompressedOffset + fileEntry.DecompressedSize - 1);
@@ -85,8 +114,8 @@ namespace Decima
                 if (Header.IsEncrypted)
                     block.XorDataBuffer(compressedData);
 
-                // if the buffer is bigger then the decompressed size OodleLZ v3 doesn't decompress data correctly every time
-                // however if the buffer is the correct size it will decompress correctly but report that it failed
+                // If the buffer is bigger then the decompressed size, OodleLZ v3 doesn't decompress data correctly every time.
+                // However, if the buffer is the correct size it will decompress correctly but report that it failed.
                 OodleLZ.Decompress(compressedData, decompressedData, block.DecompressedSize);
 
                 // Copy data from the adjusted offset within the decompressed buffer. If the file requires another block,
