@@ -1,6 +1,4 @@
-﻿#pragma warning disable CS8509 // The switch expression does not handle all possible values of its input type (it is not exhaustive).
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -8,7 +6,7 @@ namespace Decima
 {
     public static partial class RTTI
     {
-        public class RttiField
+        public sealed class RttiField
         {
             public readonly MemberInfo @MemberInfo;
 
@@ -16,6 +14,7 @@ namespace Decima
             {
                 MemberTypes.Property => ((PropertyInfo)MemberInfo).PropertyType,
                 MemberTypes.Field => ((FieldInfo)MemberInfo).FieldType,
+                _ => throw new NotImplementedException(),
             };
 
             public string Name => MemberInfo.Name;
@@ -51,6 +50,7 @@ namespace Decima
                 {
                     MemberTypes.Property => ((PropertyInfo)MemberInfo).GetValue(obj),
                     MemberTypes.Field => ((FieldInfo)MemberInfo).GetValue(obj),
+                    _ => throw new NotImplementedException(),
                 };
             }
 
@@ -65,6 +65,7 @@ namespace Decima
                 {
                     MemberTypes.Property => ((PropertyInfo)MemberInfo).GetCustomAttribute<T>(),
                     MemberTypes.Field => ((FieldInfo)MemberInfo).GetCustomAttribute<T>(),
+                    _ => throw new NotImplementedException(),
                 };
             }
 
