@@ -10,6 +10,9 @@ using System.Threading;
 
 namespace Decima
 {
+    /// <summary>
+    /// Basic class instance for handling game archives (.bin files).
+    /// </summary>
     public abstract class Packfile
     {
         public const string CoreExt = ".core";
@@ -343,7 +346,7 @@ namespace Decima
         }
 
         /// <summary>
-        /// Constructor.
+        /// Empty constructor.
         /// </summary>
         protected Packfile()
         {
@@ -397,11 +400,19 @@ namespace Decima
             return hash[0];
         }
 
+        /// <summary>
+        /// Return the specific index for a <see cref="FileEntry"/> instance in <see cref="_fileEntries"/>.
+        /// </summary>
+        /// <returns>The index or <see cref="InvalidEntryIndex"/> if it was not found.</returns>
         protected int GetFileEntryIndex(string corePath)
         {
             return GetFileEntryIndex(GetHashForPath(corePath));
         }
 
+        /// <summary>
+        /// Return the specific index for a <see cref="FileEntry"/> instance in <see cref="_fileEntries"/>.
+        /// </summary>
+        /// <returns>The index or <see cref="InvalidEntryIndex"/> if it was not found.</returns>
         protected int GetFileEntryIndex(ulong pathId)
         {
             int l = 0;
@@ -423,6 +434,10 @@ namespace Decima
             return InvalidEntryIndex;
         }
 
+        /// <summary>
+        /// Return the specific index for a <see cref="BlockEntry"/> instance in <see cref="_blockEntries"/>.
+        /// </summary>
+        /// <returns>The index or <see cref="InvalidEntryIndex"/> if it was not found.</returns>
         protected int GetBlockEntryIndex(ulong offset)
         {
             int l = 0;
@@ -445,6 +460,10 @@ namespace Decima
             return InvalidEntryIndex;
         }
 
+        /// <summary>
+        /// Return the size of all headers as if they were being written to disk.
+        /// </summary>
+        /// <returns>Size in bytes</returns>
         protected int CalculateArchiveHeaderLength(int fileEntryCount, int blockEntryCount)
         {
             return PackfileHeader.DataHeaderSize +

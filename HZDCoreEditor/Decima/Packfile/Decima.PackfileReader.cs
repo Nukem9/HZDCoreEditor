@@ -7,6 +7,9 @@ using System.Text;
 
 namespace Decima
 {
+    /// <summary>
+    /// Game archive reader.
+    /// </summary>
     public class PackfileReader : Packfile
     {
         private readonly string _archivePath;

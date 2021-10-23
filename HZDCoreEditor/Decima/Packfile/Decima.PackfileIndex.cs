@@ -55,6 +55,10 @@ namespace Decima
             }
         }
 
+        /// <summary>
+        /// Deserialize a PackfileIndex entry from a BinaryReader.
+        /// </summary>
+        /// <param name="reader">Source stream</param>
         public static PackfileIndex FromData(BinaryReader reader)
         {
             var index = new PackfileIndex();
@@ -71,22 +75,25 @@ namespace Decima
             return index;
         }
 
+        /// <summary>
+        /// Deserialize a PackfileIndex entry from a file on disk.
+        /// </summary>
+        /// <param name="filePath">Disk path</param>
         public static PackfileIndex FromFile(string filePath)
         {
             using var reader = new BinaryReader(File.OpenRead(filePath));
             return FromData(reader);
         }
 
-        public bool ResolvePathByHash(ulong hash, out string path)
+        /// <summary>
+        /// Convert a path ID to its source string if the mapping is available.
+        /// </summary>
+        /// <param name="pathId">Hashed Decima core path</param>
+        /// <param name="corePath">Decima core path</param>
+        /// <returns>True if the output path is valid.</returns>
+        public bool ResolvePathByHash(ulong pathId, out string corePath)
         {
-            /*
-            if (Entries.TryGetValue(hash, out IndexEntry entry))
-            {
-                path = entry.FilePath;
-                return true;
-            }*/
-
-            path = null;
+            corePath = null;
             return false;
         }
     }

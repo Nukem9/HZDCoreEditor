@@ -6,6 +6,9 @@ using System.Text;
 
 namespace Decima
 {
+    /// <summary>
+    /// Game archive writer.
+    /// </summary>
     public class PackfileWriter : Packfile
     {
         private const uint WriterBlockSizeThreshold = 256 * 1024;
@@ -14,6 +17,12 @@ namespace Decima
         private readonly FileMode _fileMode;
         private ulong _writerDecompressedBlockOffset;
 
+        /// <summary>
+        /// Open an archive (.bin) file and prepare for writing.
+        /// </summary>
+        /// <param name="archivePath">Disk path</param>
+        /// <param name="encrypted">Encrypt file data</param>
+        /// <param name="mode">File creation mode</param>
         public PackfileWriter(string archivePath, bool encrypted = false, FileMode mode = FileMode.CreateNew)
         {
             _archivePath = archivePath;
@@ -26,6 +35,12 @@ namespace Decima
             Header.IsEncrypted = encrypted;
         }
 
+        /// <summary>
+        /// Generate an archive from a set of file paths on disk.
+        /// </summary>
+        /// <param name="physicalPathRoot">Base directory to look for files</param>
+        /// <param name="sourceFiles">List of files in Decima core path format. <see cref="physicalPathRoot"/>
+        /// is prepended to each element.</param>
         public void BuildFromFileList(string physicalPathRoot, string[] sourceFiles)
         {
             _writerDecompressedBlockOffset = 0;

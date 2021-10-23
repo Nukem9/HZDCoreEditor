@@ -5,6 +5,9 @@ using System.Linq;
 
 namespace Decima
 {
+    /// <summary>
+    /// Utility for accessing data from and mounting game archives.
+    /// </summary>
     public class PackfileDevice : IDisposable
     {
         public const string AppDirMountPrefix = "appdir:";
@@ -211,8 +214,14 @@ namespace Decima
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Dispose interface.
+        /// </summary>
         public void Dispose() => Dispose(true);
 
+        /// <summary>
+        /// Dispose interface.
+        /// </summary>
         protected virtual void Dispose(bool disposing)
         {
             //foreach (var entry in _mountedArchives)
@@ -221,6 +230,9 @@ namespace Decima
             _mountedArchives.Clear();
         }
 
+        /// <summary>
+        /// Rebuild the mapping table for pathIds to archive handles.
+        /// </summary>
         private void RebuildCorePathLookupTable()
         {
             _corePathToArchiveIndex.Clear();

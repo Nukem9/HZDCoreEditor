@@ -9,7 +9,8 @@ using System.Text;
 namespace Decima
 {
     /// <summary>
-    /// Packfile has to fit in memory, does not support compressing large packs
+    /// Game archive writer. This is designed to quickly write a small number of files in a multithreaded fashion. The
+    /// packfile and its contents have to fit in available RAM. Does not support compressing large packs.
     /// </summary>
     public class PackfileWriterFast : Packfile
     {
@@ -27,6 +28,12 @@ namespace Decima
             public uint Size;
         }
 
+        /// <summary>
+        /// Open an archive (.bin) file and prepare for writing.
+        /// </summary>
+        /// <param name="archivePath">Disk path</param>
+        /// <param name="encrypted">Encrypt file data</param>
+        /// <param name="mode">File creation mode</param>
         public PackfileWriterFast(string archivePath, bool encrypted = false, FileMode mode = FileMode.CreateNew)
         {
             _archivePath = archivePath;
@@ -39,6 +46,12 @@ namespace Decima
             Header.IsEncrypted = encrypted;
         }
 
+        /// <summary>
+        /// Generate an archive from a set of file paths on disk.
+        /// </summary>
+        /// <param name="physicalPathRoot">Base directory to look for files</param>
+        /// <param name="sourceFiles">List of files in Decima core path format. <see cref="physicalPathRoot"/>
+        /// is prepended to each element.</param>
         public void BuildFromFileList(string physicalPathRoot, string[] sourceFiles)
         {
             var compressedBlocks = new ConcurrentBag<CompressBlock>();
