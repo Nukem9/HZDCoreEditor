@@ -9,9 +9,8 @@ namespace Decima.HZD
         {
         }
 
-        public GGUUID(BaseGGUUID value)
+        public GGUUID(BaseGGUUID value) : base(value)
         {
-            AssignFromOther(value);
         }
 
         public static implicit operator GGUUID(string value)
