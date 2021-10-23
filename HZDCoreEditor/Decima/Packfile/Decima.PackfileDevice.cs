@@ -10,10 +10,13 @@ namespace Decima
     /// </summary>
     public class PackfileDevice : IDisposable
     {
-        public const string AppDirMountPrefix = "appdir:";
-        public const string CacheMountPrefix = "cache:";
-        public const string SourceMountPrefix = "source:";
-        public const string WorkMountPrefix = "work:";
+        public static readonly string[] ValidMountPrefixes = new string[]
+        {
+            "appdir:",
+            "cache:",
+            "source:",
+            "work:",
+        };
 
         public IEnumerable<string> ActiveArchives => _mountedArchives.Select(x => x.ArchiveName);
         public IReadOnlyCollection<ulong> ActiveFiles => _corePathToArchiveIndex.Keys;

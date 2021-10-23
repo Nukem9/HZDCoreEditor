@@ -121,7 +121,7 @@ namespace HZDCoreEditorTests
             var packedArchivePath = Path.Combine(tempPath, $"{nameof(TestPackAndUnpackTrivial)}_packed_archive.bin");
 
             var writeArchive = new PackfileWriter(packedArchivePath, false, FileMode.Create);
-            writeArchive.BuildFromFileList(tempPath, tempFiles.Select(x => x.Item3).ToArray());
+            writeArchive.BuildFromFileList(tempPath, tempFiles.Select(x => x.CoreName));
 
             // Open it back up and validate its contents
             var readArchive = new PackfileReader(packedArchivePath);

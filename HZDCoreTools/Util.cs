@@ -8,14 +8,6 @@ namespace HZDCoreTools
 {
     public static class Util
     {
-        private static readonly string[] _prefixesToRemove = new string[]
-        {
-            PackfileDevice.AppDirMountPrefix,
-            PackfileDevice.CacheMountPrefix,
-            PackfileDevice.SourceMountPrefix,
-            PackfileDevice.WorkMountPrefix,
-        };
-
         public static IEnumerable<(string Absolute, string Relative)> GatherFiles(string inputPath, string[] acceptedExtensions, out string extension)
         {
             // If no directory is supplied, use the current working dir
@@ -36,7 +28,7 @@ namespace HZDCoreTools
 
         public static string RemoveMountPrefixes(string path)
         {
-            foreach (string p in _prefixesToRemove.Where(x => path.StartsWith(x, StringComparison.InvariantCultureIgnoreCase)))
+            foreach (string p in PackfileDevice.ValidMountPrefixes.Where(x => path.StartsWith(x, StringComparison.InvariantCultureIgnoreCase)))
                 return path.Substring(p.Length);
 
             return path;

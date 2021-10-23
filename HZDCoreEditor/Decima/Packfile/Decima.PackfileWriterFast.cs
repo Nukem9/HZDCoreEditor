@@ -49,10 +49,10 @@ namespace Decima
         /// <summary>
         /// Generate an archive from a set of file paths on disk.
         /// </summary>
-        /// <param name="physicalPathRoot">Base directory to look for files</param>
-        /// <param name="sourceFiles">List of files in Decima core path format. <see cref="physicalPathRoot"/>
+        /// <param name="baseDirectoryRoot">Base directory to look for files</param>
+        /// <param name="sourceCorePaths">List of files in Decima core path format. <see cref="baseDirectoryRoot"/>
         /// is prepended to each element.</param>
-        public void BuildFromFileList(string physicalPathRoot, string[] sourceFiles)
+        public void BuildFromFileList(string baseDirectoryRoot, IEnumerable<string> sourceCorePaths)
         {
             var compressedBlocks = new ConcurrentBag<CompressBlock>();
 
@@ -78,21 +78,21 @@ namespace Decima
 
             tasks.Start();
 
-            AddFiles(physicalPathRoot, sourceFiles, tasks);
+            AddFiles(baseDirectoryRoot, sourceCorePaths, tasks);
 
             tasks.WaitForComplete();
 
             using var fs = File.Open(_archivePath, _fileMode, FileAccess.ReadWrite, FileShare.None);
             using var archiveWriter = new BinaryWriter(fs, Encoding.UTF8, true);
 
-            archiveWriter.BaseStream.Position = CalculateArchiveHeaderLength(sourceFiles.Length, compressedBlocks.Count);
+            archiveWriter.BaseStream.Position = CalculateArchiveHeaderLength(sourceCorePaths.Count(), compressedBlocks.Count);
             WriteBlockEntries(archiveWriter, compressedBlocks);
 
             archiveWriter.BaseStream.Position = 0;
             WriteArchiveHeaders(archiveWriter);
         }
 
-        private void AddFiles(string physicalPathRoot, string[] sourceFiles, ParallelTasks<CompressBlock> tasks)
+        private void AddFiles(string baseDirectoryRoot, IEnumerable<string> sourceCorePaths, ParallelTasks<CompressBlock> tasks)
         {
             // Write file data sequentially
             ulong decompressedFileOffset = 0;
@@ -100,13 +100,13 @@ namespace Decima
             var readBufferPos = 0;
             ulong blockOffset = 0;
 
-            foreach (string filePath in sourceFiles)
+            foreach (string corePath in sourceCorePaths)
             {
-                using var fs = File.OpenRead(Path.Combine(physicalPathRoot, filePath));
+                using var fs = File.OpenRead(Path.Combine(baseDirectoryRoot, corePath));
 
                 var fileEntry = new FileEntry()
                 {
-                    PathHash = GetHashForPath(filePath),
+                    PathHash = GetHashForPath(corePath),
                     DecompressedOffset = decompressedFileOffset,
                     DecompressedSize = (uint)fs.Length,
                 };

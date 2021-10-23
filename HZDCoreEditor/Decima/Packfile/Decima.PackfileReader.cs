@@ -89,11 +89,11 @@ namespace Decima
 
             // Hashed path -> file entry -> block entries
             int fileIndex = GetFileEntryIndex(pathId);
-            var fileEntry = _fileEntries[fileIndex];
 
             if (fileIndex == InvalidEntryIndex)
                 throw new FileNotFoundException($"Unable to extract file with path ID {pathId}");
 
+            var fileEntry = _fileEntries[fileIndex];
             int firstBlock = GetBlockEntryIndex(fileEntry.DecompressedOffset);
             int lastBlock = GetBlockEntryIndex(fileEntry.DecompressedOffset + fileEntry.DecompressedSize - 1);
 
