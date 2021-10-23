@@ -12,11 +12,11 @@ namespace Decima
         {
             public sealed class Entry
             {
-                public readonly FieldInfo MIBase;
-                public readonly FieldInfo Field;
+                public readonly RttiField MIBase;
+                public readonly RttiField Field;
                 public readonly bool SaveStateOnly;
 
-                public Entry(FieldInfo miBase, FieldInfo field, bool saveStateOnly)
+                public Entry(RttiField miBase, RttiField field, bool saveStateOnly)
                 {
                     MIBase = miBase;
                     Field = field;
@@ -35,10 +35,10 @@ namespace Decima
                 }
             }
 
-            public readonly FieldInfo[] MIBases;
+            public readonly RttiField[] MIBases;
             public readonly Entry[] Members;
 
-            public OrderedFieldInfo(FieldInfo[] bases, Entry[] members)
+            public OrderedFieldInfo(RttiField[] bases, Entry[] members)
             {
                 MIBases = bases;
                 Members = members;

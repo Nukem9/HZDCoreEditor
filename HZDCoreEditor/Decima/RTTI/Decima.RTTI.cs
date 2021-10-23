@@ -108,12 +108,12 @@ namespace Decima
             return getGenericTypeString(type);
         }
 
-        public static string GetFieldCategory(FieldInfo field)
+        public static string GetFieldCategory(RttiField field)
         {
             return field.GetCustomAttribute<MemberAttribute>()?.Category;
         }
 
-        public static string GetFieldName(FieldInfo field)
+        public static string GetFieldName(RttiField field)
         {
             string name = field.Name;
             var memberAttr = field.GetCustomAttribute<MemberAttribute>();
@@ -146,7 +146,7 @@ namespace Decima
             {
                 // Instantiate bases
                 foreach (var baseClass in info.MIBases)
-                    baseClass.SetValue(objectInstance, Activator.CreateInstance(baseClass.FieldType));
+                    baseClass.SetValue(objectInstance, Activator.CreateInstance(baseClass.Type));
             }
 
             return objectInstance;
@@ -219,7 +219,7 @@ namespace Decima
                     if (member.SaveStateOnly)
                         continue;
 
-                    member.SetValue(objectInstance, DeserializeType(reader, member.Field.FieldType));
+                    member.SetValue(objectInstance, DeserializeType(reader, member.Field.Type));
                 }
             }
 
@@ -321,16 +321,16 @@ namespace Decima
             // Test: AIDynamicObstacleRectangleResource members are out of order and overlap the base (AIDynamicObstacleResource)
             // Test: CubemapZone emulated MI (Shape2DExtrusion)
             //
-            var allFields = new List<(MemberAttribute Attr, uint Offset, uint ClassOrder, FieldInfo MIBase, FieldInfo Field)>();
+            var allFields = new List<(MemberAttribute Attr, uint Offset, uint ClassOrder, RttiField MIBase, RttiField Field)>();
             uint classIndex = 0;
 
-            void addFieldsRecursively(Type classType, FieldInfo miBase = null, uint offset = 0)
+            void addFieldsRecursively(Type classType, RttiField miBase = null, uint offset = 0)
             {
                 // Drill down until System.Object is hit
                 for (; classType != null; classType = classType.BaseType)
                 {
                     classIndex++;
-                    var fields = classType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
+                    var fields = RttiField.GetMembers(classType, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
 
                     foreach (var field in fields)
                     {
@@ -338,7 +338,7 @@ namespace Decima
                         var reflectionAttr = field.GetCustomAttribute<MemberAttribute>();
 
                         if (baseClassAttr != null)
-                            addFieldsRecursively(field.FieldType, field, offset + baseClassAttr.RuntimeOffset);
+                            addFieldsRecursively(field.Type, field, offset + baseClassAttr.RuntimeOffset);
                         else if (reflectionAttr != null)
                             allFields.Add((reflectionAttr, offset + reflectionAttr.RuntimeOffset, classIndex, miBase, field));
                     }
@@ -354,8 +354,8 @@ namespace Decima
                 .ToArray();
 
             PCore.Quicksort(sortedHierarchy, (
-                (MemberAttribute, uint Offset, uint, FieldInfo, FieldInfo) a,
-                (MemberAttribute, uint Offset, uint, FieldInfo, FieldInfo) b) =>
+                (MemberAttribute, uint Offset, uint, RttiField, RttiField) a,
+                (MemberAttribute, uint Offset, uint, RttiField, RttiField) b) =>
             {
                 return a.Offset < b.Offset;
             });

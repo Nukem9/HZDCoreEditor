@@ -56,7 +56,7 @@ namespace Decima
                 }
             }
 
-            private static bool MatchField(FieldInfo field, string type, string category, string name)
+            private static bool MatchField(RttiField field, string type, string category, string name)
             {
                 if (GetFieldCategory(field) != category)
                     return false;
@@ -64,7 +64,7 @@ namespace Decima
                 if (GetFieldName(field) != name)
                     return false;
 
-                string ftn = GetTypeNameString(field.FieldType);
+                string ftn = GetTypeNameString(field.Type);
 
                 // TODO: Custom int32 type - C# doesn't support typedefs. I can pretend this isn't a problem until I need
                 // to write fields.

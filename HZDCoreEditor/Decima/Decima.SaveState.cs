@@ -341,7 +341,7 @@ namespace Decima
                 // Check if this field needs to be applied to an emulated base class
                 var baseClass = member.MIBase != null ? member.MIBase.GetValue(objectInstance) : objectInstance;
 
-                member.Field.SetValue(baseClass, DeserializeType(member.Field.FieldType));
+                member.Field.SetValue(baseClass, DeserializeType(member.Field.Type));
             }
         }
 
