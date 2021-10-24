@@ -66,7 +66,7 @@ namespace HZDCoreEditorTests
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "Intentional for debug")]
         public void DecodeCoreFilesTestAll()
         {
-            var files = Directory.GetFiles(GameDataPathExtracted, "*.core", SearchOption.AllDirectories);
+            var files = Directory.EnumerateFiles(GameDataPathExtracted, "*.core", SearchOption.AllDirectories);
 
             foreach (string file in files)
             {
@@ -93,7 +93,8 @@ namespace HZDCoreEditorTests
 
                 for (int i = 0; i < d1.Length; i++)
                 {
-                    Assert.IsTrue(d1[i] == d2[i], $"File data doesn't match at offset {i:X} in {file}");
+                    if (d1[i] != d2[i])
+                        Assert.Fail($"File data doesn't match at offset {i:X} in {file}");
                 }
 
                 File.Delete(tempPath);
@@ -120,7 +121,8 @@ namespace HZDCoreEditorTests
 
                 for (int i = 0; i < d1.Length; i++)
                 {
-                    Assert.IsTrue(d1[i] == d2[i], $"File data doesn't match at offset {i:X} in {file}");
+                    if (d1[i] != d2[i])
+                        Assert.Fail($"File data doesn't match at offset {i:X} in {file}");
                 }
 
                 File.Delete(tempPath);
