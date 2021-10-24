@@ -17,10 +17,18 @@ namespace HZDCoreTools
             if (string.IsNullOrEmpty(basePath))
                 basePath = @".\";
 
-            extension = acceptedExtensions.SingleOrDefault(x => filePart.EndsWith(x));
+            if (acceptedExtensions != null)
+            {
+                extension = acceptedExtensions.SingleOrDefault(x => filePart.EndsWith(x));
 
-            if (extension == null)
-                throw new ArgumentException($"Invalid path supplied. Supported file extension(s): {string.Join(',', acceptedExtensions)}", nameof(inputPath));
+                if (extension == null)
+                    throw new ArgumentException($"Invalid path supplied. Supported file extension(s): {string.Join(',', acceptedExtensions)}", nameof(inputPath));
+            }
+            else
+            {
+                // Accept anything
+                extension = Path.GetExtension(filePart);
+            }
 
             return Directory.EnumerateFiles(basePath, filePart, SearchOption.AllDirectories)
                 .Select(x => (x, x.Substring(basePath.Length)));

@@ -212,9 +212,10 @@ namespace Decima
         /// <summary>
         /// Convert a path ID to its source string if the mapping is available.
         /// </summary>
-        public string PathIdToFileName(ulong pathId)
+        public bool PathIdToFileName(ulong pathId, out string corePath)
         {
-            throw new NotImplementedException();
+            corePath = null;
+            return false;
         }
 
         /// <summary>
