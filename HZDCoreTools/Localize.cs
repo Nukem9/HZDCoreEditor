@@ -84,7 +84,8 @@ namespace HZDCoreTools
 
                 foreach (ulong pathId in device.ActiveFiles)
                 {
-                    var corePath = device.PathIdToFileName(pathId);
+                    if (!device.PathIdToFileName(pathId, out string corePath))
+                        throw new Exception("Couldn't resolve a pathId to a file name. File enumeration isn't possible.");
 
                     if (!filter(corePath))
                         continue;
@@ -200,7 +201,7 @@ namespace HZDCoreTools
                 Console.WriteLine("Creating archive...");
 
                 // Build archive
-                //var packfile = new PackfileWriterFast(options.ArchivePath, false, true);
+                //var packfile = new PackfileWriterFast(options.OutputPath, false, FileMode.Create);
                 throw new NotImplementedException();
             }
             else

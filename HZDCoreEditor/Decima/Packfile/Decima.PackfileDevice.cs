@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -23,6 +24,7 @@ namespace Decima
 
         private List<MountEntry> _mountedArchives = new List<MountEntry>();
         private Dictionary<ulong, int> _corePathToArchiveIndex = new Dictionary<ulong, int>();
+        private static ConcurrentDictionary<ulong, string> _hashedCorePathToString = new ConcurrentDictionary<ulong, string>();
 
         private class MountEntry
         {
@@ -56,6 +58,7 @@ namespace Decima
 
             // Sort by name. Patch files must be last as they overwrite everything.
             int entryIndex = 0;
+
             for (; entryIndex < _mountedArchives.Count; entryIndex++)
             {
                 var entry = _mountedArchives[entryIndex];
@@ -82,6 +85,9 @@ namespace Decima
                 ArchiveName = filePart,
                 Archive = new PackfileReader(physPath),
             });
+
+            // Load the index file if it's present next to the bin
+            TryLoadIndexFileNames(Path.ChangeExtension(physPath, ".idx"));
 
             RebuildCorePathLookupTable();
             return true;
@@ -214,6 +220,9 @@ namespace Decima
         /// </summary>
         public bool PathIdToFileName(ulong pathId, out string corePath)
         {
+            if (_hashedCorePathToString.TryGetValue(pathId, out corePath))
+                return true;
+
             corePath = null;
             return false;
         }
@@ -248,6 +257,22 @@ namespace Decima
                 foreach (var fileEntry in _mountedArchives[i].Archive.FileEntries)
                     _corePathToArchiveIndex.TryAdd(fileEntry.PathHash, i);
             }
+        }
+
+        /// <summary>
+        /// Try to gather core file path strings from an archive index file.
+        /// </summary>
+        /// <param name="indexFilePath">Disk path to an .idx file</param>
+        private void TryLoadIndexFileNames(string indexFilePath)
+        {
+            if (File.Exists(indexFilePath))
+                return;
+
+            var index = PackfileIndex.FromFile(indexFilePath);
+
+            // TryAdd will skip over duplicate paths
+            foreach (var entry in index.Entries)
+                _hashedCorePathToString.TryAdd(Packfile.GetHashForPath(entry.FilePath), entry.FilePath);
         }
     }
 }

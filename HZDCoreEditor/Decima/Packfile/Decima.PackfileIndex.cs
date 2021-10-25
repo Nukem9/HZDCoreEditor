@@ -16,7 +16,7 @@ namespace Decima
 
         public IReadOnlyList<IndexEntry> Entries => _entries.AsReadOnly();
 
-        private List<IndexEntry> _entries = new List<IndexEntry>();
+        private List<IndexEntry> _entries;
 
         /// <remarks>
         /// File data format:
@@ -34,18 +34,33 @@ namespace Decima
 
             public void ToData(BinaryWriter writer)
             {
-                throw new NotImplementedException();
+                var data = Encoding.UTF8.GetBytes(FilePath);
+                writer.Write((uint)data.Length);
+
+                if (data.Length > 0)
+                    writer.Write(data);
+
+                writer.Write(FileDataHash);
+                writer.Write(DecompressedOffset);
+                writer.Write(DecompressedSize);
             }
 
             public static IndexEntry FromData(BinaryReader reader)
             {
                 var entry = new IndexEntry();
 
-                // Strings are prefixed with their mount type ("cache:", "appdir:", ...)
+                // Strings are prefixed with their mount type ("cache:", "appdir:", ...). We don't care about those. Trim them.
                 uint filePathLen = reader.ReadUInt32();
 
                 if (filePathLen > 0)
                     entry.FilePath = Encoding.UTF8.GetString(reader.ReadBytesStrict(filePathLen));
+                else
+                    throw new Exception("Unexpected condition: Packfile index entry supplied without a file name");
+
+                int delimiter = entry.FilePath.IndexOf(':');
+
+                if (delimiter != -1)
+                    entry.FilePath = entry.FilePath.Substring(delimiter + 1);
 
                 entry.FileDataHash = reader.ReadBytesStrict(16);
                 entry.DecompressedOffset = reader.ReadUInt64();
@@ -69,6 +84,8 @@ namespace Decima
             if (magic != HardcodedMagic)
                 throw new InvalidDataException("Unknown header magic");
 
+            index._entries = new List<IndexEntry>((int)entryCount);
+
             for (uint i = 0; i < entryCount; i++)
                 index._entries.Add(IndexEntry.FromData(reader));
 
@@ -83,18 +100,6 @@ namespace Decima
         {
             using var reader = new BinaryReader(File.OpenRead(filePath));
             return FromData(reader);
-        }
-
-        /// <summary>
-        /// Convert a path ID to its source string if the mapping is available.
-        /// </summary>
-        /// <param name="pathId">Hashed Decima core path</param>
-        /// <param name="corePath">Decima core path</param>
-        /// <returns>True if the output path is valid.</returns>
-        public bool ResolvePathByHash(ulong pathId, out string corePath)
-        {
-            corePath = null;
-            return false;
         }
     }
 }
