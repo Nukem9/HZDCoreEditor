@@ -237,10 +237,13 @@ namespace Decima
         /// </summary>
         protected virtual void Dispose(bool disposing)
         {
-            //foreach (var entry in _mountedArchives)
-            //    entry.Archive.Dispose();
+            if (disposing)
+            {
+                foreach (var entry in _mountedArchives)
+                    entry.Archive.Dispose();
 
-            _mountedArchives.Clear();
+                _mountedArchives.Clear();
+            }
         }
 
         /// <summary>

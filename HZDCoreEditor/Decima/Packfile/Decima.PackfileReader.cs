@@ -10,9 +10,12 @@ namespace Decima
     /// <summary>
     /// Game archive reader.
     /// </summary>
-    public class PackfileReader : Packfile
+    /// <remarks>
+    /// All operations are thread safe.
+    /// </remarks>
+    public class PackfileReader : Packfile, IDisposable
     {
-        private readonly string _archivePath;
+        private readonly FileStream _fileHandle;
 
         /// <summary>
         /// Open an archive (.bin) file and prepare for reading
@@ -20,10 +23,8 @@ namespace Decima
         /// <param name="archivePath">Disk path</param>
         public PackfileReader(string archivePath)
         {
-            _archivePath = archivePath;
-
-            using var handle = File.OpenRead(_archivePath);
-            using var reader = new BinaryReader(handle, Encoding.UTF8, true);
+            _fileHandle = CreateReadStream(archivePath);
+            using var reader = new BinaryReader(_fileHandle, Encoding.UTF8, true);
 
             Header = PackfileHeader.FromData(reader);
             _fileEntries = new List<FileEntry>((int)Header.FileEntryCount);
@@ -85,7 +86,7 @@ namespace Decima
         /// <param name="stream">Destination stream</param>
         public void ExtractFile(ulong pathId, Stream stream)
         {
-            using var handle = File.OpenRead(_archivePath);
+            using var archiveHandle = CreateReadStream(_fileHandle.Name);
 
             // Hashed path -> file entry -> block entries
             int fileIndex = GetFileEntryIndex(pathId);
@@ -109,9 +110,9 @@ namespace Decima
                 var decompressedData = ArrayPool<byte>.Shared.Rent((int)block.DecompressedSize);
 
                 // Read from the bin, decrypt, and decompress
-                handle.Position = (long)block.Offset;
+                archiveHandle.Position = (long)block.Offset;
 
-                if (handle.Read(compressedData, 0, (int)block.Size) != block.Size)
+                if (archiveHandle.Read(compressedData, 0, (int)block.Size) != block.Size)
                     throw new EndOfStreamException("Short read of archive data");
 
                 if (Header.IsEncrypted)
@@ -145,8 +146,6 @@ namespace Decima
         /// </summary>
         public void Validate()
         {
-            using var handle = File.OpenRead(_archivePath);
-
             ulong previousOffset = 0;
             ulong previousPathHash = 0;
 
@@ -156,7 +155,7 @@ namespace Decima
                 if (entry.DecompressedOffset < previousOffset)
                     throw new InvalidDataException("Archive block entry array isn't sorted properly.");
 
-                if ((entry.Offset + entry.Size) > (ulong)handle.Length)
+                if ((entry.Offset + entry.Size) > (ulong)_fileHandle.Length)
                     throw new InvalidDataException("Archive data truncated. A block entry header exceeds the file size.");
 
                 previousOffset = entry.DecompressedOffset;
@@ -175,6 +174,28 @@ namespace Decima
 
                 previousPathHash = entry.PathHash;
             }
+        }
+
+        /// <summary>
+        /// Dispose interface.
+        /// </summary>
+        public void Dispose() => Dispose(true);
+
+        /// <summary>
+        /// Dispose interface.
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+                _fileHandle.Dispose();
+        }
+
+        /// <summary>
+        /// Create a read-only file stream that allows sharing.
+        /// </summary>
+        private FileStream CreateReadStream(string diskPath)
+        {
+            return new FileStream(diskPath, FileMode.Open, FileAccess.Read, FileShare.Read);
         }
     }
 }

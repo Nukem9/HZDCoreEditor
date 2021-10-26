@@ -9,12 +9,11 @@ namespace Decima
     /// <summary>
     /// Game archive writer.
     /// </summary>
-    public class PackfileWriter : Packfile
+    public class PackfileWriter : Packfile, IDisposable
     {
         private const uint WriterBlockSizeThreshold = 256 * 1024;
 
-        private readonly string _archivePath;
-        private readonly FileMode _fileMode;
+        private readonly FileStream _fileHandle;
         private ulong _writerDecompressedBlockOffset;
 
         /// <summary>
@@ -25,8 +24,7 @@ namespace Decima
         /// <param name="mode">File creation mode</param>
         public PackfileWriter(string archivePath, bool encrypted = false, FileMode mode = FileMode.CreateNew)
         {
-            _archivePath = archivePath;
-            _fileMode = mode;
+            _fileHandle = new FileStream(archivePath, mode, FileAccess.ReadWrite, FileShare.Read);
 
             Header = new PackfileHeader();
             _fileEntries = new List<FileEntry>();
@@ -47,7 +45,7 @@ namespace Decima
             int blockCount = (int)((totalBlockSize + WriterBlockSizeThreshold) / WriterBlockSizeThreshold);
             int fileCount = sourceCorePaths.Count();
 
-            using var archiveStream = File.Open(_archivePath, _fileMode, FileAccess.ReadWrite, FileShare.None);
+            var archiveStream = _fileHandle;
             using var blockStream = new MemoryStream();
 
             // Reserve space for the header
@@ -148,6 +146,20 @@ namespace Decima
 
             foreach (var entry in _blockEntries)
                 entry.ToData(writer, Header);
+        }
+
+        /// <summary>
+        /// Dispose interface.
+        /// </summary>
+        public void Dispose() => Dispose(true);
+
+        /// <summary>
+        /// Dispose interface.
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+                _fileHandle.Dispose();
         }
     }
 }
