@@ -45,8 +45,8 @@ namespace HZDCoreTools
             [Option('t', "translationfile", Required = true, HelpText = "OS input path for file containing translated text")]
             public string InputTranslationFile { get; set; }
 
-            [Option('s', "skipunchanged", HelpText = "Skip replacement of unchanged lines", Default = true)]
-            public bool SkipUnchanged { get; set; }
+            [Option('f', "forceupdate", HelpText = "Force replacement even if lines are identical.")]
+            public bool ForceUpdate { get; set; }
         }
 
         static IEnumerable<(string corePath, Stream Stream)> CreateFileStreamEnumerator(IEnumerable<(string Absolute, string Relative)> files, bool useRawCoreFiles, Predicate<string> filter = null)
@@ -94,6 +94,7 @@ namespace HZDCoreTools
                     var stream = new MemoryStream();
                     device.ExtractFile(pathId, stream);
 
+                    stream.Position = 0;
                     yield return (corePath, stream);
                 }
             }
@@ -176,7 +177,7 @@ namespace HZDCoreTools
                         .Single(x => x.ObjectUUID == translation.ObjectUUID);
 
                     // Don't patch unmodified lines
-                    if (options.SkipUnchanged)
+                    if (!options.ForceUpdate)
                     {
                         if (textResource.GetStringForLanguage(options.Language).Equals(translation.TextData))
                             continue;
@@ -200,9 +201,20 @@ namespace HZDCoreTools
             {
                 Console.WriteLine("Creating archive...");
 
-                // Build archive
-                //var packfile = new PackfileWriterFast(options.OutputPath, false, FileMode.Create);
-                throw new NotImplementedException();
+                // Convert each CoreBinary to an array of bytes and pack it into a bin
+                using var packfile = new PackfileWriter(options.OutputPath, false, FileMode.Create);
+                var streamList = new List<(string, Stream)>(patchedCores.Count);
+
+                foreach ((string corePath, CoreBinary core) in patchedCores)
+                {
+                    var ms = new MemoryStream();
+                    core.ToData(new BinaryWriter(ms, System.Text.Encoding.UTF8, true));
+
+                    ms.Position = 0;
+                    streamList.Add((corePath, ms));
+                }
+
+                packfile.BuildFromStreamList(streamList);
             }
             else
             {
