@@ -268,7 +268,7 @@ namespace Decima
         /// <param name="indexFilePath">Disk path to an .idx file</param>
         private void TryLoadIndexFileNames(string indexFilePath)
         {
-            if (File.Exists(indexFilePath))
+            if (!File.Exists(indexFilePath))
                 return;
 
             var index = PackfileIndex.FromFile(indexFilePath);
