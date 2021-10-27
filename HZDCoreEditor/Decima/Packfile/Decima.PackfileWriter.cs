@@ -37,39 +37,63 @@ namespace Decima
         /// Generate an archive from a set of file paths on disk.
         /// </summary>
         /// <param name="baseDirectoryRoot">Base directory to look for files</param>
-        /// <param name="sourceCorePaths">List of files in Decima core path format. <see cref="baseDirectoryRoot"/>
-        /// is prepended to each element.</param>
+        /// <param name="sourceCorePaths">List of files in Decima core path format. If they are not in the correct
+        /// format, this function will attempt to sanitize them. <see cref="baseDirectoryRoot"/> is prepended to
+        /// each element when opening a file handle.</param>
         public void BuildFromFileList(string baseDirectoryRoot, IEnumerable<string> sourceCorePaths)
         {
-            long totalBlockSize = sourceCorePaths.Sum(file => new FileInfo(Path.Combine(baseDirectoryRoot, file)).Length);
+            var streams = new List<(string Path, Stream Stream)>();
+
+            foreach (string corePath in sourceCorePaths)
+            {
+                var fileStream = File.OpenRead(Path.Combine(baseDirectoryRoot, corePath));
+                var sanitizedPath = SanitizePath(corePath);
+
+                streams.Add((sanitizedPath, fileStream));
+            }
+
+            BuildFromStreamList(streams);
+
+            // Release handles ASAP
+            foreach (var entry in streams)
+                entry.Stream.Close();
+        }
+
+        /// <summary>
+        /// Generate an archive from a set of data streams.
+        /// </summary>
+        /// <param name="sourceStreams">List of strings in Decima core path format and corresponding streams. If they
+        /// are not in the correct format, this function will <b>NOT</b> attempt to sanitize them.</param>
+        public void BuildFromStreamList(List<(string CorePath, Stream Stream)> sourceStreams)
+        {
+            // TODO: Make sourceStreams enumerable? Keeping a million file handles open all at once is a bad idea. Count()/Sum()
+            // are a problem though.
+            long totalBlockSize = sourceStreams.Sum(x => x.Stream.Length);
             int blockCount = (int)((totalBlockSize + WriterBlockSizeThreshold) / WriterBlockSizeThreshold);
-            int fileCount = sourceCorePaths.Count();
 
             var archiveStream = _fileHandle;
             using var blockStream = new MemoryStream();
 
             // Reserve space for the header
-            archiveStream.Position = CalculateArchiveHeaderLength(fileCount, blockCount);
+            archiveStream.Position = CalculateArchiveHeaderLength(sourceStreams.Count, blockCount);
 
             // Write file data sequentially
-            byte[] tempCompressedBuffer = new byte[WriterBlockSizeThreshold * 2];
+            var tempCompressedBuffer = new byte[WriterBlockSizeThreshold * 2];
 
             _writerDecompressedBlockOffset = 0;
             ulong decompressedFileOffset = 0;
 
-            foreach (string corePath in sourceCorePaths)
+            foreach (var sourceFile in sourceStreams)
             {
-                using var fileStream = File.OpenRead(Path.Combine(baseDirectoryRoot, corePath));
-
                 var fileEntry = new FileEntry()
                 {
-                    PathHash = GetHashForPath(corePath),
+                    PathHash = GetHashForPath(sourceFile.CorePath),
                     DecompressedOffset = decompressedFileOffset,
-                    DecompressedSize = (uint)fileStream.Length,
+                    DecompressedSize = (uint)sourceFile.Stream.Length,
                 };
 
                 // Append data until a 256KB block write/flush is triggered - combine multiple files into single block entries
-                fileStream.CopyTo(blockStream);
+                sourceFile.Stream.CopyTo(blockStream);
                 decompressedFileOffset += fileEntry.DecompressedSize;
 
                 WriteBlockEntries(archiveStream, blockStream, false, tempCompressedBuffer);
@@ -81,6 +105,20 @@ namespace Decima
             // Rewind & insert headers before the compressed data
             archiveStream.Position = 0;
             WriteArchiveHeaders(new BinaryWriter(archiveStream, Encoding.UTF8, true));
+        }
+
+        /// <summary>
+        /// Dispose interface.
+        /// </summary>
+        public void Dispose() => Dispose(true);
+
+        /// <summary>
+        /// Dispose interface.
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+                _fileHandle.Dispose();
         }
 
         private void WriteBlockEntries(Stream writerStream, MemoryStream blockStream, bool flushAllData, byte[] compressorBufferCache)
@@ -146,20 +184,6 @@ namespace Decima
 
             foreach (var entry in _blockEntries)
                 entry.ToData(writer, Header);
-        }
-
-        /// <summary>
-        /// Dispose interface.
-        /// </summary>
-        public void Dispose() => Dispose(true);
-
-        /// <summary>
-        /// Dispose interface.
-        /// </summary>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-                _fileHandle.Dispose();
         }
     }
 }
