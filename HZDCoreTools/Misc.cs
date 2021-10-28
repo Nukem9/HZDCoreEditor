@@ -1,7 +1,9 @@
 ﻿using CommandLine;
+using CommandLine.Text;
 using Decima;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -9,27 +11,88 @@ namespace HZDCoreTools
 {
     public static class Misc
     {
-        [Verb("exportstrings", HelpText = "Extract all strings contained in a set of archives")]
+        [Verb("exportstrings", HelpText = "Extract all strings contained in a set of archives.")]
         public class ExportAllStringsCommand
         {
-            [Option('i', "input", Required = true, HelpText = "Physical input path for game data (.bin). Wildcards (*) supported.")]
+            [Option('i', "input", Required = true, HelpText = "OS input path for game data (.bin). Wildcards (*) supported.")]
             public string InputPath { get; set; }
 
-            [Option('o', "output", Required = true, HelpText = "Physical output path for the generated text file")]
+            [Option('o', "output", Required = true, HelpText = "OS output path for the generated text file (.txt, *.*).")]
             public string OutputPath { get; set; }
 
-            [Option("validpathsonly", HelpText = "Only dump strings that contain valid core file paths")]
+            [Option("validpathsonly", HelpText = "Only dump strings that contain valid core file paths.")]
             public bool ValidPathsOnly { get; set; }
+
+            [Usage(ApplicationAlias = nameof(HZDCoreTools))]
+            public static IEnumerable<Example> Examples
+            {
+                get
+                {
+                    yield return new Example("Extract all", new ExportAllStringsCommand
+                    {
+                        InputPath = @"E:\HZD\Packed_DX12\*.bin",
+                        OutputPath = @"E:\HZD\Packed_DX12\valid_file_lines.txt",
+                        ValidPathsOnly = true,
+                    });
+                }
+            }
         }
 
-        [Verb("exportindexstrings", HelpText = "Extract all paths contained in a set of archive index files")]
+        [Verb("exportindexstrings", HelpText = "Extract all paths contained in a set of archive index files.")]
         public class ExportIndexFilesCommand
         {
-            [Option('i', "input", Required = true, HelpText = "Physical input path for game data (.idx). Wildcards (*) supported.")]
+            [Option('i', "input", Required = true, HelpText = "OS input path for game data (.idx). Wildcards (*) supported.")]
             public string InputPath { get; set; }
 
-            [Option('o', "output", Required = true, HelpText = "Physical output path for the generated text file")]
+            [Option('o', "output", Required = true, HelpText = "OS output path for the generated text file (.txt, *.*).")]
             public string OutputPath { get; set; }
+
+            [Usage(ApplicationAlias = nameof(HZDCoreTools))]
+            public static IEnumerable<Example> Examples
+            {
+                get
+                {
+                    yield return new Example("Update all", new ExportIndexFilesCommand
+                    {
+                        InputPath = @"E:\HZD\Packed_DX12\Initial.idx",
+                        OutputPath = @"E:\HZD\Packed_DX12\valid_file_lines.txt",
+                    });
+                }
+            }
+        }
+
+        [Verb("rebuildindexfiles", HelpText = "Rebuild index files from a set of archives.")]
+        public class RebuildIndexFilesCommand
+        {
+            [Option('i', "input", Required = true, HelpText = "OS input path for game data (.bin). Wildcards (*) supported.")]
+            public string InputPath { get; set; }
+
+            [Option('o', "output", Required = true, HelpText = "OS output directory for the generated index files (.idx).")]
+            public string OutputPath { get; set; }
+
+            [Option('l', "lookupfile", Required = true, HelpText = "OS input path for a text file containing possible core file paths (.txt, *.*).")]
+            public string LookupFile { get; set; }
+
+            [Usage(ApplicationAlias = nameof(HZDCoreTools))]
+            public static IEnumerable<Example> Examples
+            {
+                get
+                {
+                    yield return new Example("Update all", new RebuildIndexFilesCommand
+                    {
+                        InputPath = @"E:\HZD\Packed_DX12\*.bin",
+                        OutputPath = @"E:\HZD\Packed_DX12\",
+                        LookupFile = "valid_file_lines.txt",
+                    });
+
+                    yield return new Example("Update single file", new RebuildIndexFilesCommand
+                    {
+                        InputPath = @"E:\HZD\Packed_DX12\DLC1.bin",
+                        OutputPath = @"E:\HZD\Packed_DX12\",
+                        LookupFile = "valid_file_lines.txt",
+                    });
+                }
+            }
         }
 
         public static void ExportAllStrings(ExportAllStringsCommand options)
@@ -50,7 +113,7 @@ namespace HZDCoreTools
 
             device.ActiveFiles.AsParallel().ForAll(fileId =>
             {
-                var stream = new MemoryStream();
+                using var stream = new MemoryStream();
                 device.ExtractFile(fileId, stream);
 
                 // There's no way to determine if a file is a .core or a .stream.core. This might throw an exception.
@@ -75,8 +138,10 @@ namespace HZDCoreTools
             if (options.ValidPathsOnly)
             {
                 // Now test all possilbe core paths from the given strings
-                var possibleLanguages = Enum.GetNames(typeof(Decima.HZD.ELanguage)).Select(x => x.ToLower());
                 var allValidPaths = new ConcurrentDictionary<string, bool>();
+                var possibleLanguages = Enum.GetNames(typeof(Decima.HZD.ELanguage))
+                    .Select(x => x.ToLower())
+                    .ToArray();
 
                 foreach (string key in allStrings.Keys)
                 {
@@ -91,7 +156,7 @@ namespace HZDCoreTools
                     // path/to/file.coretext
                     // path/to/file.dep
                     // path/to/file.core.stream
-                    // path/to/file.language.stream
+                    // path/to/file.<language>.stream
                     //
                     void testPath(string p)
                     {
@@ -136,6 +201,29 @@ namespace HZDCoreTools
             }
 
             File.WriteAllLines(options.OutputPath, allValidPaths.Keys.OrderBy(x => x));
+        }
+
+        public static void RebuildIndexFiles(RebuildIndexFilesCommand options)
+        {
+            // Create table of lookup strings
+            var fileLines = File.ReadAllLines(options.LookupFile);
+            var lookupTable = new Dictionary<ulong, string>();
+
+            foreach (string line in fileLines)
+                lookupTable.TryAdd(Packfile.GetHashForPath(line), line);
+
+            // Then apply them to the bins
+            var sourceArchives = Util.GatherFiles(options.InputPath, new[] { ".bin" }, out _);
+
+            foreach ((string absolutePath, string relativePath) in sourceArchives)
+            {
+                Console.WriteLine($"Processing {relativePath}...");
+
+                using var archive = new PackfileReader(absolutePath);
+                var index = PackfileIndex.RebuildFromArchive(archive, lookupTable);
+
+                index.ToFile(Path.ChangeExtension(absolutePath, ".idx"), FileMode.Create);
+            }
         }
     }
 }
