@@ -109,31 +109,36 @@ namespace Decima
                 var compressedData = ArrayPool<byte>.Shared.Rent((int)block.Size);
                 var decompressedData = ArrayPool<byte>.Shared.Rent((int)block.DecompressedSize);
 
-                // Read from the bin, decrypt, and decompress
-                archiveHandle.Position = (long)block.Offset;
+                try
+                {
+                    // Read from the bin, decrypt, and decompress
+                    archiveHandle.Position = (long)block.Offset;
 
-                if (archiveHandle.Read(compressedData, 0, (int)block.Size) != block.Size)
-                    throw new EndOfStreamException("Short read of archive data");
+                    if (archiveHandle.Read(compressedData, 0, (int)block.Size) != block.Size)
+                        throw new EndOfStreamException("Short read of archive data");
 
-                if (Header.IsEncrypted)
-                    block.XorDataBuffer(compressedData);
+                    if (Header.IsEncrypted)
+                        block.XorDataBuffer(compressedData);
 
-                // If the buffer is bigger then the decompressed size, OodleLZ v3 doesn't decompress data correctly every time.
-                // However, if the buffer is the correct size it will decompress correctly but report that it failed.
-                OodleLZ.Decompress(compressedData, decompressedData, block.DecompressedSize);
+                    // If the buffer is bigger then the decompressed size, OodleLZ v3 doesn't decompress data correctly every time.
+                    // However, if the buffer is the correct size it will decompress correctly but report that it failed.
+                    OodleLZ.Decompress(compressedData, decompressedData, block.DecompressedSize);
 
-                // Copy data from the adjusted offset within the decompressed buffer. If the file requires another block,
-                // truncate the copy and loop again.
-                ulong copyOffset = fileDataOffset - block.DecompressedOffset;
-                ulong copySize = Math.Min(fileDataLength, block.DecompressedSize - copyOffset);
+                    // Copy data from the adjusted offset within the decompressed buffer. If the file requires another block,
+                    // truncate the copy and loop again.
+                    ulong copyOffset = fileDataOffset - block.DecompressedOffset;
+                    ulong copySize = Math.Min(fileDataLength, block.DecompressedSize - copyOffset);
 
-                stream.Write(decompressedData, (int)copyOffset, (int)copySize);
+                    stream.Write(decompressedData, (int)copyOffset, (int)copySize);
 
-                fileDataOffset += copySize;
-                fileDataLength -= copySize;
-
-                ArrayPool<byte>.Shared.Return(decompressedData);
-                ArrayPool<byte>.Shared.Return(compressedData);
+                    fileDataOffset += copySize;
+                    fileDataLength -= copySize;
+                }
+                finally
+                {
+                    ArrayPool<byte>.Shared.Return(decompressedData);
+                    ArrayPool<byte>.Shared.Return(compressedData);
+                }
             }
         }
 
