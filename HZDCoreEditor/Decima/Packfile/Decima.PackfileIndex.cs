@@ -16,7 +16,7 @@ namespace Decima
 
         public IReadOnlyList<IndexEntry> Entries => _entries.AsReadOnly();
 
-        private List<IndexEntry> _entries;
+        private List<IndexEntry> _entries = new List<IndexEntry>();
 
         /// <remarks>
         /// File data format:
@@ -25,7 +25,7 @@ namespace Decima
         /// GGUUID  (+8)  GUID
         /// UInt8[] (+24) 16 unknown bytes
         /// </remarks>
-        public class IndexEntry
+        public sealed class IndexEntry
         {
             public string FilePath;
             public byte[] FileDataHash;
@@ -71,6 +71,30 @@ namespace Decima
         }
 
         /// <summary>
+        /// Serialize all contained PackfileIndex entries to a BinaryWriter.
+        /// </summary>
+        /// <param name="writer">Destination stream</param>
+        public void ToData(BinaryWriter writer)
+        {
+            writer.Write(HardcodedMagic);
+            writer.Write((uint)_entries.Count);
+
+            foreach (var entry in _entries)
+                entry.ToData(writer);
+        }
+
+        /// <summary>
+        /// Serialize all contained PackfileIndex entries to a file on disk.
+        /// </summary>
+        /// <param name="filePath">Disk path</param>
+        /// <param name="mode">File overwrite mode</param>
+        public void ToFile(string filePath, FileMode mode = FileMode.CreateNew)
+        {
+            using var writer = new BinaryWriter(File.Open(filePath, mode, FileAccess.ReadWrite, FileShare.None));
+            ToData(writer);
+        }
+
+        /// <summary>
         /// Deserialize a PackfileIndex entry from a BinaryReader.
         /// </summary>
         /// <param name="reader">Source stream</param>
@@ -100,6 +124,30 @@ namespace Decima
         {
             using var reader = new BinaryReader(File.OpenRead(filePath));
             return FromData(reader);
+        }
+
+        /// <summary>
+        /// Generate an index (.idx) from an existing archive (.bin).
+        /// </summary>
+        /// <param name="archive">Archive handle</param>
+        /// <param name="pathIdMapping">Dictionary that maps path IDs to strings</param>
+        public static PackfileIndex RebuildFromArchive(Packfile archive, Dictionary<ulong, string> pathIdMapping)
+        {
+            var index = new PackfileIndex();
+
+            foreach (var fileEntry in archive.FileEntries)
+            {
+                index._entries.Add(new IndexEntry()
+                {
+                    FilePath = $"cache:{pathIdMapping[fileEntry.PathHash]}",
+                    FileDataHash = new byte[16] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF },
+                    DecompressedOffset = fileEntry.DecompressedOffset,
+                    DecompressedSize = fileEntry.DecompressedSize,
+                });
+            }
+
+            index._entries.Sort((x, y) => x.DecompressedOffset.CompareTo(y.DecompressedOffset));
+            return index;
         }
     }
 }
