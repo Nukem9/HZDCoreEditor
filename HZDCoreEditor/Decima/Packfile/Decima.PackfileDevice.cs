@@ -180,6 +180,25 @@ namespace Decima
         }
 
         /// <summary>
+        /// Forwarder for <see cref="Packfile.GetFileSize(string)"/>
+        /// </summary>
+        public uint GetFileSize(string corePath)
+        {
+            return GetFileSize(Packfile.GetHashForPath(corePath));
+        }
+
+        /// <summary>
+        /// Forwarder for <see cref="Packfile.GetFileSize(ulong)"/>
+        /// </summary>
+        public uint GetFileSize(ulong pathId)
+        {
+            if (!_corePathToArchiveIndex.TryGetValue(pathId, out int order))
+                throw new FileNotFoundException($"Unable to find core path ID {pathId} in mounted archives");
+
+            return _mountedArchives[order].Archive.GetFileSize(pathId);
+        }
+
+        /// <summary>
         /// Forwarder for <see cref="PackfileReader.ExtractFile(string, string, FileMode)"/>
         /// </summary>
         public void ExtractFile(string corePath, string destinationPath, FileMode mode = FileMode.CreateNew)

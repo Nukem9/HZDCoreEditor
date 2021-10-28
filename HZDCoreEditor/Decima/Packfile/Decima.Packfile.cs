@@ -369,6 +369,27 @@ namespace Decima
         }
 
         /// <summary>
+        /// Gets the decompressed size of a file with a Decima core path.
+        /// </summary>
+        public uint GetFileSize(string corePath)
+        {
+            return GetFileSize(GetHashForPath(corePath));
+        }
+
+        /// <summary>
+        /// Gets the decompressed size of a file with a hashed path.
+        /// </summary>
+        public uint GetFileSize(ulong pathId)
+        {
+            int index = GetFileEntryIndex(pathId);
+
+            if (index == InvalidEntryIndex)
+                throw new FileNotFoundException($"Unable to find file with path ID {pathId}");
+
+            return _fileEntries[index].DecompressedSize;
+        }
+
+        /// <summary>
         /// Return the specific index for a <see cref="FileEntry"/> instance in <see cref="_fileEntries"/>.
         /// </summary>
         /// <returns>The index or <see cref="InvalidEntryIndex"/> if it was not found.</returns>
