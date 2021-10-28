@@ -31194,7 +31194,7 @@ namespace Decima.HZD
         [RTTI.Member(30, 0xC0, "Physics")] public Ref<PhysicsCollisionResource> MapCollisionResource;
         [RTTI.Member(31, 0xC8, "Physics")] public float Offset;
         public void DeserializeExtraData(BinaryReader reader) { }
-        public void SerializeExtraData(BinaryWriter writer) => throw new NotImplementedException();
+        public void SerializeExtraData(BinaryWriter writer) { }
     }
 
     [RTTI.Serializable(0x70984C2CF4D62844, GameType.HZD)]

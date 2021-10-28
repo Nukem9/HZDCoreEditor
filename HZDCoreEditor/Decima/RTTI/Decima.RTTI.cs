@@ -375,8 +375,7 @@ namespace Decima
             info = new OrderedFieldInfo(miBases, members);
 
             // Another thread might insert this entry before we do, but it doesn't matter as long as the data is identical
-            _typeFieldInfoCache.TryAdd(type, info);
-            return info;
+            return _typeFieldInfoCache.GetOrAdd(type, info);
         }
     }
 }
