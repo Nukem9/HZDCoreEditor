@@ -1,4 +1,5 @@
 ﻿using CommandLine;
+using CommandLine.Text;
 using Decima;
 using System;
 using System.Collections.Concurrent;
@@ -19,34 +20,85 @@ namespace HZDCoreTools
 
         public class LocalizationCommand
         {
+            private const string PossibleLanguages = "Language to use " +
+                "(English, Dutch, German, French, Spanish, Italian, Portugese, Japanese, Chinese_Traditional, " +
+                "Korean, Russian, Polish, Danish, Finnish, Norwegian, Swedish, LATAMSP, LATAMPOR, Turkish, Arabic, Chinese_Simplified).";
+
             [Option('i', "input", Required = true, HelpText = "OS input path for game data (.bin, .core). Wildcards (*) supported.")]
             public string InputPath { get; set; }
 
-            [Option('l', "language", Required = true, HelpText = "Language to use")]
+            [Option('l', "language", Required = true, HelpText = PossibleLanguages)]
             public Decima.HZD.ELanguage Language { get; set; }
 
-            [Option('d', "delimiter", HelpText = "Line delimiter/separator", Default = '|')]
+            [Option('d', "delimiter", HelpText = "Line delimiter/separator.", Default = '|')]
             public char Delimiter { get; set; }
         }
 
-        [Verb("exporttext", HelpText = "Export game localization to a text file")]
+        [Verb("exporttext", HelpText = "Export game localization to a text file.")]
         public class ExportLocalizationCommand : LocalizationCommand
         {
-            [Option('o', "output", Required = true, HelpText = "OS output path for the generated translation file")]
+            [Option('o', "output", Required = true, HelpText = "OS output path for the generated translation file (.txt, *.*).")]
             public string OutputPath { get; set; }
+
+            [Usage(ApplicationAlias = nameof(HZDCoreTools))]
+            public static IEnumerable<Example> Examples
+            {
+                get
+                {
+                    yield return new Example("Export English translations", new ExportLocalizationCommand
+                    {
+                        InputPath = @"E:\HZD\Packed_DX12\extracted\*.core",
+                        Language = Decima.HZD.ELanguage.English,
+                        OutputPath = "ENG_translations.txt"
+                    });
+
+                    yield return new Example("Export Spanish translations", new ExportLocalizationCommand
+                    {
+                        InputPath = @"E:\HZD\Packed_DX12\*.bin",
+                        Language = Decima.HZD.ELanguage.Spanish,
+                        Delimiter = '*',
+                        OutputPath = "ES_translations.txt"
+                    });
+                }
+            }
         }
 
-        [Verb("importtext", HelpText = "Import game localization from a text file and optionally create an archive")]
+        [Verb("importtext", HelpText = "Import game localization from a text file and optionally create an archive.")]
         public class ImportLocalizationCommand : LocalizationCommand
         {
             [Option('o', "output", Required = true, HelpText = "OS output directory for modified core files. Specify a .bin file to generate an archive instead.")]
             public string OutputPath { get; set; }
 
-            [Option('t', "translationfile", Required = true, HelpText = "OS input path for file containing translated text")]
+            [Option('t', "translationfile", Required = true, HelpText = "OS input path for file containing translated text (.txt, *.*).")]
             public string InputTranslationFile { get; set; }
 
-            [Option('f', "forceupdate", HelpText = "Force replacement even if lines are identical.")]
+            [Option('f', "forceupdate", HelpText = "Force string replacement even if lines are identical.")]
             public bool ForceUpdate { get; set; }
+
+            [Usage(ApplicationAlias = nameof(HZDCoreTools))]
+            public static IEnumerable<Example> Examples
+            {
+                get
+                {
+                    yield return new Example("Import English translations", new ImportLocalizationCommand
+                    {
+                        InputPath = @"E:\HZD\Packed_DX12\extracted\*.core",
+                        Language = Decima.HZD.ELanguage.English,
+                        Delimiter = '*',
+                        OutputPath = @"E:\Modding\out\",
+                        InputTranslationFile = "ENG_translations.txt",
+                        ForceUpdate = true,
+                    });
+
+                    yield return new Example("Import English translations", new ImportLocalizationCommand
+                    {
+                        InputPath = @"E:\HZD\Packed_DX12\*.bin",
+                        Language = Decima.HZD.ELanguage.English,
+                        OutputPath = @"E:\Modding\out\Patch_Translations.bin",
+                        InputTranslationFile = "ENG_translations.txt",
+                    });
+                }
+            }
         }
 
         static IEnumerable<(string corePath, Stream Stream)> CreateFileStreamEnumerator(IEnumerable<(string Absolute, string Relative)> files, bool useRawCoreFiles, Predicate<string> filter = null)
@@ -114,16 +166,7 @@ namespace HZDCoreTools
 
                 // Dump all instances of LocalizedTextResource
                 foreach (var textResource in coreBinary.Objects.OfType<Decima.HZD.LocalizedTextResource>())
-                {
-                    var delim = options.Delimiter;
-                    var data = textResource.GetStringForLanguage(options.Language);
-
-                    data = data.Replace("\r\n", "<NEWLINE_CRLF>");
-                    data = data.Replace("\r", "<NEWLINE_CR>");
-                    data = data.Replace("\n", "<NEWLINE_LF>");
-
-                    allTextLines.Add($"{delim}{file.corePath}{delim}{textResource.ObjectUUID}{delim}{data}{delim}");
-                }
+                    allTextLines.Add(GenerateTranslationEntry(options, textResource, file.corePath));
             });
 
             File.WriteAllLines(options.OutputPath, allTextLines.OrderBy(x => x));
@@ -133,35 +176,12 @@ namespace HZDCoreTools
 
         public static void ImportLocalization(ImportLocalizationCommand options)
         {
-            var allLines = File.ReadAllLines(options.InputTranslationFile);
-            var translationData = new Dictionary<string, List<(string ObjectUUID, string TextData)>>();
+            var translationData = ReadTranslationFile(options);
 
-            // Tokenize each line according to ExportLocalization
-            for (int i = 0; i < allLines.Length; i++)
-            {
-                var tokens = allLines[i].Split(options.Delimiter);
-
-                if (tokens.Length != 5)
-                    throw new FormatException($"Tokenization failed on line {i}. Invalid data format.");
-
-                var corePath = tokens[1];
-                var objectUUID = tokens[2];
-                var textData = tokens[3];
-
-                textData = textData.Replace("<NEWLINE_CRLF>", "\r\n");
-                textData = textData.Replace("<NEWLINE_CR>", "\r");
-                textData = textData.Replace("<NEWLINE_LF>", "\n");
-
-                if (!translationData.ContainsKey(corePath))
-                    translationData.Add(corePath, new List<(string, string)>());
-
-                translationData[corePath].Add((objectUUID, textData));
-            }
-
-            // Open each core file in parallel and insert the data
             var sourceFiles = Util.GatherFiles(options.InputPath, _validExtensions, out string ext);
             var coresToModify = CreateFileStreamEnumerator(sourceFiles, ext == ".core", x => translationData.ContainsKey(x));
 
+            // Open each core file in parallel and insert the data
             int linesUpdated = 0;
             var patchedCores = new ConcurrentDictionary<string, CoreBinary>();
 
@@ -199,9 +219,9 @@ namespace HZDCoreTools
 
             if (Path.HasExtension(options.OutputPath))
             {
+                // Convert each CoreBinary to an array of bytes and pack it into a bin
                 Console.WriteLine("Creating archive...");
 
-                // Convert each CoreBinary to an array of bytes and pack it into a bin
                 using var packfile = new PackfileWriter(options.OutputPath, false, FileMode.Create);
                 var streamList = new List<(string, Stream)>(patchedCores.Count);
 
@@ -218,21 +238,61 @@ namespace HZDCoreTools
             }
             else
             {
+                // Write all core file data back to their individual files on disk
                 Console.WriteLine("Writing cores to disk...");
                 Directory.CreateDirectory(options.OutputPath);
 
-                // Write all core file data back to their individual files on disk
                 foreach (var (corePath, core) in patchedCores)
                 {
                     string diskPath = Path.Combine(options.OutputPath, corePath);
 
                     Directory.CreateDirectory(Path.GetDirectoryName(diskPath));
-                    core.ToFile(diskPath);
+                    core.ToFile(diskPath, FileMode.Create);
                 }
             }
 
             Console.WriteLine($"Total lines updated: {linesUpdated}");
             Console.WriteLine($"Total cores patched: {patchedCores.Count}");
+        }
+
+        private static string GenerateTranslationEntry(ExportLocalizationCommand options, Decima.HZD.LocalizedTextResource resource, string corePath)
+        {
+            var data = resource.GetStringForLanguage(options.Language);
+            data = data.Replace("\r\n", "<NEWLINE_CRLF>");
+            data = data.Replace("\r", "<NEWLINE_CR>");
+            data = data.Replace("\n", "<NEWLINE_LF>");
+
+            return string.Format("{0}{1}{0}{2}{0}{3}{0}", options.Delimiter, corePath, resource.ObjectUUID, data);
+        }
+
+        private static Dictionary<string, List<(string ObjectUUID, string TextData)>> ReadTranslationFile(ImportLocalizationCommand options)
+        {
+            var allLines = File.ReadAllLines(options.InputTranslationFile);
+            var translationData = new Dictionary<string, List<(string ObjectUUID, string TextData)>>();
+
+            // Tokenize each line according to GenerateTranslationEntry
+            for (int i = 0; i < allLines.Length; i++)
+            {
+                var tokens = allLines[i].Split(options.Delimiter);
+
+                if (tokens.Length != 5)
+                    throw new FormatException($"Tokenization failed on line {i}. Invalid data or delimiter format.");
+
+                var corePath = tokens[1];
+                var objectUUID = tokens[2];
+                var textData = tokens[3];
+
+                textData = textData.Replace("<NEWLINE_CRLF>", "\r\n");
+                textData = textData.Replace("<NEWLINE_CR>", "\r");
+                textData = textData.Replace("<NEWLINE_LF>", "\n");
+
+                if (!translationData.ContainsKey(corePath))
+                    translationData.Add(corePath, new List<(string, string)>());
+
+                translationData[corePath].Add((objectUUID, textData));
+            }
+
+            return translationData;
         }
     }
 }
