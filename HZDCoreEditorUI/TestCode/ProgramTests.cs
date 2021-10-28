@@ -295,7 +295,7 @@ namespace HZDCoreEditorUI
             }
 
             oldLinks[getFileIndex(fileName)] = coreBinary.GetAllReferences()
-                .Where(x => x.Type == BaseRef.Types.ExternalCoreUUID)
+                .Where(x => x.Type == BaseRef.Types.ExternalLink)
                 .Select(x => getFileIndex(x.ExternalFile.Value))
                 .Distinct()
                 .ToArray();
@@ -338,7 +338,7 @@ namespace HZDCoreEditorUI
 
                     foreach (var baseRef in core.GetAllReferences())
                     {
-                        if (baseRef.Type == BaseRef.Types.ExternalCoreUUID)
+                        if (baseRef.Type == BaseRef.Types.ExternalLink)
                             fileRefMap[index].Add(fileIndexLUT[baseRef.ExternalFile.Value]);
                     }
                 }

@@ -17,21 +17,18 @@ namespace Decima
         public BaseGGUUID GUID;
         public BaseString ExternalFile;
         private object ResolvedObject;
-        private Type ObjectType;
 
         public enum Types
         {
             Null = 0,
-            LocalCoreUUID = 1,
-            ExternalCoreUUID = 2,
+            InternalLink = 1,
+            ExternalLink = 2,
             StreamingRef = 3,
-            // Unknown4 = 4,
             UUIDRef = 5,
         }
 
         public BaseRef(Type objectType)
         {
-            ObjectType = objectType;
         }
 
         public void Deserialize(BinaryReader reader)
@@ -43,12 +40,12 @@ namespace Decima
                 case Types.Null:
                     break;
 
-                case Types.LocalCoreUUID:
+                case Types.InternalLink:
                 case Types.UUIDRef:
                     GUID = BaseGGUUID.FromData(reader);
                     break;
 
-                case Types.ExternalCoreUUID:
+                case Types.ExternalLink:
                 case Types.StreamingRef:
                     GUID = BaseGGUUID.FromData(reader);
 
@@ -71,12 +68,12 @@ namespace Decima
                 case Types.Null:
                     break;
 
-                case Types.LocalCoreUUID:
+                case Types.InternalLink:
                 case Types.UUIDRef:
                     GUID.ToData(writer);
                     break;
 
-                case Types.ExternalCoreUUID:
+                case Types.ExternalLink:
                 case Types.StreamingRef:
                     GUID.ToData(writer);
 
@@ -93,7 +90,7 @@ namespace Decima
             ResolvedObject = state.ReadObjectHandle();
 
             if (ResolvedObject != null)
-                Type = Types.LocalCoreUUID;// Not entirely correct...
+                Type = Types.InternalLink;// Not entirely correct...
             else
                 Type = Types.Null;
         }
@@ -107,11 +104,11 @@ namespace Decima
                 case Types.Null:
                     return "Ref<Null>";
 
-                case Types.LocalCoreUUID:
+                case Types.InternalLink:
                 case Types.UUIDRef:
                     return $"Ref<Local> {{{GUID}}}";
 
-                case Types.ExternalCoreUUID:
+                case Types.ExternalLink:
                 case Types.StreamingRef:
                     return $"Ref<Extern> {{'{ExternalFile}', {GUID}}}";
             }

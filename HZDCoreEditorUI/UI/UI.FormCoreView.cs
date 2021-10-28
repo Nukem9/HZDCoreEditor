@@ -394,11 +394,11 @@ namespace HZDCoreEditorUI.UI
         private void tsmFollow_Click(object sender, EventArgs e)
         {
             var selected = GetSelectedRef();
-            if (selected.Type == BaseRef.Types.LocalCoreUUID || selected.Type == BaseRef.Types.UUIDRef)
+            if (selected.Type == BaseRef.Types.InternalLink || selected.Type == BaseRef.Types.UUIDRef)
             {
                 SelectNodeById(selected.GUID);
             }
-            if (selected.Type == BaseRef.Types.ExternalCoreUUID || selected.Type == BaseRef.Types.StreamingRef)
+            if (selected.Type == BaseRef.Types.ExternalLink || selected.Type == BaseRef.Types.StreamingRef)
             {
                 if (RootDir == null)
                 {
