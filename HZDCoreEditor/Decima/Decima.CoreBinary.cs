@@ -226,10 +226,10 @@ namespace Decima
 
             var objectType = obj.GetType();
 
-            // T, arrays, lists, then any other object
-            if (objectType.Inherits(typeof(T)))
+            // T, arrays, lists, dictionaries, then any other object
+            if (obj is T asType)
             {
-                memberCallback(obj as T, parent);
+                memberCallback(asType, parent);
             }
             else if (objectType.IsArray)
             {
@@ -240,14 +240,36 @@ namespace Decima
                 foreach (var arrayObj in (obj as Array))
                     VisitObjectTypes(obj, arrayObj, memberCallback);
             }
-            else if (objectType.InheritsGeneric(typeof(List<>)))
+            else if (obj is IList asList)
             {
-                // Same as above
-                if (!objectType.GetGenericArguments()[0].IsClass)
-                    return;
+                foreach (var listObj in asList)
+                {
+                    // Same as above
+                    if (!listObj.GetType().IsClass)
+                        break;
 
-                foreach (var listObj in (obj as IList))
                     VisitObjectTypes(obj, listObj, memberCallback);
+                }
+            }
+            else if (obj is IDictionary asDictionary)
+            {
+                foreach (var dictKey in asDictionary.Keys)
+                {
+                    // Same as above
+                    if (!dictKey.GetType().IsClass)
+                        break;
+
+                    VisitObjectTypes(obj, dictKey, memberCallback);
+                }
+
+                foreach (var dictValue in asDictionary.Values)
+                {
+                    // Same as above
+                    if (!dictValue.GetType().IsClass)
+                        break;
+
+                    VisitObjectTypes(obj, dictValue, memberCallback);
+                }
             }
             else
             {
