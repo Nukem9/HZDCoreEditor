@@ -27,7 +27,7 @@ namespace HZDCoreEditorTests
         [TestMethod]
         public void TestValidateSingleBin()
         {
-            var archive = new PackfileReader(Path.Combine(GameDataPath, GameRootArchive));
+            using var archive = new PackfileReader(Path.Combine(GameDataPath, GameRootArchive));
             archive.Validate();
         }
 
@@ -37,7 +37,7 @@ namespace HZDCoreEditorTests
         {
             foreach (var archiveName in QuickTestArchives)
             {
-                var archive = new PackfileReader(Path.Combine(GameDataPath, archiveName));
+                using var archive = new PackfileReader(Path.Combine(GameDataPath, archiveName));
                 archive.Validate();
             }
         }
@@ -46,7 +46,7 @@ namespace HZDCoreEditorTests
         [TestMethod]
         public void TestFileExists()
         {
-            var archive = new PackfileReader(Path.Combine(GameDataPath, GameRootArchive));
+            using var archive = new PackfileReader(Path.Combine(GameDataPath, GameRootArchive));
 
             Assert.IsTrue(archive.ContainsFile("prefetch/fullgame.prefetch.core"));
             Assert.IsTrue(archive.ContainsFile(Packfile.SanitizePath("prefetch/fullgame.prefetch")));
@@ -63,7 +63,7 @@ namespace HZDCoreEditorTests
         [TestMethod]
         public void TestFileExistsByPathId()
         {
-            var archive = new PackfileReader(Path.Combine(GameDataPath, GameRootArchive));
+            using var archive = new PackfileReader(Path.Combine(GameDataPath, GameRootArchive));
 
             Assert.IsTrue(Packfile.GetHashForPath(Packfile.SanitizePath("prefetch/fullgame.prefetch")) == 0x2FFF5AF65CD64C0A);
             Assert.IsTrue(archive.ContainsFile(0x2FFF5AF65CD64C0A));
@@ -75,7 +75,7 @@ namespace HZDCoreEditorTests
         [TestMethod]
         public void TestExtractSingleFile()
         {
-            var archive = new PackfileReader(Path.Combine(GameDataPath, GameRootArchive));
+            using var archive = new PackfileReader(Path.Combine(GameDataPath, GameRootArchive));
             var tempPath = Path.Combine(Path.GetTempPath(), $"{nameof(TestExtractSingleFile)}_extracted.core");
 
             if (File.Exists(tempPath))
@@ -91,7 +91,7 @@ namespace HZDCoreEditorTests
         [TestMethod]
         public void TestExtractSingleFileToStream()
         {
-            var archive = new PackfileReader(Path.Combine(GameDataPath, GameRootArchive));
+            using var archive = new PackfileReader(Path.Combine(GameDataPath, GameRootArchive));
             var testStream = new MemoryStream();
 
             archive.ExtractFile("prefetch/fullgame.prefetch.core", testStream);
@@ -120,22 +120,24 @@ namespace HZDCoreEditorTests
             // Write out compressed bin
             var packedArchivePath = Path.Combine(tempPath, $"{nameof(TestPackAndUnpackTrivial)}_packed_archive.bin");
 
-            var writeArchive = new PackfileWriter(packedArchivePath, false, FileMode.Create);
-            writeArchive.BuildFromFileList(tempPath, tempFiles.Select(x => x.CoreName));
+            using (var writeArchive = new PackfileWriter(packedArchivePath, false, FileMode.Create))
+                writeArchive.BuildFromFileList(tempPath, tempFiles.Select(x => x.CoreName));
 
             // Open it back up and validate its contents
-            var readArchive = new PackfileReader(packedArchivePath);
-            readArchive.Validate();
-
-            foreach (var file in tempFiles)
+            using (var readArchive = new PackfileReader(packedArchivePath))
             {
-                Assert.IsTrue(readArchive.ContainsFile(file.CoreName));
+                readArchive.Validate();
 
-                readArchive.ExtractFile(file.CoreName, file.Path, FileMode.Create);
+                foreach (var file in tempFiles)
+                {
+                    Assert.IsTrue(readArchive.ContainsFile(file.CoreName));
 
-                Assert.IsTrue(File.ReadAllText(file.Path).Equals(file.Text));
+                    readArchive.ExtractFile(file.CoreName, file.Path, FileMode.Create);
 
-                File.Delete(file.Path);
+                    Assert.IsTrue(File.ReadAllText(file.Path).Equals(file.Text));
+
+                    File.Delete(file.Path);
+                }
             }
 
             File.Delete(packedArchivePath);
@@ -158,23 +160,25 @@ namespace HZDCoreEditorTests
                 .Select(f => f.Substring(targetDir.Length))
                 .ToArray();
 
-            var writeArchive = new PackfileWriter(archivePath, false, FileMode.Create);
-            writeArchive.BuildFromFileList(targetDir, filesToCombine);
+            using (var writeArchive = new PackfileWriter(archivePath, false, FileMode.Create))
+                writeArchive.BuildFromFileList(targetDir, filesToCombine);
 
             // Re-extract all of the contained files into memory
-            var readArchive = new PackfileReader(archivePath);
-            readArchive.Validate();
-
-            var tempMS = new MemoryStream();
-
-            foreach (string file in filesToCombine)
+            using (var readArchive = new PackfileReader(archivePath))
             {
-                tempMS.Position = 0;
-                tempMS.SetLength(0);
-                readArchive.ExtractFile(file, tempMS);
+                readArchive.Validate();
 
-                var tempFilePath = Path.Combine(targetDir, file);
-                Assert.IsTrue(tempMS.Length == new FileInfo(tempFilePath).Length);
+                using var tempMS = new MemoryStream();
+
+                foreach (string file in filesToCombine)
+                {
+                    tempMS.Position = 0;
+                    tempMS.SetLength(0);
+                    readArchive.ExtractFile(file, tempMS);
+
+                    var tempFilePath = Path.Combine(targetDir, file);
+                    Assert.IsTrue(tempMS.Length == new FileInfo(tempFilePath).Length);
+                }
             }
 
             File.Delete(archivePath);
