@@ -6,11 +6,14 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace HZDCoreTools
 {
     public static class Misc
     {
+        private const string PrefetchCorePath = "prefetch/fullgame.prefetch.core";
+
         [Verb("exportstrings", HelpText = "Extract all strings contained in a set of archives.")]
         public class ExportAllStringsCommand
         {
@@ -52,7 +55,7 @@ namespace HZDCoreTools
             {
                 get
                 {
-                    yield return new Example("Update all", new ExportIndexFilesCommand
+                    yield return new Example("Extract single index", new ExportIndexFilesCommand
                     {
                         InputPath = @"E:\HZD\Packed_DX12\Initial.idx",
                         OutputPath = @"E:\HZD\Packed_DX12\valid_file_lines.txt",
@@ -85,11 +88,47 @@ namespace HZDCoreTools
                         LookupFile = "valid_file_lines.txt",
                     });
 
-                    yield return new Example("Update single file", new RebuildIndexFilesCommand
+                    yield return new Example("Update single bin", new RebuildIndexFilesCommand
                     {
                         InputPath = @"E:\HZD\Packed_DX12\DLC1.bin",
                         OutputPath = @"E:\HZD\Packed_DX12\",
-                        LookupFile = "valid_file_lines.txt",
+                        LookupFile = "DLC1_file_lines.txt",
+                    });
+                }
+            }
+        }
+
+        [Verb("rebuildprefetch", HelpText = "Rebuild fullgame.prefetch.core from a set of archives.")]
+        public class RebuildPrefetchFileCommand
+        {
+            [Option('i', "input", Required = true, HelpText = "OS input path for game data (.bin). Wildcards (*) supported.")]
+            public string InputPath { get; set; }
+
+            [Option('o', "output", Required = true, HelpText = "OS output path for the generated core or archive file (.bin, .core).")]
+            public string OutputPath { get; set; }
+
+            [Option("skipsizes", HelpText = "Skip rebuilding of file sizes.")]
+            public bool SkipSizes { get; set; }
+
+            [Option("skiplinks", HelpText = "Skip rebuilding of ref links.")]
+            public bool SkipLinks { get; set; }
+
+            [Usage(ApplicationAlias = nameof(HZDCoreTools))]
+            public static IEnumerable<Example> Examples
+            {
+                get
+                {
+                    yield return new Example("Update all to archive", new RebuildPrefetchFileCommand
+                    {
+                        InputPath = @"E:\HZD\Packed_DX12\*.bin",
+                        OutputPath = @"E:\HZD\Packed_DX12\Patch_ZPrefetch.bin",
+                    });
+
+                    yield return new Example("Update all to core", new RebuildPrefetchFileCommand
+                    {
+                        InputPath = @"E:\HZD\Packed_DX12\*.bin",
+                        OutputPath = @"E:\HZD\Packed_DX12\extracted\prefetch\fullgame.prefetch.core",
+                        SkipLinks = true,
                     });
                 }
             }
@@ -113,14 +152,10 @@ namespace HZDCoreTools
 
             device.ActiveFiles.AsParallel().ForAll(fileId =>
             {
-                using var stream = new MemoryStream();
-                device.ExtractFile(fileId, stream);
-
                 // There's no way to determine if a file is a .core or a .stream.core. This might throw an exception.
                 try
                 {
-                    stream.Position = 0;
-                    var coreBinary = CoreBinary.FromData(new BinaryReader(stream));
+                    var coreBinary = Util.ExtractCoreBinaryInMemory(device, fileId);
 
                     coreBinary.VisitAllObjects((string str, object _) =>
                     {
@@ -224,6 +259,168 @@ namespace HZDCoreTools
 
                 index.ToFile(Path.ChangeExtension(absolutePath, ".idx"), FileMode.Create);
             }
+        }
+
+        public static void RebuildPrefetchFile(RebuildPrefetchFileCommand options)
+        {
+            var sourceFiles = Util.GatherFiles(options.InputPath, new[] { ".bin" }, out string _);
+
+            // Add each bin
+            using var device = new PackfileDevice();
+
+            foreach ((string absolute, _) in sourceFiles)
+            {
+                if (!device.Mount(absolute))
+                {
+                    Console.WriteLine($"Unable to mount '{absolute}'");
+                    return;
+                }
+            }
+
+            if (!device.HasFile(PrefetchCorePath))
+                throw new FileNotFoundException($"'{PrefetchCorePath}' not found. Expected at least one archive to have an existing prefecth core file.");
+
+            // Extract the .core, iterate over each file, then update the size for each file
+            var prefetchCore = Util.ExtractCoreBinaryInMemory(device, PrefetchCorePath);
+            var prefetch = prefetchCore.Objects.OfType<Decima.HZD.PrefetchList>().Single();
+
+            if (prefetch.Files.Count != prefetch.Sizes.Count)
+                throw new Exception("Prefetch 'Files' and 'Sizes' array lengths don't match?!");
+
+            RebuildPrefetchForFiles(prefetch, device, options);
+
+            if (Path.GetExtension(options.OutputPath) == ".bin")
+            {
+                // Pack it into a new archive
+                using var ms = new MemoryStream();
+                prefetchCore.ToData(new BinaryWriter(ms));
+
+                ms.Position = 0;
+                var streamList = new List<(string, Stream)>
+                {
+                    (PrefetchCorePath, ms),
+                };
+
+                using var packfile = new PackfileWriter(options.OutputPath, false, FileMode.Create);
+                packfile.BuildFromStreamList(streamList);
+            }
+            else
+            {
+                // Straight to disk
+                prefetchCore.ToFile(options.OutputPath, FileMode.Create);
+            }
+        }
+
+        private static void RebuildPrefetchForFiles(Decima.HZD.PrefetchList prefetch, PackfileDevice device, RebuildPrefetchFileCommand options)
+        {
+            // Convert the old links to a dictionary
+            var links = new ConcurrentDictionary<int, int[]>();
+            int linkIndex = 0;
+
+            for (int i = 0; i < prefetch.Files.Count; i++)
+            {
+                int count = prefetch.Links[linkIndex];
+
+                var indices = prefetch.Links
+                    .Skip(linkIndex + 1)
+                    .Take(count)
+                    .ToArray();
+
+                links.TryAdd(i, indices);
+                linkIndex += count + 1;
+            }
+
+            // Create a lookup table to map a file name to an index
+            var fileIndexLookup = new Dictionary<string, int>();
+
+            for (int i = 0; i < prefetch.Files.Count; i++)
+                fileIndexLookup.TryAdd(prefetch.Files[i].Path, i);
+
+            int getFileIndex(string path)
+            {
+                if (fileIndexLookup.TryGetValue(path, out int index))
+                    return index;
+
+                throw new FileNotFoundException();
+            }
+
+            // Foreach (core in parallel)
+            Parallel.ForEach(prefetch.Files, (path, _, index) =>
+            {
+                int i = (int)index;
+                string corePath = Packfile.SanitizePath(prefetch.Files[i].Path);
+
+                if (!device.HasFile(corePath))
+                    return;
+
+                // Rebuild sizes
+                if (!options.SkipSizes)
+                {
+                    int binarySize = (int)device.GetFileSize(corePath);
+
+                    if (prefetch.Sizes[i] != binarySize)
+                        Console.WriteLine($"Updating size for '{corePath}' ({prefetch.Sizes[i]} != {binarySize})");
+
+                    prefetch.Sizes[i] = binarySize;
+                }
+
+                // Rebuild references (don't forget to remove duplicates (Distinct()!))
+                if (!options.SkipLinks)
+                {
+                    var coreBinary = Util.ExtractCoreBinaryInMemory(device, corePath);
+
+                    // TODO/BUG: References are in the wrong order. No idea how it gets calculated. This causes the game to crash.
+                    var newLinks = coreBinary.GetAllReferences()
+                        .Where(x => x.Type == BaseRef.Types.ExternalLink)
+                        .Select(x => getFileIndex(x.ExternalFile))
+                        .Distinct()
+                        .ToArray();
+
+                    var oldLinks = links[i];
+                    links[i] = newLinks;
+
+                    if (newLinks.Length != oldLinks.Length)
+                        Console.WriteLine($"Link lengths differ for '{corePath}'");
+
+                    if (!oldLinks.SequenceEqual(newLinks))
+                        Console.WriteLine($"Updating links for '{corePath}'");
+                }
+            });
+
+            // Dictionary of links -> linear array
+            prefetch.Links.Clear();
+
+            for (int i = 0; i < prefetch.Files.Count; i++)
+            {
+                var indices = links[i];
+
+                prefetch.Links.Add(indices.Length);
+                prefetch.Links.AddRange(indices);
+            }
+        }
+
+        private static void DumpPrefetchLinksToFile(Decima.HZD.PrefetchList prefetch, string filePath)
+        {
+            var allLines = new List<string>();
+            int linkIndex = 0;
+
+            for (int i = 0; i < prefetch.Files.Count; i++)
+            {
+                string path = prefetch.Files[i].Path;
+                int count = prefetch.Links[linkIndex];
+
+                var indices = prefetch.Links
+                    .Skip(linkIndex + 1)
+                    .Take(count);
+
+                linkIndex += count + 1;
+
+                allLines.Add($"{i} '{path}': ");
+                foreach (int index in indices)
+                    allLines.Add($"\t{index} => '{prefetch.Files[index].Path}'");
+            }
+
+            File.WriteAllLines(filePath, allLines);
         }
     }
 }

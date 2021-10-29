@@ -227,8 +227,8 @@ namespace HZDCoreTools
 
                 foreach ((string corePath, CoreBinary core) in patchedCores)
                 {
-                    var ms = new MemoryStream();
-                    core.ToData(new BinaryWriter(ms, System.Text.Encoding.UTF8, true));
+                    var ms = new MemoryStream();// Intentionally avoid using() here
+                    core.ToData(new BinaryWriter(ms));
 
                     ms.Position = 0;
                     streamList.Add((corePath, ms));

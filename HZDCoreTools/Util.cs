@@ -41,5 +41,23 @@ namespace HZDCoreTools
 
             return path;
         }
+
+        public static CoreBinary ExtractCoreBinaryInMemory(PackfileDevice device, string corePath)
+        {
+            using var ms = new MemoryStream();
+            device.ExtractFile(corePath, ms);
+
+            ms.Position = 0;
+            return CoreBinary.FromData(new BinaryReader(ms));
+        }
+
+        public static CoreBinary ExtractCoreBinaryInMemory(PackfileDevice device, ulong pathId)
+        {
+            using var ms = new MemoryStream();
+            device.ExtractFile(pathId, ms);
+
+            ms.Position = 0;
+            return CoreBinary.FromData(new BinaryReader(ms));
+        }
     }
 }
