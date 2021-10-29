@@ -15,33 +15,33 @@ namespace HZDCoreTools
 
         public class ArchiveCommand
         {
-            [Option('r', "ignore", HelpText = "If specified, use this regex to exclude files matching the filter")]
+            [Option('r', "ignore", HelpText = "If specified, use this regex to exclude files matching the filter.")]
             public string IgnoredRegex { get; set; }
 
-            [Option('v', "verbose", HelpText = "Print extra information to the console, such as files being extracted")]
+            [Option('v', "verbose", HelpText = "Print extra information to the console, such as files being extracted.")]
             public bool Verbose { get; set; }
         }
 
-        [Verb("pack", HelpText = "Create a game archive")]
+        [Verb("pack", HelpText = "Create a game archive.")]
         public class PackArchiveCommand : ArchiveCommand
         {
             [Option('i', "input", Required = true, HelpText = "OS input path for game data (*.*, .core, .stream). Wildcards (*) supported.")]
             public string InputPath { get; set; }
 
-            [Option('o', "output", Required = true, HelpText = "OS output path for the generated bin file")]
+            [Option('o', "output", Required = true, HelpText = "OS output path for the generated bin file (.bin).")]
             public string OutputPath { get; set; }
 
-            [Option('f', "force", HelpText = "Force include unsupported file extensions")]
+            [Option('f', "force", HelpText = "Force include unsupported file extensions.")]
             public bool ForceUnsupported { get; set; }
         }
 
-        [Verb("unpack", HelpText = "Extract a game archive")]
+        [Verb("unpack", HelpText = "Extract a game archive.")]
         public class ExtractArchiveCommand : ArchiveCommand
         {
             [Option('i', "input", Required = true, HelpText = "OS input path for game data (.bin). Wildcards (*) supported.")]
             public string InputPath { get; set; }
 
-            [Option('o', "output", Required = true, HelpText = "OS output path for core files")]
+            [Option('o', "output", Required = true, HelpText = "OS output directory for core files.")]
             public string OutputPath { get; set; }
         }
 
