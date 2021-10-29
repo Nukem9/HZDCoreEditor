@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
+using System.Linq;
 
 namespace HZDCoreEditorTests
 {
@@ -150,6 +151,24 @@ namespace HZDCoreEditorTests
 
             // Otherwise ignore them
             _ = Decima.CoreBinary.FromFile(tempCorePath);
+        }
+
+        [TestCategory("GameBasic")]
+        [TestMethod]
+        public void GatherCoreExternalFileReferences()
+        {
+            var core = Decima.CoreBinary.FromFile(Path.Combine(GameDataPathExtracted, "generated_content/levels/worlds/world/scenes/bigrobotencounters/scenes/bre_raptor_01_5d285b6d.core"));
+
+            // I know that this is highly specific but I have no other "ground truth" besides what's already inside fullgame.prefetch.core. I'm
+            // using this file because it contains a HashMap<> with references.
+            var allReferences = core.GetAllReferences();
+            var newLinks = allReferences
+                .Where(x => x.Type == Decima.BaseRef.Types.ExternalLink)
+                .Select(x => x.ExternalFile.Value)
+                .Distinct()
+                .ToArray();
+
+            Assert.IsTrue(newLinks.Length == 2, $"{newLinks.Length} != 2");
         }
     }
 }
