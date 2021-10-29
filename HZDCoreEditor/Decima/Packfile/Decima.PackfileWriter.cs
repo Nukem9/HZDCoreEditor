@@ -37,9 +37,8 @@ namespace Decima
         /// Generate an archive from a set of file paths on disk.
         /// </summary>
         /// <param name="baseDirectoryRoot">Base directory to look for files</param>
-        /// <param name="sourceCorePaths">List of files in Decima core path format. If they are not in the correct
-        /// format, this function will attempt to sanitize them. <see cref="baseDirectoryRoot"/> is prepended to
-        /// each element when opening a file handle.</param>
+        /// <param name="sourceCorePaths">List of files in Decima core path format. <see cref="baseDirectoryRoot"/> is
+        /// prepended to each element when opening a file handle.</param>
         public void BuildFromFileList(string baseDirectoryRoot, IEnumerable<string> sourceCorePaths)
         {
             var streams = new List<(string Path, Stream Stream)>();
@@ -47,9 +46,7 @@ namespace Decima
             foreach (string corePath in sourceCorePaths)
             {
                 var fileStream = File.OpenRead(Path.Combine(baseDirectoryRoot, corePath));
-                var sanitizedPath = SanitizePath(corePath);
-
-                streams.Add((sanitizedPath, fileStream));
+                streams.Add((corePath, fileStream));
             }
 
             BuildFromStreamList(streams);
