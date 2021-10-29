@@ -278,6 +278,9 @@
     <ClInclude Include="HRZ\Core\ThirdPersonPlayerCameraComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HRZ\Core\PrefetchList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="HRZ\Core\RTTI.inl">

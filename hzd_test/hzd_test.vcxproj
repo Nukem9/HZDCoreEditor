@@ -134,6 +134,7 @@
     <ClInclude Include="HRZ\Core\NetReplicatedObject.h" />
     <ClInclude Include="HRZ\Core\PhysicsCollisionListener.h" />
     <ClInclude Include="HRZ\Core\Player.h" />
+    <ClInclude Include="HRZ\Core\PrefetchList.h" />
     <ClInclude Include="HRZ\Core\PropertyContainer.h" />
     <ClInclude Include="HRZ\Core\PropertyContainerData.h" />
     <ClInclude Include="HRZ\Core\Resource.h" />

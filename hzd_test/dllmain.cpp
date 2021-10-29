@@ -12,6 +12,7 @@
 #include "HRZ/Core/DebugSettings.h"
 #include "HRZ/Core/Application.h"
 #include "HRZ/Core/ThirdPersonPlayerCameraComponent.h"
+#include "HRZ/Core/PrefetchList.h"
 
 #include "HRZ/DebugUI/LogWindow.h"
 #include "HRZ/DebugUI/MainMenuBar.h"
@@ -22,14 +23,29 @@ constexpr auto test = GGUUID::Parse("40e36691-5fd0-4a79-b3b3-87b2a3d13e9c");
 constexpr auto test2 = GGUUID::Parse("{40e36691-5fd0-4a79-b3b3-87b2a3d13e9c}");
 constexpr auto test3 = GGUUID::Parse("{40E36691-5FD0-4A79-B3B3-87B2A3D13E9C}");
 
+void PreLoadObjectHook(RTTIBinaryReader *Reader)
+{
+	auto object = Reader->m_CurrentObject;
+	Reader->OnObjectPreInit(object);
+
+	// Subtract 12 for the core entry header length (uint64, uint)
+	uint64_t assetOffset = Reader->GetStreamPosition() - 12;
+
+	DebugUI::LogWindow::AddLog("[Asset] Loading %s at [offset %lld, address 0x%p] (%s)\n", object->GetRTTI()->GetSymbolName().c_str(), assetOffset, object, Reader->m_FullFilePath.c_str());
+}
+
 void PostLoadObjectHook(RTTIBinaryReader *Reader)
 {
 	auto object = Reader->m_CurrentObject;
 	Reader->OnObjectPostInit(object);
 
-	auto test = RTTI::Cast<LocalizedTextResource>(object);
-
-	DebugUI::LogWindow::AddLog("[Asset] Loaded %s at address 0x%p (%s)\n", object->GetRTTI()->GetSymbolName().c_str(), object, Reader->m_FullFilePath.c_str());
+	if (auto prefetch = RTTI::Cast<PrefetchList>(object); prefetch)
+	{
+		DebugUI::LogWindow::AddLog("[Asset] Finished prefetch load: %lld\n", Reader->GetStreamPosition());
+		DebugUI::LogWindow::AddLog("[Asset] Total files: %d\n", prefetch->m_Files.size());
+		DebugUI::LogWindow::AddLog("[Asset] Total sizes: %d\n", prefetch->m_Sizes.size());
+		DebugUI::LogWindow::AddLog("[Asset] Total links: %d\n", prefetch->m_Links.size());
+	}
 }
 
 void NodeGraphAlert(const char *Message, bool Unknown)
@@ -276,8 +292,11 @@ void ApplyHooks()
 
 		XUtil::DetourCall(g_ModuleBase + 0x023BBD0, &hk_SwapChainDX12_Present);
 
-		XUtil::PatchMemoryNop(g_ModuleBase + 0x4A7F82, 7);// Rewriting instructions since the 5 byte call doesn't fit
-		XUtil::DetourCall(g_ModuleBase + 0x4A7F82, &PostLoadObjectHook);
+		XUtil::PatchMemoryNop(g_ModuleBase + 0x04A7F82, 7);// Rewriting instructions since the 5 byte call doesn't fit
+		XUtil::DetourCall(g_ModuleBase + 0x04A7F82, &PostLoadObjectHook);
+
+		XUtil::PatchMemoryNop(g_ModuleBase + 0x04A7F55, 7);// Rewriting instructions since the 5 byte call doesn't fit
+		XUtil::DetourCall(g_ModuleBase + 0x04A7F55, &PreLoadObjectHook);
 
 		XUtil::DetourJump(g_ModuleBase + 0x0603D00, NodeGraphAlert);
 		XUtil::DetourJump(g_ModuleBase + 0x0603D10, NodeGraphAlertWithName);
