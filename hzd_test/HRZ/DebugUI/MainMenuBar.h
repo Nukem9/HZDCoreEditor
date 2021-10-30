@@ -2,6 +2,9 @@
 
 #include <imgui.h>
 
+#include "../../RTTIScanner.h"
+#include "../../RTTIIDAExporter.h"
+
 #include "../PCore/Ref.h"
 #include "../Core/WorldPosition.h"
 #include "../Core/Vec3.h"
@@ -353,6 +356,17 @@ public:
 
 			if (ImGui::MenuItem("Show Log Window"))
 				AddWindow(std::make_unique<LogWindow>());
+
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("Dump RTTI Typeinfo"))
+				RTTIScanner::ExportAll("C:\\hzd_rtti_export");
+
+			if (ImGui::MenuItem("Dump Fullgame Typeinfo"))
+			{
+				RTTIIDAExporter idaExporter(RTTIScanner::GetAllTypes());
+				idaExporter.ExportFullgameTypes("C:\\hzd_rtti_export");
+			}
 
 			ImGui::Separator();
 			ImGui::MenuItem("", nullptr, nullptr, false);

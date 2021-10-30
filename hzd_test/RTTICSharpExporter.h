@@ -14,7 +14,7 @@ private:
 	const std::unordered_set<const HRZ::RTTI *>& m_Types;
 
 public:
-	RTTICSharpExporter(const std::unordered_set<const HRZ::RTTI *> Types);
+	RTTICSharpExporter(const std::unordered_set<const HRZ::RTTI *>& Types);
 
 	void ExportAll(std::string_view Directory);
 

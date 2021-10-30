@@ -3,7 +3,7 @@
 
 using namespace HRZ;
 
-RTTICSharpExporter::RTTICSharpExporter(const std::unordered_set<const HRZ::RTTI *> Types) : m_Types(Types)
+RTTICSharpExporter::RTTICSharpExporter(const std::unordered_set<const HRZ::RTTI *>& Types) : m_Types(Types)
 {
 }
 

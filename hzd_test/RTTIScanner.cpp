@@ -13,15 +13,19 @@ std::unordered_set<const RTTI *> RegisteredRTTITypes;
 
 const std::unordered_set<const RTTI *>& GetAllTypes()
 {
+	// If no types are present, try to gather them now
+	if (!ScannedRTTITypes.empty() && RegisteredRTTITypes.empty())
+		RegisterRTTIStructures();
+
 	return RegisteredRTTITypes;
 }
 
 void ExportAll(std::string_view Directory)
 {
-	RTTIIDAExporter idaExporter(RegisteredRTTITypes);
+	RTTIIDAExporter idaExporter(GetAllTypes());
 	idaExporter.ExportRTTITypes(Directory);
 
-	RTTICSharpExporter csExporter(RegisteredRTTITypes);
+	RTTICSharpExporter csExporter(GetAllTypes());
 	csExporter.ExportAll(Directory);
 }
 
