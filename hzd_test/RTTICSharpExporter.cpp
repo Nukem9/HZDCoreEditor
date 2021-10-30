@@ -3,7 +3,9 @@
 
 using namespace HRZ;
 
-extern std::unordered_set<const RTTI *> AllRegisteredTypeInfo;
+RTTICSharpExporter::RTTICSharpExporter(const std::unordered_set<const HRZ::RTTI *> Types) : m_Types(Types)
+{
+}
 
 void RTTICSharpExporter::ExportAll(std::string_view Directory)
 {
@@ -12,7 +14,7 @@ void RTTICSharpExporter::ExportAll(std::string_view Directory)
 	// Build a list of all {classes|enums}, sorted by name
 	std::vector<const RTTI *> sortedTypes;
 
-	for (auto& type : AllRegisteredTypeInfo)
+	for (auto& type : m_Types)
 	{
 		switch (type->m_InfoType)
 		{

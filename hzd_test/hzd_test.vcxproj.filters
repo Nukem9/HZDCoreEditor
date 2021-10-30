@@ -51,6 +51,9 @@
     <ClCompile Include="HRZ\DebugUI\WeatherWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RTTIScanner.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h">
@@ -279,6 +282,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HRZ\Core\PrefetchList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RTTIScanner.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

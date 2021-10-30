@@ -9,9 +9,12 @@
 class RTTIIDAExporter
 {
 private:
-	FILE *m_FileHandle;
+	FILE *m_FileHandle = nullptr;
+	const std::unordered_set<const HRZ::RTTI *>& m_Types;
 
 public:
+	RTTIIDAExporter(const std::unordered_set<const HRZ::RTTI *> Types);
+
 	void ExportRTTITypes(std::string_view Directory);
 	void ExportFullgameTypes(std::string_view Directory);
 

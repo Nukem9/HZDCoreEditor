@@ -2,6 +2,7 @@
 
 #include <string_view>
 #include <format>
+#include <unordered_set>
 #include <stdio.h>
 
 #include "HRZ/Core/RTTI.h"
@@ -10,8 +11,11 @@ class RTTICSharpExporter
 {
 private:
 	FILE *m_FileHandle = nullptr;
+	const std::unordered_set<const HRZ::RTTI *>& m_Types;
 
 public:
+	RTTICSharpExporter(const std::unordered_set<const HRZ::RTTI *> Types);
+
 	void ExportAll(std::string_view Directory);
 
 private:

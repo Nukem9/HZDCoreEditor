@@ -9,10 +9,12 @@
 
 using namespace HRZ;
 
-extern std::unordered_set<const RTTI *> AllRegisteredTypeInfo;
-
 constexpr uintptr_t IDABaseAddressExe = 0x140000000;
 constexpr uintptr_t IDABaseAddressFullgame = 0x180000000;
+
+RTTIIDAExporter::RTTIIDAExporter(const std::unordered_set<const HRZ::RTTI*> Types) : m_Types(Types)
+{
+}
 
 void RTTIIDAExporter::ExportRTTITypes(std::string_view Directory)
 {
@@ -236,7 +238,7 @@ void RTTIIDAExporter::ExportGGRTTI()
 	std::unordered_set<const RTTI *> visitedRTTITypes;
 
 	// RTTI metadata
-	for (auto& type : AllRegisteredTypeInfo)
+	for (auto& type : m_Types)
 	{
 		auto pprint = [&]<typename... TArgs>(const void *Pointer, std::string_view Format, TArgs&&... Args)
 		{
@@ -330,7 +332,7 @@ void RTTIIDAExporter::ExportGGRTTI()
 	Print("/*\n");
 
 	// Enum and class members
-	for (auto type : AllRegisteredTypeInfo)
+	for (auto type : m_Types)
 	{
 		if (auto asEnum = type->AsEnum(); asEnum)
 		{
@@ -392,7 +394,7 @@ void RTTIIDAExporter::ExportGGRTTI()
 		}
 	}
 
-	for (auto& type : AllRegisteredTypeInfo)
+	for (auto& type : m_Types)
 	{
 		if (auto asClass = type->AsClass(); asClass)
 		{
@@ -468,7 +470,7 @@ void RTTIIDAExporter::ExportFullgameScriptSymbols()
 			Print("apply_type({0:#X}, \"{1:}\");\n", i - baseAddress + IDABaseAddressFullgame, BuildGameSymbolFunctionDecl(itr->second->m_Infos[0], true));
 		}
 
-		if (AllRegisteredTypeInfo.contains(asRTTI))
+		if (m_Types.contains(asRTTI))
 		{
 			Print("set_name({0:#X}, \"RTTI_{1:}\", SN_FORCE);\n", i - baseAddress + IDABaseAddressFullgame, asRTTI->GetSymbolName());
 		}
