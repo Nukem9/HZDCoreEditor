@@ -50,6 +50,15 @@ namespace Decima.HZD
         Direct_Crowd = 2,
     }
 
+    [RTTI.Serializable(0xF1688BDD2C30A517, GameType.HZD)]
+    public enum E3DTexNodeSampler : int32
+    {
+        Sampler3D = 0,
+        Sampler2DArray = 1,
+        Sampler2DArrayUVBlend = 2,
+        Sampler2DArrayMaskBlend = 3,
+    }
+
     [RTTI.Serializable(0xCCB10ECFF2AFECD5, GameType.HZD)]
     public enum EAAMode : int32
     {
@@ -95,6 +104,23 @@ namespace Decima.HZD
         LOS_ALWAYS = 0,
     }
 
+    [RTTI.Serializable(0xABBE0DC49C549914, GameType.HZD)]
+    public enum EAICoverAperture : int32
+    {
+        cover_aperture_left = 1,
+        cover_aperture_right = 2,
+        cover_aperture_up = 4,
+    }
+
+    [RTTI.Serializable(0xEB5294AF55A59B3, GameType.HZD)]
+    public enum EAICoverStance : int32
+    {
+        PRONE = 0,
+        CROUCH = 1,
+        STAND = 2,
+        INVALID = -1,
+    }
+
     [RTTI.Serializable(0x8C8262D1BF2F10D9, GameType.HZD)]
     public enum EAIDangerAreaType : int32
     {
@@ -105,6 +131,49 @@ namespace Decima.HZD
         Vehicle = 4,
         Cryo = 5,
         Sequence = 6,
+    }
+
+    [RTTI.Serializable(0x486538ACEA0ADB8B, GameType.HZD)]
+    public enum EAIEntityType : int32
+    {
+        Invalid = 0,
+        Unknown = 1,
+        Humanoid = 2,
+        Grenade = 3,
+        Rocket = 4,
+        LandVehicle = 5,
+        Turret = 6,
+        AirVehicle = 7,
+        Vehicle = 8,
+        MountedGun = 9,
+        Critter = 10,
+    }
+
+    [RTTI.Serializable(0xA7A724776D52C08A, GameType.HZD)]
+    public enum EAIGroupRoleType : int8
+    {
+        fictive = 0,
+        essential = 1,
+        optional = 2,
+        none = 3,
+    }
+
+    [RTTI.Serializable(0x9CE1BD53A2B599CA, GameType.HZD)]
+    public enum EAIGroupState : int8
+    {
+        prepare = 0,
+        execute = 1,
+        terminate = 2,
+    }
+
+    [RTTI.Serializable(0x3AD7EB51572DF91E, GameType.HZD)]
+    public enum EAINavmeshPlacmentType : int8
+    {
+        NoPlacementOnNavmesh = 0,
+        PointOnNavmesh = 1,
+        FindNearestPointInRangeOnNavmesh = 2,
+        FindRandomPointInRangeOnNavmesh = 3,
+        Default = 7,
     }
 
     [RTTI.Serializable(0x71A853F25377910E, GameType.HZD)]
@@ -176,6 +245,17 @@ namespace Decima.HZD
         getting_hit = 7,
     }
 
+    [RTTI.Serializable(0xDD228E23FA3D5936, GameType.HZD)]
+    public enum EAlertPartAttr : int32
+    {
+        Name = 0,
+        Type = 1,
+        Target = 2,
+        Line = 3,
+        Category = 4,
+        NumAttrs = 5,
+    }
+
     [RTTI.Serializable(0x5616D30C32DB4214, GameType.HZD)]
     public enum EAlertPartType : int32
     {
@@ -195,6 +275,14 @@ namespace Decima.HZD
         LogOnly = 2,
     }
 
+    [RTTI.Serializable(0xF8393DF8C4DF39D2, GameType.HZD)]
+    public enum EAllowSaveGame : int8
+    {
+        Yes = 0,
+        No = 1,
+        Ask = 2,
+    }
+
     [RTTI.Serializable(0x36F48A22F8EBDD81, GameType.HZD)]
     public enum EAlphaDepth : int32
     {
@@ -206,6 +294,16 @@ namespace Decima.HZD
         Greater = 4,
         NotEqual = 5,
         GreaterOrEqual = 6,
+    }
+
+    [RTTI.Serializable(0xC33D2B5B0F05E2FB, GameType.HZD)]
+    public enum EAmmoChargeState : int8
+    {
+        Idle = 0,
+        Charged = 1,
+        RetainingCharge = 2,
+        Firing = 3,
+        Discharging = 4,
     }
 
     [RTTI.Serializable(0x427FAED60FCC9B20, GameType.HZD)]
@@ -249,6 +347,17 @@ namespace Decima.HZD
         explosion = 2,
         fire = 1,
         electricity = 3,
+    }
+
+    [RTTI.Serializable(0x943171130411AE4B, GameType.HZD)]
+    public enum EAnimationDebugInfoFlags : int32
+    {
+        Variables = 1,
+        States = 2,
+        Transitions = 4,
+        Tags = 8,
+        Events = 16,
+        Messages = 32,
     }
 
     [RTTI.Serializable(0x532D9C9E326793FF, GameType.HZD)]
@@ -371,6 +480,21 @@ namespace Decima.HZD
         VelocityYawOnly = 7,
     }
 
+    [RTTI.Serializable(0x547AA365CE7E3F2F, GameType.HZD)]
+    public enum EBackgroundTableImage : int32
+    {
+        _0 = -1,
+        top_left = 0,
+        top_middle = 1,
+        top_right = 2,
+        middle_left = 3,
+        middle_middle = 4,
+        middle_right = 5,
+        bottom_left = 6,
+        bottom_middle = 7,
+        bottom_right = 8,
+    }
+
     [RTTI.Serializable(0x482AAA3B75AA1B48, GameType.HZD)]
     public enum EBehaviorEscalation : int8
     {
@@ -379,12 +503,105 @@ namespace Decima.HZD
         escalate_to_combat = 2,
     }
 
+    [RTTI.Serializable(0xA9DC04545EFCF314, GameType.HZD)]
+    public enum EBehaviorState : int8
+    {
+        not_focused_on_player = 0,
+        idle = 1,
+        investigate = 2,
+        search = 3,
+        combat = 4,
+    }
+
     [RTTI.Serializable(0xEC4A2415DFFFF2D4, GameType.HZD)]
     public enum EBehaviourOnHide : int32
     {
         Success = 0,
         Fail = 1,
         Hide = 2,
+    }
+
+    [RTTI.Serializable(0xF13C1666FF27AEDF, GameType.HZD)]
+    public enum EBidiClass : int8
+    {
+        _0 = 0,
+        L = 1,
+        R = 2,
+        AL = 3,
+        EN = 4,
+        ES = 5,
+        ET = 6,
+        AN = 7,
+        CS = 8,
+        NSM = 9,
+        BN = 10,
+        B = 11,
+        S = 12,
+        WS = 13,
+        ON = 14,
+        LRE = 15,
+        LRO = 16,
+        RLE = 17,
+        RLO = 18,
+        PDF = 19,
+        LRI = 20,
+        RLI = 21,
+        FSI = 22,
+        PDI = 23,
+    }
+
+    [RTTI.Serializable(0x498C4EC64C80C9DC, GameType.HZD)]
+    public enum EBinaryReaderResult : int32
+    {
+        Success = 0,
+        Could_not_read_from_stream = 1,
+        Type_not_found = 2,
+        Atom_too_large = 4,
+        Failed_to_convert_atom = 5,
+        Pointer_set_failed = 6,
+        Found_a_root_object_whose_type_was_not_RTTIObject_derived = 3,
+        Corrupt_file = 7,
+        Skipping_not_supported = 8,
+    }
+
+    [RTTI.Serializable(0x89476C794298E804, GameType.HZD)]
+    public enum EBinaryWriterResult : int32
+    {
+        Success = 0,
+        Write_failed = 1,
+        Internal_error = 2,
+        Link_to_non_RTTIRefObject = 3,
+        Link_to_object_without_UUID = 4,
+        Atom_too_large = 5,
+    }
+
+    [RTTI.Serializable(0xD343D65CAB88599, GameType.HZD)]
+    public enum EBlendFactor : int32
+    {
+        Zero = 0,
+        One = 1,
+        SrcAlpha = 2,
+        InvSrcAlpha = 3,
+        DestAlpha = 4,
+        InvDestAlpha = 5,
+        SrcColor = 6,
+        InvSrcColor = 7,
+        DestColor = 8,
+        InvDestColor = 9,
+        ConstantColor = 10,
+        ConstantAlpha = 11,
+        InvConstantColor = 12,
+        InvConstantAlpha = 13,
+    }
+
+    [RTTI.Serializable(0x9685147DF67C4A4, GameType.HZD)]
+    public enum EBlendOp : int32
+    {
+        Add = 0,
+        Subtract = 1,
+        ReverseSubtract = 2,
+        Min = 3,
+        Max = 4,
     }
 
     [RTTI.Serializable(0x70A106565C79D279, GameType.HZD)]
@@ -400,6 +617,16 @@ namespace Decima.HZD
     {
         And = 0,
         Or = 1,
+    }
+
+    [RTTI.Serializable(0xF50702DD356B46BB, GameType.HZD)]
+    public enum EBreathingState : int32
+    {
+        Not_Set = -1,
+        None = 0,
+        Slow = 1,
+        Medium = 2,
+        Fast = 3,
     }
 
     [RTTI.Serializable(0xCB486D8385A352E4, GameType.HZD)]
@@ -600,6 +827,32 @@ namespace Decima.HZD
         Virtual_Mouse_Left_Button = 186,
     }
 
+    [RTTI.Serializable(0x70ABFCB775446A9A, GameType.HZD)]
+    public enum ECameraBlendDirection : int32
+    {
+        BlendToTarget = 0,
+        ReturnToPrevious = 1,
+    }
+
+    [RTTI.Serializable(0x1C5056B49143780A, GameType.HZD)]
+    public enum ECameraBlendType : int32
+    {
+        CameraBlend = 0,
+        SupportBlend = 1,
+    }
+
+    [RTTI.Serializable(0x1039137E87836080, GameType.HZD)]
+    public enum ECameraFacingMode : int32
+    {
+        CameraFacingDisabled = 0,
+        CameraFacing = 1,
+        CameraFacingAxisLocked = 2,
+        CameraFacingPositionsOnly = 3,
+        CameraFacingPositionsOnlyAxisLocked = 4,
+        CameraFacingAxisAligned = 5,
+        CameraFacingPositionsOnlyAxisAligned = 6,
+    }
+
     [RTTI.Serializable(0xF371DA5B2488A6A0, GameType.HZD)]
     public enum ECameraShotType : int32
     {
@@ -674,6 +927,18 @@ namespace Decima.HZD
         Ultra = 4,
     }
 
+    [RTTI.Serializable(0xD274A9966FD69B48, GameType.HZD)]
+    public enum EChargeState : int32
+    {
+        Idle = 0,
+        Charging = 1,
+        Dissipating = 2,
+        Charged = 3,
+        Prepare_Fire = 4,
+        Firing = 5,
+        Awaiting_discharged = 6,
+    }
+
     [RTTI.Serializable(0x40C30D70EEF1A1C9, GameType.HZD)]
     public enum ECheckQuestItems : int8
     {
@@ -713,6 +978,15 @@ namespace Decima.HZD
         robot = 0,
         corrupted = 1,
         cauldron_corrupted = 2,
+    }
+
+    [RTTI.Serializable(0x1DCF311E34F9E514, GameType.HZD)]
+    public enum ECollectableSection : int32
+    {
+        Collectable = 0,
+        Catalogue = 2,
+        DataCube = 1,
+        BlueGleam = 3,
     }
 
     [RTTI.Serializable(0x7B76E446EE953A2B, GameType.HZD)]
@@ -869,6 +1143,31 @@ namespace Decima.HZD
         Remote_Play = 1,
     }
 
+    [RTTI.Serializable(0x1677AC298FF27EAA, GameType.HZD)]
+    public enum ECoreLightingMode : int32
+    {
+        IBL = 0,
+        LightSampling = 1,
+        None = 2,
+        DeferredIBL = 3,
+    }
+
+    [RTTI.Serializable(0xF84E71B1A11D1B93, GameType.HZD)]
+    public enum ECoverFrom : int32
+    {
+        cover_from_all = 0,
+        cover_from_any = 1,
+    }
+
+    [RTTI.Serializable(0xCC3CFCC01A4B61F9, GameType.HZD)]
+    public enum ECoverHeight : int32
+    {
+        None = 0,
+        LowCrouched = 1,
+        Low = 2,
+        High = 3,
+    }
+
     [RTTI.Serializable(0x63C6860EB2CEA63D, GameType.HZD)]
     public enum ECrashMoverTargeting : int32
     {
@@ -945,11 +1244,32 @@ namespace Decima.HZD
         Crouch = 3,
     }
 
+    [RTTI.Serializable(0xEDAEE9C8FAABB8ED, GameType.HZD)]
+    public enum ECubemapFace : int32
+    {
+        XPlus = 0,
+        XMinus = 1,
+        YPlus = 2,
+        YMinus = 3,
+        ZPlus = 4,
+        ZMinus = 5,
+        Invalid = 6,
+    }
+
     [RTTI.Serializable(0x1088866198E83A92, GameType.HZD)]
     public enum ECubemapZoneDataStorageMode : int8
     {
         NonStreamingData = 0,
         StreamingData = 1,
+    }
+
+    [RTTI.Serializable(0x9307F301D85AB770, GameType.HZD)]
+    public enum ECubemapZoneStreamingState : int8
+    {
+        Not_Streaming = 0,
+        Not_Loaded = 1,
+        Requested = 2,
+        Loaded = 3,
     }
 
     [RTTI.Serializable(0xE440A7BF5092B8C3, GameType.HZD)]
@@ -960,8 +1280,27 @@ namespace Decima.HZD
         Off = 0,
     }
 
+    [RTTI.Serializable(0x29011659046C5891, GameType.HZD)]
+    public enum ED3D12CommandListType : int8
+    {
+        Direct = 0,
+        Bundle = 1,
+        Compute = 2,
+        Copy = 3,
+        VideoDecode = 4,
+        VideoProcess = 5,
+    }
+
+    [RTTI.Serializable(0x4DA1239D6018257, GameType.HZD)]
+    public enum EDX12HeapType : int8
+    {
+        Upload = 0,
+        ReadBack = 1,
+        VRAM = 2,
+    }
+
     [RTTI.Serializable(0x451A5B8C8AAFF841, GameType.HZD)]
-    public enum EDamageFlags : int32
+    public enum EDamageFlags : uint32
     {
         Empty = 0,
         NoEffects = 1,
@@ -995,7 +1334,7 @@ namespace Decima.HZD
         User24 = 268435456,
         User25 = 536870912,
         User26 = 1073741824,
-        User27 = -2147483648,
+        User27 = 2147483648,
     }
 
     [RTTI.Serializable(0x1635C5268F821B8, GameType.HZD)]
@@ -1055,11 +1394,53 @@ namespace Decima.HZD
         Structured = 23,
     }
 
+    [RTTI.Serializable(0xBF6855C3460E814C, GameType.HZD)]
+    public enum EDebugDepthPrimeMode : int32
+    {
+        Default = 0,
+        Ignored = 1,
+        OverlayView = 2,
+        DirectView = 3,
+    }
+
     [RTTI.Serializable(0x55BE62549B690A95, GameType.HZD)]
     public enum EDebugFlagDefault : int32
     {
         Action = 0,
         ElseAction = 1,
+    }
+
+    [RTTI.Serializable(0x435A997C68AC51E6, GameType.HZD)]
+    public enum EDebugRendererMode : int32
+    {
+        Disabled = 0,
+        MosaicPageFirst = 1,
+        MosaicPageLast = 2,
+        Position = 3,
+        Normal = 4,
+        Albedo = 5,
+        Roughness = 6,
+        SpecularIntensity = 7,
+        SunOcclusion = 8,
+        MotionVectors = 9,
+        Translucency = 10,
+        Diffusion = 11,
+        LightingOnly = 12,
+        SunShadow = 13,
+        LightSampling = 14,
+        NormalWS = 15,
+        Tangent = 16,
+        Binormal = 17,
+        OmniShadow = 18,
+        TransparentOnly = 19,
+        VolumeLightBuffer = 20,
+        SunLightShafts = 21,
+        VolumeAmount0 = 22,
+        VolumeAmount1 = 23,
+        VolumeAmount2 = 24,
+        VolumeAmount3 = 25,
+        VolumeLightAmount3D = 26,
+        LongDistanceShadowMap = 27,
     }
 
     [RTTI.Serializable(0xA13DC9447CD9C177, GameType.HZD)]
@@ -1093,6 +1474,54 @@ namespace Decima.HZD
         UUIDRef = 3,
     }
 
+    [RTTI.Serializable(0x4A237B246A52A0DD, GameType.HZD)]
+    public enum EDefaultShader : int8
+    {
+        Texture = 0,
+        DebugFont = 1,
+        Diffuse = 2,
+        Diffuse2D = 3,
+        DiffuseLight = 4,
+        DropShadow = 5,
+        ConstantColor = 6,
+        ConstantColorInstanced = 7,
+        ConstantColorLight = 8,
+        ConstantColorNormal = 9,
+        Filter4 = 10,
+        Filter8 = 11,
+        Filter16 = 12,
+        TextureRectDiffuse = 13,
+        TextureRectDiffuseMRT = 14,
+        TextureUIntRectDiffuse = 15,
+        Glyphs = 16,
+        DepthBuffer = 17,
+        DepthBufferOutput = 18,
+        TextureAntiAliased = 19,
+        InitProgress = 20,
+        YUVToRGB = 21,
+        TextureMasked = 22,
+        TexRectSwizzled = 23,
+        ShaderGraph = 24,
+    }
+
+    [RTTI.Serializable(0x9157872BF98A1C0D, GameType.HZD)]
+    public enum EDeferredMaterialID : int32
+    {
+        DEFERRED_MATERIAL_ID_NONE = 0,
+        DEFERRED_MATERIAL_ID_TRANSPARENT = 1,
+        DEFERRED_MATERIAL_ID_HAIR = 2,
+        DEFERRED_MATERIAL_ID_SKIN = 3,
+    }
+
+    [RTTI.Serializable(0xAD944B60B14C8B7F, GameType.HZD)]
+    public enum EDeferredTransparentMatID : int32
+    {
+        Transparent = 0,
+        Hair = 1,
+        Skin = 2,
+        Foliage = 3,
+    }
+
     [RTTI.Serializable(0x6FD217A2B7F522E9, GameType.HZD)]
     public enum EDelayLineTapIndex : int32
     {
@@ -1114,6 +1543,26 @@ namespace Decima.HZD
     {
         SingleMap = 0,
         Full = 1,
+    }
+
+    [RTTI.Serializable(0xBFC2F715E06C2ADC, GameType.HZD)]
+    public enum EDescriptorHeapTypeDX12 : int32
+    {
+        SRV = 0,
+        Sampler = 1,
+        RTV = 2,
+        DSV = 3,
+    }
+
+    [RTTI.Serializable(0x3D00E6FE46304207, GameType.HZD)]
+    public enum EDevelopmentStatus : int8
+    {
+        Unknown = 0,
+        Mockup = 1,
+        _1stPassArt = 2,
+        _2ndPassArt = 3,
+        Polish = 4,
+        Finished = 5,
     }
 
     [RTTI.Serializable(0xD06EE641B09C84DC, GameType.HZD)]
@@ -1301,6 +1750,14 @@ namespace Decima.HZD
         Handling = 13,
     }
 
+    [RTTI.Serializable(0xF7D667BF20F7F0B6, GameType.HZD)]
+    public enum EDrawHUDMode : int32
+    {
+        On = 0,
+        Partially = 1,
+        Off = 2,
+    }
+
     [RTTI.Serializable(0xE12E702D19B35E80, GameType.HZD)]
     public enum EDrawPartType : int32
     {
@@ -1349,6 +1806,14 @@ namespace Decima.HZD
         Sphere = 0,
         Box = 1,
         Mesh = 2,
+    }
+
+    [RTTI.Serializable(0x3BECCA78FC2C5837, GameType.HZD)]
+    public enum EEngagementMode : int32
+    {
+        fire_at_will = 0,
+        hold_fire_till_fired_upon = 1,
+        hold_fire = 2,
     }
 
     [RTTI.Serializable(0x9D15D46468DDF141, GameType.HZD)]
@@ -1422,6 +1887,14 @@ namespace Decima.HZD
         Trigger_at_start = 0,
         Trigger_continuous = 1,
         Trigger_on_stop = 2,
+    }
+
+    [RTTI.Serializable(0x4187B5B0B549185B, GameType.HZD)]
+    public enum EExplosiveIndicatorLightState : int32
+    {
+        Off = 0,
+        On = 1,
+        Blink = 2,
     }
 
     [RTTI.Serializable(0x19A33500F3CF36C, GameType.HZD)]
@@ -1505,6 +1978,26 @@ namespace Decima.HZD
         Square = 2,
     }
 
+    [RTTI.Serializable(0xCC352FB24997C46A, GameType.HZD)]
+    public enum EFilter : int32
+    {
+        PointFilterNoMips = 0,
+        PointFilter = 1,
+        BilinearNoMips = 2,
+        Bilinear = 3,
+        Trilinear = 4,
+        Anisotropic = 5,
+        AnisotropicTrilinear = 6,
+    }
+
+    [RTTI.Serializable(0x539EEDF563B41FEC, GameType.HZD)]
+    public enum EFindNavmeshPositionResult : int32
+    {
+        NavmeshPositionFound = 0,
+        GeneratePointsFailed = 1,
+        NoFreePosition = 2,
+    }
+
     [RTTI.Serializable(0x32EBD43E5A14AA4, GameType.HZD)]
     public enum EFloatFactComparisonLogic : int32
     {
@@ -1538,6 +2031,16 @@ namespace Decima.HZD
         Probes = 1,
     }
 
+    [RTTI.Serializable(0x9EA56D3C567568C2, GameType.HZD)]
+    public enum EFlowPuzzleNodeState : int8
+    {
+        Off = 0,
+        On = 1,
+        HalfConnected = 2,
+        Connected = 3,
+        Solved = 4,
+    }
+
     [RTTI.Serializable(0x5FA1125ECCB513E4, GameType.HZD)]
     public enum EFocusState : int32
     {
@@ -1559,6 +2062,14 @@ namespace Decima.HZD
         Value4 = 4,
         Value5 = 5,
         Value6 = 6,
+    }
+
+    [RTTI.Serializable(0x407712A3DAFA0FE8, GameType.HZD)]
+    public enum EFootDown : int32
+    {
+        NO_FOOT = -1,
+        LEFT_FOOT = 11,
+        RIGHT_FOOT = 10,
     }
 
     [RTTI.Serializable(0xFB765B48A78E7410, GameType.HZD)]
@@ -1619,6 +2130,21 @@ namespace Decima.HZD
         Auto = 0,
         Enable = 1,
         Disable = 2,
+    }
+
+    [RTTI.Serializable(0xC38F363C4F85971F, GameType.HZD)]
+    public enum EForwardShadowReceiverMode : int32
+    {
+        Auto = 0,
+        Enabled = 1,
+        Disabled = 2,
+    }
+
+    [RTTI.Serializable(0x85298F2703A2AC99, GameType.HZD)]
+    public enum EForwardSunShadowSampleMode : int32
+    {
+        UseAllCascades = 0,
+        LongDistanceShadowOnly = 1,
     }
 
     [RTTI.Serializable(0x9220FF2B5D054C86, GameType.HZD)]
@@ -1701,6 +2227,24 @@ namespace Decima.HZD
         ShowProgressedAndUnknownWhenNotProgressed = 2,
     }
 
+    [RTTI.Serializable(0x395FF7E4B4C1F759, GameType.HZD)]
+    public enum EGearSoundType : int32
+    {
+        Invalid = -1,
+        FootstepDownCrouch = 0,
+        FootstepDownSlow = 1,
+        FootstepDown = 2,
+        FootstepDownSprint = 3,
+        FootstepUpCrouch = 10,
+        FootstepUpSlow = 11,
+        FootstepUp = 12,
+        FootstepUpSprint = 13,
+        FootstepDrag = 20,
+        Footslide = 21,
+        Jump = 30,
+        Land = 31,
+    }
+
     [RTTI.Serializable(0xFD9374588C6E65F1, GameType.HZD)]
     public enum EGender : int8
     {
@@ -1725,6 +2269,25 @@ namespace Decima.HZD
         Target = 1,
     }
 
+    [RTTI.Serializable(0x72143263F476C8EE, GameType.HZD)]
+    public enum EGestureUsage : int32
+    {
+        ON_FOOT = 0,
+        STANDING = 1,
+        CROUCHING = 2,
+        IDLE = 3,
+        TACTICAL = 4,
+        COMBAT = 5,
+    }
+
+    [RTTI.Serializable(0x4447B99474008923, GameType.HZD)]
+    public enum EGodMode : int32
+    {
+        Off = 0,
+        On = 1,
+        Invulnerable = 2,
+    }
+
     [RTTI.Serializable(0x3F383A0B442542C7, GameType.HZD)]
     public enum EGraphSoundUpdateRate : int32
     {
@@ -1744,6 +2307,39 @@ namespace Decima.HZD
         Medium = 1,
         Low = 0,
         Custom = 4,
+    }
+
+    [RTTI.Serializable(0x613076D77344FB9F, GameType.HZD)]
+    public enum EGrief : int32
+    {
+        Obscene = 0,
+        Discrimination = 1,
+        Harassment = 2,
+        Cheating = 3,
+        Defamation = 4,
+        Gameplay = 5,
+        Impersonation = 6,
+        Other = 7,
+    }
+
+    [RTTI.Serializable(0x5FFB5E5C06F3BF16, GameType.HZD)]
+    public enum EGudaParameter : int32
+    {
+        inDeltaTime = 0,
+        inEntity = 1,
+        inListenerHeading = 2,
+        inWallProximityFront = 3,
+        inWallMaterialFront = 4,
+        inWallAzimuthFront = 5,
+        inWallProximityRight = 6,
+        inWallMaterialRight = 7,
+        inWallAzimuthRight = 8,
+        inWallProximityBack = 9,
+        inWallMaterialBack = 10,
+        inWallAzimuthBack = 11,
+        inWallProximityLeft = 12,
+        inWallMaterialLeft = 13,
+        inWallAzimuthLeft = 14,
     }
 
     [RTTI.Serializable(0x5175D0F0C0784E56, GameType.HZD)]
@@ -1879,6 +2475,28 @@ namespace Decima.HZD
         five_levels_up = 5,
     }
 
+    [RTTI.Serializable(0x6668FD5E3BB5D9D9, GameType.HZD)]
+    public enum EHighLevelBehaviorDescription : int8
+    {
+        idling = 0,
+        patrolling = 1,
+        defending = 2,
+        searching = 3,
+        fleeing = 4,
+        transporting = 5,
+        combat = 6,
+        scavenging = 7,
+        unknown = 8,
+    }
+
+    [RTTI.Serializable(0xB3CEF6E32F24DD86, GameType.HZD)]
+    public enum EHighTextureMipSkipOverrideMode : int8
+    {
+        Default = 0,
+        ForceSkip = 1,
+        ForceNotSkip = 2,
+    }
+
     [RTTI.Serializable(0x4151F1C68847603B, GameType.HZD)]
     public enum EHitDirection : int32
     {
@@ -1967,6 +2585,50 @@ namespace Decima.HZD
         Moving = 1,
         Falling = 2,
         Dead = 3,
+    }
+
+    [RTTI.Serializable(0xAF993E6A450E1AEA, GameType.HZD)]
+    public enum EHumanoidWalkStateUpdateType : int32
+    {
+        None = 0,
+        Idle = 1,
+        Start = 2,
+        Cycle = 3,
+        Stop = 4,
+        Turn = 5,
+        QuickTurn = 6,
+        SpecialMove = 7,
+    }
+
+    [RTTI.Serializable(0x8C8AC29597D9247B, GameType.HZD)]
+    public enum EIOError : int8
+    {
+        Operation_successful = 2,
+        General_failure = 3,
+        Access_denied = 4,
+        Can_t_open_file = 5,
+        File_not_opened = 6,
+        File_with_the_specified_name_does_not_exist = 7,
+        Can_t_read_to_file = 8,
+        Can_t_write_to_file = 9,
+        Input_past_end_of_file = 10,
+        Unable_to_write_all_bytes = 11,
+        File_cannot_be_created__it_already_exists = 12,
+        Can_t_allocate_any_more_file_handles = 13,
+        The_read_callback_failed = 14,
+        The_operation_was_canceled = 16,
+    }
+
+    [RTTI.Serializable(0x2A3895383ADAD4BA, GameType.HZD)]
+    public enum EIOPriority : uint32
+    {
+        Highest = 127,
+        High = 126,
+        AboveNormal = 30,
+        Normal = 0,
+        BelowNormal = 4294967266,
+        Low = 4294967170,
+        Lowest = 4294967169,
     }
 
     [RTTI.Serializable(0x1E39615F7DE84BF, GameType.HZD)]
@@ -2172,6 +2834,24 @@ namespace Decima.HZD
         DefaultData = 3,
     }
 
+    [RTTI.Serializable(0xBE9CA08604C29EA0, GameType.HZD)]
+    public enum EImageFormat : int32
+    {
+        dds = 0,
+        png = 1,
+        tga = 2,
+        jpg = 3,
+        bmp = 4,
+        tiff = 5,
+        psd = 6,
+        exr = 7,
+        hdr = 8,
+        ies = 9,
+        raw = 10,
+        cube = 11,
+        unknown = 12,
+    }
+
     [RTTI.Serializable(0xCA564630080B732D, GameType.HZD)]
     public enum EImpactEffectOverrideMode : int32
     {
@@ -2191,6 +2871,15 @@ namespace Decima.HZD
     {
         Default = 0,
         UndergroundVolume = 1,
+    }
+
+    [RTTI.Serializable(0x46B0DDAD793A5286, GameType.HZD)]
+    public enum EInheritableFlag : int32
+    {
+        Disabled = 0,
+        Enabled = 1,
+        Inherited = 2,
+        SomeEnabled = 3,
     }
 
     [RTTI.Serializable(0xF13C0631AB8D0FC5, GameType.HZD)]
@@ -2238,6 +2927,15 @@ namespace Decima.HZD
         BuyBack = 7,
     }
 
+    [RTTI.Serializable(0xB747423711B95B7C, GameType.HZD)]
+    public enum EInventoryItemOwnership : int32
+    {
+        Dropped = 0,
+        Owned = 1,
+        Pending_Pickup = 2,
+        Changing_Owner = 3,
+    }
+
     [RTTI.Serializable(0x7FF809DD0DB7948E, GameType.HZD)]
     public enum EInventoryItemRemoveType : int8
     {
@@ -2247,6 +2945,159 @@ namespace Decima.HZD
         Craft = 3,
         Consume = 4,
         Remember = 5,
+    }
+
+    [RTTI.Serializable(0x3662A9E2579C0153, GameType.HZD)]
+    public enum EInventorySelectionType : int32
+    {
+        InventorySelectionAmmo = 0,
+        InventorySelectionWeapons = 1,
+    }
+
+    [RTTI.Serializable(0x9F99863CE9E20975, GameType.HZD)]
+    public enum EInventoryWeaponType : int32
+    {
+        InventoryWeaponTypeAny = 0,
+        InventoryWeaponTypeRanged = 2,
+        InventoryWeaponTypeMelee = 1,
+    }
+
+    [RTTI.Serializable(0xFF53352165E2006B, GameType.HZD)]
+    public enum EItemOverrideState : int32
+    {
+        Idle = 0,
+        Requested = 1,
+        Set = 2,
+    }
+
+    [RTTI.Serializable(0x82FD61A5A0AC07B5, GameType.HZD)]
+    public enum EJoystickInputMode : int32
+    {
+        Default = 0,
+        FollowFocus = 1,
+    }
+
+    [RTTI.Serializable(0x94C89ADA7C622212, GameType.HZD)]
+    public enum EKeyCode : int32
+    {
+        Unset = 0,
+        Esc = 1,
+        Plus = 2,
+        Minus = 3,
+        Space = 4,
+        Tilde = 5,
+        SingleQuote = 6,
+        OpenBracket = 7,
+        CloseBracket = 8,
+        Backslash = 9,
+        ForwardSlash = 10,
+        Colon = 11,
+        Comma = 12,
+        Period = 13,
+        Enter = 14,
+        Backspace = 15,
+        Tab = 16,
+        Left = 17,
+        Right = 18,
+        Up = 19,
+        Down = 20,
+        Home = 21,
+        End = 22,
+        PageUp = 23,
+        PageDown = 24,
+        Ins = 25,
+        Del = 26,
+        PadMul = 27,
+        PadDiv = 28,
+        PadAdd = 29,
+        PadSub = 30,
+        PadEnter = 31,
+        Pad0 = 32,
+        Pad1 = 33,
+        Pad2 = 34,
+        Pad3 = 35,
+        Pad4 = 36,
+        Pad5 = 37,
+        Pad6 = 38,
+        Pad7 = 39,
+        Pad8 = 40,
+        Pad9 = 41,
+        PadDel = 42,
+        CapsLock = 43,
+        PrintScreen = 44,
+        ScrollLock = 45,
+        NumLock = 46,
+        Pause = 47,
+        LeftAlt = 48,
+        RightAlt = 49,
+        LeftCtrl = 50,
+        RightCtrl = 51,
+        LeftShift = 52,
+        RightShift = 53,
+        LeftWinLogo = 54,
+        RightWinLogo = 55,
+        ContextMenu = 56,
+        F1 = 57,
+        F2 = 58,
+        F3 = 59,
+        F4 = 60,
+        F5 = 61,
+        F6 = 62,
+        F7 = 63,
+        F8 = 64,
+        F9 = 65,
+        F10 = 66,
+        F11 = 67,
+        F12 = 68,
+        _0 = 69,
+        _1 = 70,
+        _2 = 71,
+        _3 = 72,
+        _4 = 73,
+        _5 = 74,
+        _6 = 75,
+        _7 = 76,
+        _8 = 77,
+        _9 = 78,
+        A = 79,
+        B = 80,
+        C = 81,
+        D = 82,
+        E = 83,
+        F = 84,
+        G = 85,
+        H = 86,
+        I = 87,
+        J = 88,
+        K = 89,
+        L = 90,
+        M = 91,
+        N = 92,
+        O = 93,
+        P = 94,
+        Q = 95,
+        R = 96,
+        S = 97,
+        T = 98,
+        U = 99,
+        V = 100,
+        W = 101,
+        X = 102,
+        Y = 103,
+        Z = 104,
+        SHARP = 105,
+        OEM1 = 106,
+        OEM2 = 107,
+        OEM3 = 108,
+        OEM4 = 109,
+        OEM5 = 110,
+        OEM6 = 111,
+        OEM7 = 112,
+        OEM8 = 113,
+        OEM102 = 114,
+        CapsToggle = 115,
+        NumToggle = 116,
+        ScrollToggle = 117,
     }
 
     [RTTI.Serializable(0xA4BE78E9198464A7, GameType.HZD)]
@@ -2286,6 +3137,14 @@ namespace Decima.HZD
         Add = 4,
         Subtract = 5,
         Max = 6,
+    }
+
+    [RTTI.Serializable(0xB64BF5DAED22C567, GameType.HZD)]
+    public enum ELayerDataGPUAccessMode : int32
+    {
+        GPU_READ_ONLY = 0,
+        GPU_READ_WRITE = 1,
+        RENDER_TARGET = 2,
     }
 
     [RTTI.Serializable(0x8443BFF5D34450CA, GameType.HZD)]
@@ -2425,6 +3284,25 @@ namespace Decima.HZD
         LightSamplingRes1x1 = 0,
     }
 
+    [RTTI.Serializable(0x29B7A3DE223D51B3, GameType.HZD)]
+    public enum ELightTypeRender : int32
+    {
+        Omni = 1,
+        Spot = 2,
+        ShadowSpot = 4,
+        Sun = 8,
+    }
+
+    [RTTI.Serializable(0xA64BAF598619301B, GameType.HZD)]
+    public enum ELightVisibility : int32
+    {
+        Visible = 0,
+        Invisible = 1,
+        OutsideCameraFrustum = 2,
+        OutsideFadeRange = 3,
+        OutsideActiveView = 4,
+    }
+
     [RTTI.Serializable(0x6B1CC97EFF088A9, GameType.HZD)]
     public enum ELightbakeZoneOrientation : int32
     {
@@ -2448,6 +3326,14 @@ namespace Decima.HZD
         GroundLevel = 3,
     }
 
+    [RTTI.Serializable(0x271C6005BB5578D4, GameType.HZD)]
+    public enum ELightingBallMode : int32
+    {
+        Off = 0,
+        Default = 1,
+        DeferredFwd = 2,
+    }
+
     [RTTI.Serializable(0xFE68E268F2C88D0D, GameType.HZD)]
     public enum ELightmapEncodeColorScale : int32
     {
@@ -2460,11 +3346,36 @@ namespace Decima.HZD
         Scale_by_brightest_color = 1,
     }
 
+    [RTTI.Serializable(0x9AFDD82520028B49, GameType.HZD)]
+    public enum ELocalizedAnimationStatus : int8
+    {
+        AutoGenerated = 0,
+        MotionCaptured = 1,
+        UserGenerated = 2,
+        AutoGeneratedRevert = 3,
+    }
+
     [RTTI.Serializable(0x5B8BDA3CA6E0D9B0, GameType.HZD)]
     public enum ELocationType : int32
     {
         Global = 0,
         Local = 1,
+    }
+
+    [RTTI.Serializable(0x1279929AF69E915E, GameType.HZD)]
+    public enum ELockState : int32
+    {
+        LockStateNone = 0,
+        LockStateLocking = 1,
+        LockStateLockAquired = 2,
+    }
+
+    [RTTI.Serializable(0xE576FDC0AEFDA9E1, GameType.HZD)]
+    public enum ELongDistanceShadowMode : int32
+    {
+        Tiled = 0,
+        Swept = 1,
+        Off = 2,
     }
 
     [RTTI.Serializable(0xEE0F852A08DC1682, GameType.HZD)]
@@ -2522,6 +3433,21 @@ namespace Decima.HZD
         VeryRare = 3,
     }
 
+    [RTTI.Serializable(0x1EBE09B6068215B, GameType.HZD)]
+    public enum EMITNodeType : int32
+    {
+        Invalid = 0,
+        MultiMeshResource = 2,
+        StaticMeshResource = 1,
+        LodMeshResource = 3,
+        SkinnedMeshResource = 4,
+        BlendedMeshResource = 5,
+        RenderEffectResource = 7,
+        DrawableSetup = 8,
+        MeshInstanceTreeRef = 9,
+        LightweightStatic = 6,
+    }
+
     [RTTI.Serializable(0x67B73BEC3200B74C, GameType.HZD)]
     public enum EMapZoneRevealAreaMode : int8
     {
@@ -2560,11 +3486,79 @@ namespace Decima.HZD
         Mask_D_Alpha = 15,
     }
 
+    [RTTI.Serializable(0x4C3FDD2A267286D5, GameType.HZD)]
+    public enum EMatchmakingState : int32
+    {
+        idle = 0,
+        preparing = 1,
+        sending = 2,
+        waiting = 3,
+        assigned = 4,
+        error = 5,
+    }
+
     [RTTI.Serializable(0x2A745752926128EF, GameType.HZD)]
     public enum EMaterialDebugType : int32
     {
         Static = 0,
         Dynamic = 1,
+    }
+
+    [RTTI.Serializable(0x1D4B1C904C99AFAA, GameType.HZD)]
+    public enum EMaterialDepthPassMode : int32
+    {
+        NoDepthPass = 0,
+        DepthPassOnly = 1,
+        DepthPassAndRendering = 2,
+        DepthPassBackFacesAndRendering = 3,
+    }
+
+    [RTTI.Serializable(0x72FF13D5B686D50E, GameType.HZD)]
+    public enum EMaterialRenderingMode : int32
+    {
+        Regular = 0,
+        CustomDeferred = 1,
+        Sky = 2,
+        Graffiti = 3,
+        Decal = 4,
+        GrafittiCustomLight = 5,
+        DecalCustomLight = 6,
+        ForwardWater = 7,
+        ForwardPreColorize = 8,
+        ForwardBackground = 9,
+        ForwardForeground = 10,
+        ForwardHalfRes = 11,
+        ForwardQuarterRes = 12,
+        ForwardHalfQuarterRes = 13,
+        ForwardMultiRes = 14,
+        VolumeLightAmount = 15,
+        DeferredTransparent = 16,
+        ShadowPassOnly = 18,
+        HUD = 17,
+    }
+
+    [RTTI.Serializable(0xA65B1B489BEE2B7E, GameType.HZD)]
+    public enum EMaterialTextureSetSwizzleMode : int8
+    {
+        Runtime = 0,
+        CompileTime = 1,
+    }
+
+    [RTTI.Serializable(0x1D3D4E772173C40E, GameType.HZD)]
+    public enum EMaxAnisotropy : int32
+    {
+        MaxAnisotropy1 = 1,
+        MaxAnisotropy2 = 2,
+        MaxAnisotropy4 = 4,
+    }
+
+    [RTTI.Serializable(0xCD5174DAB0DE3E6F, GameType.HZD)]
+    public enum EMeleeAttackType : int32
+    {
+        Invalid = -1,
+        PrimaryAttack = 0,
+        SecondaryAttack = 1,
+        NumMeleeAttackTypes = 2,
     }
 
     [RTTI.Serializable(0x21A790626493E43, GameType.HZD)]
@@ -2625,102 +3619,103 @@ namespace Decima.HZD
         CatalogueDataCubes = 23,
     }
 
-    [RTTI.Serializable(0x528E239EC33CA8B3, GameType.HZD)]
+    [RTTI.Serializable(0x417B0621077AD0F7, GameType.HZD)]
     public enum EMenuEvent : int32
     {
         Unset = -1,
-        OnPressAccept = 13,
-        OnPressCancel = 14,
-        OnPressStart = 15,
-        OnPressDpadUp = 16,
-        OnPressDpadDown = 17,
-        OnPressDpadLeft = 18,
-        OnPressDpadRight = 19,
-        OnPressUp = 20,
-        OnPressDown = 21,
-        OnPressLeft = 22,
-        OnPressRight = 23,
-        OnPressLeftAnalog = 24,
-        OnPressRightAnalog = 25,
-        OnInbox = 26,
-        OnOptions = 27,
-        OnIntel = 28,
-        OnPressNextTab = 29,
-        OnPressPrevTab = 30,
-        OnCycleNext = 31,
-        OnCyclePrev = 32,
-        OnAnalogClockwise = 33,
-        OnAnalogCounterClockwise = 34,
-        OnPressNextTabApply = 35,
-        OnPressNextTabTravel = 36,
-        OnPressRunBenchmark = 37,
-        OnPressAcceptExtend = 38,
-        OnPressCancelExtend = 39,
-        OnPressInGameButtonCross = 41,
-        OnPressSkipMovie = 50,
-        OnPressSkipMovieTrigger = 51,
-        OnPressTakeAll = 40,
-        OnPressInGameButtonTriangle = 42,
-        OnPressInGameButtonSquare = 43,
-        OnPressIngameSkill = 44,
-        OnPressIngameInventory = 45,
-        OnPressIngameCrafting = 46,
-        OnPressIngameMap = 47,
-        OnPressIngameQuests = 48,
-        OnPressIngameNotebook = 49,
-        OnPressAnykey = 74,
-        OnPressAcceptHold = 76,
-        OnPressCancelHold = 77,
-        OnPressStartHold = 78,
-        OnPressDpadUpHold = 79,
-        OnPressDpadDownHold = 80,
-        OnPressDpadLeftHold = 81,
-        OnPressDpadRightHold = 82,
-        OnPressUpHold = 83,
-        OnPressDownHold = 84,
-        OnPressLeftHold = 85,
-        OnPressRightHold = 86,
-        OnPressLeftAnalogHold = 87,
-        OnPressRightAnalogHold = 88,
-        OnInboxHold = 89,
-        OnOptionsHold = 90,
-        OnIntelHold = 91,
-        OnPressNextTabHold = 92,
-        OnPressPrevTabHold = 93,
-        OnCycleNextHold = 94,
-        OnCyclePrevHold = 95,
-        OnAnalogClockwiseHold = 96,
-        OnAnalogCounterClockwiseHold = 97,
+        OnPressAccept = 14,
+        OnPressCancel = 15,
+        OnPressStart = 16,
+        OnPressDpadUp = 17,
+        OnPressDpadDown = 18,
+        OnPressDpadLeft = 19,
+        OnPressDpadRight = 20,
+        OnPressUp = 21,
+        OnPressDown = 22,
+        OnPressLeft = 23,
+        OnPressRight = 24,
+        OnPressLeftAnalog = 25,
+        OnPressRightAnalog = 26,
+        OnInbox = 27,
+        OnOptions = 28,
+        OnIntel = 29,
+        OnPressNextTab = 30,
+        OnPressPrevTab = 31,
+        OnCycleNext = 32,
+        OnCyclePrev = 33,
+        OnAnalogClockwise = 34,
+        OnAnalogCounterClockwise = 35,
+        OnPressNextTabApply = 36,
+        OnPressNextTabTravel = 37,
+        OnPressRunBenchmark = 38,
+        OnPressAcceptExtend = 39,
+        OnPressCancelExtend = 40,
+        OnPressInGameButtonCross = 42,
+        OnPressSkipMovie = 51,
+        OnPressSkipMovieTrigger = 52,
+        OnPressTakeAll = 41,
+        OnPressInGameButtonTriangle = 43,
+        OnPressInGameButtonSquare = 44,
+        OnPressIngameSkill = 45,
+        OnPressIngameInventory = 46,
+        OnPressIngameCrafting = 47,
+        OnPressIngameMap = 48,
+        OnPressIngameQuests = 49,
+        OnPressIngameNotebook = 50,
+        OnPressAnykey = 75,
+        OnPressAcceptHold = 77,
+        OnPressCancelHold = 78,
+        OnPressStartHold = 79,
+        OnPressDpadUpHold = 80,
+        OnPressDpadDownHold = 81,
+        OnPressDpadLeftHold = 82,
+        OnPressDpadRightHold = 83,
+        OnPressUpHold = 84,
+        OnPressDownHold = 85,
+        OnPressLeftHold = 86,
+        OnPressRightHold = 87,
+        OnPressLeftAnalogHold = 88,
+        OnPressRightAnalogHold = 89,
+        OnInboxHold = 90,
+        OnOptionsHold = 91,
+        OnIntelHold = 92,
+        OnPressNextTabHold = 93,
+        OnPressPrevTabHold = 94,
+        OnCycleNextHold = 95,
+        OnCyclePrevHold = 96,
+        OnAnalogClockwiseHold = 97,
+        OnAnalogCounterClockwiseHold = 98,
         OnBindKeyFinished = 6,
         OnControllerTypeChanged = 7,
         OnUnplugMonitor = 8,
         OnWindowMoved = 9,
         OnDownloadComplete = 10,
-        OnPressInGameButtonCrossHold = 98,
-        OnMouseLeftHold = 101,
-        OnPressInGameButtonTriangleHold = 99,
-        OnPressInGameButtonSquareHold = 100,
-        OnSpecailFocusMe = 71,
-        OnMouseHoverIn = 72,
-        OnMouseLeftDown = 60,
-        OnMouseLeftClick = 64,
-        OnMouseLeftClickNoFocus = 65,
-        OnMouseEnter = 68,
-        OnMouseLeftUp = 61,
-        OnMouseMove = 69,
-        OnMouseWheel = 70,
+        OnPSOOptimizationFinished = 11,
+        OnPressInGameButtonCrossHold = 99,
+        OnMouseLeftHold = 102,
+        OnPressInGameButtonTriangleHold = 100,
+        OnPressInGameButtonSquareHold = 101,
+        OnSpecailFocusMe = 72,
+        OnMouseHoverIn = 73,
+        OnMouseLeftDown = 61,
+        OnMouseLeftClick = 65,
+        OnMouseLeftClickNoFocus = 66,
+        OnMouseEnter = 69,
+        OnMouseLeftUp = 62,
+        OnMouseMove = 70,
+        OnMouseWheel = 71,
         OnFocusOn = 1,
         OnFocusOff = 2,
         OnPageOn = 3,
         OnPageOff = 4,
         OnValueChanged = 5,
-        OnPressTakeShot = 52,
-        OnPressMapTravel = 53,
-        OnPressMapActiveQuest = 54,
-        OnPressMapGoIndoor = 55,
-        OnPressMapDownLowerFloor = 56,
-        OnPressMapUpHigherFloor = 57,
-        OnPressMapWayPoint = 58,
+        OnPressTakeShot = 53,
+        OnPressMapTravel = 54,
+        OnPressMapActiveQuest = 55,
+        OnPressMapGoIndoor = 56,
+        OnPressMapDownLowerFloor = 57,
+        OnPressMapUpHigherFloor = 58,
+        OnPressMapWayPoint = 59,
     }
 
     [RTTI.Serializable(0xB7F0AA0283428099, GameType.HZD)]
@@ -2794,6 +3789,17 @@ namespace Decima.HZD
         ReStockable = 1,
     }
 
+    [RTTI.Serializable(0x3E65A20958787973, GameType.HZD)]
+    public enum EMeshCompressionType : int8
+    {
+        Disabled = 0,
+        Auto = 1,
+        Float = 2,
+        _HalfFloat = 4,
+        Int16N = 3,
+        X10Y10Z10 = 5,
+    }
+
     [RTTI.Serializable(0x8B3F7A89047F440D, GameType.HZD)]
     public enum EMeshEmitterSpawnOrder : int32
     {
@@ -2806,6 +3812,14 @@ namespace Decima.HZD
     {
         Pressure = 0,
         Trip_Wire = 1,
+    }
+
+    [RTTI.Serializable(0xDF04DF7AA4EB0A0F, GameType.HZD)]
+    public enum EMissionEndConditions : int32
+    {
+        Invalid = 0,
+        Time = 1,
+        Objectives = 2,
     }
 
     [RTTI.Serializable(0x864D66E5BF156FD0, GameType.HZD)]
@@ -2823,6 +3837,13 @@ namespace Decima.HZD
         body_count = 0,
     }
 
+    [RTTI.Serializable(0xD264366570C77E12, GameType.HZD)]
+    public enum EMissionWinCriteria : int32
+    {
+        Invalid = 0,
+        Objectives = 1,
+    }
+
     [RTTI.Serializable(0xB3A0B97363002E13, GameType.HZD)]
     public enum EModifiableStat : int8
     {
@@ -2836,6 +3857,15 @@ namespace Decima.HZD
         EffectiveRange = 7,
         VisualStimulusSize = 8,
         FootstepStimulusLoudness = 9,
+    }
+
+    [RTTI.Serializable(0x981608BC082418C6, GameType.HZD)]
+    public enum EMonitoredAnimationState : int32
+    {
+        Idle = 0,
+        Pending = 1,
+        Active = 2,
+        End = 3,
     }
 
     [RTTI.Serializable(0xDBA18D6B9F6EC14C, GameType.HZD)]
@@ -2912,6 +3942,31 @@ namespace Decima.HZD
         Stealth = 1,
     }
 
+    [RTTI.Serializable(0x853A9930070A5243, GameType.HZD)]
+    public enum EMovementAnimationState : int32
+    {
+        Unknown = -1,
+        Stopped = 0,
+        Starting = 1,
+        Cycle = 2,
+        Stopping = 3,
+        Step = 4,
+        Slide = 5,
+        DiveRoll = 6,
+        Turn = 7,
+        AI_QuickTurn = 8,
+        Turn_180 = 9,
+        StandToCrouch = 10,
+        CrouchToStand = 11,
+    }
+
+    [RTTI.Serializable(0x28CCD2E7556E152B, GameType.HZD)]
+    public enum EMovementDirection : int32
+    {
+        FORWARDS = 0,
+        BACKWARDS = 1,
+    }
+
     [RTTI.Serializable(0x913848C879A8AD3B, GameType.HZD)]
     public enum EMovementStateGroundToAir : int8
     {
@@ -2961,6 +4016,18 @@ namespace Decima.HZD
         Abort = 2,
     }
 
+    [RTTI.Serializable(0xF0D02B3CA270E5D9, GameType.HZD)]
+    public enum EMultiSampleType : int32
+    {
+        _1S1F = 6,
+        _2S1F = 0,
+        _2S2F = 1,
+        _4S1F = 2,
+        _4S4F = 3,
+        _8S1F = 4,
+        _8S8F = 5,
+    }
+
     [RTTI.Serializable(0xA9CD3B8D74F4B30, GameType.HZD)]
     public enum EMusicTransitionCurveType : int32
     {
@@ -2986,11 +4053,280 @@ namespace Decima.HZD
         OnTarget = 2,
     }
 
+    [RTTI.Serializable(0x9DD8702AA5492DF8, GameType.HZD)]
+    public enum ENetworkEnvironment : int8
+    {
+        unknown = 0,
+        sp_int = 1,
+        prod_qa = 2,
+        np = 3,
+    }
+
+    [RTTI.Serializable(0xF3630E1E2ED050DC, GameType.HZD)]
+    public enum ENetworkError : int8
+    {
+        Success = 0,
+        Failed = 1,
+        AccessDenied = 2,
+        AlreadyConnected = 3,
+        AddressInUse = 4,
+        AddressNotAvailable = 5,
+        ConnectionRefused = 6,
+        ConnectionLost = 7,
+        HostIsNotFound = 8,
+        HostUnreachable = 9,
+        InvalidAddress = 10,
+        InvalidSocketType = 11,
+        NotSupported = 12,
+        NotConnected = 13,
+        MessageTooLong = 14,
+        TimeOut = 15,
+        WouldBlock = 16,
+    }
+
     [RTTI.Serializable(0x8D07B544A2A2EE07, GameType.HZD)]
     public enum ENoProjectileTraceType : int32
     {
         Position = 0,
         Target = 1,
+    }
+
+    [RTTI.Serializable(0xAF1E9EE294695815, GameType.HZD)]
+    public enum EOSDEventID : int32
+    {
+        Invalid = -1,
+        PickupWeapon = 0,
+        PickupAmmoFailed = 1,
+        PickupHealth = 2,
+        PlayerJoined = 3,
+        PlayerLeft = 4,
+        PlayerSpawned = 5,
+        PlayerSpawnedLimited = 6,
+        PlayerRevived = 7,
+        PlayerReviving = 8,
+        PlayerKilled = 9,
+        PlayerKilledLocal = 10,
+        PlayerKilledCloseCombat = 13,
+        PlayerKilledHeadshot = 11,
+        PlayerKilledHeadshotLocal = 12,
+        PlayerKilledByBaseGuns = 14,
+        PlayerSuicide = 15,
+        PlayerDied = 16,
+        PlayerKnockedOut = 17,
+        MissionStarted = 18,
+        Mission10mLeft = 19,
+        Mission5mLeft = 20,
+        Mission1mLeft = 21,
+        Mission30sLeft = 22,
+        Mission10sLeft = 23,
+        Mission3sLeft = 24,
+        Mission2sLeft = 25,
+        Mission1sLeft = 26,
+        MissionWin = 27,
+        MissionLoss = 28,
+        MissionDraw = 29,
+        MissionEvent = 30,
+        MissionHalfTeamRemaining = 31,
+        SarSpawned = 36,
+        SarPickedUpFriendly = 37,
+        SarPickedUpEnemy = 38,
+        SarPickedUpLocally = 39,
+        SarRetrievedFriendly = 40,
+        SarRetrievedEnemy = 41,
+        SarDroppedFriendly = 42,
+        SarDroppedEnemy = 43,
+        SarDroppedLocally = 44,
+        SarCheated = 45,
+        IarFlagTakenFriendly = 48,
+        IarFlagTakenEnemy = 49,
+        IarFlagRetrievedFriendly = 50,
+        IarFlagRetrievedEnemy = 51,
+        IarFlagReturnedFriendly = 52,
+        IarFlagReturnedEnemy = 53,
+        IarSpawnedFriendly = 46,
+        IarSpawnedEnemy = 47,
+        SasSpawned = 54,
+        SasFlagPickupFriendly = 55,
+        SasFlagPickupEnemy = 56,
+        BodyCntLocalKill = 32,
+        BodyCnt3KillsLeft = 33,
+        BodyCnt2KillsLeft = 34,
+        BodyCnt1KillLeft = 35,
+        SadArmedFriendly = 57,
+        SadArmedEnemy = 58,
+        SadDisarmedFriendly = 59,
+        SadDisarmedEnemy = 60,
+        SadArmedFriendlyAudio = 61,
+        SadArmedEnemyAudio = 62,
+        SadDisarmedFriendlyAudio = 63,
+        SadDisarmedEnemyAudio = 64,
+        SadAllArmed = 65,
+        SadCountdown10 = 66,
+        SadCountdown5 = 67,
+        SadCountdown4 = 68,
+        SadCountdown3 = 69,
+        SadCountdown2 = 70,
+        SadCountdown1 = 71,
+        CahAreaSecuringFriendly = 72,
+        CahAreaSecuringEnemy = 73,
+        CahAreaSecuredFriendly = 74,
+        CahAreaSecuredEnemy = 75,
+        CahAreaNeutralizingFriendly = 76,
+        CahAreaNeutralizingEnemy = 77,
+        CahAreaNeutralizedFriendly = 78,
+        CahAreaNeutralizedEnemy = 79,
+        CasObjectiveChanged = 80,
+        KickVoteReceived = 81,
+        KickVotePassed = 82,
+        KickVoteCast = 83,
+        Scripted = 84,
+        Hint = 85,
+        ObjectiveSummary = 87,
+        ObjectiveNew = 88,
+        ObjectiveCompleted = 89,
+        ObjectiveFailed = 90,
+        OptionalObjectiveNew = 91,
+        OptionalObjectiveCompleted = 92,
+        OptionalObjectiveFailed = 93,
+        Streaming = 94,
+        StreamingPlayerTeleport = 95,
+        Checkpoint = 96,
+        NonSkippableSequence = 97,
+        Subtitle = 98,
+        GameStart = 99,
+        GameWon = 100,
+        GameLost = 101,
+        GameDraw = 102,
+        ScoreKillBodyshot = 103,
+        ScoreKillHeadshot = 104,
+        ScoreKillExplosive = 105,
+        ScoreKillAssist = 106,
+        ScoreKillMelee = 109,
+        ScoreKillAssistMelee = 107,
+        ScoreKillMercy = 108,
+        ScoreKillTeamkill = 110,
+        ScoreKillSuicide = 111,
+        ScoreKillSuicideBaseGun = 112,
+        ScoreKillEntity = 113,
+        ScoreFirstBlood = 114,
+        ScoreKnockOut = 115,
+        ScoreMissionWin = 116,
+        ScoreDoubleKill = 132,
+        ScoreTripleKill = 133,
+        ScoreMultiKill = 134,
+        ScoreTwinKill = 135,
+        ScoreManyKill = 136,
+        ScoreKillStreakThree = 137,
+        ScoreKillStreakFive = 138,
+        ScoreKillStreakTen = 139,
+        ScoreKillStreakFifteen = 140,
+        ScoreKillStreakTwenty = 141,
+        ScoreKillStreakStopper = 142,
+        ScoreHack = 143,
+        ScoreRepair = 144,
+        ScoreRevive = 145,
+        ScoreMission = 146,
+        ScoreLivesRemaining = 147,
+        ScoreLastPlayerRemaining = 148,
+        ScoreEnemyStunned = 149,
+        ScoreCoverKill = 117,
+        ScoreKillThroughShield = 118,
+        ScoreKillWhileUsingArmadillo = 119,
+        ScoreKillArmadillo = 120,
+        ScoreKillWhileUsingCloak = 121,
+        ScoreKillCloak = 122,
+        ScoreKillSavior = 123,
+        ScoreKillRevenge = 124,
+        ScoreKillPayback = 125,
+        ScoreKillZipLine = 126,
+        ScoreKillStun = 127,
+        ScoreKillStunAssist = 128,
+        ScoreSpawnAssist = 129,
+        ScoreSupplier = 130,
+        ScoreEnemyDeconstruction = 131,
+        Armed = 150,
+        Disarmed = 151,
+        SADAttackerKill = 152,
+        SADDefenderKill = 153,
+        DemolitionMan = 154,
+        DemolitionExpert = 155,
+        Captured = 156,
+        Neutralized = 157,
+        ScoreAttackerKill = 158,
+        ScoreDefenderKill = 159,
+        ScoreSarFlagPickUp = 160,
+        ScoreSarFlagRetrieved = 161,
+        ScoreSarFlagCarrying = 162,
+        ScoreSarDefenderKill = 163,
+        ScoreSarAttackerKill = 164,
+        ScoreSarCarrierKill = 165,
+        ScoreSarCarrierSaviorKill = 166,
+        ScoreIarFlagPickUp = 167,
+        ScoreIarFlagRetrieved = 168,
+        ScoreIarFlagReturned = 169,
+        ScoreIarFlagCarrying = 170,
+        ScoreIarDefenderKill = 171,
+        ScoreIarAttackerKill = 172,
+        ScoreIarCarrierKill = 173,
+        ScoreIarCarrierSaviorKill = 174,
+        ScoreSasFlagPickUp = 175,
+        ScoreSasFlagCarrying = 176,
+        ScoreSasCarrierKill = 177,
+        ScoreSasCarrierSaviorKill = 178,
+        Bodyguard = 179,
+        Survivor = 180,
+        ScoreSwitch = 184,
+        ScoreTask = 185,
+        AbilityConstructedEntity = 186,
+        AbilityConstructedEntityWithLocation = 187,
+        AbilityConstructedEntityDestroyed = 188,
+        AbilityConstructedEntityDeconstructed = 189,
+        AbilityConstructedEntityDeconstructing = 190,
+        InventoryHelperMessage = 191,
+        ChallengeSingleAward = 192,
+        ChallengeGroupAward = 193,
+        ChallengeRewardPlayercard = 194,
+        ChallengeRewardAttachment = 195,
+        ChallengeRewardAbility = 196,
+        ChallengePlayerUnlockPlayercardMessage = 197,
+        ChallengePlayerUnlockAttachmentMessage = 198,
+        ChallengePlayerUnlockAbilityMessage = 199,
+        CombatHonorUnlocked = 200,
+        ShowWeaponLayout = 201,
+        AdminMessagePresent = 202,
+        AdminMessageMute = 203,
+        AdminMessagePlayNice = 204,
+        AdminMessageVoiceComm = 205,
+        AdminMessageTeamKilling = 206,
+        AdminMessageShootYourEnemies = 207,
+        AdminMessageMisconduct = 208,
+        AdminMessageCheats = 209,
+        AdminMessageKillzoneCom = 210,
+        AdminMessageClose = 211,
+        AdminMessageForHelghan = 212,
+        AdminMessageForIsa = 213,
+        DisplayTargetInfo = 214,
+        QuestStarted = 215,
+        QuestProgressed = 216,
+        QuestCompleted = 217,
+        QuestFailed = 218,
+        LogEntryAdded = 219,
+        LogEntryUpdated = 220,
+        ItemAddedToInventory = 221,
+        ItemRemovedFromInventory = 222,
+        ItemEquipped = 223,
+        ItemUnequipped = 224,
+        ItemPutIntoContainer = 225,
+        ItemRemovedFromContainer = 226,
+        ItemSold = 227,
+        ItemBought = 228,
+        ItemCrafted = 229,
+        RecipeLearned = 230,
+        MoneyRecieved = 231,
+        MoneySpent = 232,
+        XpRecieved = 233,
+        CharacterLevelGained = 234,
+        WorldEvent = 235,
     }
 
     [RTTI.Serializable(0xC0FF13D8C15AB393, GameType.HZD)]
@@ -3011,6 +4347,39 @@ namespace Decima.HZD
         AllSucceedAnyFail = 2,
     }
 
+    [RTTI.Serializable(0x8350977DD03099E2, GameType.HZD)]
+    public enum EObjectiveRequired : int32
+    {
+        Mandatory = 0,
+        Optional = 1,
+    }
+
+    [RTTI.Serializable(0xC0BC3F1A31EC60ED, GameType.HZD)]
+    public enum EObjectiveShowState : int32
+    {
+        Shown = 0,
+        Hidden = 1,
+    }
+
+    [RTTI.Serializable(0xAD26B74C65E923D8, GameType.HZD)]
+    public enum EObjectiveState : int32
+    {
+        Active = 1,
+        Completed = 2,
+        Failed = 3,
+    }
+
+    [RTTI.Serializable(0xCF0D6750D21F6081, GameType.HZD)]
+    public enum EObjectiveType : int32
+    {
+        Activate = 0,
+        Defend = 1,
+        Destroy = 2,
+        Extract = 3,
+        Locate = 4,
+        RendezVous = 5,
+    }
+
     [RTTI.Serializable(0x91D855361D5222B3, GameType.HZD)]
     public enum EObjectiveUIVisibility : int32
     {
@@ -3019,6 +4388,14 @@ namespace Decima.HZD
         VisibleInHudOnly = 2,
         VisibleInAllButTracker = 3,
         Hidden = 4,
+    }
+
+    [RTTI.Serializable(0x4DBD4E608C8A9DCF, GameType.HZD)]
+    public enum EObserverPositionState : int8
+    {
+        OutsideSceneRadius = 0,
+        InsideHintRadius = 1,
+        InsideActivationRadius = 2,
     }
 
     [RTTI.Serializable(0x41A5D2EC630157FE, GameType.HZD)]
@@ -3036,6 +4413,14 @@ namespace Decima.HZD
         Ignore = 0,
         Soft = 2,
         Hard = 3,
+    }
+
+    [RTTI.Serializable(0x81DC84A6E87B22A0, GameType.HZD)]
+    public enum EOcclusionReprojectionMode : int8
+    {
+        Conservative = 0,
+        Balanced = 1,
+        Aggressive = 2,
     }
 
     [RTTI.Serializable(0x58CD4BCCCEC76A0D, GameType.HZD)]
@@ -3104,6 +4489,18 @@ namespace Decima.HZD
         Vertical = 1,
     }
 
+    [RTTI.Serializable(0x4C8030B31E4321D0, GameType.HZD)]
+    public enum EParameterType : int32
+    {
+        Constant = 0,
+        Texture = 1,
+        Sampler = 2,
+        DataBuffer = 3,
+        RWTexture = 4,
+        RWDataBuffer = 5,
+        Count = 6,
+    }
+
     [RTTI.Serializable(0x97FC6B7B5F645216, GameType.HZD)]
     public enum EParentObjectiveVisibilityLogic : int32
     {
@@ -3137,6 +4534,13 @@ namespace Decima.HZD
         AnnotationTraversal = 4,
         Turn = 5,
         ReleaseHang = 6,
+    }
+
+    [RTTI.Serializable(0xB0988F0D18309559, GameType.HZD)]
+    public enum EParkourTraversalType : int32
+    {
+        PARKOUR_TRAV_WITH_HANDS = 0,
+        PARKOUR_TRAV_WITH_FEET = 1,
     }
 
     [RTTI.Serializable(0xB46B16BF6FE86B1D, GameType.HZD)]
@@ -3202,11 +4606,31 @@ namespace Decima.HZD
         WhenVisible = 1,
     }
 
+    [RTTI.Serializable(0xF36D36A4F72C5823, GameType.HZD)]
+    public enum EPartyMatchmakingInfoResponse : int32
+    {
+        invalid = 0,
+        reject = 1,
+        accept = 2,
+        pending = 3,
+    }
+
     [RTTI.Serializable(0xC98E6D7AB57F3F6D, GameType.HZD)]
     public enum EPathMode : int32
     {
         Time = 0,
         Distance = 1,
+    }
+
+    [RTTI.Serializable(0xBAA975678A7688FB, GameType.HZD)]
+    public enum EPathResolveResult : int32
+    {
+        Success = 0,
+        Invalid_attribute = 1,
+        Container_index_out_of_bounds = 2,
+        Infofield_not_found = 3,
+        Invalid_pointer = 4,
+        Unknown_path_element_type_encountered = 5,
     }
 
     [RTTI.Serializable(0x6CFF437E96A6E0D3, GameType.HZD)]
@@ -3371,6 +4795,46 @@ namespace Decima.HZD
         SwitchToMeleeWeaponImmidiately = 2,
     }
 
+    [RTTI.Serializable(0x8B86844CA7B446AE, GameType.HZD)]
+    public enum EPinDownStates : int32
+    {
+        Idle = 0,
+        Falling = 1,
+        Pinned = 2,
+        Breaking_Free = 3,
+        Pullback = 4,
+        Breaking_Free_Short = 5,
+    }
+
+    [RTTI.Serializable(0xEDCCEF1DDC815046, GameType.HZD)]
+    public enum EPipelinePasses : int32
+    {
+        GeometryDepthPrime = 1,
+        GeometryPass = 2,
+        GeometryPassEmissive = 4,
+        GeometryDefTransAcc = 8,
+        GeometryDefTransparent = 16,
+        GeometryCustom = 32,
+        GeometryDecompressDepth = 64,
+        GeometryResolveDepth = 128,
+        Sunlight = 256,
+        Lights = 512,
+        CustomForward = 8388608,
+        FullFwd = 1024,
+        FullFwdFrgrnd = 2048,
+        LowFwd = 4096,
+        FullFwdBackground = 8192,
+        Colorize = 16384,
+        SSAOAndIndirect = 32768,
+        Reflection = 65536,
+        BlurVolumelights = 131072,
+        LightSampling = 262144,
+        VolumeLightAmount = 524288,
+        DownscalePreFwd = 1048576,
+        Clouds = 2097152,
+        DistantCubemap = 4194304,
+    }
+
     [RTTI.Serializable(0x2CB3675607AF1068, GameType.HZD)]
     public enum EPixelFormat : int32
     {
@@ -3462,6 +4926,17 @@ namespace Decima.HZD
         Large = 3,
     }
 
+    [RTTI.Serializable(0x83667F7E52B68623, GameType.HZD)]
+    public enum EPlacementJobState : int32
+    {
+        Invalid = 0,
+        Busy = 5,
+        KilledOnTheFly = 4,
+        StreamedOut = 2,
+        Waiting = 3,
+        Parked = 1,
+    }
+
     [RTTI.Serializable(0x96167B3CAD850063, GameType.HZD)]
     public enum EPlacementPrecision : int32
     {
@@ -3483,6 +4958,15 @@ namespace Decima.HZD
         ObserverOnly = 1,
         AreaOnly = 2,
         All = 3,
+    }
+
+    [RTTI.Serializable(0xEDDFE697B79311B6, GameType.HZD)]
+    public enum EPlatform : int32
+    {
+        PC = 0,
+        PS3 = 1,
+        CE2 = 2,
+        PINK = 3,
     }
 
     [RTTI.Serializable(0xD8FED11BDA200CDC, GameType.HZD)]
@@ -3669,6 +5153,18 @@ namespace Decima.HZD
         LagCount = 71,
     }
 
+    [RTTI.Serializable(0x464465835584A4F6, GameType.HZD)]
+    public enum EPlaylistFilter : int32
+    {
+        PLAYLIST_FILTER_IGNORE = 0,
+        PLAYLIST_FILTER_MAPS_ALL = 1,
+        PLAYLIST_FILTER_MISSIONS_ALL = 2,
+        PLAYLIST_FILTER_WEAPONS_STANDARD = 3,
+        PLAYLIST_FILTER_WEAPONS_CUSTOM = 4,
+        PLAYLIST_FILTER_SPAWN_LIVES_UNLIMITED = 5,
+        PLAYLIST_FILTER_SPAWN_LIVES_LIMITED = 6,
+    }
+
     [RTTI.Serializable(0xDA678F9AB9CBEE69, GameType.HZD)]
     public enum EPlaylistFilterOperation : int32
     {
@@ -3706,6 +5202,25 @@ namespace Decima.HZD
         confirmed_lost = 4,
     }
 
+    [RTTI.Serializable(0x77C8721DE9A2CE19, GameType.HZD)]
+    public enum EPostEffect : int32
+    {
+        MotionBlur = 1,
+        DepthOfField = 2,
+        Bloom = 4,
+        Grain = 8,
+        LensReflection = 16,
+        RadialBlur = 32,
+        Vignette = 64,
+        Exposure = 256,
+        ColorCorrection = 512,
+        DepthColorize = 1024,
+        ColorCube = 2048,
+        LightShafts = 4096,
+        HDRCompression = 8192,
+        WhiteBalance = 16384,
+    }
+
     [RTTI.Serializable(0x3B32A1820C6E08C7, GameType.HZD)]
     public enum EPostProcessBlendMode : int32
     {
@@ -3720,11 +5235,34 @@ namespace Decima.HZD
         Charging = 1,
     }
 
+    [RTTI.Serializable(0x7B1255EAE5840B84, GameType.HZD)]
+    public enum EPreviewProjectileState : int32
+    {
+        None = 0,
+        Creation_Pending = 1,
+        Load_Pending = 2,
+        On_Weapon = 3,
+        Chamber_Pending = 4,
+    }
+
     [RTTI.Serializable(0x843528EE6059C3D2, GameType.HZD)]
     public enum EPriceModificationType : int32
     {
         Buy = 0,
         Sell = 1,
+    }
+
+    [RTTI.Serializable(0xDEC1C31584EF7425, GameType.HZD)]
+    public enum EPrimitive : int32
+    {
+        PointList = 0,
+        LineList = 1,
+        LineStrip = 2,
+        TriangleList = 3,
+        TriangleStrip = 4,
+        TriangleFan = 5,
+        QuadList = 6,
+        RectList = 7,
     }
 
     [RTTI.Serializable(0x536FF2B448C227A8, GameType.HZD)]
@@ -3803,6 +5341,16 @@ namespace Decima.HZD
     {
         Perspective = 0,
         Orthogonal = 1,
+    }
+
+    [RTTI.Serializable(0x5CB4813E0A7154D2, GameType.HZD)]
+    public enum EQualitySetting : int32
+    {
+        Off = 0,
+        Low = 1,
+        Medium = 2,
+        High = 3,
+        Ultra = 4,
     }
 
     [RTTI.Serializable(0xD0A79FE132BE65DA, GameType.HZD)]
@@ -3908,6 +5456,17 @@ namespace Decima.HZD
         ANIMATION_FOLLOW = 2,
     }
 
+    [RTTI.Serializable(0x5C5A9E3944F13707, GameType.HZD)]
+    public enum EReloadState : int32
+    {
+        None = 0,
+        Requested = 1,
+        Start = 2,
+        Cycle = 3,
+        Finish = 4,
+        Abort = 5,
+    }
+
     [RTTI.Serializable(0x20A3D650ADF7422A, GameType.HZD)]
     public enum ERenderBufferFormat : int32
     {
@@ -3965,6 +5524,21 @@ namespace Decima.HZD
         RB_FORMAT_DEPTH16_STENCIL0 = 51,
     }
 
+    [RTTI.Serializable(0x2CD0E0BCAFAE43F9, GameType.HZD)]
+    public enum ERenderBufferName : int32
+    {
+        Color0 = 0,
+        Color1 = 1,
+        Color2 = 2,
+        Color3 = 3,
+        Color4 = 4,
+        Color5 = 5,
+        Color6 = 6,
+        Color7 = 7,
+        Depth_Stencil = 8,
+        Invalid = 9,
+    }
+
     [RTTI.Serializable(0xFA671FD95C527BA, GameType.HZD)]
     public enum ERenderDataHintDataType : int8
     {
@@ -3972,6 +5546,30 @@ namespace Decima.HZD
         GridBased = 1,
         AreaBased = 2,
         Invalid = 3,
+    }
+
+    [RTTI.Serializable(0x255B21D736738454, GameType.HZD)]
+    public enum ERenderDataStreamingMode : int8
+    {
+        NotStreaming = 0,
+        Streaming = 1,
+    }
+
+    [RTTI.Serializable(0x7A77BBB803BA84F5, GameType.HZD)]
+    public enum ERenderDataStreamingObjectBoostMode : int8
+    {
+        None = 0,
+        Low = 1,
+        Medium = 2,
+        High = 3,
+    }
+
+    [RTTI.Serializable(0x1CFA21A4EE111F85, GameType.HZD)]
+    public enum ERenderDataStreamingType : int32
+    {
+        Texture2D = 0,
+        TextureCube = 1,
+        Mesh = 2,
     }
 
     [RTTI.Serializable(0x624C2EAC411306B9, GameType.HZD)]
@@ -3983,6 +5581,63 @@ namespace Decima.HZD
         Sunlight_render_effect = 3,
     }
 
+    [RTTI.Serializable(0x2D4E62867150D023, GameType.HZD)]
+    public enum ERenderOrder : int32
+    {
+        START_OF_FRAME = 0,
+        ORDER_RENDERDATA_STREAMING_COMPUTE_PRIORITY = 1,
+        ORDER_RENDERDATA_STREAMING_CHECK_ACTIVATION = 2,
+        ORDER_GPU_MEMCPY = 3,
+        ORDER_WORLDDATA_SAMPLING = 4,
+        PARTICLE_UPDATE_COMPUTE = 5,
+        ORDER_FORCEFIELD_COMPUTE = 6,
+        IMAGE_BLEND_JOB_COMPUTE = 7,
+        PLACEMENT_COMPUTE = 8,
+        ORDER_WEATHER_SIMULATION = 9,
+        SKYDOME_UPDATE = 10,
+        ORDER_DECAL_CULLING = 11,
+        ORDER_PRE_DRAW = 12,
+        ORDER_ENV_INTERACTION = 13,
+        ORDER_CLEAR = 14,
+        ORDER_ENVIRONMENT_PROBE_CLEAR = 15,
+        ORDER_GEOM = 16,
+        ORDER_GEOM_END = 17,
+        ORDER_BACKGROUND_COLOR = 18,
+        ORDER_VOLUME_LIGHT_AMOUNT = 19,
+        ORDER_DEFERRED_LIGHTPROBES = 20,
+        ORDER_PRELIGHTS = 21,
+        ORDER_LIGHT_SAMPLING = 22,
+        ORDER_SHADOWS = 23,
+        ORDER_SHADOWS_END = 24,
+        ORDER_LIGHTS = 25,
+        ORDER_LIGHTS_END = 26,
+        ORDER_POSTLIGHTS = 27,
+        ORDER_CLOUDS = 28,
+        ORDER_DEBUG_GBUFFER = 29,
+        ORDER_FULLRESCUSTOMFWD = 30,
+        ORDER_REFLECTIONS = 31,
+        ORDER_FULLRESFWD = 32,
+        ORDER_LIGHT_SHAFTS = 33,
+        ORDER_COLORIZE = 34,
+        DOWNSAMPLE_PREALPHA = 35,
+        CLEAR_DRAW_TRANSPARENT_ONLY = 36,
+        ORDER_FWDBG = 37,
+        ORDER_FWDLOWRES = 38,
+        ORDER_FWDFOREGRND = 39,
+        ORDER_TONEMAPPING = 40,
+        START_OF_AFTER_VIEWPORTS_DO_NOT_USE = 41,
+        ORDER_EARLY_AA = 42,
+        ORDER_POST_EFFECTS = 43,
+        ORDER_DEBUG_RENDERING = 44,
+        ORDER_PRE_HUD = 45,
+        ORDER_HUD = 46,
+        CHECK_ACTIVATION_COMPUTE = 47,
+        PRIORITY_COMPUTE = 48,
+        OCCLUSION_FINISH_CAPTURE = 49,
+        STATIC_SCENE_CULLING = 50,
+        END_OF_FRAME = 16383,
+    }
+
     [RTTI.Serializable(0xE2EF6D06E5120F58, GameType.HZD)]
     public enum ERenderPlatform : int8
     {
@@ -3991,6 +5646,13 @@ namespace Decima.HZD
         PINK = 2,
         PS5 = 3,
         Invalid = 4,
+    }
+
+    [RTTI.Serializable(0xAFDC3B9BB801AC09, GameType.HZD)]
+    public enum ERenderSubmitMode : int8
+    {
+        Sync = 0,
+        Async = 1,
     }
 
     [RTTI.Serializable(0x464DA288B9E39D4F, GameType.HZD)]
@@ -4081,6 +5743,25 @@ namespace Decima.HZD
         None = 2,
     }
 
+    [RTTI.Serializable(0x4F8602E71740E711, GameType.HZD)]
+    public enum ERopeEndState : int32
+    {
+        Held = 0,
+        Flying = 1,
+        Attached = 3,
+        Anchored = 4,
+        InvalidContact = 5,
+    }
+
+    [RTTI.Serializable(0x8E9E0628A13A2A88, GameType.HZD)]
+    public enum ERopeFireState : int32
+    {
+        Idle = 0,
+        Fired = 1,
+        PreAttached = 2,
+        Retrieving = 3,
+    }
+
     [RTTI.Serializable(0x7078D47645581813, GameType.HZD)]
     public enum ERopeMode : int32
     {
@@ -4089,12 +5770,48 @@ namespace Decima.HZD
         RopePath = 2,
     }
 
+    [RTTI.Serializable(0x29B05670A327C61A, GameType.HZD)]
+    public enum ERopeState : int32
+    {
+        Pending = 0,
+        TugOfWar = 1,
+        Anchor = 2,
+        Tripwire = 4,
+        Invalid = 5,
+    }
+
+    [RTTI.Serializable(0xE78A8DDC8C062290, GameType.HZD)]
+    public enum ERotationOrder : int32
+    {
+        ZYX = 0,
+        YZX = 1,
+        ZXY = 2,
+        XZY = 3,
+        YXZ = 4,
+        XYZ = 5,
+    }
+
     [RTTI.Serializable(0x66C132CFBABB0B31, GameType.HZD)]
     public enum ERotationType : int32
     {
         RotationNone = 0,
         RotationZ = 1,
         RotationFull = 2,
+    }
+
+    [RTTI.Serializable(0x6D74FE13684E37D2, GameType.HZD)]
+    public enum ESRTBindingDataType : int8
+    {
+        Scratch_Static = 0,
+        Scratch_PerFrame = 1,
+        Scratch_PerPass = 2,
+        Scratch_PerView = 3,
+        Scratch_PerTile = 4,
+        Scratch_PerBatch = 5,
+        Scratch_PerInstance = 6,
+        ShaderInstance_PerBatch = 7,
+        ShaderInstance_PerInstance = 8,
+        Count = 9,
     }
 
     [RTTI.Serializable(0x11B45BBA6D3DDF0, GameType.HZD)]
@@ -4154,11 +5871,72 @@ namespace Decima.HZD
         RWStructuredBuffer = 16,
     }
 
+    [RTTI.Serializable(0xB09B1C5CD2893F8E, GameType.HZD)]
+    public enum ESRTEntryType : int8
+    {
+        Invalid = 0,
+        Dummy = 1,
+        Custom = 2,
+        RasterizerVariables = 3,
+        RasterizerVariablesExtended = 4,
+        GlobalSamplers = 5,
+        GlobalConstants = 6,
+        ViewConstants = 7,
+        RenderPassBindings = 8,
+        WorldDataBindings = 9,
+        CubeMapZoneData = 10,
+        SkinnedMeshInstanceData = 11,
+        SkinnedMeshBatchData = 12,
+        ForwardPassIndirectParams = 13,
+        LightConstants = 14,
+        MaterialConstants = 15,
+        LightProjectiveTextureData = 16,
+        ShadowMapConstants = 17,
+        ShadowMapSampleConstants = 18,
+        ShadowMapSampleBindings = 19,
+        ShadowCubeMapSampleBindings = 20,
+        SunShadowSampleSettings = 21,
+        SunShadowProjectionSettings = 22,
+        AtmosphereConstants = 23,
+        ShaderLightVolumeSettings = 24,
+        ShaderFogSettings = 25,
+        ParticleVertexGenerationStaticParams = 26,
+        ParticleVertexGenerationDynamicParams = 27,
+        WaterInteractionSampleParams = 28,
+        SnowInteractionSampleParams = 29,
+        EnvInteractionVegetationSampleParams = 30,
+        EnvInteractionGrassSampleParams = 31,
+        ParticleEmitBufferParams = 32,
+        ParticleEmitParams = 33,
+        DeferredLightSamplingPerPassData = 34,
+        LayerBlendSamplers = 35,
+        GBufferBindings = 36,
+        DepthStencilBindings = 37,
+        AccumulationBindings = 38,
+    }
+
+    [RTTI.Serializable(0xFEBC9620FCBBD41C, GameType.HZD)]
+    public enum ESRTRootIndex : int8
+    {
+        VertexBindings = 0,
+        StaticFrameViewPassData = 1,
+        TileData = 2,
+        BatchInstanceData = 3,
+        FunctionShaderTable = 4,
+        Count = 5,
+    }
+
     [RTTI.Serializable(0xA08CF04A2320CB13, GameType.HZD)]
     public enum ESRTStorageMode : int8
     {
         ShaderInstance = 0,
         Scratch = 1,
+    }
+
+    [RTTI.Serializable(0xF346141AAB15F404, GameType.HZD)]
+    public enum ESRTTextureBindingType : int32
+    {
+        DiffuseLightTexture = 0,
     }
 
     [RTTI.Serializable(0xCECF30CE03BF586B, GameType.HZD)]
@@ -4172,6 +5950,31 @@ namespace Decima.HZD
         PerBatch = 5,
         PerInstance = 6,
         Count = 7,
+    }
+
+    [RTTI.Serializable(0xFDA6444D64C0A4F8, GameType.HZD)]
+    public enum ESSAOMode : int32
+    {
+        SSAODisabled = 0,
+        SSAOEnabled = 1,
+    }
+
+    [RTTI.Serializable(0x7F0CAA88C6AF37DB, GameType.HZD)]
+    public enum ESampleStatus : int8
+    {
+        None = 0,
+        Robo = 1,
+        Mockup = 2,
+        Final = 3,
+        FinalAndProcessed = 4,
+        ADR = 5,
+    }
+
+    [RTTI.Serializable(0xD4288D58599700BC, GameType.HZD)]
+    public enum ESamplerQualityTradeoff : int32
+    {
+        Allow = 0,
+        Disallow = 1,
     }
 
     [RTTI.Serializable(0x1ED862BA3F778BF7, GameType.HZD)]
@@ -4226,6 +6029,16 @@ namespace Decima.HZD
         NoForcedState = 0,
         ForcedActive = 1,
         ForcedInactive = 2,
+    }
+
+    [RTTI.Serializable(0x9C665072B60E2BA9, GameType.HZD)]
+    public enum ESceneRenderMode : int32
+    {
+        Direct = 0,
+        Deferred = 1,
+        Debug = 2,
+        Unlit = 3,
+        Disabled = 6,
     }
 
     [RTTI.Serializable(0xF3EFAB9E0AAE0DFE, GameType.HZD)]
@@ -4313,6 +6126,72 @@ namespace Decima.HZD
         AssMercy = 78,
         Switch = 79,
         Task = 80,
+    }
+
+    [RTTI.Serializable(0x687E45090E89E07E, GameType.HZD)]
+    public enum EScratchUsageID : int8
+    {
+        RenderContextDisplayList = 0,
+        RenderConfigurationMainDlist = 1,
+        VertexArray = 2,
+        Texture = 3,
+        IndexArray = 4,
+        FineGrainScratch = 5,
+        Skinning = 6,
+        DirectRender = 7,
+        DeferredRender = 8,
+        Lights = 9,
+        Particles = 10,
+        ParticlesIbl = 11,
+        ParticlesVertexjob = 12,
+        Decals = 13,
+        Occlusion = 14,
+        Coronas = 15,
+        PbdUpdate = 16,
+        Animation = 17,
+        ImageBlender = 18,
+        ShLights = 19,
+        Shadows = 20,
+        SgQuery = 21,
+        SgShadowQuery = 22,
+        SgUpdate = 23,
+        SgStatic = 24,
+        DataBufferResource = 25,
+        AsyncCompute = 26,
+        PhysicsSimulation = 27,
+        Placement = 28,
+        StolenMemory = 29,
+        SoundObstruction = 30,
+        ContextInternal = 31,
+        Lensflares = 32,
+        RefColors = 33,
+        ForceFields = 34,
+        Debug = 35,
+        PostProcess = 36,
+        CMask = 37,
+        WorldData = 38,
+        Instance = 39,
+        Terrain = 40,
+        Clouds = 41,
+        Hud = 42,
+        SrtData = 43,
+        Worldmap = 44,
+        GlobalVertexCache = 45,
+        WaveformCache = 46,
+        ShaderBindingData = 47,
+        CBuffers = 48,
+        RenderContextComputeList = 49,
+        Count = 50,
+    }
+
+    [RTTI.Serializable(0xCA2302074C03A5E6, GameType.HZD)]
+    public enum EScreenMode : int32
+    {
+        Auto = 0,
+        Fullscreen = 1,
+        Borderless = 2,
+        Window = 3,
+        Hidden = 4,
     }
 
     [RTTI.Serializable(0x1292E222E74AC11A, GameType.HZD)]
@@ -4444,6 +6323,13 @@ namespace Decima.HZD
         Always = 2,
     }
 
+    [RTTI.Serializable(0x80B60636D395C94E, GameType.HZD)]
+    public enum EShaderColorizeMode : int32
+    {
+        ColorizeDisabled = 0,
+        ColorizeForwardOnly = 1,
+    }
+
     [RTTI.Serializable(0x90D1135E676F8CB5, GameType.HZD)]
     public enum EShaderInstancingMode : int8
     {
@@ -4515,6 +6401,14 @@ namespace Decima.HZD
         Map_size_varies_with_distance__cache_used_if___128 = 4,
     }
 
+    [RTTI.Serializable(0x5860F5022E5A3C18, GameType.HZD)]
+    public enum EShadowmapCacheForStaticGeometryUsage : int32
+    {
+        StandardBehaviour = 0,
+        ForceDisable = 1,
+        ForceContinousCacheRebuild = 2,
+    }
+
     [RTTI.Serializable(0xE3EDC2104D98A8A4, GameType.HZD)]
     public enum EShowArcType : int8
     {
@@ -4569,6 +6463,22 @@ namespace Decima.HZD
         Interlude = 2,
     }
 
+    [RTTI.Serializable(0xC615EFF7138ACDDF, GameType.HZD)]
+    public enum ESleepState : int8
+    {
+        Active = 0,
+        Sleeping = 1,
+        PreparingToSleep = 2,
+        PreparingToWake = 3,
+    }
+
+    [RTTI.Serializable(0x4496E6C67C15F2B8, GameType.HZD)]
+    public enum ESnowInteractionState : int32
+    {
+        Active = 0,
+        Idle = 1,
+    }
+
     [RTTI.Serializable(0x44D26B29DA316E63, GameType.HZD)]
     public enum ESortMode : int32
     {
@@ -4613,6 +6523,38 @@ namespace Decima.HZD
         Rendering = 9,
     }
 
+    [RTTI.Serializable(0x4B8FDD0F1A07C029, GameType.HZD)]
+    public enum ESoundInstanceGlobalParameter : int32
+    {
+        inIsListenerInside = 0,
+        inListenerHeading = 1,
+        inListenerAngularVelocity = 2,
+        inCampaignMode = 3,
+        inTimeScale = 4,
+        inTimeOfDay = 5,
+        inWallProximity = 6,
+        inWallMaterial = 7,
+        inWallAzimuth = 8,
+        inWallProximityFront = 9,
+        inWallMaterialFront = 10,
+        inWallAzimuthFront = 11,
+        inWallProximityRight = 12,
+        inWallMaterialRight = 13,
+        inWallAzimuthRight = 14,
+        inWallProximityBack = 15,
+        inWallMaterialBack = 16,
+        inWallAzimuthBack = 17,
+        inWallProximityLeft = 18,
+        inWallMaterialLeft = 19,
+        inWallAzimuthLeft = 20,
+        inMusicMeasure = 21,
+        inMusicBeat = 22,
+        inMusicBPM = 23,
+        inAudioOutChannelCount = 24,
+        inAudioOutHeadphonesConnected = 25,
+        inAudioOut3dAudioActive = 26,
+    }
+
     [RTTI.Serializable(0xF90F920DBE1A9465, GameType.HZD)]
     public enum ESoundInstanceLimitMode : int32
     {
@@ -4620,6 +6562,99 @@ namespace Decima.HZD
         Stop_Oldest = 1,
         Stop_Softest = 2,
         Reject_New = 3,
+    }
+
+    [RTTI.Serializable(0xE359BF8CDF743F77, GameType.HZD)]
+    public enum ESoundInstanceParameter : int32
+    {
+        inDistanceToListener = 0,
+        inAzimuthToListener = 1,
+        inHeightRelativeToListener = 2,
+        inElevationAngle = 3,
+        inPosition = 4,
+        inVelocity = 5,
+        inIsInside = 6,
+        inIsDirectlyCausedByPlayer = 7,
+        inIsAssociatedPlayerLocal = 8,
+        inIsCausedByPlayerAssociatedEntity = 9,
+        inOcclusionFactor = 10,
+        inObstructionFactor = 11,
+        inDryAttenuation = 12,
+        inWetAttenuation = 13,
+        inBulletsLeft = 14,
+        inIsZoomedWeapon = 15,
+        inRMS = 16,
+        inWeaponSpinRate = 17,
+        inWeaponSpinUp = 18,
+        inSelectedWeapon = 19,
+        inSunHeatLevel = 20,
+        inSunExposure = 21,
+        inGrenadeCookFactor = 22,
+        inImpactMass = 23,
+        inImpactStrength = 24,
+        inScanningPanSpeed = 25,
+        inScanningPanDirection = 26,
+        inScanningTiltSpeed = 27,
+        inScanningTiltDirection = 28,
+        inHasTarget = 29,
+        inAimAlignedToTarget = 30,
+        inForwardSpeed = 31,
+        inStrafeSpeed = 32,
+        inPanSpeed = 33,
+        inTiltSpeed = 34,
+        inHealth = 35,
+        inPlayerLevel = 36,
+        inIsAlert = 37,
+        inIsFiring = 38,
+        inIsBeingControlled = 39,
+        inIsAntennaDeployed = 40,
+        inMountedGunTurnSpeed = 41,
+        inMountedGunPitchSpeed = 42,
+        inMountedGunIsMounted = 43,
+        inValveTurnSpeed = 44,
+        inValvePosition = 45,
+        inVehicleGear = 46,
+        inVehicleSpeed = 47,
+        inVehicleRpm = 48,
+        inVehicleBrakes = 49,
+        inVehicleHandBrakes = 50,
+        inVehicleGearShift = 51,
+        inVehicleGas = 52,
+        inVehicleActive = 53,
+        inVehicleBoost = 54,
+        inVehicleWronkLeft = 55,
+        inVehicleWronkRight = 56,
+        inVehicleTouchesGround = 57,
+        inBreathingFactor = 58,
+        inIsHit = 59,
+        inCaptureAndHoldPercentage = 60,
+        inUniqueEntityId = 61,
+        inOwnerIsEnemyOfPlayer = 62,
+        inAimedTowardsPlayer = 63,
+        inTriggeredOnListener = 64,
+        inTimeSinceEnemyHit = 65,
+        inIsSilenced = 66,
+        inIsMissileLocked = 67,
+        inChargeMagnitude = 68,
+        inIsCharged = 69,
+        inAmmoChargeLevel = 70,
+        inAmmoChargeMagnitude = 71,
+        inIsOvercharged = 72,
+        inReloadSpeedModifier = 73,
+        inAmmoTetherLoad = 74,
+        inAmmoTetherState = 75,
+        inCrowdNPCCountInArea = 76,
+        inIncomingPositionAzimuth = 77,
+        inOutgoingPositionAzimuth = 78,
+        inProximityFactor = 79,
+    }
+
+    [RTTI.Serializable(0xE465FC710CCAF743, GameType.HZD)]
+    public enum ESoundLoopMode : int32
+    {
+        Default = 0,
+        On = 2,
+        Off = 1,
     }
 
     [RTTI.Serializable(0x6662E130032BA91C, GameType.HZD)]
@@ -4716,6 +6751,17 @@ namespace Decima.HZD
         Default = 15,
     }
 
+    [RTTI.Serializable(0xC76EF8C17C7B3EE3, GameType.HZD)]
+    public enum ESpeakerMode : int32
+    {
+        Default = 0,
+        Stereo = 1,
+        _5_1 = 2,
+        _7_1 = 3,
+        Ambisonics_2H1V = 4,
+        Ambisonics_3H1P = 5,
+    }
+
     [RTTI.Serializable(0x85FFED09F19E66C7, GameType.HZD)]
     public enum EStacking : int32
     {
@@ -4787,6 +6833,17 @@ namespace Decima.HZD
         DialogueChoiceMouse = 6,
     }
 
+    [RTTI.Serializable(0x366D1A4113B6623A, GameType.HZD)]
+    public enum EStreamingEventState : int32
+    {
+        Undefined = 0,
+        RequestAdded = 1,
+        StartRead = 2,
+        Completed = 3,
+        Failed = 4,
+        Canceled = 5,
+    }
+
     [RTTI.Serializable(0x6B8C7B2C6BC3E80E, GameType.HZD)]
     public enum EStreamingLODLevel : int8
     {
@@ -4794,6 +6851,41 @@ namespace Decima.HZD
         Low = 1,
         Medium = 2,
         High = 3,
+    }
+
+    [RTTI.Serializable(0x6D2F5A929319EB41, GameType.HZD)]
+    public enum EStreamingPriority : int32
+    {
+        VL = 0,
+        L = 1,
+        M = 2,
+        H = 3,
+        VH = 4,
+        I = 5,
+    }
+
+    [RTTI.Serializable(0x38D78C91B438CEF8, GameType.HZD)]
+    public enum EStreamingRefPriority : int8
+    {
+        None = 0,
+        Lowest = 1,
+        Lower = 2,
+        Low = 3,
+        BelowNormal = 4,
+        Normal = 5,
+        AboveNormal = 6,
+        High = 7,
+        Higher = 8,
+        Highest = 9,
+    }
+
+    [RTTI.Serializable(0xC31B934F0F280C97, GameType.HZD)]
+    public enum EStreamingState : int32
+    {
+        WaitForRead = 0,
+        WaitForBuffer = 1,
+        WaitForEnd = 2,
+        Stopped = 3,
     }
 
     [RTTI.Serializable(0x45F600D02EB1567E, GameType.HZD)]
@@ -4819,6 +6911,61 @@ namespace Decima.HZD
         MinimalSway = 2,
         SmoothMinimalSway = 3,
         DontChangeSway = 4,
+    }
+
+    [RTTI.Serializable(0x379725E444CA248B, GameType.HZD)]
+    public enum ESweepDirection : int32
+    {
+        SweepForward = 0,
+        SweepBackward = 1,
+    }
+
+    [RTTI.Serializable(0x33023563EC094C53, GameType.HZD)]
+    public enum ESystemShaderResourceType : int32
+    {
+        Clear0 = 0,
+        Clear1 = 1,
+        Clear2 = 2,
+        Clear3 = 3,
+        Clear4 = 4,
+        Clear5 = 5,
+        Clear6 = 6,
+        Clear7 = 7,
+        Clear8 = 8,
+        Copy = 9,
+        CopyUInt = 10,
+        CopySlice2D = 11,
+        CopySlice2DUInt = 12,
+        CopySliceArray = 13,
+        CopySlice3D = 14,
+        CopySliceCube = 15,
+        ClearStencilDither = 16,
+    }
+
+    [RTTI.Serializable(0x124D2F02C7CD176D, GameType.HZD)]
+    public enum ETagEvent : int32
+    {
+        Create = 0,
+        Init = 1,
+        PageOn = 2,
+        FocusOn = 3,
+        FocusOff = 4,
+        ValueChanged = 5,
+        PageOff = 6,
+        DeInit = 7,
+        InputTriggered = 9,
+        ChildrenUpdated = 12,
+        VirtualKeyboardClosed = 13,
+        DataInvalidate = 10,
+        DataUpdate = 11,
+        MenuStateChanged = 14,
+        BindKeyFinished = 15,
+        ControllerTypeChanged = 16,
+        UnpluggedMonitor = 17,
+        WindowMoved = 18,
+        DownloadComplete = 19,
+        MouseHoverIn = 20,
+        PSOOptimizationFinished = 21,
     }
 
     [RTTI.Serializable(0x50052A004027B793, GameType.HZD)]
@@ -4877,6 +7024,35 @@ namespace Decima.HZD
         LowLOD = 2,
     }
 
+    [RTTI.Serializable(0xD6E85FE8A5000BF6, GameType.HZD)]
+    public enum ETerrainMaterialLayerPreviewMode : int32
+    {
+        Disabled = 0,
+        Layer_0 = 1,
+        Layer_1 = 2,
+        Layer_2 = 3,
+        Layer_3 = 4,
+        Layer_4 = 5,
+    }
+
+    [RTTI.Serializable(0x680AEB7CD2FCCD8, GameType.HZD)]
+    public enum ETerrainMaterialMaskMode : int32
+    {
+        Original = 0,
+        Baked = 1,
+        RuntimeMerged = 2,
+        Default = 3,
+    }
+
+    [RTTI.Serializable(0x34DBDBE70EEE8494, GameType.HZD)]
+    public enum ETerrainRenderPass : int32
+    {
+        ShadingPass = 0,
+        ShadowPass = 1,
+        OcclussionPass = 2,
+        DebugPass = 3,
+    }
+
     [RTTI.Serializable(0xEE8C101D963FBAFD, GameType.HZD)]
     public enum ETerrainTileCullingMode : int32
     {
@@ -4898,6 +7074,20 @@ namespace Decima.HZD
     {
         Linear = 0,
         sRGB = 1,
+    }
+
+    [RTTI.Serializable(0xFC16FEC3ADEB51A1, GameType.HZD)]
+    public enum ETexCoordType : int32
+    {
+        Normalized = 0,
+        Rectangle = 1,
+    }
+
+    [RTTI.Serializable(0xC1B78D0CDD1FEDDF, GameType.HZD)]
+    public enum ETextDirection : int8
+    {
+        LeftToRight = 0,
+        RightToLeft = 1,
     }
 
     [RTTI.Serializable(0xB4B1868FEAA8FF2F, GameType.HZD)]
@@ -5050,6 +7240,13 @@ namespace Decima.HZD
         threat_identified = 3,
     }
 
+    [RTTI.Serializable(0x7326243118301D64, GameType.HZD)]
+    public enum EThrowType : int32
+    {
+        Normal = 0,
+        Underarm = 1,
+    }
+
     [RTTI.Serializable(0x72CC04F8E9E6363F, GameType.HZD)]
     public enum ETickerAlignment : int8
     {
@@ -5090,6 +7287,16 @@ namespace Decima.HZD
         TwoPhaseRockets = 2,
     }
 
+    [RTTI.Serializable(0xF6A171A2137D8EE5, GameType.HZD)]
+    public enum ETransitionConditionCharacterFacingDirection : int32
+    {
+        Default = 0,
+        ScreenLeft = 1,
+        ScreenRight = 2,
+        IntoCamera = 3,
+        AwayFromCamera = 4,
+    }
+
     [RTTI.Serializable(0xF9F506B5D1718FCF, GameType.HZD)]
     public enum ETranslationStatus : int8
     {
@@ -5097,6 +7304,14 @@ namespace Decima.HZD
         TranslationApproved = 1,
         QADBApproved = 2,
         QAApproved = 3,
+    }
+
+    [RTTI.Serializable(0xB97BBD9872077AB7, GameType.HZD)]
+    public enum ETransparencyMode : int32
+    {
+        Forward = 0,
+        DeferredAcc = 1,
+        Deferred = 2,
     }
 
     [RTTI.Serializable(0xAC48E47BE263FF7A, GameType.HZD)]
@@ -5126,6 +7341,15 @@ namespace Decima.HZD
         None = 6,
     }
 
+    [RTTI.Serializable(0x99305DAA64E4EB0E, GameType.HZD)]
+    public enum EUpdateFrequency : int8
+    {
+        _7_49_Hz = 0,
+        _14_99_Hz = 1,
+        _29_97_Hz = 2,
+        _59_94_Hz = 3,
+    }
+
     [RTTI.Serializable(0x738D185BE6064B58, GameType.HZD)]
     public enum EUseLocationSelectionSortType : int8
     {
@@ -5140,6 +7364,15 @@ namespace Decima.HZD
         WeaponPickup = 1,
         AutoPickup = 2,
         AmmoPickup = 3,
+    }
+
+    [RTTI.Serializable(0xB760E2573ABA5214, GameType.HZD)]
+    public enum EVAlign : int8
+    {
+        Default = 0,
+        Top = 16,
+        Middle = 32,
+        Bottom = 48,
     }
 
     [RTTI.Serializable(0x823A2A3667040242, GameType.HZD)]
@@ -5237,6 +7470,19 @@ namespace Decima.HZD
         text_bottom = 5,
     }
 
+    [RTTI.Serializable(0x7347A2A0C59DDAB2, GameType.HZD)]
+    public enum EVideoMode : int32
+    {
+        HD = 0,
+        HD_HDR = 1,
+        HD_TO_4K = 2,
+        HD_TO_4K_HDR = 3,
+        _4K = 4,
+        _4K_HDR = 5,
+        _900p = 6,
+        _900p_HDR = 7,
+    }
+
     [RTTI.Serializable(0x70727F5D42D174, GameType.HZD)]
     public enum EViewLayer : int32
     {
@@ -5279,6 +7525,14 @@ namespace Decima.HZD
         Translation_Z = 3,
     }
 
+    [RTTI.Serializable(0x2D78C09471EC3BCD, GameType.HZD)]
+    public enum EWaterSimulationState : int32
+    {
+        Active = 0,
+        Idle = 1,
+        TransitionToIdle = 2,
+    }
+
     [RTTI.Serializable(0x825353747EFE78B, GameType.HZD)]
     public enum EWaveDataEncoding : int32
     {
@@ -5311,6 +7565,39 @@ namespace Decima.HZD
         Lossy_Highest = 5,
     }
 
+    [RTTI.Serializable(0x10B9BB7842AA8B41, GameType.HZD)]
+    public enum EWeaponActivationState : int32
+    {
+        Inactive = 0,
+        Deactivating = 1,
+        Activating = 2,
+        Active = 3,
+    }
+
+    [RTTI.Serializable(0x1AB45417B5CE30D6, GameType.HZD)]
+    public enum EWeaponFunction : int32
+    {
+        Primary = 0,
+        Secondary = 1,
+        None = -1,
+    }
+
+    [RTTI.Serializable(0x187B23A16908A596, GameType.HZD)]
+    public enum EWeaponOwnerType : int32
+    {
+        PlayerSP = 0,
+        PlayerMP = 1,
+        AI = 2,
+    }
+
+    [RTTI.Serializable(0xFE7D033233B50A86, GameType.HZD)]
+    public enum EWeaponStance : int32
+    {
+        Lowered = 0,
+        Normal = 1,
+        Raised = 2,
+    }
+
     [RTTI.Serializable(0xC27CC0FE81479C22, GameType.HZD)]
     public enum EWeaponStanceRaiseType : int32
     {
@@ -5335,6 +7622,15 @@ namespace Decima.HZD
         post_shader = 2,
     }
 
+    [RTTI.Serializable(0x26E94B3FADE2D242, GameType.HZD)]
+    public enum EWieldStowState : int32
+    {
+        Wielding = 3,
+        Stowing = 1,
+        Stowed = 2,
+        Wielded = 0,
+    }
+
     [RTTI.Serializable(0x12DB317940E2314F, GameType.HZD)]
     public enum EWorldDataAccessMode : int32
     {
@@ -5357,6 +7653,16 @@ namespace Decima.HZD
     {
         Default_Decoding = 0,
         NormalMap_Decoding = 1,
+    }
+
+    [RTTI.Serializable(0xC7D9DE4BB25CA79A, GameType.HZD)]
+    public enum EWorldDataDefaultTypes : int32
+    {
+        Height = 0,
+        Height_Terrain = 1,
+        Normal = 2,
+        Ecotope = 3,
+        Color = 4,
     }
 
     [RTTI.Serializable(0x6683089E995C1C46, GameType.HZD)]
@@ -5409,6 +7715,46 @@ namespace Decima.HZD
         Auto = 0,
         Never = 1,
         Always = 2,
+    }
+
+    [RTTI.Serializable(0x13E4D2BCC823CE4, GameType.HZD)]
+    public enum ForceFieldProbeCascadeIndex : int32
+    {
+        Near = 0,
+        Mid = 1,
+        Far = 2,
+    }
+
+    [RTTI.Serializable(0x16F9FB5E25547156, GameType.HZD)]
+    public enum ForceFieldProbeSolverIndex : int32
+    {
+        Special = 0,
+        Grass = 1,
+        Plant = 2,
+        Tree = 3,
+    }
+
+    [RTTI.Serializable(0xC7CE6D968DAD1102, GameType.HZD)]
+    public enum MaterialOutputChannels : int32
+    {
+        Albedo = 1,
+        SunlightOcclusion = 2,
+        Lighting = 4,
+        LightIntensity = 8,
+        Normal = 16,
+        TranslucencyFactor = 32,
+        TranslucencyDiffusion = 64,
+        MotionVectors = 128,
+        Reflectance = 256,
+        Roughtness = 512,
+        UserData = 1024,
+        MaterialID = 2048,
+    }
+
+    [RTTI.Serializable(0xF418FF23E4521A93, GameType.HZD)]
+    public enum MeshHierarchyInfoFlags : int32
+    {
+        IsSkinned = 1,
     }
 
     [RTTI.Serializable(0x3E1A2D264138ECB9, GameType.HZD)]

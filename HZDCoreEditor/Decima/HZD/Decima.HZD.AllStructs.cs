@@ -24,6 +24,11 @@ namespace Decima.HZD
     using AnimationEventID = System.UInt32;
     using PhysicsCollisionFilterInfo = System.UInt32;
 
+    [RTTI.Serializable(0x9B9964D1082B9627, GameType.HZD)]
+    public class AAResolver : IRenderSystemPart
+    {
+    }
+
     [RTTI.Serializable(0xC9253625679F824B, GameType.HZD)]
     public class AIAgent : CoreObject
     {
@@ -494,6 +499,11 @@ namespace Decima.HZD
         [RTTI.Member(7, 0x30, "Layout")] public int MembersPerRow;
     }
 
+    [RTTI.Serializable(0x4BB4A9FEAC3265FD, GameType.HZD)]
+    public class AICombatSituationMessageHandler
+    {
+    }
+
     [RTTI.Serializable(0x7A0C01C5D5B6A42C, GameType.HZD)]
     public class AICombatSituationMessageHandlerResource : Resource
     {
@@ -614,6 +624,11 @@ namespace Decima.HZD
     public class AICorpseFoundMessageResource : AIDynamicDataMessageResource
     {
         [RTTI.Member(5, 0x28, "General")] public String CorpseIdentifier;
+    }
+
+    [RTTI.Serializable(0x58D6FD9628B3F884, GameType.HZD)]
+    public class AICorpseMessageHandler : AICombatSituationMessageHandler
+    {
     }
 
     [RTTI.Serializable(0xA97F2B6EF0A3A475, GameType.HZD)]
@@ -793,6 +808,11 @@ namespace Decima.HZD
         [RTTI.Member(5, 0x50, "General")] public int AvoidancePriority;
     }
 
+    [RTTI.Serializable(0x488205B39617F7A0, GameType.HZD)]
+    public class AIEmplacedWeaponObject
+    {
+    }
+
     [RTTI.Serializable(0x2C8C97D244DDCFF8, GameType.HZD)]
     public class AIEventMessage : AIMessage
     {
@@ -889,6 +909,11 @@ namespace Decima.HZD
 
     [RTTI.Serializable(0x5FE345983B70EF33, GameType.HZD)]
     public class AIGameplayArea : NavMeshObject
+    {
+    }
+
+    [RTTI.Serializable(0x4CDBF8609E4EE39D, GameType.HZD)]
+    public class AIGenericEventMessageHandler : AICombatSituationMessageHandler
     {
     }
 
@@ -3527,8 +3552,9 @@ namespace Decima.HZD
         [RTTI.Member(14, 0xA0, "Cover")] public uint Stride;
         [RTTI.Member(15, 0xA4, "Cover")] public bool IsForObjects;
         [RTTI.Member(16, 0xA8, "Cover", true)] public BitstreamData Data;
+
         public void DeserializeExtraData(BinaryReader reader) { }
-        public void SerializeExtraData(BinaryWriter writer) => throw new NotImplementedException();
+        public void SerializeExtraData(BinaryWriter writer) { }
     }
 
     [RTTI.Serializable(0x70E5B7F389530D87, GameType.HZD)]
@@ -3546,6 +3572,11 @@ namespace Decima.HZD
         [RTTI.Member(15, 0x90, "Compression")] public IVec2 UncompressedResolutionBottom;
         [RTTI.Member(8, 0x98, "Compression")] public FRange DepthRange;
         [RTTI.Member(9, 0xA0, "Compression")] public float DepthCurve;
+    }
+
+    [RTTI.Serializable(0x3B95BD4A24F6B90D, GameType.HZD)]
+    public class AIStaticDataMessageResource : AIMessageResource
+    {
     }
 
     [RTTI.Serializable(0xA4F39BC42F3BDDE1, GameType.HZD)]
@@ -3640,6 +3671,11 @@ namespace Decima.HZD
     {
     }
 
+    [RTTI.Serializable(0x946F843308810AA5, GameType.HZD)]
+    public class AIThrowableOriginInfoMessageHandler : AICombatSituationMessageHandler
+    {
+    }
+
     [RTTI.Serializable(0x45D71415E312EEA5, GameType.HZD)]
     public class AIThrowableOriginInfoMessageHandlerResource : AICombatSituationMessageHandlerResource
     {
@@ -3652,6 +3688,15 @@ namespace Decima.HZD
     public class AIThrowableOriginInfoMessageResource : AIDynamicDataMessageResource
     {
         [RTTI.Member(5, 0x28, "General")] public String EventId;
+    }
+
+    [RTTI.Serializable(0x3EE64A38904300D1, GameType.HZD)]
+    public class AIThrowableThreatInformationResource
+    {
+        [RTTI.Member(0, 0x0)] public EPositionAssessment FromTPA;
+        [RTTI.Member(1, 0x4)] public EPositionAssessment ToTPA;
+        [RTTI.Member(2, 0x8)] public float AntiStealthPatchRadius;
+        [RTTI.Member(3, 0x10)] public String EventId;
     }
 
     [RTTI.Serializable(0xD45DA3A4ED73633E, GameType.HZD)]
@@ -4026,6 +4071,11 @@ namespace Decima.HZD
     public class ActivatorReactsToDamageAction : ConditionalAction
     {
         [RTTI.Member(9, 0x40, "Logic")] public Ref<DamageTypeResource> DamageTypeResource;
+    }
+
+    [RTTI.Serializable(0x37CB777F2754F662, GameType.HZD)]
+    public class ActiveHealthRegenerationData : RTTIObject
+    {
     }
 
     [RTTI.Serializable(0x2303494057EB497D, GameType.HZD)]
@@ -4440,7 +4490,7 @@ namespace Decima.HZD
         [RTTI.Member(7, 0x34, "General")] public float RemovalExtents;
     }
 
-    [RTTI.Serializable(0x79B7B65492FDE8B9, GameType.HZD)]
+    [RTTI.Serializable(0xA7347925803AFE15, GameType.HZD)]
     public class Alert
     {
         [RTTI.Member(0, 0x0)] public AlertPart AlertPart;
@@ -4455,7 +4505,7 @@ namespace Decima.HZD
         [RTTI.Member(6, 0x30, "Logic")] public float AIAlertRadius;
     }
 
-    [RTTI.Serializable(0x3D4B5C84C50E03CE, GameType.HZD)]
+    [RTTI.Serializable(0x3F3D5CD0F21E92B9, GameType.HZD)]
     public class AlertPart
     {
         [RTTI.Member(0, 0x0)] public Array<String> Attributes;
@@ -4851,6 +4901,11 @@ namespace Decima.HZD
 
     [RTTI.Serializable(0xC6DAE245FF00DC8B, GameType.HZD)]
     public class AmmoResourceSymbols : ExportedSymbolGroup
+    {
+    }
+
+    [RTTI.Serializable(0xDC15DA5371A1C63E, GameType.HZD)]
+    public class AmmoSlot
     {
     }
 
@@ -5765,6 +5820,11 @@ namespace Decima.HZD
         [RTTI.Member(2, 0x20)] public AtmosphereSkySettings Settings;
     }
 
+    [RTTI.Serializable(0x4F495CAB83B0E0F, GameType.HZD)]
+    public class AtmosphericScattingCB
+    {
+    }
+
     [RTTI.Serializable(0x7DE4A439E1ED6952, GameType.HZD)]
     public class AtmosphericScattingSettings
     {
@@ -6432,6 +6492,11 @@ namespace Decima.HZD
     {
     }
 
+    [RTTI.Serializable(0x7CFE6B5693D83A32, GameType.HZD)]
+    public class BandwidthMeasurementServicePC : BandwidthMeasurementService
+    {
+    }
+
     [RTTI.Serializable(0xA2C1DA36D73DC46A, GameType.HZD)]
     public class BaseResource : CoreObject
     {
@@ -6491,6 +6556,11 @@ namespace Decima.HZD
         [RTTI.Member(94, 0x264, "Logic")] public EIntersectionMethod IntersectionMethod;
         [RTTI.Member(95, 0x268, "Logic")] public float BeamCollisionRadius;
         [RTTI.Member(96, 0x26C, "Logic")] public bool UseEjectorDirection;
+    }
+
+    [RTTI.Serializable(0xBA6B3BD1A8EA2FC0, GameType.HZD)]
+    public class BenchmarkManager : RTTIObject
+    {
     }
 
     [RTTI.Serializable(0x24CF46669C17C89, GameType.HZD)]
@@ -6655,6 +6725,20 @@ namespace Decima.HZD
         [RTTI.Member(17, 0x80, "Settings")] public Ref<BloomLookupData> BloomTexture;
     }
 
+    [RTTI.Serializable(0xA87BFFDC839F6E2F, GameType.HZD)]
+    public class BlurSettings
+    {
+        [RTTI.Member(1, 0x0, "Settings")] public Vec2 Position;
+        [RTTI.Member(2, 0x10, "Settings")] public float InnerRadius;
+        [RTTI.Member(3, 0x14, "Settings")] public float OuterRadius;
+        [RTTI.Member(4, 0x18, "Settings")] public float Scale;
+        [RTTI.Member(5, 0x20, "Settings")] public Vec2 MotionBlurScaleCenter;
+        [RTTI.Member(6, 0x30, "Settings")] public float MotionBlurScaleInner;
+        [RTTI.Member(7, 0x34, "Settings")] public float MotionBlurScaleOuter;
+        [RTTI.Member(8, 0x38, "Settings")] public float MotionBlurScaleInnerRadius;
+        [RTTI.Member(9, 0x3C, "Settings")] public float MotionBlurScaleOuterRadius;
+    }
+
     [RTTI.Serializable(0x36679006F125B45, GameType.HZD)]
     public class BlurSettingsResource : Resource
     {
@@ -6810,6 +6894,13 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x0)] public Ref<BoolPropertyBase> Property;
         [RTTI.Member(1, 0x8)] public String SoundParameterName;
+    }
+
+    [RTTI.Serializable(0xFE13DD4FF4ED9131, GameType.HZD)]
+    public class BoolPropertyValue : PropertyValue
+    {
+        [RTTI.Member(5, 0x28, "General")] public Ref<BoolPropertyBase> Property;
+        [RTTI.Member(6, 0x30, "General")] public bool Value;
     }
 
     [RTTI.Serializable(0xB40D5D07E49C3282, GameType.HZD)]
@@ -7184,6 +7275,11 @@ namespace Decima.HZD
     {
     }
 
+    [RTTI.Serializable(0x8EC7FD1FF432D249, GameType.HZD)]
+    public class CSVValueFormatter
+    {
+    }
+
     [RTTI.Serializable(0x2E17A9CD85FAE366, GameType.HZD)]
     public class CSoundSettings : ProjectSettings
     {
@@ -7197,6 +7293,11 @@ namespace Decima.HZD
 
     [RTTI.Serializable(0x2053754B7AA9C6E0, GameType.HZD)]
     public class CachedHelperLocationsComponentSymbols : ExportedSymbolGroup
+    {
+    }
+
+    [RTTI.Serializable(0x1BE5F3DF4BFFE59A, GameType.HZD)]
+    public class CamOrbit : Camera
     {
     }
 
@@ -8468,6 +8569,11 @@ namespace Decima.HZD
         [RTTI.Member(2, 0x20)] public CloudRenderSettings Settings;
     }
 
+    [RTTI.Serializable(0x9FF500979A032D1D, GameType.HZD)]
+    public class CloudRenderer : RTTIObject
+    {
+    }
+
     [RTTI.Serializable(0x5A6BFABCB62E6970, GameType.HZD)]
     public class ClusterGrenade : Grenade
     {
@@ -8664,6 +8770,13 @@ namespace Decima.HZD
         [RTTI.Member(10, 0x60, "General")] public MaterialType MaterialType;
     }
 
+    [RTTI.Serializable(0xF81ED7984930DB6A, GameType.HZD)]
+    public class CollisionResourceExtruded2DShape : CollisionResource
+    {
+        [RTTI.BaseClass(0x40)] public Shape2DExtrusion @Shape2DExtrusion;
+        [RTTI.Member(14, 0x80, "General")] public MaterialType MaterialType;
+    }
+
     [RTTI.Serializable(0x4010F973F0254178, GameType.HZD)]
     public class CollisionResourceSphere : CollisionResource
     {
@@ -8773,6 +8886,11 @@ namespace Decima.HZD
     {
     }
 
+    [RTTI.Serializable(0x51FB5C684C394574, GameType.HZD)]
+    public class CommerceManagerPC : CommerceManager
+    {
+    }
+
     [RTTI.Serializable(0xF48D9413CEA83423, GameType.HZD)]
     public class ComponentLifetimeComponent : EntityComponent
     {
@@ -8807,6 +8925,14 @@ namespace Decima.HZD
         [RTTI.Member(2, 0x4)] public int16 Z;
     }
 
+    [RTTI.Serializable(0x7CEA1DBAC411D5BB, GameType.HZD)]
+    public class Compressed8Vector3
+    {
+        [RTTI.Member(0, 0x0)] public int8 X;
+        [RTTI.Member(1, 0x1)] public int8 Y;
+        [RTTI.Member(2, 0x2)] public int8 Z;
+    }
+
     [RTTI.Serializable(0x391C214A28009A9F, GameType.HZD)]
     public class CompressedUnitVector3B
     {
@@ -8830,6 +8956,11 @@ namespace Decima.HZD
         [RTTI.Member(11, 0x44)] public float LFEReleaseTimeInMs;
         [RTTI.Member(12, 0x48)] public float LFEMakeUpGainInDb;
         [RTTI.Member(13, 0x4C)] public float LFEPassThruGainInDb;
+    }
+
+    [RTTI.Serializable(0xB7A4A10F91414586, GameType.HZD)]
+    public class ComputeSkinningInfo : IRenderSystemPart
+    {
     }
 
     [RTTI.Serializable(0x2DBDE6FB0529B36B, GameType.HZD)]
@@ -9661,8 +9792,9 @@ namespace Decima.HZD
     public class CoreScript : CoreObject, RTTI.IExtraBinaryDataCallback
     {
         [RTTI.Member(3, 0xC0, "General")] public String Name;
+
         public void DeserializeExtraData(BinaryReader reader) { }
-        public void SerializeExtraData(BinaryWriter writer) => throw new NotImplementedException();
+        public void SerializeExtraData(BinaryWriter writer) { }
     }
 
     [RTTI.Serializable(0x1D6ACA2786C58ADC, GameType.HZD)]
@@ -9673,15 +9805,6 @@ namespace Decima.HZD
     [RTTI.Serializable(0xE5B77622A2C390AA, GameType.HZD)]
     public class CoreTelemetryServiceSymbols : ExportedSymbolGroup
     {
-    }
-
-    [RTTI.Serializable(0xFB6A1079C1378D32, GameType.HZD)]
-    public class CorpseFellThroughWorld_Event : TelemetryGameBase
-    {
-        [RTTI.Member(8, 0x50, "General")] public float position_x;
-        [RTTI.Member(9, 0x54, "General")] public float position_y;
-        [RTTI.Member(10, 0x58, "General")] public float position_z;
-        [RTTI.Member(11, 0x60, "General")] public String entity_name;
     }
 
     [RTTI.Serializable(0xBEF0152AB6376B85, GameType.HZD)]
@@ -10150,6 +10273,19 @@ namespace Decima.HZD
         [RTTI.Member(12, 0x58, "Logic")] public Ref<LocalizedTextResource> DisplayName;
     }
 
+    [RTTI.Serializable(0x3F7B3B3D9D488552, GameType.HZD)]
+    public class DLCDescriptionResource : Resource
+    {
+        [RTTI.Member(5, 0x28, "Base")] public String DisplayNameId;
+        [RTTI.Member(6, 0x30, "Base")] public String DescriptionId;
+        [RTTI.Member(7, 0x38, "Base")] public String IconTexture;
+        [RTTI.Member(8, 0x40, "Base")] public String IconTextureBig;
+        [RTTI.Member(9, 0x48, "Base")] public Ref<EntitlementResource> Entitlement;
+        [RTTI.Member(10, 0x50, "Base")] public String ProductLabel;
+        [RTTI.Member(11, 0x58, "Base")] public bool IsPreorderDLC;
+        [RTTI.Member(12, 0x59, "Base")] public bool IsSeasonPassDLC;
+    }
+
     [RTTI.Serializable(0x4DF91FD99425A2E1, GameType.HZD)]
     public class DLCLocationMarkerResource : LocationMarkerResource
     {
@@ -10598,6 +10734,11 @@ namespace Decima.HZD
         [RTTI.Member(15, 0xB0, "Properties")] public Ref<LocalizedTextResource> CollectablesRegionDescription;
     }
 
+    [RTTI.Serializable(0xE925F1FC98B8E9F8, GameType.HZD)]
+    public class DataSourceConnectionQuality : DataSource
+    {
+    }
+
     [RTTI.Serializable(0x20BD5BFE4F4E5E00, GameType.HZD)]
     public class DataSourceControllerMapping : DataSource
     {
@@ -10905,6 +11046,16 @@ namespace Decima.HZD
     {
     }
 
+    [RTTI.Serializable(0xF9D3DA94688ACA4A, GameType.HZD)]
+    public class DataSourcePSOCaching : DataSource
+    {
+    }
+
+    [RTTI.Serializable(0x98D63684360619C4, GameType.HZD)]
+    public class DataSourcePSOCachingResource : DataSourceResource
+    {
+    }
+
     [RTTI.Serializable(0x6C87F89D1440F9C7, GameType.HZD)]
     public class DataSourcePhotoMode : DataSource
     {
@@ -10969,6 +11120,11 @@ namespace Decima.HZD
         [RTTI.Member(12, 0x68, "Properties")] public Array<Ref<MedalQuestRewardDisplayEntry>> DLCHuntingGroundQuestRewards;
         [RTTI.Member(13, 0x78, "Properties")] public Ref<MenuStyleClass> HuntingGroundTrialCompletedStyleClass;
         [RTTI.Member(14, 0x80, "Properties")] public Ref<HuntingGroundTrialLog> DLCHuntingGroundTrialLog;
+    }
+
+    [RTTI.Serializable(0x98A813A6529AD12F, GameType.HZD)]
+    public class DataSourceRandomBackground : DataSource
+    {
     }
 
     [RTTI.Serializable(0xD5DF72126C00E45D, GameType.HZD)]
@@ -11089,6 +11245,11 @@ namespace Decima.HZD
     public class DataSourceTermsAndConditionsResource : DataSourceResource
     {
         [RTTI.Member(5, 0x28, "LocalizedTextEntries")] public Ref<LocalizedTextResource> EULAText;
+    }
+
+    [RTTI.Serializable(0x4843D8E6A9ADA9C7, GameType.HZD)]
+    public class DataSourceTimer : DataSource
+    {
     }
 
     [RTTI.Serializable(0xE0CE28D35A1A7B82, GameType.HZD)]
@@ -11475,15 +11636,6 @@ namespace Decima.HZD
         [RTTI.Member(5, 0x28, "General")] public Array<CompoundStatResource> DerivedStats;
     }
 
-    [RTTI.Serializable(0x3D856F44DAE9CD47, GameType.HZD)]
-    public class DesignPatchApplied_Event : TelemetryGamePositions
-    {
-        [RTTI.Member(10, 0x80, "General")] public int jira_bugnumber;
-        [RTTI.Member(11, 0x84, "General")] public int consumer_issue_number;
-        [RTTI.Member(12, 0x88, "General")] public String current_mainquest;
-        [RTTI.Member(13, 0x90, "General")] public String custom_string;
-    }
-
     [RTTI.Serializable(0x6AE0A296C3FA208, GameType.HZD)]
     public class DestroyComponentAction : EntityAction
     {
@@ -11559,6 +11711,16 @@ namespace Decima.HZD
 
     [RTTI.Serializable(0xDF6A72DD01D7D4A9, GameType.HZD)]
     public class DestructibilityPartBase : Resource
+    {
+    }
+
+    [RTTI.Serializable(0xBD4FBFE49D55B132, GameType.HZD)]
+    public class DestructibilityPartConstraint
+    {
+    }
+
+    [RTTI.Serializable(0x6100B9BD09E2AA60, GameType.HZD)]
+    public class DestructibilityPartInstance
     {
     }
 
@@ -12075,6 +12237,11 @@ namespace Decima.HZD
         [RTTI.Member(8, 0x40, "General")] public Ref<LocalizedTextResource> Description;
     }
 
+    [RTTI.Serializable(0x1E46386F4E5BABB7, GameType.HZD)]
+    public class DistantCubemapRenderer : RTTIObject
+    {
+    }
+
     [RTTI.Serializable(0xBEF889DA55D8AD45, GameType.HZD)]
     public class DoFApertureSettings : Resource
     {
@@ -12140,6 +12307,13 @@ namespace Decima.HZD
     {
     }
 
+    [RTTI.Serializable(0xE35C04773596B741, GameType.HZD)]
+    public class DualQuaternion
+    {
+        [RTTI.Member(0, 0x0)] public Quat Real;
+        [RTTI.Member(1, 0x10)] public Quat Dual;
+    }
+
     [RTTI.Serializable(0x31FB5727743986D, GameType.HZD)]
     public class DynamicHelperLocatorInstance : BoneLocatorInstance
     {
@@ -12198,6 +12372,11 @@ namespace Decima.HZD
 
     [RTTI.Serializable(0x13EDCF2488EFC5E4, GameType.HZD)]
     public class DynamicSpawnStruct : RTTIObject
+    {
+    }
+
+    [RTTI.Serializable(0x9294F8E5515CB618, GameType.HZD)]
+    public class ENTITY_TYPE_NONE : RTTIObject
     {
     }
 
@@ -13097,6 +13276,11 @@ namespace Decima.HZD
 
     [RTTI.Serializable(0x16BAF4FD2F34EA86, GameType.HZD)]
     public class EntityInstancePropertyBase : Property
+    {
+    }
+
+    [RTTI.Serializable(0xB28FACE9D1AA159B, GameType.HZD)]
+    public class EntityInstancePropertyLink : PropertyLinkBase
     {
     }
 
@@ -14711,6 +14895,13 @@ namespace Decima.HZD
         [RTTI.Member(0, 0x0)] public Ref<FloatPropertyBase> Property;
     }
 
+    [RTTI.Serializable(0xEB3F2C8DC5431D94, GameType.HZD)]
+    public class FloatPropertyValue : PropertyValue
+    {
+        [RTTI.Member(5, 0x28, "General")] public Ref<FloatPropertyBase> Property;
+        [RTTI.Member(6, 0x30, "General")] public float Value;
+    }
+
     [RTTI.Serializable(0x8DB5833407F1C222, GameType.HZD)]
     public class FloorSlopeDetectionComponent : EntityComponent
     {
@@ -14851,6 +15042,14 @@ namespace Decima.HZD
     [RTTI.Serializable(0x76390CEE7A9253CE, GameType.HZD)]
     public class FocusAlertSignalManager : ObjectManager
     {
+    }
+
+    [RTTI.Serializable(0x3CAAC9C022BB4659, GameType.HZD)]
+    public class FocusAlertSignalShaderBinding
+    {
+        [RTTI.Member(0, 0x0)] public String WorldPositionName;
+        [RTTI.Member(1, 0x8)] public String SizeName;
+        [RTTI.Member(2, 0x10)] public String OpacityName;
     }
 
     [RTTI.Serializable(0x79DBD59E465BEB0F, GameType.HZD)]
@@ -15349,6 +15548,35 @@ namespace Decima.HZD
         [RTTI.Member(13, 0x40, "Logic")] public Ref<EntityActorResource> EntityActorResource;
         [RTTI.Member(14, 0x48, "Logic")] public Ref<CurveResource> TimeCurve;
         [RTTI.Member(15, 0x50, "Logic")] public bool Loop;
+    }
+
+    [RTTI.Serializable(0xE9D5E87F6770A012, GameType.HZD)]
+    public class GBufferSystemAssets
+    {
+        [RTTI.Member(0, 0x0)] public Ref<ShaderResource> CopyAccumulationBufferShader;
+        [RTTI.Member(1, 0x8)] public Ref<ShaderResource> DepthHalfToQuarterCheckerboardPixelShader;
+        [RTTI.Member(2, 0x10)] public Ref<ShaderResource> DepthPyramidHalfPixelShader;
+        [RTTI.Member(3, 0x18)] public Ref<ShaderResource> DepthPyramidHalfShader;
+        [RTTI.Member(4, 0x20)] public Ref<ShaderResource> DepthPyramidMaxShader;
+        [RTTI.Member(5, 0x28)] public Ref<ShaderResource> DepthPyramidMinShader;
+        [RTTI.Member(6, 0x30)] public Ref<ShaderResource> DepthPyramidQuarterShader;
+        [RTTI.Member(7, 0x38)] public Ref<ShaderResource> HalfResAttrDownscaleShader;
+        [RTTI.Member(8, 0x40)] public Ref<ShaderResource> ScreenWipeClearShader;
+        [RTTI.Member(9, 0x48)] public Ref<ShaderResource> ScreenWipeCopyAlbedoShader;
+        [RTTI.Member(10, 0x50)] public Ref<ShaderResource> ScreenWipeCopyBinormalsShader;
+        [RTTI.Member(11, 0x58)] public Ref<ShaderResource> ScreenWipeCopyNormalsShader;
+        [RTTI.Member(12, 0x60)] public Ref<ShaderResource> ScreenWipeCopyPositionShader;
+        [RTTI.Member(13, 0x68)] public Ref<ShaderResource> ScreenWipeCopyRGBShader;
+        [RTTI.Member(14, 0x70)] public Ref<ShaderResource> ScreenWipeCopyShadowCubemapShader;
+        [RTTI.Member(15, 0x78)] public Ref<ShaderResource> ScreenWipeCopyShadowMapShader;
+        [RTTI.Member(16, 0x80)] public Ref<ShaderResource> ScreenWipeCopySunOcclusionShader;
+        [RTTI.Member(17, 0x88)] public Ref<ShaderResource> ScreenWipeCopyTangentsShader;
+        [RTTI.Member(18, 0x90)] public Ref<ShaderResource> ScreenWipeDiffusionShader;
+        [RTTI.Member(19, 0x98)] public Ref<ShaderResource> ScreenWipeMotionVectorsShader;
+        [RTTI.Member(20, 0xA0)] public Ref<ShaderResource> ScreenWipeRoughnessShader;
+        [RTTI.Member(21, 0xA8)] public Ref<ShaderResource> ScreenWipeSpecularIntensityShader;
+        [RTTI.Member(22, 0xB0)] public Ref<ShaderResource> ScreenWipeTranslucencyShader;
+        [RTTI.Member(23, 0xB8)] public Ref<ShaderResource> ScreenWipeVolumeLightAmount3DShader;
     }
 
     [RTTI.Serializable(0x28AEBFB60C98A91F, GameType.HZD)]
@@ -16090,6 +16318,13 @@ namespace Decima.HZD
         [RTTI.Member(6, 0x38, "General")] public Array<AlphaPeg> AlphaPegs;
         [RTTI.Member(11, 0x50, "General")] public int NumberOfSamples;
         [RTTI.Member(12, 0x68, "General")] public uint16 NextPegId;
+    }
+
+    [RTTI.Serializable(0xD81BA90F3CBA62BC, GameType.HZD)]
+    public class GrainSettings
+    {
+        [RTTI.Member(1, 0x0, "Settings")] public float Size;
+        [RTTI.Member(2, 0x8, "Settings")] public Ref<TextureLUT> IntensityLUT;
     }
 
     [RTTI.Serializable(0x4CB657FF65834E3, GameType.HZD)]
@@ -19109,6 +19344,11 @@ namespace Decima.HZD
     {
     }
 
+    [RTTI.Serializable(0x4CA390FE7997021A, GameType.HZD)]
+    public class HumanoidMoverAccurateCollision
+    {
+    }
+
     [RTTI.Serializable(0x99C900E696796015, GameType.HZD)]
     public class HumanoidMoverResource : MoverResource
     {
@@ -19698,15 +19938,6 @@ namespace Decima.HZD
         [RTTI.Member(7, 0x48, "General")] public Array<UUIDRef<ActivityMedal>> Trials;
     }
 
-    [RTTI.Serializable(0x7482F1AF0DAA10A6, GameType.HZD)]
-    public class HuntingGroundsTelemetry_Event : TelemetryGameBase
-    {
-        [RTTI.Member(8, 0x50, "General")] public float HG_Time;
-        [RTTI.Member(9, 0x58, "General")] public String Trial_Name;
-        [RTTI.Member(10, 0x60, "General")] public String Trial_Outcome;
-        [RTTI.Member(11, 0x68, "General")] public String HG_Name;
-    }
-
     [RTTI.Serializable(0x6B866DFDFDA8F700, GameType.HZD)]
     public class HwBindingHandle
     {
@@ -19717,6 +19948,11 @@ namespace Decima.HZD
     public class HwSamplerData
     {
         [RTTI.Member(0, 0x0)] public uint32 PackedData;
+    }
+
+    [RTTI.Serializable(0x5F3F844C587F45C, GameType.HZD)]
+    public class HwShaderResourceIdentifier
+    {
     }
 
     [RTTI.Serializable(0xE75611FCC703A298, GameType.HZD)]
@@ -19753,6 +19989,11 @@ namespace Decima.HZD
         [RTTI.Member(3, 0xC)] public int Bottom;
     }
 
+    [RTTI.Serializable(0xEA1E964CEFAA91F6, GameType.HZD)]
+    public class IRenderSystemPart : RTTIRefObject
+    {
+    }
+
     [RTTI.Serializable(0xD640C6671A9F54E9, GameType.HZD)]
     public class ISize
     {
@@ -19766,6 +20007,15 @@ namespace Decima.HZD
         [RTTI.Member(0, 0x0)] public int X;
         [RTTI.Member(1, 0x4)] public int Y;
         [RTTI.Member(2, 0x8)] public int Z;
+    }
+
+    [RTTI.Serializable(0xBF70D7F3F3CD8C21, GameType.HZD)]
+    public class IVec4
+    {
+        [RTTI.Member(0, 0x0)] public int X;
+        [RTTI.Member(1, 0x4)] public int Y;
+        [RTTI.Member(2, 0x8)] public int Z;
+        [RTTI.Member(3, 0xC)] public int W;
     }
 
     [RTTI.Serializable(0xB7C0DB4F7320249B, GameType.HZD)]
@@ -20113,8 +20363,9 @@ namespace Decima.HZD
         [RTTI.Member(8, 0xC8, "General")] public Ref<InstancedMeshResource> Resource;
         [RTTI.Member(9, 0xD0, "General")] public int MeshInstanceTreeSize;
         [RTTI.Member(10, 0xE0, "General")] public int MeshInstanceTreeDrawableSetupSize;
+
         public void DeserializeExtraData(BinaryReader reader) { }
-        public void SerializeExtraData(BinaryWriter writer) => throw new NotImplementedException();
+        public void SerializeExtraData(BinaryWriter writer) { }
     }
 
     [RTTI.Serializable(0xA5ED50DC10EEC66B, GameType.HZD)]
@@ -20176,6 +20427,13 @@ namespace Decima.HZD
     public class IntPropertyLink : PropertyLinkBase
     {
         [RTTI.Member(0, 0x0)] public Ref<IntPropertyBase> Property;
+    }
+
+    [RTTI.Serializable(0x79CB746FB720FB58, GameType.HZD)]
+    public class IntPropertyValue : PropertyValue
+    {
+        [RTTI.Member(5, 0x28, "General")] public Ref<IntPropertyBase> Property;
+        [RTTI.Member(6, 0x30, "General")] public int Value;
     }
 
     [RTTI.Serializable(0xD83841E650139F0B, GameType.HZD)]
@@ -21407,6 +21665,13 @@ namespace Decima.HZD
         [RTTI.Member(25, 0xD2, "VisualEffects")] public MaterialType ImpactMaterialType;
     }
 
+    [RTTI.Serializable(0x2E9D40FC09AD8A3A, GameType.HZD)]
+    public class LayerData : RTTI.IExtraBinaryDataCallback
+    {
+        public void DeserializeExtraData(BinaryReader reader) { }
+        public void SerializeExtraData(BinaryWriter writer) { }
+    }
+
     [RTTI.Serializable(0x36F087322F622F92, GameType.HZD)]
     public class LayerGroupMask
     {
@@ -21648,6 +21913,11 @@ namespace Decima.HZD
 
     [RTTI.Serializable(0x65A69DA01B48EFE5, GameType.HZD)]
     public class LensFlareManager : ObjectManager
+    {
+    }
+
+    [RTTI.Serializable(0xFE9014837350000B, GameType.HZD)]
+    public class LensFlareRenderer : IRenderSystemPart
     {
     }
 
@@ -22089,6 +22359,11 @@ namespace Decima.HZD
     {
         [RTTI.Member(5, 0x28, "VisualEffects")] public Ref<LightResource> LightResource;
         [RTTI.Member(7, 0x30, "Logic")] public Ref<OverrideGraphProgramResource> OverrideLightRepPropertiesGraph;
+    }
+
+    [RTTI.Serializable(0x68517DBA81934F93, GameType.HZD)]
+    public class LightweightProfiler : RTTIObject
+    {
     }
 
     [RTTI.Serializable(0xA77AA8910B2526EE, GameType.HZD)]
@@ -22878,6 +23153,27 @@ namespace Decima.HZD
         [RTTI.Member(7, 0x34, "Logic")] public float MaxDistance;
     }
 
+    [RTTI.Serializable(0xC23B55F0E5F2C72, GameType.HZD)]
+    public class MD5HashValue
+    {
+        [RTTI.Member(0, 0x0)] public uint8 Data0;
+        [RTTI.Member(1, 0x1)] public uint8 Data1;
+        [RTTI.Member(2, 0x2)] public uint8 Data2;
+        [RTTI.Member(3, 0x3)] public uint8 Data3;
+        [RTTI.Member(4, 0x4)] public uint8 Data4;
+        [RTTI.Member(5, 0x5)] public uint8 Data5;
+        [RTTI.Member(6, 0x6)] public uint8 Data6;
+        [RTTI.Member(7, 0x7)] public uint8 Data7;
+        [RTTI.Member(8, 0x8)] public uint8 Data8;
+        [RTTI.Member(9, 0x9)] public uint8 Data9;
+        [RTTI.Member(10, 0xA)] public uint8 Data10;
+        [RTTI.Member(11, 0xB)] public uint8 Data11;
+        [RTTI.Member(12, 0xC)] public uint8 Data12;
+        [RTTI.Member(13, 0xD)] public uint8 Data13;
+        [RTTI.Member(14, 0xE)] public uint8 Data14;
+        [RTTI.Member(15, 0xF)] public uint8 Data15;
+    }
+
     [RTTI.Serializable(0xDDAF96126EBCD671, GameType.HZD)]
     public class Magazine : WeaponPart
     {
@@ -23153,6 +23449,15 @@ namespace Decima.HZD
         [RTTI.Member(1, 0x10)] public Vec4 Col1;
         [RTTI.Member(2, 0x20)] public Vec4 Col2;
         [RTTI.Member(3, 0x30)] public Vec4 Col3;
+    }
+
+    [RTTI.Serializable(0xE21FBC50ADF67262, GameType.HZD)]
+    public class Mat44Pack
+    {
+        [RTTI.Member(0, 0x0)] public Vec4Pack Col0;
+        [RTTI.Member(1, 0x10)] public Vec4Pack Col1;
+        [RTTI.Member(2, 0x20)] public Vec4Pack Col2;
+        [RTTI.Member(3, 0x30)] public Vec4Pack Col3;
     }
 
     [RTTI.Serializable(0xA9BE1AA610ED5830, GameType.HZD)]
@@ -23705,7 +24010,7 @@ namespace Decima.HZD
         [RTTI.Member(5, 0x28, "General")] public bool Ignored;
     }
 
-    [RTTI.Serializable(0xF43B3894CDDB2341, GameType.HZD)]
+    [RTTI.Serializable(0x8F1787A053E77764, GameType.HZD)]
     public class MenuEventBinding : CoreObject
     {
         [RTTI.Member(3, 0x20, "Logic")] public EMenuEvent Event;
@@ -23942,14 +24247,14 @@ namespace Decima.HZD
         [RTTI.Member(8, 0x40, "Properties")] public Array<Ref<MenuElementResource>> ChildElementsPC;
     }
 
-    [RTTI.Serializable(0xAD6E2A0321B1BA9F, GameType.HZD)]
+    [RTTI.Serializable(0x762BDAA99F203476, GameType.HZD)]
     public class MenuProgressBarBlockResource : MenuProgressBarResource
     {
-        [RTTI.Member(57, 0x168, "Styles")] public Ref<MenuStyleClass> BarFilledPositive;
-        [RTTI.Member(58, 0x170, "Styles")] public Ref<MenuStyleClass> BarFilledNegative;
+        [RTTI.Member(58, 0x170, "Styles")] public Ref<MenuStyleClass> BarFilledPositive;
+        [RTTI.Member(59, 0x178, "Styles")] public Ref<MenuStyleClass> BarFilledNegative;
     }
 
-    [RTTI.Serializable(0xB2399E2C5E76FC3E, GameType.HZD)]
+    [RTTI.Serializable(0xA1051EA3EFE998E9, GameType.HZD)]
     public class MenuProgressBarResource : MenuSliderResource
     {
         [RTTI.Member(48, 0x130, "Properties")] public Ref<MenuDataBinding> CompareValue;
@@ -23959,6 +24264,7 @@ namespace Decima.HZD
         [RTTI.Member(53, 0x150, "Styles")] public Ref<MenuStyleClass> BarEmpty;
         [RTTI.Member(54, 0x158, "Styles")] public Ref<MenuStyleClass> BarFilled;
         [RTTI.Member(55, 0x160, "Styles")] public Ref<MenuStyleClass> BarNotch;
+        [RTTI.Member(56, 0x168, "Styles")] public Ref<MenuStyleClass> BarCompare;
     }
 
     [RTTI.Serializable(0xBA1EFBA69ABF91E0, GameType.HZD)]
@@ -24626,6 +24932,11 @@ namespace Decima.HZD
         [RTTI.Member(27, 0xA8)] public Array<Ref<CoreObject>> PlacementTargets;
     }
 
+    [RTTI.Serializable(0xF7C934552C455493, GameType.HZD)]
+    public class MeshPlacementManager
+    {
+    }
+
     [RTTI.Serializable(0xB24DA8D1E0CB09D5, GameType.HZD)]
     public class MeshResourceBase : Resource
     {
@@ -25266,6 +25577,15 @@ namespace Decima.HZD
         [RTTI.Member(5, 0x28, "General")] public Ref<MotionTableContentsGenerationResource> MotionTableContentGenerationResource;
         [RTTI.Member(6, 0x70, "General")] public Array<String> HashKeysMotionTableEntry;
         [RTTI.Member(7, 0x80, "General")] public Array<Ref<AnimationMotionBase>> MotionArray;
+    }
+
+    [RTTI.Serializable(0x7888F514C672E995, GameType.HZD)]
+    public class MotionTableStateSwitchData
+    {
+        [RTTI.Member(0, 0x0)] public String From;
+        [RTTI.Member(1, 0x8)] public String To;
+        [RTTI.Member(2, 0x10)] public FRange Range;
+        [RTTI.Member(3, 0x18)] public bool IsEventRange;
     }
 
     [RTTI.Serializable(0x908E98E470231F61, GameType.HZD)]
@@ -26014,6 +26334,11 @@ namespace Decima.HZD
     {
     }
 
+    [RTTI.Serializable(0x6C1F8C8289F07463, GameType.HZD)]
+    public class MsgCopyItemCustomization : MsgBase
+    {
+    }
+
     [RTTI.Serializable(0x2F2D6F8C7B471EDC, GameType.HZD)]
     public class MsgCountdownTimer : MsgScene
     {
@@ -26293,6 +26618,11 @@ namespace Decima.HZD
     {
     }
 
+    [RTTI.Serializable(0xA0B95A0A746625BE, GameType.HZD)]
+    public class MsgEntityOwnershipRequest : MsgBase
+    {
+    }
+
     [RTTI.Serializable(0x74742F5DBD42F4E4, GameType.HZD)]
     public class MsgEntityPlaced : MsgBase
     {
@@ -26562,6 +26892,11 @@ namespace Decima.HZD
     {
     }
 
+    [RTTI.Serializable(0x6A7A1D1C289018A5, GameType.HZD)]
+    public class MsgGetAccuracyOverrides : MsgBase
+    {
+    }
+
     [RTTI.Serializable(0x2A6FC66B215DC282, GameType.HZD)]
     public class MsgGetActiveModifications : MsgBase
     {
@@ -26587,6 +26922,11 @@ namespace Decima.HZD
     {
     }
 
+    [RTTI.Serializable(0x428DE2C7AF83EF68, GameType.HZD)]
+    public class MsgGetAnimationDebugInfo : MsgBase
+    {
+    }
+
     [RTTI.Serializable(0xBEE3EB852DA61A16, GameType.HZD)]
     public class MsgGetAnimationSetTags : MsgBase
     {
@@ -26609,6 +26949,11 @@ namespace Decima.HZD
 
     [RTTI.Serializable(0x8433F9BA2BF2E4F2, GameType.HZD)]
     public class MsgGetBuyPriceModification : MsgBase
+    {
+    }
+
+    [RTTI.Serializable(0xE936EDEC5D1AC45D, GameType.HZD)]
+    public class MsgGetCanFire : MsgBase
     {
     }
 
@@ -26694,6 +27039,11 @@ namespace Decima.HZD
 
     [RTTI.Serializable(0xB3ED8B09FECF7870, GameType.HZD)]
     public class MsgGetExtraNodesAttackNodeCount : MsgBase
+    {
+    }
+
+    [RTTI.Serializable(0xDDA8FB0CE57C5D7, GameType.HZD)]
+    public class MsgGetFireRequestOverride : MsgBase
     {
     }
 
@@ -26819,6 +27169,11 @@ namespace Decima.HZD
 
     [RTTI.Serializable(0x522B1E75A4E14EDC, GameType.HZD)]
     public class MsgGetQuest : MsgBase
+    {
+    }
+
+    [RTTI.Serializable(0xA920CF290C2278E5, GameType.HZD)]
+    public class MsgGetRemoteUseLocation : MsgBase
     {
     }
 
@@ -26962,6 +27317,11 @@ namespace Decima.HZD
     {
     }
 
+    [RTTI.Serializable(0x80CA4B2E69113E7, GameType.HZD)]
+    public class MsgHUDGetVoiceCommMapping : MsgBase
+    {
+    }
+
     [RTTI.Serializable(0x2D4CB932687B12F0, GameType.HZD)]
     public class MsgHUDHealthBucketStartedHealing : MsgBase
     {
@@ -26999,6 +27359,11 @@ namespace Decima.HZD
 
     [RTTI.Serializable(0xB638AB7399E0C41D, GameType.HZD)]
     public class MsgHUDShowPopup : MsgHUDShowNotification
+    {
+    }
+
+    [RTTI.Serializable(0x825A0C246611865B, GameType.HZD)]
+    public class MsgHUDToggleIncomingCommsMessage : MsgBase
     {
     }
 
@@ -27738,6 +28103,11 @@ namespace Decima.HZD
     {
     }
 
+    [RTTI.Serializable(0xE04E94D2059DB43E, GameType.HZD)]
+    public class MsgOnExitMenu : MsgBase
+    {
+    }
+
     [RTTI.Serializable(0xD48E1814D2094F00, GameType.HZD)]
     public class MsgOnSentenceGroupFinished : MsgSceneEntityBase
     {
@@ -28001,6 +28371,16 @@ namespace Decima.HZD
     {
     }
 
+    [RTTI.Serializable(0xEDF18A6045E918B1, GameType.HZD)]
+    public class MsgRequestLocatorHelperName : MsgBase
+    {
+    }
+
+    [RTTI.Serializable(0x9004A82A6A662C35, GameType.HZD)]
+    public class MsgRequestMount : MsgMountBase
+    {
+    }
+
     [RTTI.Serializable(0x3B7EF8224DE12B33, GameType.HZD)]
     public class MsgReserveQueueSlot : MsgBase
     {
@@ -28036,8 +28416,18 @@ namespace Decima.HZD
     {
     }
 
+    [RTTI.Serializable(0x2A08FB3427A1BED8, GameType.HZD)]
+    public class MsgResolveEntityInstance : MsgResolvePropertyBase
+    {
+    }
+
     [RTTI.Serializable(0x7775E0A0A5B61BBF, GameType.HZD)]
     public class MsgResolveFloatProperty : MsgResolvePropertyBase
+    {
+    }
+
+    [RTTI.Serializable(0xAAF183F0023D61B6, GameType.HZD)]
+    public class MsgResolveGGUUIDProperty : MsgResolvePropertyBase
     {
     }
 
@@ -28053,6 +28443,11 @@ namespace Decima.HZD
 
     [RTTI.Serializable(0x429D2C7C05504D73, GameType.HZD)]
     public class MsgResolveStringProperty : MsgResolvePropertyBase
+    {
+    }
+
+    [RTTI.Serializable(0xF3F186A1B4406DE0, GameType.HZD)]
+    public class MsgResolveTagProperty : MsgResolvePropertyBase
     {
     }
 
@@ -28358,6 +28753,11 @@ namespace Decima.HZD
     {
     }
 
+    [RTTI.Serializable(0x1169E64A61C1AF14, GameType.HZD)]
+    public class MsgSetHUDShaderVariableValue : MsgBase
+    {
+    }
+
     [RTTI.Serializable(0xCA9C1A05ACA86537, GameType.HZD)]
     public class MsgSetPotentialContextualActionsOnVictim : MsgBase
     {
@@ -28406,6 +28806,11 @@ namespace Decima.HZD
 
     [RTTI.Serializable(0x2D665BF5C5BD8884, GameType.HZD)]
     public class MsgShowGoldenLevelIntroductionNotification : MsgBase
+    {
+    }
+
+    [RTTI.Serializable(0x90756219CE087703, GameType.HZD)]
+    public class MsgShowMissionHint : MsgBase
     {
     }
 
@@ -28880,6 +29285,16 @@ namespace Decima.HZD
     {
     }
 
+    [RTTI.Serializable(0x53033809D9641368, GameType.HZD)]
+    public class MsgWeaponStanceChanged : MsgBase
+    {
+    }
+
+    [RTTI.Serializable(0x30D9A429CD17CCDE, GameType.HZD)]
+    public class MsgWorldDataMapNeedPhysicsUpdate : MsgBase
+    {
+    }
+
     [RTTI.Serializable(0xFD23C45BE8CCE273, GameType.HZD)]
     public class MsgWorldDataMapUpdated : MsgBase
     {
@@ -28887,6 +29302,16 @@ namespace Decima.HZD
 
     [RTTI.Serializable(0xF1A413A49F82CCA2, GameType.HZD)]
     public class MsgWorldDataTileUpdated : MsgBase
+    {
+    }
+
+    [RTTI.Serializable(0xDF4E9AF6DF6CC9FE, GameType.HZD)]
+    public class MsgWriteBinary : RTTIObject
+    {
+    }
+
+    [RTTI.Serializable(0x603C44ECBD4B81E0, GameType.HZD)]
+    public class MsgWriteStreamingData : RTTIObject
     {
     }
 
@@ -29294,8 +29719,18 @@ namespace Decima.HZD
     {
     }
 
+    [RTTI.Serializable(0x57F382EE44DBE083, GameType.HZD)]
+    public class NetNpManagerPC : NetNpManager
+    {
+    }
+
     [RTTI.Serializable(0x2A044B6CB34D0C95, GameType.HZD)]
     public class NetPartyManager : RTTIObject
+    {
+    }
+
+    [RTTI.Serializable(0xF37B8BF5A661CEBE, GameType.HZD)]
+    public class NetPartyManagerPC : NetPartyManager
     {
     }
 
@@ -29344,6 +29779,11 @@ namespace Decima.HZD
     {
     }
 
+    [RTTI.Serializable(0x4613201B14F98375, GameType.HZD)]
+    public class NetSessionManagerPC : NetSessionManager
+    {
+    }
+
     [RTTI.Serializable(0x2AF8A8A4310411E, GameType.HZD)]
     public class NetSignalGrenade : NetThrowable
     {
@@ -29381,6 +29821,11 @@ namespace Decima.HZD
 
     [RTTI.Serializable(0xD330460F48989BBD, GameType.HZD)]
     public class NetworkLink : RTTIObject
+    {
+    }
+
+    [RTTI.Serializable(0x6BFF743631183777, GameType.HZD)]
+    public class NetworkLinkPC : NetworkLink
     {
     }
 
@@ -29591,6 +30036,12 @@ namespace Decima.HZD
     [RTTI.Serializable(0xD8486928A913EC44, GameType.HZD)]
     public class NodeGraphMemoryGroup : ExportedSymbolGroup
     {
+    }
+
+    [RTTI.Serializable(0xCEFEDC5F10645B72, GameType.HZD)]
+    public class NodeGraphMenuPageBaseUUIDRefVariableOverride : NodeGraphVariableOverride
+    {
+        [RTTI.Member(3, 0x28)] public UUIDRef<MenuPageBase> Object;
     }
 
     [RTTI.Serializable(0xB1C3062F5F5C6F99, GameType.HZD)]
@@ -29908,6 +30359,14 @@ namespace Decima.HZD
         [RTTI.Member(25, 0x84, "Scaling")] public float ScaleVariance;
     }
 
+    [RTTI.Serializable(0xFBFCF4A7DB4D3FBF, GameType.HZD)]
+    public class OrthoTransform
+    {
+        [RTTI.Member(0, 0x0)] public Vec4 Translation;
+        [RTTI.Member(1, 0x10)] public Quat Rotation;
+        [RTTI.Member(2, 0x20)] public Vec4 Scale;
+    }
+
     [RTTI.Serializable(0xC20911490B57207, GameType.HZD)]
     public class OtherEntityLifetimeComponent : EntityComponent
     {
@@ -30205,6 +30664,17 @@ namespace Decima.HZD
     [RTTI.Serializable(0xB937D9F2E81EA90C, GameType.HZD)]
     public class PRTTIGroup : ExportedSymbolGroup
     {
+    }
+
+    [RTTI.Serializable(0xACB5A096411F02F8, GameType.HZD)]
+    public class PSODescriptorTelemetry : RTTIRefObject
+    {
+        [RTTI.Member(2, 0x20)] public String ShaderHash;
+        [RTTI.Member(3, 0x28)] public String DescriptorHash;
+        [RTTI.Member(4, 0x30)] public String Descriptor;
+        [RTTI.Member(5, 0x38)] public String CompileUs;
+        [RTTI.Member(6, 0x40)] public String WasBlocking;
+        [RTTI.Member(7, 0x50)] public String TooLate;
     }
 
     [RTTI.Serializable(0x2252C14BDBB64E1C, GameType.HZD)]
@@ -30703,6 +31173,11 @@ namespace Decima.HZD
         [RTTI.Member(16, 0x58, "Logic")] public Ref<SkeletonAnimationResource> OverrideAnimationResource;
     }
 
+    [RTTI.Serializable(0xF1D1A620413B056F, GameType.HZD)]
+    public class PathAnimator
+    {
+    }
+
     [RTTI.Serializable(0xF6A41D771A49E379, GameType.HZD)]
     public class PathElement
     {
@@ -30732,6 +31207,11 @@ namespace Decima.HZD
 
     [RTTI.Serializable(0x42178B305B33E390, GameType.HZD)]
     public class PathHelperNodeComponentSymbols : ExportedSymbolGroup
+    {
+    }
+
+    [RTTI.Serializable(0x7430D40034BD89B7, GameType.HZD)]
+    public class PathHelperNodeInstance
     {
     }
 
@@ -31193,6 +31673,7 @@ namespace Decima.HZD
     {
         [RTTI.Member(30, 0xC0, "Physics")] public Ref<PhysicsCollisionResource> MapCollisionResource;
         [RTTI.Member(31, 0xC8, "Physics")] public float Offset;
+
         public void DeserializeExtraData(BinaryReader reader) { }
         public void SerializeExtraData(BinaryWriter writer) { }
     }
@@ -32309,33 +32790,6 @@ namespace Decima.HZD
         [RTTI.Member(9, 0x48, "MixStates")] public Ref<SoundMixStateResource> ReloadingWeaponSoundMixState;
     }
 
-    [RTTI.Serializable(0xA45BED92E20C8A2B, GameType.HZD)]
-    public class PlayerStatsTelemetry_Event : TelemetryGameBase
-    {
-        [RTTI.Member(8, 0x50, "General")] public float time_alive;
-        [RTTI.Member(9, 0x54, "General")] public float time_sprinting;
-        [RTTI.Member(10, 0x58, "General")] public float time_crouching;
-        [RTTI.Member(11, 0x5C, "General")] public float time_swimming;
-        [RTTI.Member(12, 0x60, "General")] public float time_swimming_underwater;
-        [RTTI.Member(13, 0x64, "General")] public float time_mounting;
-        [RTTI.Member(14, 0x68, "General")] public float time_hiding;
-        [RTTI.Member(15, 0x6C, "General")] public float time_parkouring_on_foot;
-        [RTTI.Member(16, 0x70, "General")] public float time_climbing;
-        [RTTI.Member(17, 0x74, "General")] public float time_conversation;
-        [RTTI.Member(18, 0x78, "General")] public float time_focus;
-        [RTTI.Member(19, 0x7C, "General")] public float time_as_identified_threat;
-        [RTTI.Member(20, 0x80, "General")] public float time_as_identified_threat_to_humans;
-        [RTTI.Member(21, 0x84, "General")] public float time_as_identified_threat_not_to_humans;
-        [RTTI.Member(22, 0x88, "General")] public float time_aiming;
-        [RTTI.Member(23, 0x8C, "General")] public float time_total_player_inactive;
-        [RTTI.Member(24, 0x90, "General")] public float time_walking;
-        [RTTI.Member(25, 0x94, "General")] public float time_using_zip_line;
-        [RTTI.Member(26, 0x98, "General")] public float time_using_rapel;
-        [RTTI.Member(27, 0x9C, "General")] public float count_vault_down;
-        [RTTI.Member(28, 0xA0, "General")] public float count_vault_up;
-        [RTTI.Member(29, 0xA4, "General")] public float count_vault_over;
-    }
-
     [RTTI.Serializable(0xB8D5EEBFAAF7F5AB, GameType.HZD)]
     public class PlayerSymbols : ExportedSymbolGroup
     {
@@ -32539,6 +32993,11 @@ namespace Decima.HZD
         [RTTI.Member(10, 0x38, "Logic")] public WorldTransform WorldMatrix;
         [RTTI.Member(11, 0x78, "Logic")] public bool RelativeToSequence;
         [RTTI.Member(12, 0x79, "Logic")] public bool IsFixed;
+    }
+
+    [RTTI.Serializable(0x9C0F4029128A1317, GameType.HZD)]
+    public class PostProcessCompositorNode : IRenderSystemPart
+    {
     }
 
     [RTTI.Serializable(0x17800ABBBAE04003, GameType.HZD)]
@@ -32776,6 +33235,15 @@ namespace Decima.HZD
         [RTTI.Member(0, 0x0)] public Array<VertexDeltaDeformation> Deformations;
     }
 
+    [RTTI.Serializable(0xF4C6EFF70863DA18, GameType.HZD)]
+    public class PrimitiveInstance
+    {
+        [RTTI.Member(1, 0x0, "General")] public Ref<PrimitiveResource> PrimitiveResource;
+        [RTTI.Member(2, 0x8, "General")] public uint StartIndex;
+        [RTTI.Member(3, 0xC, "General")] public uint EndIndex;
+        [RTTI.Member(4, 0x10, "General")] public uint IndexOffset;
+    }
+
     [RTTI.Serializable(0xEA70CC86694634CD, GameType.HZD)]
     public class PrimitiveResource : BaseResource
     {
@@ -32881,6 +33349,13 @@ namespace Decima.HZD
         [RTTI.Member(2, 0x40)] public String EntryPoint;
     }
 
+    [RTTI.Serializable(0x83337F4F5EE3F0D8, GameType.HZD)]
+    public class ProgramStorage : RTTIRefObject
+    {
+        [RTTI.Member(2, 0x20)] public Array<uint8> Data;
+        [RTTI.Member(3, 0x30)] public Array<String> ClassDependencies;
+    }
+
     [RTTI.Serializable(0x22435212BD4C7C0E, GameType.HZD)]
     public class ProgressBarBlock
     {
@@ -32959,6 +33434,11 @@ namespace Decima.HZD
 
     [RTTI.Serializable(0x7FCFD4622A2FFB9C, GameType.HZD)]
     public class PropertyBoxAtmosphereFactor : FloatPropertyBase
+    {
+    }
+
+    [RTTI.Serializable(0xA431112D1BDFFD76, GameType.HZD)]
+    public class PropertyBreathingStamina : FloatPropertyBase
     {
     }
 
@@ -33344,6 +33824,15 @@ namespace Decima.HZD
 
     [RTTI.Serializable(0x648796B00C99723E, GameType.HZD)]
     public class Quat
+    {
+        [RTTI.Member(0, 0x0)] public float X;
+        [RTTI.Member(1, 0x4)] public float Y;
+        [RTTI.Member(2, 0x8)] public float Z;
+        [RTTI.Member(3, 0xC)] public float W;
+    }
+
+    [RTTI.Serializable(0xE086B842E6ABA218, GameType.HZD)]
+    public class QuatPack
     {
         [RTTI.Member(0, 0x0)] public float X;
         [RTTI.Member(1, 0x4)] public float Y;
@@ -33902,6 +34391,11 @@ namespace Decima.HZD
 
     [RTTI.Serializable(0x12148FE51F0AC8DB, GameType.HZD)]
     public class RadarDomeComponentSymbols : ExportedSymbolGroup
+    {
+    }
+
+    [RTTI.Serializable(0x5BEDFDC604A1923F, GameType.HZD)]
+    public class RadialBlurRenderer : IRenderSystemPart
     {
     }
 
@@ -34670,6 +35164,11 @@ namespace Decima.HZD
     {
     }
 
+    [RTTI.Serializable(0x376892983C9085F7, GameType.HZD)]
+    public class RoadJunctionFilter
+    {
+    }
+
     [RTTI.Serializable(0x2219E73D2D02CBD8, GameType.HZD)]
     public class RoadLink : RoadConnection
     {
@@ -34720,6 +35219,16 @@ namespace Decima.HZD
         [RTTI.Member(9, 0x40, "Logic")] public Ref<StaminaUsageType> StaminaUsageType;
     }
 
+    [RTTI.Serializable(0x8729C8732A4A4CF0, GameType.HZD)]
+    public class RobotBuckingStateComponent : RobotStateComponent
+    {
+    }
+
+    [RTTI.Serializable(0x8921800E532F1D1A, GameType.HZD)]
+    public class RobotBuckingStateComponentResource : RobotStateComponentResource
+    {
+    }
+
     [RTTI.Serializable(0xCD26EF7DD2788C12, GameType.HZD)]
     public class RobotFuriousStateComponent : RobotStateComponent
     {
@@ -34735,14 +35244,6 @@ namespace Decima.HZD
     [RTTI.Serializable(0x5A6B01FC5A76F6D6, GameType.HZD)]
     public class RobotFuriousStateComponentSymbols : ExportedSymbolGroup
     {
-    }
-
-    [RTTI.Serializable(0xA287E11FCE6CEB25, GameType.HZD)]
-    public class RobotHackedTelemetry_Event : TelemetryGameBase
-    {
-        [RTTI.Member(8, 0x50, "General")] public String robot_resource_name;
-        [RTTI.Member(9, 0x60, "General")] public Vec3 robot_position;
-        [RTTI.Member(10, 0x70, "General")] public bool succeeded;
     }
 
     [RTTI.Serializable(0xCDE7D9F9F690099D, GameType.HZD)]
@@ -35310,6 +35811,31 @@ namespace Decima.HZD
         [RTTI.Member(20, 0x78, "Occlusion")] public Ref<CurveResource> BigMotorOcclusionCurve;
     }
 
+    [RTTI.Serializable(0x651326A1F68FE44C, GameType.HZD)]
+    public class SHA1HashValue
+    {
+        [RTTI.Member(0, 0x0)] public uint8 Data0;
+        [RTTI.Member(1, 0x1)] public uint8 Data1;
+        [RTTI.Member(2, 0x2)] public uint8 Data2;
+        [RTTI.Member(3, 0x3)] public uint8 Data3;
+        [RTTI.Member(4, 0x4)] public uint8 Data4;
+        [RTTI.Member(5, 0x5)] public uint8 Data5;
+        [RTTI.Member(6, 0x6)] public uint8 Data6;
+        [RTTI.Member(7, 0x7)] public uint8 Data7;
+        [RTTI.Member(8, 0x8)] public uint8 Data8;
+        [RTTI.Member(9, 0x9)] public uint8 Data9;
+        [RTTI.Member(10, 0xA)] public uint8 Data10;
+        [RTTI.Member(11, 0xB)] public uint8 Data11;
+        [RTTI.Member(12, 0xC)] public uint8 Data12;
+        [RTTI.Member(13, 0xD)] public uint8 Data13;
+        [RTTI.Member(14, 0xE)] public uint8 Data14;
+        [RTTI.Member(15, 0xF)] public uint8 Data15;
+        [RTTI.Member(16, 0x10)] public uint8 Data16;
+        [RTTI.Member(17, 0x11)] public uint8 Data17;
+        [RTTI.Member(18, 0x12)] public uint8 Data18;
+        [RTTI.Member(19, 0x13)] public uint8 Data19;
+    }
+
     [RTTI.Serializable(0x1140D335C0BB1E8E, GameType.HZD)]
     public class SHVector4x9
     {
@@ -35547,6 +36073,11 @@ namespace Decima.HZD
 
     [RTTI.Serializable(0x2901A90510358120, GameType.HZD)]
     public class SRT_RTTI_GlobalRenderVariablesSRT
+    {
+    }
+
+    [RTTI.Serializable(0xD29410BEB6E9BFE4, GameType.HZD)]
+    public class SRT_RTTI_GridVtxUV
     {
     }
 
@@ -37851,6 +38382,11 @@ namespace Decima.HZD
         [RTTI.Member(4, 0x10)] public Ref<Resource> TextureResource;
     }
 
+    [RTTI.Serializable(0x42FC9CECB3CCF6, GameType.HZD)]
+    public class ShaderVariableAnimationData
+    {
+    }
+
     [RTTI.Serializable(0xC9BC388938FC94E6, GameType.HZD)]
     public class ShaderVariableBinding
     {
@@ -40045,6 +40581,13 @@ namespace Decima.HZD
         [RTTI.Member(0, 0x0)] public Ref<StringPropertyBase> Property;
     }
 
+    [RTTI.Serializable(0x4A6C5940A6BCD68B, GameType.HZD)]
+    public class StringPropertyValue : PropertyValue
+    {
+        [RTTI.Member(5, 0x28, "General")] public Ref<StringPropertyBase> Property;
+        [RTTI.Member(6, 0x30, "General")] public String Value;
+    }
+
     [RTTI.Serializable(0xE86F39E978DCD8D4, GameType.HZD)]
     public class StringToolsGroup
     {
@@ -40114,6 +40657,13 @@ namespace Decima.HZD
     [RTTI.Serializable(0x24543191D38923D7, GameType.HZD)]
     public class SubGoalPausableEventResource : PausableEventResource
     {
+    }
+
+    [RTTI.Serializable(0xA11801B6185EE971, GameType.HZD)]
+    public class SubSkeletonReference
+    {
+        [RTTI.Member(0, 0x0, true)] public Ref<Skeleton> Skeleton;
+        [RTTI.Member(1, 0x8, true)] public String ParentJointName;
     }
 
     [RTTI.Serializable(0x8F15F93AA15F0AB6, GameType.HZD)]
@@ -40195,6 +40745,14 @@ namespace Decima.HZD
     public class SubmixResource : Resource
     {
         [RTTI.Member(5, 0x28, "General")] public Ref<SubmixResource> Destination;
+    }
+
+    [RTTI.Serializable(0x8B8B4A93BDE128A7, GameType.HZD)]
+    public class Subtitle
+    {
+        [RTTI.Member(0, 0x0)] public Ref<SentenceResource> Sentence;
+        [RTTI.Member(1, 0x8)] public int FrameStart;
+        [RTTI.Member(2, 0xC)] public int FrameEnd;
     }
 
     [RTTI.Serializable(0xE7BA2FC3AF9C0F3D, GameType.HZD)]
@@ -40535,37 +41093,38 @@ namespace Decima.HZD
         [RTTI.Member(37, 0xAC, true)] public int Texture;
         [RTTI.Member(38, 0xB0, true)] public int Model;
         [RTTI.Member(39, 0xB4, true)] public int AnisotropicFilter;
-        [RTTI.Member(40, 0xBC, true)] public int Shadow;
-        [RTTI.Member(41, 0xC0, true)] public int Clouds;
-        [RTTI.Member(42, 0xC4, true)] public int PPAA;
-        [RTTI.Member(43, 0xC8, true)] public bool MotionBlurEnabled;
-        [RTTI.Member(44, 0xCC, true)] public int AmbientOcclusion;
-        [RTTI.Member(45, 0xD0, true)] public int Reflection;
-        [RTTI.Member(46, 0xD8, true)] public String DisplayImage;
-        [RTTI.Member(47, 0xE0, true)] public int PhotoModeOverlayIndex;
-        [RTTI.Member(48, 0xE4, true)] public int PhotoModeBorderIndex;
-        [RTTI.Member(49, 0xE8, true)] public int PhotoModeSmallLogoIndex;
-        [RTTI.Member(50, 0xEC, true)] public int PhotoModeColorizeIndex;
-        [RTTI.Member(51, 0xF0, true)] public float PhotoModeColorizeIntensity;
-        [RTTI.Member(52, 0xF4, true)] public bool PhotoModeVignetteEnabled;
-        [RTTI.Member(53, 0xF8, true)] public int PhotoModeVignetteSizeIndex;
-        [RTTI.Member(54, 0xFC, true)] public float PhotoModeVignetteIntensity;
-        [RTTI.Member(55, 0x100, true)] public bool PhotoModeDepthOfFieldEnabled;
-        [RTTI.Member(56, 0x104, true)] public int PhotoModeDepthOfFieldFocusDistance;
-        [RTTI.Member(57, 0x108, true)] public float PhotoModeDepthOfFieldAperture;
-        [RTTI.Member(58, 0x10C, true)] public bool PhotoModeGrainEnabled;
-        [RTTI.Member(59, 0x110, true)] public float PhotoModeGrainIntensity;
-        [RTTI.Member(60, 0x114, true)] public float PhotoModeOverExposure;
-        [RTTI.Member(61, 0x118, true)] public bool PhotoModeGreetingsEnabled;
-        [RTTI.Member(62, 0x120, true)] public SPStatistics SPStatistics;
-        [RTTI.Member(63, 0x158, true)] public bool GameFinished;
-        [RTTI.Member(64, 0x15C, true)] public EDifficulty HighestCompletedNewGamePlusDifficulty;
-        [RTTI.Member(65, 0x160, true)] public String ContinueGameState;
-        [RTTI.Member(66, 0x168, true)] public String ContinueGameSettings;
-        [RTTI.Member(67, 0x170, true)] public int ViewportIndex;
-        [RTTI.Member(68, 0x178, true)] public Array<String> AuthenticatedPlaylistID;
-        [RTTI.Member(69, 0x18C, true)] public EPS4ProRenderMode PS4ProRenderMode;
-        [RTTI.Member(70, 0x190, true)] public bool HDREnabled;
+        [RTTI.Member(40, 0xB8, true)] public int Shadow;
+        [RTTI.Member(41, 0xBC, true)] public int Clouds;
+        [RTTI.Member(42, 0xC0, true)] public int PPAA;
+        [RTTI.Member(43, 0xC4, true)] public bool MotionBlurEnabled;
+        [RTTI.Member(44, 0xC8, true)] public int AmbientOcclusion;
+        [RTTI.Member(45, 0xCC, true)] public int Reflection;
+        [RTTI.Member(46, 0xD0, true)] public float CasSharpness;
+        [RTTI.Member(47, 0xD8, true)] public String DisplayImage;
+        [RTTI.Member(48, 0xE0, true)] public int PhotoModeOverlayIndex;
+        [RTTI.Member(49, 0xE4, true)] public int PhotoModeBorderIndex;
+        [RTTI.Member(50, 0xE8, true)] public int PhotoModeSmallLogoIndex;
+        [RTTI.Member(51, 0xEC, true)] public int PhotoModeColorizeIndex;
+        [RTTI.Member(52, 0xF0, true)] public float PhotoModeColorizeIntensity;
+        [RTTI.Member(53, 0xF4, true)] public bool PhotoModeVignetteEnabled;
+        [RTTI.Member(54, 0xF8, true)] public int PhotoModeVignetteSizeIndex;
+        [RTTI.Member(55, 0xFC, true)] public float PhotoModeVignetteIntensity;
+        [RTTI.Member(56, 0x100, true)] public bool PhotoModeDepthOfFieldEnabled;
+        [RTTI.Member(57, 0x104, true)] public int PhotoModeDepthOfFieldFocusDistance;
+        [RTTI.Member(58, 0x108, true)] public float PhotoModeDepthOfFieldAperture;
+        [RTTI.Member(59, 0x10C, true)] public bool PhotoModeGrainEnabled;
+        [RTTI.Member(60, 0x110, true)] public float PhotoModeGrainIntensity;
+        [RTTI.Member(61, 0x114, true)] public float PhotoModeOverExposure;
+        [RTTI.Member(62, 0x118, true)] public bool PhotoModeGreetingsEnabled;
+        [RTTI.Member(63, 0x120, true)] public SPStatistics SPStatistics;
+        [RTTI.Member(64, 0x158, true)] public bool GameFinished;
+        [RTTI.Member(65, 0x15C, true)] public EDifficulty HighestCompletedNewGamePlusDifficulty;
+        [RTTI.Member(66, 0x160, true)] public String ContinueGameState;
+        [RTTI.Member(67, 0x168, true)] public String ContinueGameSettings;
+        [RTTI.Member(68, 0x170, true)] public int ViewportIndex;
+        [RTTI.Member(69, 0x178, true)] public Array<String> AuthenticatedPlaylistID;
+        [RTTI.Member(70, 0x18C, true)] public EPS4ProRenderMode PS4ProRenderMode;
+        [RTTI.Member(71, 0x190, true)] public bool HDREnabled;
     }
 
     [RTTI.Serializable(0x105214CAB14D8AF9, GameType.HZD)]
@@ -40713,6 +41272,11 @@ namespace Decima.HZD
     {
     }
 
+    [RTTI.Serializable(0xD4FAC17D5877DAE0, GameType.HZD)]
+    public class TagEventPSOOptimizationFinished : TagEvent
+    {
+    }
+
     [RTTI.Serializable(0xB5228268DD5EE483, GameType.HZD)]
     public class TagEventPageOff : TagEvent
     {
@@ -40730,6 +41294,11 @@ namespace Decima.HZD
 
     [RTTI.Serializable(0x7228C6CFF77166A4, GameType.HZD)]
     public class TagEventUnpluggedMonitor : TagEvent
+    {
+    }
+
+    [RTTI.Serializable(0x5E01AD258D633B3D, GameType.HZD)]
+    public class TagEventVKBClose : TagEvent
     {
     }
 
@@ -40757,6 +41326,12 @@ namespace Decima.HZD
     [RTTI.Serializable(0xF48DDC4A84B0E781, GameType.HZD)]
     public class TagPropertyLinkCollection : PropertyLinkCollectionBase
     {
+    }
+
+    [RTTI.Serializable(0xC7DBC2256A47C0B5, GameType.HZD)]
+    public class TagPropertyValue : PropertyValue
+    {
+        [RTTI.Member(5, 0x28, "General")] public Ref<TagProperty> Property;
     }
 
     [RTTI.Serializable(0x1D10FC8FC6946502, GameType.HZD)]
@@ -41993,6 +42568,12 @@ namespace Decima.HZD
         [RTTI.Member(6, 0x20)] public HwBindingHandle SwizzleBindingHandle;
     }
 
+    [RTTI.Serializable(0x4A817358988E6E8A, GameType.HZD)]
+    public class TextureChannelSettings
+    {
+        [RTTI.Member(0, 0x0)] public uint16 PackedData;
+    }
+
     [RTTI.Serializable(0x292BBE12033D3857, GameType.HZD)]
     public class TextureLUT : Resource
     {
@@ -42125,6 +42706,12 @@ namespace Decima.HZD
     [RTTI.Serializable(0xE92A46F4FE82D19C, GameType.HZD)]
     public class Texture_2D_Read_uint8
     {
+    }
+
+    [RTTI.Serializable(0xE74F5615F08E7C7A, GameType.HZD)]
+    public class TexturedAreaLightConstants
+    {
+        [RTTI.Member(0, 0x0)] public Vec4 TexturedAreaLightParams;
     }
 
     [RTTI.Serializable(0x9977B2D93018036E, GameType.HZD)]
@@ -42507,15 +43094,6 @@ namespace Decima.HZD
     {
     }
 
-    [RTTI.Serializable(0xDA500694127E17E0, GameType.HZD)]
-    public class TraderAccessedTelemetry_Event : TelemetryGameBase
-    {
-        [RTTI.Member(8, 0x50, "General")] public String trader_name;
-        [RTTI.Member(9, 0x58, "General")] public float trader_position_x;
-        [RTTI.Member(10, 0x5C, "General")] public float trader_position_y;
-        [RTTI.Member(11, 0x60, "General")] public float trader_position_z;
-    }
-
     [RTTI.Serializable(0x10F83C0D54924456, GameType.HZD)]
     public class TrapComponent : EntityComponent
     {
@@ -42728,6 +43306,25 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x0)] public String TextureName;
         [RTTI.Member(1, 0x8)] public Ref<UITexture> Texture;
+    }
+
+    [RTTI.Serializable(0xD0D2E9791FF76933, GameType.HZD)]
+    public class UTFToolsGroup
+    {
+    }
+
+    [RTTI.Serializable(0xF28B0A48BB5A068E, GameType.HZD)]
+    public class UTFToolsGroupSymbols : ExportedSymbolGroup
+    {
+    }
+
+    [RTTI.Serializable(0x8F8E71C246494CDE, GameType.HZD)]
+    public class UVec4
+    {
+        [RTTI.Member(0, 0x0)] public uint X;
+        [RTTI.Member(1, 0x4)] public uint Y;
+        [RTTI.Member(2, 0x8)] public uint Z;
+        [RTTI.Member(3, 0xC)] public uint W;
     }
 
     [RTTI.Serializable(0x17621276907D7EB1, GameType.HZD)]
@@ -43287,6 +43884,13 @@ namespace Decima.HZD
         [RTTI.Member(0, 0x0)] public Ref<Vec3PropertyBase> Property;
     }
 
+    [RTTI.Serializable(0xC8C0982C81D8DC41, GameType.HZD)]
+    public class Vec3PropertyValue : PropertyValue
+    {
+        [RTTI.Member(5, 0x28, "General")] public Ref<Vec3PropertyBase> Property;
+        [RTTI.Member(6, 0x30, "General")] public Vec3 Value;
+    }
+
     [RTTI.Serializable(0xAA82D9E5C7F57270, GameType.HZD)]
     public class Vec4
     {
@@ -43307,6 +43911,11 @@ namespace Decima.HZD
 
     [RTTI.Serializable(0x4B792B94DD853565, GameType.HZD)]
     public class VegetationCollisionComponent : EntityComponent
+    {
+    }
+
+    [RTTI.Serializable(0xF2299893F033DFE1, GameType.HZD)]
+    public class VegetationCollisionComponentRep : EntityComponentRep
     {
     }
 
@@ -43435,6 +44044,15 @@ namespace Decima.HZD
         [RTTI.Member(3, 0x11)] public ESRTElementFormat DataFormat;
     }
 
+    [RTTI.Serializable(0xC6AA5BAEC0C0FD25, GameType.HZD)]
+    public class VertexStreamField
+    {
+        [RTTI.Member(0, 0x0)] public uint8 Offset;
+        [RTTI.Member(1, 0x1)] public uint8 Type;
+        [RTTI.Member(2, 0x2)] public uint8 NumComponents;
+        [RTTI.Member(3, 0x3)] public uint8 _reserved;
+    }
+
     [RTTI.Serializable(0x9A166AFA9C1066AC, GameType.HZD)]
     public class VictimPropertyStatMap
     {
@@ -43493,6 +44111,14 @@ namespace Decima.HZD
     public class ViewportSetupsResource : Resource
     {
         [RTTI.Member(5, 0x28, "Viewports")] public Array<ViewportSetup> ViewportSetups;
+    }
+
+    [RTTI.Serializable(0x4BE2370A8529AEC9, GameType.HZD)]
+    public class VignetteSettings
+    {
+        [RTTI.Member(1, 0x0, "Settings")] public float InnerRadius;
+        [RTTI.Member(2, 0x4, "Settings")] public float OuterRadius;
+        [RTTI.Member(3, 0x10, "Settings")] public FRGBAColor Color;
     }
 
     [RTTI.Serializable(0xC06C5EBC4440BE84, GameType.HZD)]
@@ -43719,8 +44345,9 @@ namespace Decima.HZD
         [RTTI.Member(12, 0x120, "General")] public int MeshInstanceTreeSize;
         [RTTI.Member(13, 0x130, "General")] public int MeshInstanceTreeDrawableSetupSize;
         [RTTI.Member(14, 0x140, "General")] public Ref<WaterSystemResource> WaterSystemResource;
+
         public void DeserializeExtraData(BinaryReader reader) { }
-        public void SerializeExtraData(BinaryWriter writer) => throw new NotImplementedException();
+        public void SerializeExtraData(BinaryWriter writer) { }
     }
 
     [RTTI.Serializable(0x8A386DEA4E50B40C, GameType.HZD)]
@@ -43742,8 +44369,9 @@ namespace Decima.HZD
     {
         [RTTI.Member(5, 0x2C, "General")] public int MaxInteractiveTiles;
         [RTTI.Member(6, 0x30, "General")] public int WaterSystemDataSize;
+
         public void DeserializeExtraData(BinaryReader reader) { }
-        public void SerializeExtraData(BinaryWriter writer) => throw new NotImplementedException();
+        public void SerializeExtraData(BinaryWriter writer) { }
     }
 
     [RTTI.Serializable(0x34EFD4D6DB36E7C6, GameType.HZD)]
@@ -44387,6 +45015,23 @@ namespace Decima.HZD
     {
     }
 
+    [RTTI.Serializable(0x22E65FD463A1B827, GameType.HZD)]
+    public class WorldDataBakePreset : Resource
+    {
+        [RTTI.Member(5, 0x28, "General")] public Array<WorldDataBakePresetEntry> Entries;
+    }
+
+    [RTTI.Serializable(0x270B8A764FC4DBA4, GameType.HZD)]
+    public class WorldDataBakePresetEntry
+    {
+        [RTTI.Member(1, 0x0, "General")] public String WorldDataTypeName;
+        [RTTI.Member(2, 0x8, "General")] public float Value;
+        [RTTI.Member(3, 0xC, "General")] public float FallOffDistance;
+        [RTTI.Member(4, 0x10, "General")] public ETextureSetType MaskType;
+        [RTTI.Member(5, 0x14, "General")] public ETextureChannel MaskChannel;
+        [RTTI.Member(6, 0x18, "General")] public String BakeLayerName;
+    }
+
     [RTTI.Serializable(0x7359066B18A65205, GameType.HZD)]
     public class WorldDataBakeSettings : Resource
     {
@@ -44667,6 +45312,13 @@ namespace Decima.HZD
         [RTTI.Member(1, 0x40)] public Vec3 Extents;
     }
 
+    [RTTI.Serializable(0x35E66715B69EE318, GameType.HZD)]
+    public class WorldPlane
+    {
+        [RTTI.Member(0, 0x0)] public Vec3 Normal;
+        [RTTI.Member(1, 0x10)] public double Constant;
+    }
+
     [RTTI.Serializable(0xEE48361B489F504B, GameType.HZD)]
     public class WorldPositionProperty : WorldPositionPropertyBase
     {
@@ -44683,6 +45335,13 @@ namespace Decima.HZD
     public class WorldPositionPropertyLink : PropertyLinkBase
     {
         [RTTI.Member(0, 0x0)] public Ref<WorldPositionPropertyBase> Property;
+    }
+
+    [RTTI.Serializable(0x95EB4F0AD1A5FBA4, GameType.HZD)]
+    public class WorldPositionPropertyValue : PropertyValue
+    {
+        [RTTI.Member(5, 0x28, "General")] public Ref<WorldPositionPropertyBase> Property;
+        [RTTI.Member(6, 0x30, "General")] public WorldPosition Value;
     }
 
     [RTTI.Serializable(0x463EBB73980462A4, GameType.HZD)]
@@ -44823,5 +45482,12 @@ namespace Decima.HZD
     {
         [RTTI.Member(0, 0x0)] public int Key;
         [RTTI.Member(1, 0x8)] public AnimationBoneMotion Value;
+    }
+
+    [RTTI.Serializable(0xFCCAF55D3ED902A3, GameType.HZD)]
+    public class int_cptr_SortedEvent
+    {
+        [RTTI.Member(0, 0x0)] public int Key;
+        [RTTI.Member(1, 0x8)] public CPtr<SortedEvent> Value;
     }
 }
