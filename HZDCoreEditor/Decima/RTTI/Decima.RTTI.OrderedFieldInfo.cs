@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Linq.Expressions;
 
 namespace Decima
 {
@@ -16,22 +17,91 @@ namespace Decima
                 public readonly RttiField Field;
                 public readonly bool SaveStateOnly;
 
+                public readonly Action<object, object> SetValue;
+                public readonly Func<object, object> GetValue;
+
                 public Entry(RttiField miBase, RttiField field, bool saveStateOnly)
                 {
                     MIBase = miBase;
                     Field = field;
                     SaveStateOnly = saveStateOnly;
+
+                    SetValue = CreateSetter(MIBase, Field);
+                    GetValue = CreateGetter(MIBase, Field);
                 }
 
-                public void SetValue(object parent, object value)
+                private static Action<object, object> CreateSetter(RttiField mi, RttiField member)
                 {
-                    // If using emulated MI: fetch the base class pointer first, then write the field
-                    Field.SetValue(MIBase?.GetValue(parent) ?? parent, value);
+                    // void Setter(object classObj, object value)
+                    // {
+                    //  var a = (typeof(T.Member))value;
+                    //  T b;
+                    //
+                    //  if (MIBase)
+                    //    b = ((U)classObj).BaseMember;// Assumes BaseMember is of type T already. No conversion.
+                    //  else
+                    //    b = (T)classObj;
+                    //
+                    //  b.Member = a;
+                    // }
+                    var classObj = Expression.Parameter(typeof(object), "classObj");                        // Parameter "object classObj"
+                    var valueObj = Expression.Parameter(typeof(object), "value");                           // Parameter "object value" 
+
+                    // var a = (typeof(T.Member))value;
+                    // T b;
+                    Expression a = Expression.Convert(valueObj, member.Type);                               // Cast "value" to "typeof(classObj.Member)"
+                    Expression b;
+
+                    if (mi != null)
+                    {
+                        var convertedClassObj = Expression.Convert(classObj, mi.MemberInfo.DeclaringType);  // (U)( classObj )
+                        b = Expression.MakeMemberAccess(convertedClassObj, mi.MemberInfo);                  // (U)( classObj ).BaseMember
+                    }
+                    else
+                    {
+                        b = Expression.Convert(classObj, member.MemberInfo.DeclaringType);                  // (T)( classObj )
+                    }
+
+                    var memberAccess = Expression.MakeMemberAccess(b, member.MemberInfo);                   // Access "b.Member"
+                    var assignment = Expression.Assign(memberAccess, a);                                    // b.Member = value
+                    var lambda = Expression.Lambda<Action<object, object>>(assignment, classObj, valueObj);
+
+                    return lambda.Compile();
                 }
 
-                public object GetValue(object parent)
+                private static Func<object, object> CreateGetter(RttiField mi, RttiField member)
                 {
-                    return Field.GetValue(MIBase?.GetValue(parent) ?? parent);
+                    // object Getter(object classObj)
+                    // {
+                    //  T b;
+                    //
+                    //  if (MIBase)
+                    //    b = ((U)classObj).BaseMember;// Assumes BaseMember is of type T already. No conversion.
+                    //  else
+                    //    b = (T)classObj;
+                    //
+                    //  return (object)b.Member;
+                    // }
+                    var classObj = Expression.Parameter(typeof(object), "classObj");                        // Parameter "object classObj"
+
+                    // T b;
+                    Expression b;
+
+                    if (mi != null)
+                    {
+                        var convertedClassObj = Expression.Convert(classObj, mi.MemberInfo.DeclaringType);  // (U)( classObj )
+                        b = Expression.MakeMemberAccess(convertedClassObj, mi.MemberInfo);                  // (U)( classObj ).BaseMember
+                    }
+                    else
+                    {
+                        b = Expression.Convert(classObj, member.MemberInfo.DeclaringType);                 // (T)( classObj )
+                    }
+
+                    var memberAccess = Expression.MakeMemberAccess(b, member.MemberInfo);                   // Access "b.Member"
+                    var convertedMember = Expression.Convert(memberAccess, typeof(object));                 // Cast to object
+                    var lambda = Expression.Lambda<Func<object, object>>(convertedMember, classObj);
+
+                    return lambda.Compile();
                 }
             }
 
