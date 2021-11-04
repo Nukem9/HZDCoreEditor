@@ -33,14 +33,14 @@ namespace Decima
         [RTTI.Member(14, 0xE)] public uint8 Data14 { get => _data[14]; set => _data[14] = value; }
         [RTTI.Member(15, 0xF)] public uint8 Data15 { get => _data[15]; set => _data[15] = value; }
 
-        protected readonly byte[] _data;
+        private const int GUIDDataLength = 16;// Bytes
+        private readonly byte[] _data = new byte[GUIDDataLength];
 
         public BaseGGUUID()
         {
-            _data = new byte[16];
         }
 
-        public BaseGGUUID(BaseGGUUID other) : base()
+        public BaseGGUUID(BaseGGUUID other)
         {
             Assign(other._data);
         }
@@ -65,7 +65,7 @@ namespace Decima
 
         public static BaseGGUUID FromData(BinaryReader reader)
         {
-            return FromData(reader.ReadBytesStrict(16));
+            return FromData(reader.ReadBytesStrict(GUIDDataLength));
         }
 
         public static BaseGGUUID FromString(string value)
@@ -105,7 +105,7 @@ namespace Decima
 
         public void Deserialize(BinaryReader reader)
         {
-            if (reader.Read(_data, 0, 16) != 16)
+            if (reader.Read(_data, 0, GUIDDataLength) != GUIDDataLength)
                 throw new EndOfStreamException("Short read of GUID");
         }
 
@@ -123,7 +123,7 @@ namespace Decima
 
         protected void Assign(ReadOnlySpan<byte> data)
         {
-            for (int i = 0; i < 16; i++)
+            for (int i = 0; i < GUIDDataLength; i++)
                 _data[i] = data[i];
         }
 
@@ -139,7 +139,10 @@ namespace Decima
 
         public static bool operator ==(BaseGGUUID left, BaseGGUUID right)
         {
-            return Enumerable.SequenceEqual(left._data, right._data);
+            if (left is null)
+                return right is null;
+
+            return left.Equals(right);
         }
 
         public static bool operator !=(BaseGGUUID left, BaseGGUUID right)
