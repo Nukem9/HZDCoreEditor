@@ -27,7 +27,7 @@ namespace HZDCoreEditorUI.UI
         private bool IgnoreUndo = false;
 
         private BrightIdeasSoftware.TreeListView tvMain;
-        private BrightIdeasSoftware.TreeListView tvData;
+        private ClassMemberTreeView tvData;
         private Timer _notesTimer;
         private Dictionary<(string Path, string Id), (string Note, DateTime Date)> _notes;
 
@@ -138,8 +138,7 @@ namespace HZDCoreEditorUI.UI
                 if (!IgnoreUndo)
                     AddUndo();
 
-                tvData.Clear();
-                TreeDataNode.SetupTree(tvData, underlying);
+                tvData.RebuildTreeFromObject(underlying);
                 txtType.Text = underlying.GetType().GetFriendlyName();
 
                 _saveNotes = false;
@@ -155,15 +154,12 @@ namespace HZDCoreEditorUI.UI
         {
             if (tvData != null)
                 tvData.MouseDown -= FormCoreView_MouseDown;
-            tvData = new BrightIdeasSoftware.TreeListView();
+
+            tvData = new ClassMemberTreeView(CoreObjectList[0]);
             tvData.FullRowSelect = true;
             tvData.Dock = DockStyle.Fill;
-            tvData.VirtualMode = true;
-
             tvData.MouseDown += FormCoreView_MouseDown;
-
             tvData.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
-            TreeDataNode.SetupTree(tvData, CoreObjectList[0]);
 
             pnlData.Controls.Clear();
             pnlData.Controls.Add(tvData);
@@ -233,9 +229,7 @@ namespace HZDCoreEditorUI.UI
             if (node.UnderlyingObject != null)
             {
                 tvMain.SelectObject(node, true);
-
-                tvData.Clear();
-                TreeDataNode.SetupTree(tvData, node.UnderlyingObject);
+                tvData.RebuildTreeFromObject(node.UnderlyingObject);
 
                 foreach (var dNode in tvData.Objects.Cast<TreeDataNode>())
                 {
