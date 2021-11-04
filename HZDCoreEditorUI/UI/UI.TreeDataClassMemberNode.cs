@@ -7,7 +7,7 @@ namespace HZDCoreEditorUI.UI
 {
     public class TreeDataClassMemberNode : TreeDataNode
     {
-        public override object Value { get { return ParentFieldEntry.GetValue(ParentObject); } }
+        public override object Value => ParentFieldEntry.GetValue(ParentObject);
 
         public override bool HasChildren => Children?.Count > 0;
         public override List<TreeDataNode> Children { get; }
@@ -16,12 +16,8 @@ namespace HZDCoreEditorUI.UI
         private readonly FieldOrProperty ParentFieldEntry;
         private readonly bool AllowEdits;
 
-        public TreeDataClassMemberNode(object parent, FieldOrProperty member, NodeAttributes attributes)
-            : base(parent)
+        public TreeDataClassMemberNode(object parent, FieldOrProperty member, NodeAttributes attributes) : base(parent, member)
         {
-            Name = member.GetName();
-            TypeName = member.GetMemberType().GetFriendlyName();
-
             ParentFieldEntry = member;
             AllowEdits = !attributes.HasFlag(NodeAttributes.DisableEditing);
 

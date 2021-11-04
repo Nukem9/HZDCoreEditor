@@ -14,17 +14,13 @@ namespace HZDCoreEditorUI.UI
         public override List<TreeDataNode> Children => _children.Value;
         public override bool IsEditable => false;
 
-        private readonly Lazy<List<TreeDataNode>> _children;
         private readonly FieldOrProperty _parentFieldEntry;
+        private readonly Lazy<List<TreeDataNode>> _children;
 
-        public TreeDataListNode(object parent, FieldOrProperty member, NodeAttributes attributes)
-            : base(parent)
+        public TreeDataListNode(object parent, FieldOrProperty member, NodeAttributes attributes) : base(parent, member)
         {
-            Name = member.GetName();
-            TypeName = member.GetMemberType().GetFriendlyName();
-
-            _children = new Lazy<List<TreeDataNode>>(() => AddListChildren(attributes));
             _parentFieldEntry = member;
+            _children = new Lazy<List<TreeDataNode>>(() => AddListChildren(attributes));
         }
 
         private IList GetList()
@@ -82,8 +78,7 @@ namespace HZDCoreEditorUI.UI
             set => ((IList)ParentObject)[_arrayIndex] = value;
         }
 
-        public TreeDataListIndexNode(IList parent, int index, Type elementType)
-            : base(parent)
+        public TreeDataListIndexNode(IList parent, int index, Type elementType) : base(parent)
         {
             Name = $"[{index}]";
             TypeName = elementType.GetFriendlyName();

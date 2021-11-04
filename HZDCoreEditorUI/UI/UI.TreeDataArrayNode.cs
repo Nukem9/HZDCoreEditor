@@ -12,17 +12,13 @@ namespace HZDCoreEditorUI.UI
         public override List<TreeDataNode> Children => _children.Value;
         public override bool IsEditable => false;
 
-        private readonly Lazy<List<TreeDataNode>> _children;
         private readonly FieldOrProperty _parentFieldEntry;
+        private readonly Lazy<List<TreeDataNode>> _children;
 
-        public TreeDataArrayNode(object parent, FieldOrProperty member, NodeAttributes attributes)
-            : base(parent)
+        public TreeDataArrayNode(object parent, FieldOrProperty member, NodeAttributes attributes) : base(parent, member)
         {
-            Name = member.GetName();
-            TypeName = member.GetMemberType().GetFriendlyName();
-
-            _children = new Lazy<List<TreeDataNode>>(() => AddArrayChildren(attributes));
             _parentFieldEntry = member;
+            _children = new Lazy<List<TreeDataNode>>(() => AddArrayChildren(attributes));
         }
 
         private Array GetArray()
@@ -38,14 +34,15 @@ namespace HZDCoreEditorUI.UI
         private List<TreeDataNode> AddArrayChildren(NodeAttributes attributes)
         {
             var nodes = new List<TreeDataNode>();
+            var array = GetArray();
 
-            if (!attributes.HasFlag(NodeAttributes.HideChildren))
+            if (!attributes.HasFlag(NodeAttributes.HideChildren) && array != null)
             {
-                var asArray = GetArray();
+                var elementType = array.GetType().GetElementType();
 
                 // Array entries act as children
-                for (int i = 0; i < asArray?.Length; i++)
-                    nodes.Add(new TreeDataArrayIndexNode(asArray, i));
+                for (int i = 0; i < array.Length; i++)
+                    nodes.Add(new TreeDataArrayIndexNode(array, i, elementType));
             }
 
             return nodes;
@@ -70,11 +67,10 @@ namespace HZDCoreEditorUI.UI
             set => ((Array)ParentObject).SetValue(value, _arrayIndex);
         }
 
-        public TreeDataArrayIndexNode(Array parent, int index)
-            : base(parent)
+        public TreeDataArrayIndexNode(Array parent, int index, Type arrayElementType) : base(parent)
         {
             Name = $"[{index}]";
-            TypeName = parent.GetType().GetElementType().GetFriendlyName();
+            TypeName = arrayElementType.GetFriendlyName();
 
             _arrayIndex = index;
 

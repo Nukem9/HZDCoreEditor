@@ -7,22 +7,22 @@ namespace HZDCoreEditorUI.UI
 {
     class TreeObjectNode
     {
-        public string Name => NameFieldInfo?.GetValue(UnderlyingObject).ToString();
-        public string UUID => UUIDFieldInfo?.GetValue(UnderlyingObject)?.ToString();
+        public string Name => _nameFieldInfo?.GetValue(UnderlyingObject).ToString();
+        public string UUID => _UUIDFieldInfo?.GetValue(UnderlyingObject)?.ToString();
         public string TypeName { get; private set; }
         public object UnderlyingObject { get; private set; }
         public List<TreeObjectNode> Children { get; private set; }
 
-        private readonly FieldInfo NameFieldInfo;
-        private readonly FieldInfo UUIDFieldInfo;
+        private readonly FieldInfo _nameFieldInfo;
+        private readonly FieldInfo _UUIDFieldInfo;
 
         private TreeObjectNode(string category, List<object> childObjects)
         {
             TypeName = category;
             UnderlyingObject = null;
             Children = new List<TreeObjectNode>();
-            NameFieldInfo = null;
-            UUIDFieldInfo = null;
+            _nameFieldInfo = null;
+            _UUIDFieldInfo = null;
 
             foreach (var obj in childObjects)
                 Children.Add(new TreeObjectNode(obj));
@@ -36,8 +36,8 @@ namespace HZDCoreEditorUI.UI
             UnderlyingObject = containedObject;
             Children = null;
 
-            NameFieldInfo = objectType.GetField("Name");
-            UUIDFieldInfo = objectType.GetField("ObjectUUID");
+            _nameFieldInfo = objectType.GetField("Name");
+            _UUIDFieldInfo = objectType.GetField("ObjectUUID");
         }
 
         public static void SetupTree(BrightIdeasSoftware.TreeListView treeListView, List<object> childObjects)

@@ -15,19 +15,27 @@ namespace HZDCoreEditorUI.UI
         }
 
         public virtual string Name { get; protected set; }
-        public virtual object Value { get { return "UNTYPED MEMBER FIELD"; } }
+        public virtual object Value => "UNTYPED MEMBER FIELD";
+        public virtual string Category { get; protected set; }
         public virtual string TypeName { get; protected set; }
 
-        public virtual bool HasChildren { get { return false; } }
-        public virtual List<TreeDataNode> Children { get { return null; } }
+        public virtual bool HasChildren => false;
+        public virtual List<TreeDataNode> Children => null;
 
         public object ParentObject { get; protected set; }
 
-        public virtual bool IsEditable { get { return true; } }
+        public virtual bool IsEditable => true;
 
         protected TreeDataNode(object parent)
         {
             ParentObject = parent;
+        }
+
+        protected TreeDataNode(object parent, FieldOrProperty member) : this(parent)
+        {
+            Name = member.GetName();
+            Category = member.GetCategory();
+            TypeName = member.GetMemberType().GetFriendlyName();
         }
 
         public static TreeDataNode CreateNode(object parent, FieldOrProperty member, NodeAttributes attributes = NodeAttributes.None)

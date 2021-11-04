@@ -6,21 +6,17 @@ namespace HZDCoreEditorUI.UI
 {
     public class TreeDataRefNode : TreeDataNode
     {
-        public override object Value { get { return ParentFieldEntry.GetValue(ParentObject); } }
+        public override object Value => _parentFieldEntry.GetValue(ParentObject);
 
         public override bool HasChildren => Children.Count > 0;
         public override List<TreeDataNode> Children { get; }
         public override bool IsEditable => false;
 
-        private readonly FieldOrProperty ParentFieldEntry;
+        private readonly FieldOrProperty _parentFieldEntry;
 
-        public TreeDataRefNode(object parent, FieldOrProperty member, NodeAttributes attributes)
-            : base(parent)
+        public TreeDataRefNode(object parent, FieldOrProperty member, NodeAttributes attributes) : base(parent, member)
         {
-            Name = member.GetName();
-            TypeName = member.GetMemberType().GetFriendlyName();
-
-            ParentFieldEntry = member;
+            _parentFieldEntry = member;
 
             if (!attributes.HasFlag(NodeAttributes.HideChildren))
             {
@@ -32,7 +28,7 @@ namespace HZDCoreEditorUI.UI
         private void AddObjectChildren()
         {
             // Ref objects may be null while loading SaveState classes
-            var objectInstance = ParentFieldEntry.GetValue(ParentObject);
+            var objectInstance = _parentFieldEntry.GetValue(ParentObject);
 
             if (objectInstance != null)
             {

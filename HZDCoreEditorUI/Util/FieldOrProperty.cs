@@ -66,5 +66,17 @@ namespace HZDCoreEditorUI.Util
         {
             return _info.Name;
         }
+
+        public string GetCategory()
+        {
+            var field = _info.MemberType switch
+            {
+                MemberTypes.Property => new Decima.RTTI.RttiField((PropertyInfo)_info),
+                MemberTypes.Field => new Decima.RTTI.RttiField((FieldInfo)_info),
+                _ => null,
+            };
+
+            return Decima.RTTI.GetFieldCategory(field);
+        }
     }
 }
