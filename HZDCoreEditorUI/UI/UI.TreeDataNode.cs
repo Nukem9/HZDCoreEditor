@@ -1,6 +1,8 @@
 ﻿using HZDCoreEditorUI.Util;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace HZDCoreEditorUI.UI
 {
@@ -15,27 +17,110 @@ namespace HZDCoreEditorUI.UI
         }
 
         public virtual string Name { get; protected set; }
-        public virtual object Value => "UNTYPED MEMBER FIELD";
+        public virtual object Value { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public virtual string Category { get; protected set; }
         public virtual string TypeName { get; protected set; }
+
+        public virtual bool IsEditable => false;
 
         public virtual bool HasChildren => false;
         public virtual List<TreeDataNode> Children => null;
 
         public object ParentObject { get; protected set; }
+        protected Type _memberType;
 
-        public virtual bool IsEditable => true;
-
-        protected TreeDataNode(object parent)
+        protected TreeDataNode(object parent, Type memberType)
         {
+            TypeName = memberType.GetFriendlyName();
             ParentObject = parent;
+            _memberType = memberType;
         }
 
-        protected TreeDataNode(object parent, FieldOrProperty member) : this(parent)
+        protected TreeDataNode(object parent, FieldOrProperty member) : this(parent, member.GetMemberType())
         {
             Name = member.GetName();
             Category = member.GetCategory();
-            TypeName = member.GetMemberType().GetFriendlyName();
+        }
+
+        public virtual Control CreateEditControl(System.Drawing.Rectangle bounds)
+        {
+            if (_memberType.IsEnum)
+            {
+                // Enums converted to dropdown boxes
+                var comboBox = new ComboBox
+                {
+                    Bounds = bounds,
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    DisplayMember = nameof(KeyValuePair<int, int>.Key),
+                    ValueMember = nameof(KeyValuePair<int, int>.Value),
+                };
+
+                foreach (string name in Enum.GetNames(_memberType))
+                {
+                    var item = new KeyValuePair<string, object>(name, Enum.Parse(_memberType, name));
+                    comboBox.Items.Add(item);
+
+                    if (item.Value.Equals(Value))
+                        comboBox.SelectedItem = item;
+                }
+
+                return comboBox;
+            }
+            else if (_memberType == typeof(bool))
+            {
+                // Bools converted to check boxes
+                return new CheckBox
+                {
+                    Bounds = bounds,
+                    Checked = (bool)Value,
+                    BackColor = System.Drawing.Color.FromArgb(240, 240, 240),
+                };
+            }
+            else
+            {
+                // Everything else defaults to text
+                return new TextBox
+                {
+                    Bounds = bounds,
+                    Text = Value?.ToString() ?? "",
+                };
+            }
+        }
+
+        public virtual bool FinishEditControl(Control control)
+        {
+            // Save the values from any controls created in CreateEditControl
+            try
+            {
+                if (_memberType.IsEnum)
+                {
+                    var kvp = (KeyValuePair<string, object>)((ComboBox)control).SelectedItem;
+
+                    Value = Enum.Parse(_memberType, kvp.Key);
+                }
+                else if (_memberType == typeof(bool))
+                {
+                    Value = ((CheckBox)control).Checked;
+                }
+                else
+                {
+                    var textValue = ((TextBox)control).Text;
+
+                    var typeConverter = TypeDescriptor.GetConverter(_memberType);
+                    Value = typeConverter.ConvertFromString(textValue);
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, $"Error setting '{Name}'");
+                return false;
+            }
+            finally
+            {
+                control.Dispose();
+            }
+
+            return true;
         }
 
         public static TreeDataNode CreateNode(object parent, FieldOrProperty member, NodeAttributes attributes = NodeAttributes.None)

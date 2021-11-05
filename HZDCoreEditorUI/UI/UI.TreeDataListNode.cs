@@ -12,20 +12,19 @@ namespace HZDCoreEditorUI.UI
 
         public override bool HasChildren => GetListLength() > 0;
         public override List<TreeDataNode> Children => _children.Value;
-        public override bool IsEditable => false;
 
-        private readonly FieldOrProperty _parentFieldEntry;
+        private readonly FieldOrProperty _memberFieldHandle;
         private readonly Lazy<List<TreeDataNode>> _children;
 
         public TreeDataListNode(object parent, FieldOrProperty member, NodeAttributes attributes) : base(parent, member)
         {
-            _parentFieldEntry = member;
+            _memberFieldHandle = member;
             _children = new Lazy<List<TreeDataNode>>(() => AddListChildren(attributes));
         }
 
         private IList GetList()
         {
-            return _parentFieldEntry.GetValue<IList>(ParentObject);
+            return _memberFieldHandle.GetValue<IList>(ParentObject);
         }
 
         private int GetListLength()
@@ -64,9 +63,10 @@ namespace HZDCoreEditorUI.UI
     {
         public override object Value => ObjectWrapper;
 
+        public override bool IsEditable => _objectWrapperNode.IsEditable;
+
         public override bool HasChildren => _objectWrapperNode.HasChildren;
         public override List<TreeDataNode> Children => _objectWrapperNode.Children;
-        public override bool IsEditable => _objectWrapperNode.IsEditable;
 
         private readonly int _arrayIndex;
         private TreeDataNode _objectWrapperNode;
@@ -78,14 +78,12 @@ namespace HZDCoreEditorUI.UI
             set => ((IList)ParentObject)[_arrayIndex] = value;
         }
 
-        public TreeDataListIndexNode(IList parent, int index, Type elementType) : base(parent)
+        public TreeDataListIndexNode(IList parent, int index, Type listElementType) : base(parent, listElementType)
         {
             Name = $"[{index}]";
-            TypeName = elementType.GetFriendlyName();
-
             _arrayIndex = index;
 
-            AddObjectChildren(elementType);
+            AddObjectChildren(listElementType);
         }
 
         private void AddObjectChildren(Type elementType)

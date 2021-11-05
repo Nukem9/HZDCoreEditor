@@ -1,4 +1,7 @@
 ﻿using HZDCoreEditorUI.Util;
+using System;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace HZDCoreEditorUI.UI
 {
@@ -6,6 +9,43 @@ namespace HZDCoreEditorUI.UI
     {
         public TreeDataGUIDNode(object parent, FieldOrProperty member, NodeAttributes attributes) : base(parent, member, attributes | NodeAttributes.HideChildren)
         {
+        }
+
+        public override Control CreateEditControl(Rectangle bounds)
+        {
+            // Always use a text box
+            return new TextBox
+            {
+                Bounds = bounds,
+                Text = Value?.ToString() ?? "",
+            };
+        }
+
+        public override bool FinishEditControl(Control control)
+        {
+            string textValue = ((TextBox)control).Text;
+
+            try
+            {
+                var guid = Decima.BaseGGUUID.Empty;
+
+                if (!string.IsNullOrEmpty(textValue))
+                    guid = Decima.BaseGGUUID.FromString(textValue);
+
+                // Call the BaseGGUUID copy constructor
+                Value = Activator.CreateInstance(_memberType, guid);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, $"Failed to parse GUID for '{Name}'");
+                return false;
+            }
+            finally
+            {
+                control.Dispose();
+            }
+
+            return true;
         }
     }
 }

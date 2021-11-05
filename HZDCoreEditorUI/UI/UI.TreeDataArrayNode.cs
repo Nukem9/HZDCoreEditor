@@ -10,20 +10,19 @@ namespace HZDCoreEditorUI.UI
 
         public override bool HasChildren => GetArrayLength() > 0;
         public override List<TreeDataNode> Children => _children.Value;
-        public override bool IsEditable => false;
 
-        private readonly FieldOrProperty _parentFieldEntry;
+        private readonly FieldOrProperty _memberFieldHandle;
         private readonly Lazy<List<TreeDataNode>> _children;
 
         public TreeDataArrayNode(object parent, FieldOrProperty member, NodeAttributes attributes) : base(parent, member)
         {
-            _parentFieldEntry = member;
+            _memberFieldHandle = member;
             _children = new Lazy<List<TreeDataNode>>(() => AddArrayChildren(attributes));
         }
 
         private Array GetArray()
         {
-            return _parentFieldEntry.GetValue<Array>(ParentObject);
+            return _memberFieldHandle.GetValue<Array>(ParentObject);
         }
 
         private int GetArrayLength()
@@ -51,11 +50,16 @@ namespace HZDCoreEditorUI.UI
 
     public class TreeDataArrayIndexNode : TreeDataNode
     {
-        public override object Value => ObjectWrapper;
+        public override object Value
+        {
+            get => ObjectWrapper;
+            set => ObjectWrapper = value;
+        }
+
+        public override bool IsEditable => _objectWrapperNode.IsEditable;
 
         public override bool HasChildren => _objectWrapperNode.HasChildren;
         public override List<TreeDataNode> Children => _objectWrapperNode.Children;
-        public override bool IsEditable => _objectWrapperNode.IsEditable;
 
         private readonly int _arrayIndex;
         private TreeDataNode _objectWrapperNode;
@@ -67,11 +71,9 @@ namespace HZDCoreEditorUI.UI
             set => ((Array)ParentObject).SetValue(value, _arrayIndex);
         }
 
-        public TreeDataArrayIndexNode(Array parent, int index, Type arrayElementType) : base(parent)
+        public TreeDataArrayIndexNode(Array parent, int index, Type arrayElementType) : base(parent, arrayElementType)
         {
             Name = $"[{index}]";
-            TypeName = arrayElementType.GetFriendlyName();
-
             _arrayIndex = index;
 
             AddObjectChildren();

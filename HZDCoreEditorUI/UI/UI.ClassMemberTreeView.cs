@@ -3,7 +3,7 @@ using HZDCoreEditorUI.Util;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Linq;
+using System.Windows.Forms;
 
 namespace HZDCoreEditorUI.UI
 {
@@ -17,6 +17,8 @@ namespace HZDCoreEditorUI.UI
             CanExpandGetter = CanExpandGetterHandler;
             ChildrenGetter = ChildrenGetterHandler;
             CellEditStarting += CellEditStartingHandler;
+            CellEditFinishing += CellEditFinishingHandler;
+            CellEditFinished += CellEditFinishedHandler;
             BeforeSorting += BeforeSortingHandler;
 
             // Columns are hardcoded. Keep them cached in case the view needs to be reset.
@@ -159,10 +161,36 @@ namespace HZDCoreEditorUI.UI
 
         private static void CellEditStartingHandler(object sender, CellEditEventArgs e)
         {
-            var m = e.RowObject as TreeDataNode;
+            var node = e.RowObject as TreeDataNode;
 
-            if (!m.IsEditable)
+            if (!node.IsEditable)
+            {
                 e.Cancel = true;
+                return;
+            }
+
+            var control = node.CreateEditControl(e.CellBounds);
+
+            if (control != null)
+            {
+                // Don't auto dispose: the control will be destroyed before CellEditFinishedHandler runs
+                e.AutoDispose = false;
+                e.Control = control;
+            }
+        }
+
+        private void CellEditFinishingHandler(object sender, CellEditEventArgs e)
+        {
+            // This has to be canceled or CellEditFinishedHandler will fire twice for each edit
+            e.Cancel = true;
+        }
+
+        private void CellEditFinishedHandler(object sender, CellEditEventArgs e)
+        {
+            var node = e.RowObject as TreeDataNode;
+
+            if (node.FinishEditControl(e.Control))
+                RefreshItem(e.ListViewItem);
         }
 
         private static void BeforeSortingHandler(object sender, BeforeSortingEventArgs e)
