@@ -10,6 +10,7 @@ namespace HZDCoreEditorUI.UI
     public class ClassMemberTreeView : TreeListView
     {
         private readonly List<TreeDataNode> _children = new List<TreeDataNode>();
+        private readonly OLVColumn[] _defaultColumns;
 
         public ClassMemberTreeView()
         {
@@ -18,33 +19,33 @@ namespace HZDCoreEditorUI.UI
             CellEditStarting += CellEditStartingHandler;
             BeforeSorting += BeforeSortingHandler;
 
-            // Create columns
-            var nameCol = new OLVColumn("Name", nameof(TreeDataNode.Name))
+            // Columns are hardcoded. Keep them cached in case the view needs to be reset.
+            _defaultColumns = new OLVColumn[4];
+
+            _defaultColumns[0] = new OLVColumn("Name", nameof(TreeDataNode.Name))
             {
                 Width = 300,
                 IsEditable = false,
             };
-            Columns.Add(nameCol);
 
-            var valueCol = new OLVColumn("Value", nameof(TreeDataNode.Value))
+            _defaultColumns[1] = new OLVColumn("Value", nameof(TreeDataNode.Value))
             {
                 Width = 500,
             };
-            Columns.Add(valueCol);
 
-            var categoryCol = new OLVColumn("Category", nameof(TreeDataNode.Category))
+            _defaultColumns[2] = new OLVColumn("Category", nameof(TreeDataNode.Category))
             {
                 Width = 100,
                 IsEditable = false,
             };
-            Columns.Add(categoryCol);
 
-            var typeCol = new OLVColumn("Type", nameof(TreeDataNode.TypeName))
+            _defaultColumns[3] = new OLVColumn("Type", nameof(TreeDataNode.TypeName))
             {
                 Width = 200,
                 IsEditable = false,
             };
-            Columns.Add(typeCol);
+
+            CreateColumns();
         }
 
         public ClassMemberTreeView(object baseObject) : this()
@@ -67,16 +68,83 @@ namespace HZDCoreEditorUI.UI
             foreach (var field in fields)
                 _children.Add(TreeDataNode.CreateNode(baseObject, new FieldOrProperty(field)));
 
-            RefreshViewRoots();
+            RebuildViewRoots(true);
         }
 
-        private void RefreshViewRoots(IEnumerable<TreeDataNode> children = null)
+        private void RebuildViewRoots(bool forceResort)
         {
-            if (children == null)
-                children = _children;
+            // A full reset needs to be performed due to bugs in OLV
+            var oldState = SaveState();
+            Reset();
+            CreateColumns();
+            RestoreState(oldState);
 
-            Roots = null;
-            Roots = children;
+            if (forceResort)
+                SortObjects(PrimarySortColumn.AspectName, PrimarySortOrder);
+
+            Roots = _children;
+        }
+
+        private void CreateColumns()
+        {
+            AllColumns.AddRange(_defaultColumns);
+            RebuildColumns();
+
+            PrimarySortColumn = _defaultColumns[2];
+            PrimarySortOrder = SortOrder.Descending;
+        }
+
+        private bool SortObjects(string aspectName, SortOrder order)
+        {
+            Func<TreeDataNode, TreeDataNode, int> compareFunc = null;
+            int compareNames(TreeDataNode x, TreeDataNode y) { return string.Compare(x.Name, y.Name); }
+
+            switch (aspectName)
+            {
+                case nameof(TreeDataNode.Name):
+                    compareFunc = compareNames;
+                    break;
+
+                case nameof(TreeDataNode.Value):
+                    return false;
+
+                case nameof(TreeDataNode.Category):
+                    compareFunc = (x, y) => { return string.Compare(x.Category, y.Category); };
+                    break;
+
+                case nameof(TreeDataNode.TypeName):
+                    compareFunc = (x, y) => { return string.Compare(x.TypeName, y.TypeName); };
+                    break;
+
+                default:
+                    return false;
+            }
+
+            // Only sort the top level objects. The rest don't matter.
+            _children.Sort((x, y) =>
+            {
+                int result = compareFunc(x, y);
+
+                // Reverse the order if ascending
+                if (order == SortOrder.Ascending)
+                {
+                    result = result switch
+                    {
+                        -1 => 1,
+                        0 => 0,
+                        1 => -1,
+                        _ => result,
+                    };
+                }
+
+                // Use the member name as a fallback so we have a stable sort order
+                if (result == 0)
+                    result = compareNames(x, y);
+
+                return result;
+            });
+
+            return true;
         }
 
         private static bool CanExpandGetterHandler(object model)
@@ -100,28 +168,14 @@ namespace HZDCoreEditorUI.UI
         private static void BeforeSortingHandler(object sender, BeforeSortingEventArgs e)
         {
             var treeView = sender as ClassMemberTreeView;
-            var linqQuery = treeView._children.AsEnumerable();
+            bool sortResult = treeView.SortObjects(e.ColumnToSort.AspectName, e.SortOrder);
 
-            // Only sort the top level objects. The rest don't matter.
-            switch (e.ColumnToSort.AspectName)
-            {
-                case nameof(TreeDataNode.Name):
-                    linqQuery = linqQuery.OrderBy(x => x.Name);
-                    break;
+            if (!sortResult)
+                e.Canceled = true;
 
-                case nameof(TreeDataNode.Value):
-                    break;
+            if (!e.Canceled)
+                treeView.RebuildViewRoots(false);
 
-                case nameof(TreeDataNode.Category):
-                    linqQuery = linqQuery.OrderBy(x => x.Category).ThenBy(x => x.Name);
-                    break;
-
-                case nameof(TreeDataNode.TypeName):
-                    linqQuery = linqQuery.OrderBy(x => x.TypeName);
-                    break;
-            }
-
-            treeView.RefreshViewRoots(linqQuery);
             e.Handled = true;
         }
     }
