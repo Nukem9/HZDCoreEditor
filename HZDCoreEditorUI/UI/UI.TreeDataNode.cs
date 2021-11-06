@@ -27,13 +27,11 @@ namespace HZDCoreEditorUI.UI
         public virtual List<TreeDataNode> Children => null;
 
         public object ParentObject { get; protected set; }
-        protected Type _memberType;
 
         protected TreeDataNode(object parent, Type memberType)
         {
             TypeName = memberType.GetFriendlyName();
             ParentObject = parent;
-            _memberType = memberType;
         }
 
         protected TreeDataNode(object parent, FieldOrProperty member) : this(parent, member.GetMemberType())
@@ -42,9 +40,17 @@ namespace HZDCoreEditorUI.UI
             Category = member.GetCategory();
         }
 
+        protected Type GetContainedValueType()
+        {
+            // Even though typeof(Value) is 'object', we need the actual instance type
+            return Value.GetType();
+        }
+
         public virtual Control CreateEditControl(System.Drawing.Rectangle bounds)
         {
-            if (_memberType.IsEnum)
+            var targetType = GetContainedValueType();
+
+            if (targetType.IsEnum)
             {
                 // Enums converted to dropdown boxes
                 var comboBox = new ComboBox
@@ -55,9 +61,9 @@ namespace HZDCoreEditorUI.UI
                     ValueMember = nameof(KeyValuePair<int, int>.Value),
                 };
 
-                foreach (string name in Enum.GetNames(_memberType))
+                foreach (string name in Enum.GetNames(targetType))
                 {
-                    var item = new KeyValuePair<string, object>(name, Enum.Parse(_memberType, name));
+                    var item = new KeyValuePair<string, object>(name, Enum.Parse(targetType, name));
                     comboBox.Items.Add(item);
 
                     if (item.Value.Equals(Value))
@@ -66,7 +72,7 @@ namespace HZDCoreEditorUI.UI
 
                 return comboBox;
             }
-            else if (_memberType == typeof(bool))
+            else if (targetType == typeof(bool))
             {
                 // Bools converted to check boxes
                 return new CheckBox
@@ -89,16 +95,18 @@ namespace HZDCoreEditorUI.UI
 
         public virtual bool FinishEditControl(Control control)
         {
+            var targetType = GetContainedValueType();
+
             // Save the values from any controls created in CreateEditControl
             try
             {
-                if (_memberType.IsEnum)
+                if (targetType.IsEnum)
                 {
                     var kvp = (KeyValuePair<string, object>)((ComboBox)control).SelectedItem;
 
-                    Value = Enum.Parse(_memberType, kvp.Key);
+                    Value = Enum.Parse(targetType, kvp.Key);
                 }
-                else if (_memberType == typeof(bool))
+                else if (targetType == typeof(bool))
                 {
                     Value = ((CheckBox)control).Checked;
                 }
@@ -106,8 +114,7 @@ namespace HZDCoreEditorUI.UI
                 {
                     var textValue = ((TextBox)control).Text;
 
-                    var typeConverter = TypeDescriptor.GetConverter(_memberType);
-                    Value = typeConverter.ConvertFromString(textValue);
+                    Value = TypeDescriptor.GetConverter(targetType).ConvertFromString(textValue);
                 }
             }
             catch (Exception e)

@@ -27,8 +27,8 @@ namespace HZDCoreEditorUI.UI
 
             try
             {
-                // Call the BaseString copy constructor
-                Value = Activator.CreateInstance(_memberType, textValue);
+                // Call the 'string' constructor for this type
+                Value = Activator.CreateInstance(GetContainedValueType(), textValue);
             }
             catch (Exception e)
             {

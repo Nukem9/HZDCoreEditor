@@ -33,7 +33,7 @@ namespace HZDCoreEditorUI.UI
                     guid = Decima.BaseGGUUID.FromString(textValue);
 
                 // Call the BaseGGUUID copy constructor
-                Value = Activator.CreateInstance(_memberType, guid);
+                Value = Activator.CreateInstance(GetContainedValueType(), guid);
             }
             catch (Exception e)
             {

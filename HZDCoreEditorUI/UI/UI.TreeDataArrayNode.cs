@@ -1,6 +1,8 @@
 ﻿using HZDCoreEditorUI.Util;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace HZDCoreEditorUI.UI
 {
@@ -52,8 +54,8 @@ namespace HZDCoreEditorUI.UI
     {
         public override object Value
         {
-            get => ObjectWrapper;
-            set => ObjectWrapper = value;
+            get => ((Array)ParentObject).GetValue(_arrayIndex);
+            set => ((Array)ParentObject).SetValue(value, _arrayIndex);
         }
 
         public override bool IsEditable => _objectWrapperNode.IsEditable;
@@ -64,24 +66,27 @@ namespace HZDCoreEditorUI.UI
         private readonly int _arrayIndex;
         private TreeDataNode _objectWrapperNode;
 
-        // A "fake" property is needed in order to get a FieldOrProperty handle
-        private object ObjectWrapper
-        {
-            get => ((Array)ParentObject).GetValue(_arrayIndex);
-            set => ((Array)ParentObject).SetValue(value, _arrayIndex);
-        }
-
         public TreeDataArrayIndexNode(Array parent, int index, Type arrayElementType) : base(parent, arrayElementType)
         {
             Name = $"[{index}]";
             _arrayIndex = index;
 
-            AddObjectChildren();
+            AddObjectChildren(arrayElementType);
         }
 
-        private void AddObjectChildren()
+        public override Control CreateEditControl(Rectangle bounds)
         {
-            _objectWrapperNode = CreateNode(this, new FieldOrProperty(GetType(), nameof(ObjectWrapper)));
+            return _objectWrapperNode.CreateEditControl(bounds);
+        }
+
+        public override bool FinishEditControl(Control control)
+        {
+            return _objectWrapperNode.FinishEditControl(control);
+        }
+
+        private void AddObjectChildren(Type elementType)
+        {
+            _objectWrapperNode = CreateNode(this, new FieldOrProperty(GetType(), nameof(Value)), elementType);
         }
     }
 }

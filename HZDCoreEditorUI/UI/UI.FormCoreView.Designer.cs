@@ -62,7 +62,8 @@ namespace HZDCoreEditorUI.UI
             this.splitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.splitContainer.Location = new System.Drawing.Point(0, 34);
+            this.splitContainer.Cursor = System.Windows.Forms.Cursors.VSplit;
+            this.splitContainer.Location = new System.Drawing.Point(6, 34);
             this.splitContainer.Name = "splitContainer";
             // 
             // splitContainer.Panel1
@@ -75,8 +76,8 @@ namespace HZDCoreEditorUI.UI
             this.splitContainer.Panel2.Controls.Add(this.txtNotes);
             this.splitContainer.Panel2.Controls.Add(this.pnlData);
             this.splitContainer.Panel2.Controls.Add(this.txtType);
-            this.splitContainer.Size = new System.Drawing.Size(1784, 842);
-            this.splitContainer.SplitterDistance = 750;
+            this.splitContainer.Size = new System.Drawing.Size(1772, 842);
+            this.splitContainer.SplitterDistance = 744;
             this.splitContainer.TabIndex = 0;
             this.splitContainer.Text = "splitContainer1";
             // 
@@ -87,7 +88,7 @@ namespace HZDCoreEditorUI.UI
             this.txtFile.Location = new System.Drawing.Point(0, 0);
             this.txtFile.Name = "txtFile";
             this.txtFile.ReadOnly = true;
-            this.txtFile.Size = new System.Drawing.Size(750, 23);
+            this.txtFile.Size = new System.Drawing.Size(744, 23);
             this.txtFile.TabIndex = 2;
             this.txtFile.MouseClick += new System.Windows.Forms.MouseEventHandler(this.txtFile_MouseClick);
             // 
@@ -98,14 +99,13 @@ namespace HZDCoreEditorUI.UI
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlMain.Location = new System.Drawing.Point(0, 29);
             this.pnlMain.Name = "pnlMain";
-            this.pnlMain.Size = new System.Drawing.Size(750, 813);
+            this.pnlMain.Size = new System.Drawing.Size(744, 813);
             this.pnlMain.TabIndex = 1;
             // 
             // txtNotes
             // 
-            this.txtNotes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtNotes.Location = new System.Drawing.Point(346, 0);
+            this.txtNotes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtNotes.Location = new System.Drawing.Point(340, 0);
             this.txtNotes.Name = "txtNotes";
             this.txtNotes.Size = new System.Drawing.Size(684, 23);
             this.txtNotes.TabIndex = 2;
@@ -119,7 +119,7 @@ namespace HZDCoreEditorUI.UI
             this.pnlData.ContextMenuStrip = this.cmsData;
             this.pnlData.Location = new System.Drawing.Point(0, 29);
             this.pnlData.Name = "pnlData";
-            this.pnlData.Size = new System.Drawing.Size(1030, 813);
+            this.pnlData.Size = new System.Drawing.Size(1024, 813);
             this.pnlData.TabIndex = 0;
             // 
             // cmsData
@@ -145,7 +145,7 @@ namespace HZDCoreEditorUI.UI
             this.txtType.Location = new System.Drawing.Point(0, 0);
             this.txtType.Name = "txtType";
             this.txtType.ReadOnly = true;
-            this.txtType.Size = new System.Drawing.Size(340, 23);
+            this.txtType.Size = new System.Drawing.Size(334, 23);
             this.txtType.TabIndex = 1;
             this.txtType.MouseClick += new System.Windows.Forms.MouseEventHandler(this.txtType_MouseClick);
             // 
