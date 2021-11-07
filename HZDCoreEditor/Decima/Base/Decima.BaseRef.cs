@@ -16,7 +16,6 @@ namespace Decima
         public Types Type;
         public BaseGGUUID GUID;
         public BaseString ExternalFile;
-        private object ResolvedObject;
 
         public enum Types
         {
@@ -29,6 +28,9 @@ namespace Decima
 
         public BaseRef(Type objectType)
         {
+            Type = Types.Null;
+            GUID = BaseGGUUID.Empty;
+            ExternalFile = "";
         }
 
         public void Deserialize(BinaryReader reader)
@@ -50,7 +52,6 @@ namespace Decima
                     GUID = BaseGGUUID.FromData(reader);
 
                     // This could be a Filename instance - no way to determine the type
-                    ExternalFile = new BaseString();
                     ExternalFile.Deserialize(reader);
                     break;
 
@@ -87,12 +88,7 @@ namespace Decima
 
         public virtual void DeserializeStateObject(SaveState state)
         {
-            ResolvedObject = state.ReadObjectHandle();
-
-            if (ResolvedObject != null)
-                Type = Types.InternalLink;// Not entirely correct...
-            else
-                Type = Types.Null;
+            var resolvedObject = state.ReadObjectHandle();
         }
 
         public virtual void SerializeStateObject(SaveState state) => throw new NotImplementedException();
