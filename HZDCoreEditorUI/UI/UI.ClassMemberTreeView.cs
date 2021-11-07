@@ -90,16 +90,16 @@ namespace HZDCoreEditorUI.UI
         private void CreateColumns()
         {
             AllColumns.AddRange(_defaultColumns);
-            RebuildColumns();
-
             PrimarySortColumn = _defaultColumns[2];
             PrimarySortOrder = SortOrder.Descending;
+
+            RebuildColumns();
         }
 
         private bool SortObjects(string aspectName, SortOrder order)
         {
             Func<TreeDataNode, TreeDataNode, int> compareFunc = null;
-            int compareNames(TreeDataNode x, TreeDataNode y) { return string.Compare(x.Name, y.Name); }
+            static int compareNames(TreeDataNode x, TreeDataNode y) => string.Compare(x.Name, y.Name);
 
             switch (aspectName)
             {
@@ -111,11 +111,23 @@ namespace HZDCoreEditorUI.UI
                     return false;
 
                 case nameof(TreeDataNode.Category):
-                    compareFunc = (x, y) => { return string.Compare(x.Category, y.Category); };
+                    compareFunc = (x, y) =>
+                    {
+                        if (string.IsNullOrEmpty(x.Category))
+                            return 1;
+
+                        if (string.IsNullOrEmpty(y.Category))
+                            return -1;
+
+                        return string.Compare(x.Category, y.Category);
+                    };
                     break;
 
                 case nameof(TreeDataNode.TypeName):
-                    compareFunc = (x, y) => { return string.Compare(x.TypeName, y.TypeName); };
+                    compareFunc = (x, y) =>
+                    {
+                        return string.Compare(x.TypeName, y.TypeName);
+                    };
                     break;
 
                 default:
