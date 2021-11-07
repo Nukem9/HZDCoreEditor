@@ -82,6 +82,30 @@ namespace HZDCoreEditorUI.UI
             RebuildArrayChildren();
         }
 
+        public override void CreateContextMenuItems(ContextMenuStrip contextMenu, Action refreshTreeCallback)
+        {
+            base.CreateContextMenuItems(contextMenu, refreshTreeCallback);
+
+            if (contextMenu.Items.Count > 0)
+                contextMenu.Items.Add(new ToolStripSeparator());
+
+            var addItem = new ToolStripMenuItem();
+            addItem.Text = $"Add New Element";
+            addItem.Click += (o, e) => { InsertArrayElement(GetArrayLength()); rebuildAll(); };
+            contextMenu.Items.Add(addItem);
+
+            var removeAllItem = new ToolStripMenuItem();
+            removeAllItem.Text = $"Remove All Elements";
+            removeAllItem.Click += (o, e) => { _memberFieldHandle.SetValue(ParentObject, Array.CreateInstance(GetContainedType(), 0)); rebuildAll(); };
+            contextMenu.Items.Add(removeAllItem);
+
+            void rebuildAll()
+            {
+                RebuildArrayChildren();
+                refreshTreeCallback();
+            }
+        }
+
         private Array GetArray()
         {
             return _memberFieldHandle.GetValue<Array>(ParentObject);
