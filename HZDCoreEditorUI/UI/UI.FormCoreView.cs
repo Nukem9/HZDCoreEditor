@@ -9,7 +9,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using String = System.String;
 
 namespace HZDCoreEditorUI.UI
 {
@@ -101,7 +100,7 @@ namespace HZDCoreEditorUI.UI
             SearchLast = null;
             var ofd = new OpenFileDialog();
 
-            if (!String.IsNullOrEmpty(LoadedFilePath))
+            if (!string.IsNullOrEmpty(LoadedFilePath))
             {
                 ofd.InitialDirectory = Path.GetDirectoryName(LoadedFilePath);
                 ofd.FileName = Path.GetFileName(LoadedFilePath);
@@ -158,27 +157,6 @@ namespace HZDCoreEditorUI.UI
             }
         }
 
-        private void BuildDataView()
-        {
-            if (tvData != null)
-                tvData.MouseDown -= FormCoreView_MouseDown;
-
-            tvData = new ClassMemberTreeView(CoreObjectList[0]);
-            tvData.FullRowSelect = true;
-            tvData.Dock = DockStyle.Fill;
-            tvData.MouseDown += FormCoreView_MouseDown;
-            tvData.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
-
-            pnlData.Controls.Clear();
-            pnlData.Controls.Add(tvData);
-        }
-
-        private void btnOpen_Click(object sender, EventArgs e)
-        {
-            OpenFile();
-        }
-
-
         private int SearchNext = -1;
         private int SearchIndex = -1;
         private string SearchLast = null;
@@ -229,6 +207,7 @@ namespace HZDCoreEditorUI.UI
                 foreach (var subNode in node.Children)
                 {
                     tvMain.Expand(subNode);
+
                     if (SearchNode(subNode))
                         return true;
                 }
@@ -330,32 +309,7 @@ namespace HZDCoreEditorUI.UI
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
-                btnSearch_Click(null, null);
-        }
-
-        private void btnExport_Click(object sender, EventArgs e)
-        {
-            var sfd = new SaveFileDialog();
-            sfd.Filter = "Json files (*.json)|*.json|All files (*.*)|*.*";
-            sfd.FileName = Path.GetFileNameWithoutExtension(LoadedFilePath) + ".json";
-
-            if (sfd.ShowDialog() == DialogResult.OK)
-            {
-                var json = JsonConvert.SerializeObject(CoreObjectList, new JsonSerializerSettings()
-                {
-                    Formatting = Formatting.Indented,
-                    TypeNameHandling = cbExportTypes.Checked ? TypeNameHandling.Objects : TypeNameHandling.None,
-                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                    Converters = new List<JsonConverter>() { new BaseGGUUIDConverter() }
-                });
-                File.WriteAllText(sfd.FileName, json);
-            }
-        }
-
-        private void btnExpand_Click(object sender, EventArgs e)
-        {
-            tvMain.ExpandAll();
-            tvData.ExpandAll();
+                btnSearch.PerformClick();
         }
 
         private void FormCoreView_DragDrop(object sender, DragEventArgs e)
@@ -564,6 +518,112 @@ namespace HZDCoreEditorUI.UI
             }
 
             return null;
+        }
+
+        private void exportObjectsToJson(bool exportTypes)
+        {
+            var sfd = new SaveFileDialog
+            {
+                Filter = "Json files (*.json)|*.json|All files (*.*)|*.*",
+                FileName = Path.GetFileNameWithoutExtension(LoadedFilePath) + ".json"
+            };
+
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                var json = JsonConvert.SerializeObject(CoreObjectList, new JsonSerializerSettings()
+                {
+                    Formatting = Formatting.Indented,
+                    TypeNameHandling = exportTypes ? TypeNameHandling.Objects : TypeNameHandling.None,
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    Converters = new List<JsonConverter>() { new BaseGGUUIDConverter() }
+                });
+
+                File.WriteAllText(sfd.FileName, json);
+            }
+        }
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFile();
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var sfd = new SaveFileDialog
+            {
+                Filter = "Decima CoreBinary files (*.core)|*.core|All files (*.*)|*.*",
+                FileName = Path.GetFileName(LoadedFilePath),
+            };
+
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                var coreBinary = new CoreBinary();
+
+                foreach (var obj in CoreObjectList)
+                    coreBinary.AddObject(obj);
+
+                coreBinary.ToFile(sfd.FileName, FileMode.Create);
+            }
+        }
+
+        private void saveAsArchiveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var sfd = new SaveFileDialog
+            {
+                Filter = "Decima Archive files (*.bin)|*.bin",
+                FileName = "Patch_MyEdits.bin",
+            };
+
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                using var ms = new MemoryStream();
+                var coreBinary = new CoreBinary();
+
+                foreach (var obj in CoreObjectList)
+                    coreBinary.AddObject(obj);
+
+                coreBinary.ToData(new BinaryWriter(ms));
+                ms.Position = 0;
+
+                using var packfileWriter = new PackfileWriter(sfd.FileName, false, FileMode.Create);
+                packfileWriter.BuildFromStreamList(new List<(string CorePath, Stream Stream)> { ($"{txtFile.Text}.core", ms) });
+            }
+        }
+
+        private void exportAsJSONToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            exportObjectsToJson(false);
+        }
+
+        private void exportAsJSONWithTypesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            exportObjectsToJson(true);
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void goToPreviousSelectionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void goToNextSelectionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void expandAllTreesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            tvMain.ExpandAll();
+            tvData.ExpandAll();
         }
     }
 }
