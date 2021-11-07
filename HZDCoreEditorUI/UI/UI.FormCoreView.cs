@@ -26,7 +26,7 @@ namespace HZDCoreEditorUI.UI
         private int UndoPosition = 0;
         private bool IgnoreUndo = false;
 
-        private BrightIdeasSoftware.TreeListView tvMain;
+        private CoreObjectListTreeView tvMain;
         private ClassMemberTreeView tvData;
         private Timer _notesTimer;
         private Dictionary<(string Path, string Id), (string Note, DateTime Date)> _notes;
@@ -42,29 +42,58 @@ namespace HZDCoreEditorUI.UI
             _notes = LoadNotes() ?? new Dictionary<(string Path, string Id), (string Note, DateTime Date)>();
 
             InitializeComponent();
-            BindMouseEvents(this);
+            CreateObjectView();
+            CreateDataView();
 
-            var fileLoaded = false;
-            if (!String.IsNullOrEmpty(cmd.File))
-            {
-                LoadFile(cmd.File);
-                fileLoaded = true;
-            }
-            if (!String.IsNullOrEmpty(cmd.Search))
-            {
-                txtSearch.Text = cmd.Search;
-                if (fileLoaded)
-                    btnSearch_Click(null, null);
-            }
+            BindMouseEvents(this);
         }
 
         private void FormCoreView_Load(object sender, EventArgs e)
         {
-            if (!String.IsNullOrEmpty(_cmdOptions.ObjectId))
+            bool fileLoaded = false;
+
+            if (!string.IsNullOrEmpty(_cmdOptions.File))
+            {
+                LoadFile(_cmdOptions.File);
+                fileLoaded = true;
+            }
+
+            if (!string.IsNullOrEmpty(_cmdOptions.Search))
+            {
+                txtSearch.Text = _cmdOptions.Search;
+
+                if (fileLoaded)
+                    btnSearch.PerformClick();
+            }
+
+            if (!string.IsNullOrEmpty(_cmdOptions.ObjectId))
             {
                 if (LoadedFilePath != null)
                     SelectNodeById(_cmdOptions.ObjectId);
             }
+        }
+
+        private void CreateObjectView()
+        {
+            tvMain = new CoreObjectListTreeView();
+            tvMain.FullRowSelect = true;
+            tvMain.Dock = DockStyle.Fill;
+            tvMain.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
+            tvMain.ItemSelectionChanged += TreeListView_ItemSelected;
+
+            pnlMain.Controls.Clear();
+            pnlMain.Controls.Add(tvMain);
+        }
+
+        private void CreateDataView()
+        {
+            tvData = new ClassMemberTreeView();
+            tvData.FullRowSelect = true;
+            tvData.Dock = DockStyle.Fill;
+            tvData.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
+
+            pnlData.Controls.Clear();
+            pnlData.Controls.Add(tvData);
         }
 
         private void OpenFile()
@@ -105,28 +134,7 @@ namespace HZDCoreEditorUI.UI
             }
 
             CoreObjectList = CoreBinary.FromFile(path, true).Objects.ToList();
-
-            BuildObjectView();
-            BuildDataView();
-        }
-
-        private void BuildObjectView()
-        {
-            if (tvMain != null)
-                tvMain.MouseDown -= FormCoreView_MouseDown;
-
-            tvMain = new BrightIdeasSoftware.TreeListView();
-            tvMain.FullRowSelect = true;
-            tvMain.Dock = DockStyle.Fill;
-
-            tvMain.ItemSelectionChanged += TreeListView_ItemSelected;
-            tvMain.MouseDown += FormCoreView_MouseDown;
-
-            tvMain.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
-            TreeObjectNode.SetupTree(tvMain, CoreObjectList);
-
-            pnlMain.Controls.Clear();
-            pnlMain.Controls.Add(tvMain);
+            tvMain.RebuildTreeFromObjects(CoreObjectList);
         }
 
         private void TreeListView_ItemSelected(object sender, EventArgs e)
