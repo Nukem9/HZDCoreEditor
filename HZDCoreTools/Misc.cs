@@ -113,6 +113,9 @@ namespace HZDCoreTools
             [Option("skiplinks", HelpText = "Skip rebuilding of ref links.")]
             public bool SkipLinks { get; set; }
 
+            [Option("patchesonly", HelpText = "Skip all archives except for patch files.")]
+            public bool PatchesOnly { get; set; }
+
             [Option('v', "verbose", HelpText = "Print extra information to the console, such as which entries are updated.")]
             public bool Verbose { get; set; }
 
@@ -266,31 +269,40 @@ namespace HZDCoreTools
 
         public static void RebuildPrefetchFile(RebuildPrefetchFileCommand options)
         {
-            var sourceFiles = Util.GatherFiles(options.InputPath, new[] { ".bin" }, out string _);
+            CoreBinary prefetchCore = null;
 
-            // Add each bin
-            using var device = new PackfileDevice();
-
-            foreach ((string absolute, _) in sourceFiles)
+            using (var device = new PackfileDevice())
             {
-                if (!device.Mount(absolute))
+                // Add each bin
+                var sourceFiles = Util.GatherFiles(options.InputPath, new[] { ".bin" }, out string _);
+
+                foreach ((string absolute, string relative) in sourceFiles)
                 {
-                    Console.WriteLine($"Unable to mount '{absolute}'");
-                    return;
+                    if (options.PatchesOnly)
+                    {
+                        if (!relative.Contains("patch", StringComparison.InvariantCultureIgnoreCase))
+                            continue;
+                    }
+
+                    if (!device.Mount(absolute))
+                    {
+                        Console.WriteLine($"Unable to mount '{absolute}'");
+                        return;
+                    }
                 }
+
+                if (!device.HasFile(PrefetchCorePath))
+                    throw new FileNotFoundException($"'{PrefetchCorePath}' not found. Expected at least one archive to have an existing prefecth core file.");
+
+                // Extract the .core, iterate over each file, then update the size for each file
+                prefetchCore = Util.ExtractCoreBinaryInMemory(device, PrefetchCorePath);
+                var prefetch = prefetchCore.Objects.OfType<Decima.HZD.PrefetchList>().Single();
+
+                if (prefetch.Files.Count != prefetch.Sizes.Count)
+                    throw new Exception("Prefetch 'Files' and 'Sizes' array lengths don't match?!");
+
+                RebuildPrefetchForFiles(prefetch, device, options);
             }
-
-            if (!device.HasFile(PrefetchCorePath))
-                throw new FileNotFoundException($"'{PrefetchCorePath}' not found. Expected at least one archive to have an existing prefecth core file.");
-
-            // Extract the .core, iterate over each file, then update the size for each file
-            var prefetchCore = Util.ExtractCoreBinaryInMemory(device, PrefetchCorePath);
-            var prefetch = prefetchCore.Objects.OfType<Decima.HZD.PrefetchList>().Single();
-
-            if (prefetch.Files.Count != prefetch.Sizes.Count)
-                throw new Exception("Prefetch 'Files' and 'Sizes' array lengths don't match?!");
-
-            RebuildPrefetchForFiles(prefetch, device, options);
 
             if (Path.GetExtension(options.OutputPath) == ".bin")
             {
