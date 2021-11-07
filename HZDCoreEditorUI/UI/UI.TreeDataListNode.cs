@@ -16,12 +16,72 @@ namespace HZDCoreEditorUI.UI
         public override List<TreeDataNode> Children => _children.Value;
 
         private readonly FieldOrProperty _memberFieldHandle;
-        private readonly Lazy<List<TreeDataNode>> _children;
+        private readonly NodeAttributes _attributes;
+        private Lazy<List<TreeDataNode>> _children;
+
+        #region Indexer node handler
+        public class IndexNode : TreeDataNode
+        {
+            public override object Value
+            {
+                get => ((IList)ParentObject)[_arrayIndex];
+                set => ((IList)ParentObject)[_arrayIndex] = value;
+            }
+
+            public override bool IsEditable => _objectWrapperNode.IsEditable;
+
+            public override bool HasChildren => _objectWrapperNode.HasChildren;
+            public override List<TreeDataNode> Children => _objectWrapperNode.Children;
+
+            private readonly TreeDataListNode _parentNode;
+            private readonly int _arrayIndex;
+            private readonly TreeDataNode _objectWrapperNode;
+
+            public IndexNode(TreeDataListNode parentNode, int index, Type listElementType) : base(parentNode.GetList(), listElementType)
+            {
+                Name = $"[{index}]";
+
+                _parentNode = parentNode;
+                _arrayIndex = index;
+                _objectWrapperNode = CreateNode(this, new FieldOrProperty(GetType(), nameof(Value)), listElementType);
+            }
+
+            public override void CreateContextMenuItems(ContextMenuStrip contextMenu, Action refreshTreeCallback)
+            {
+                base.CreateContextMenuItems(contextMenu, refreshTreeCallback);
+
+                if (contextMenu.Items.Count > 0)
+                    contextMenu.Items.Add(new ToolStripSeparator());
+
+                var insertItem = new ToolStripMenuItem();
+                insertItem.Text = $"Insert Element at {Name}";
+                insertItem.Click += (o, e) => { _parentNode.InsertListElement(_arrayIndex); refreshTreeCallback(); };
+                contextMenu.Items.Add(insertItem);
+
+                var removeItem = new ToolStripMenuItem();
+                removeItem.Text = $"Remove Element at {Name}";
+                removeItem.Click += (o, e) => { _parentNode.RemoveListElement(_arrayIndex); refreshTreeCallback(); };
+                contextMenu.Items.Add(removeItem);
+            }
+
+            public override Control CreateEditControl(Rectangle bounds)
+            {
+                return _objectWrapperNode.CreateEditControl(bounds);
+            }
+
+            public override bool FinishEditControl(Control control, Action refreshTreeCallback)
+            {
+                return _objectWrapperNode.FinishEditControl(control, refreshTreeCallback);
+            }
+        }
+        #endregion
 
         public TreeDataListNode(object parent, FieldOrProperty member, NodeAttributes attributes) : base(parent, member)
         {
             _memberFieldHandle = member;
-            _children = new Lazy<List<TreeDataNode>>(() => AddListChildren(attributes));
+            _attributes = attributes;
+
+            RebuildListChildren();
         }
 
         private IList GetList()
@@ -34,70 +94,47 @@ namespace HZDCoreEditorUI.UI
             return GetList()?.Count ?? 0;
         }
 
-        private List<TreeDataNode> AddListChildren(NodeAttributes attributes)
+        private void InsertListElement(int index)
         {
-            var list = new List<TreeDataNode>();
+            GetList().Insert(index, Activator.CreateInstance(GetContainedType()));
+            RebuildListChildren();
+        }
 
-            if (!attributes.HasFlag(NodeAttributes.HideChildren))
+        private void RemoveListElement(int index)
+        {
+            GetList().RemoveAt(index);
+            RebuildListChildren();
+        }
+
+        private void RebuildListChildren()
+        {
+            _children = new Lazy<List<TreeDataNode>>(() =>
             {
+                var list = new List<TreeDataNode>();
                 var asList = GetList();
 
-                if (asList != null)
+                if (!_attributes.HasFlag(NodeAttributes.HideChildren) && asList != null)
                 {
-                    // Fetch the type of T from IList<T>
-                    var enumerableTemplateType = asList.GetType()
-                        .GetInterfaces()
-                        .Where(i => i.IsGenericType && i.GenericTypeArguments.Length == 1)
-                        .Single(i => i.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-                        .GenericTypeArguments[0];
+                    var enumerableTemplateType = GetContainedType();
 
                     // Array elements act as children
                     for (int i = 0; i < asList.Count; i++)
-                        list.Add(new TreeDataListIndexNode(asList, i, enumerableTemplateType));
+                        list.Add(new IndexNode(this, i, enumerableTemplateType));
                 }
-            }
 
-            return list;
-        }
-    }
-
-    public class TreeDataListIndexNode : TreeDataNode
-    {
-        public override object Value
-        {
-            get => ((IList)ParentObject)[_arrayIndex];
-            set => ((IList)ParentObject)[_arrayIndex] = value;
+                return list;
+            });
         }
 
-        public override bool IsEditable => _objectWrapperNode.IsEditable;
-
-        public override bool HasChildren => _objectWrapperNode.HasChildren;
-        public override List<TreeDataNode> Children => _objectWrapperNode.Children;
-
-        private readonly int _arrayIndex;
-        private TreeDataNode _objectWrapperNode;
-
-        public TreeDataListIndexNode(IList parent, int index, Type listElementType) : base(parent, listElementType)
+        private Type GetContainedType()
         {
-            Name = $"[{index}]";
-            _arrayIndex = index;
-
-            AddObjectChildren(listElementType);
-        }
-
-        public override Control CreateEditControl(Rectangle bounds)
-        {
-            return _objectWrapperNode.CreateEditControl(bounds);
-        }
-
-        public override bool FinishEditControl(Control control)
-        {
-            return _objectWrapperNode.FinishEditControl(control);
-        }
-
-        private void AddObjectChildren(Type elementType)
-        {
-            _objectWrapperNode = CreateNode(this, new FieldOrProperty(GetType(), nameof(Value)), elementType);
+            // Fetch the type of T from IList<T>
+            return GetList()
+                .GetType()
+                .GetInterfaces()
+                .Where(i => i.IsGenericType && i.GenericTypeArguments.Length == 1)
+                .Single(i => i.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                .GenericTypeArguments[0];
         }
     }
 }
