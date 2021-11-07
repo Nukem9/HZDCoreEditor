@@ -46,6 +46,10 @@ namespace HZDCoreEditorUI.UI
             return Value.GetType();
         }
 
+        public virtual void CreateContextMenuItems(ContextMenuStrip contextMenu, Action refreshTreeCallback)
+        {
+        }
+
         public virtual Control CreateEditControl(System.Drawing.Rectangle bounds)
         {
             var targetType = GetContainedValueType();
@@ -93,7 +97,7 @@ namespace HZDCoreEditorUI.UI
             }
         }
 
-        public virtual bool FinishEditControl(Control control)
+        public virtual bool FinishEditControl(Control control, Action refreshTreeCallback)
         {
             var targetType = GetContainedValueType();
 

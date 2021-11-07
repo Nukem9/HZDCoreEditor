@@ -90,9 +90,23 @@ namespace HZDCoreEditorUI.UI
             tvData.FullRowSelect = true;
             tvData.Dock = DockStyle.Fill;
             tvData.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
+            tvData.CellRightClick += TvData_CellRightClick;
 
             pnlData.Controls.Clear();
             pnlData.Controls.Add(tvData);
+        }
+
+        private void TvData_CellRightClick(object sender, BrightIdeasSoftware.CellRightClickEventArgs e)
+        {
+            if (GetSelectedRef() != null)
+            {
+                e.MenuStrip.Items.Insert(0, new ToolStripSeparator());
+
+                var menuItem = new ToolStripMenuItem();
+                menuItem.Text = "Follow Reference";
+                menuItem.Click += tsmFollow_Click;
+                e.MenuStrip.Items.Insert(0, menuItem);
+            }
         }
 
         private void OpenFile()
@@ -134,6 +148,7 @@ namespace HZDCoreEditorUI.UI
 
             CoreObjectList = CoreBinary.FromFile(path, true).Objects.ToList();
             tvMain.RebuildTreeFromObjects(CoreObjectList);
+            tvData.ClearObjects();
         }
 
         private void TreeListView_ItemSelected(object sender, EventArgs e)
@@ -341,11 +356,6 @@ namespace HZDCoreEditorUI.UI
         private void txtSearch_MouseClick(object sender, MouseEventArgs e) => ((TextBox)sender).SelectAll();
         private void txtFile_MouseClick(object sender, MouseEventArgs e) => ((TextBox)sender).SelectAll();
         private void txtType_MouseClick(object sender, MouseEventArgs e) => ((TextBox)sender).SelectAll();
-
-        private void cmsData_Opening(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            cmsData.Items[0].Enabled = GetSelectedRef() != null;
-        }
 
         private void tsmFollow_Click(object sender, EventArgs e)
         {

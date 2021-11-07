@@ -21,7 +21,7 @@ namespace HZDCoreEditorUI.UI
             };
         }
 
-        public override bool FinishEditControl(Control control)
+        public override bool FinishEditControl(Control control, Action refreshTreeCallback)
         {
             string textValue = ((TextBox)control).Text;
 

@@ -19,6 +19,7 @@ namespace HZDCoreEditorUI.UI
             CellEditStarting += CellEditStartingHandler;
             CellEditFinishing += CellEditFinishingHandler;
             CellEditFinished += CellEditFinishedHandler;
+            CellRightClick += CellRightClickHandler;
             BeforeSorting += BeforeSortingHandler;
 
             // Columns are hardcoded. Keep them cached in case the view needs to be reset.
@@ -201,8 +202,33 @@ namespace HZDCoreEditorUI.UI
         {
             var node = e.RowObject as TreeDataNode;
 
-            if (node.FinishEditControl(e.Control))
+            if (node.FinishEditControl(e.Control, () => { RefreshObjects(_children); }))
                 RefreshItem(e.ListViewItem);
+        }
+
+        private void CellRightClickHandler(object sender, CellRightClickEventArgs e)
+        {
+            var contextMenu = new ContextMenuStrip();
+            contextMenu.SuspendLayout();
+
+            if (e.Model is TreeDataNode node)
+                node.CreateContextMenuItems(contextMenu, () => { RefreshObjects(_children); });
+
+            if (contextMenu.Items.Count > 0)
+                contextMenu.Items.Add(new ToolStripSeparator());
+
+            var expandAllItem = new ToolStripMenuItem();
+            expandAllItem.Text = "Expand All Rows";
+            expandAllItem.Click += (o, e) => ExpandAll();
+            contextMenu.Items.Add(expandAllItem);
+
+            var collapseAllItem = new ToolStripMenuItem();
+            collapseAllItem.Text = "Collapse All Rows";
+            collapseAllItem.Click += (o, e) => CollapseAll();
+            contextMenu.Items.Add(collapseAllItem);
+
+            contextMenu.ResumeLayout();
+            e.MenuStrip = contextMenu;
         }
 
         private static void BeforeSortingHandler(object sender, BeforeSortingEventArgs e)
@@ -218,5 +244,6 @@ namespace HZDCoreEditorUI.UI
 
             e.Handled = true;
         }
+
     }
 }
