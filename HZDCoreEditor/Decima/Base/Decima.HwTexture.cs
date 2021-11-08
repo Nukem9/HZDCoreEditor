@@ -7,15 +7,18 @@ namespace Decima
     public class HwTexture
     {
         public TextureHeader Header;
-        public byte[] HwTextureData;
+        public BaseStreamHandle StreamHandle;
+        public uint StreamedMipCount;
+        public uint EmbeddedDataSize;
+        public byte[] EmbeddedTextureData;
 
         public class TextureHeader
         {
             public BaseTextureType Type;
             public ushort Width;
             public ushort Height;
-            public uint TexArraySliceCount;
-            public uint Tex3DDepth;
+            public uint ArraySliceCount;
+            public uint Depth3D;
             public byte MipCount;
             public BasePixelFormat PixelFormat;
             public byte Unknown1;
@@ -42,12 +45,12 @@ namespace Decima
                     break;
 
                 case BaseTextureType._3D:
-                    writer.Write((byte)BitOperations.Log2(Header.Tex3DDepth));
+                    writer.Write((byte)BitOperations.Log2(Header.Depth3D));
                     writer.Write((byte)0);
                     break;
 
                 case BaseTextureType._2DArray:
-                    writer.Write((ushort)Header.TexArraySliceCount);
+                    writer.Write((ushort)Header.ArraySliceCount);
                     break;
 
                 default:
@@ -64,11 +67,24 @@ namespace Decima
             writer.Write(Header.Unknown5);
             Header.ResourceGUID.ToData(writer);
 
-            writer.Write((uint)HwTextureData.Length);
-            writer.Write(HwTextureData);
+            // Raw pixel data handling
+            using var ms = new MemoryStream();
+            using var bw = new BinaryWriter(ms);
+
+            bw.Write(EmbeddedDataSize);
+            bw.Write(StreamHandle?.ResourceSize() ?? 0);
+            bw.Write(StreamedMipCount);
+
+            StreamHandle?.ToData(bw);
+
+            if (EmbeddedTextureData?.Length > 0)
+                bw.Write(EmbeddedTextureData);
+
+            writer.Write((uint)ms.Length);
+            ms.WriteTo(writer.BaseStream);
         }
 
-        public static HwTexture FromData(BinaryReader reader)
+        public static HwTexture FromData(BinaryReader reader, GameType gameType)
         {
             var texture = new HwTexture();
             var header = new TextureHeader();
@@ -79,8 +95,8 @@ namespace Decima
             header.Width = reader.ReadUInt16();                 // 2
             header.Height = reader.ReadUInt16();                // 4
 
-            header.TexArraySliceCount = 1;
-            header.Tex3DDepth = 1;
+            header.ArraySliceCount = 0;
+            header.Depth3D = 0;
 
             switch (header.Type)
             {
@@ -90,12 +106,12 @@ namespace Decima
                     break;
 
                 case BaseTextureType._3D:
-                    header.Tex3DDepth = 1u << reader.ReadByte();
+                    header.Depth3D = 1u << reader.ReadByte();
                     _ = reader.ReadByte();
                     break;
 
                 case BaseTextureType._2DArray:
-                    header.TexArraySliceCount = reader.ReadUInt16();
+                    header.ArraySliceCount = reader.ReadUInt16();
                     break;
 
                 default:
@@ -110,11 +126,23 @@ namespace Decima
             header.Flags = reader.ReadByte();                       // 13
             header.Unknown4 = reader.ReadByte();                    // 14 Something to do with mips. Autogen?
             header.Unknown5 = reader.ReadByte();                    // 15
-            header.ResourceGUID = BaseGGUUID.FromData(reader);// 16
-
+            header.ResourceGUID = BaseGGUUID.FromData(reader);      // 16
             texture.Header = header;
-            uint hwTextureSize = reader.ReadUInt32();
-            texture.HwTextureData = reader.ReadBytesStrict(hwTextureSize);
+
+            // Raw pixel data handling
+            uint containerSize = reader.ReadUInt32();               // Size of the remaining data being read
+            long containerEndPosition = reader.BaseStream.Position + containerSize;
+
+            texture.EmbeddedDataSize = reader.ReadUInt32();         // Size of pixel data in this core object entry. This value is never used. if (a - b > 0) only.
+            uint streamedDataSize = reader.ReadUInt32();            // Size of pixel data in external file. This value is never used. if (a > 0) only.
+            texture.StreamedMipCount = reader.ReadUInt32();         // Number of mipmaps in external file
+
+            if (streamedDataSize > 0)
+                texture.StreamHandle = BaseStreamHandle.FromData(reader, gameType);
+
+            // TODO: Something is wrong here. EmbeddedDataSize doesn't always match the actual length of the byte array. Why? Does it depend on header flags?
+            if (texture.EmbeddedDataSize > 0)
+                texture.EmbeddedTextureData = reader.ReadBytesStrict((uint)(containerEndPosition - reader.BaseStream.Position));
 
             return texture;
         }

@@ -9,7 +9,7 @@ namespace Decima.HZD
 
         public void DeserializeExtraData(BinaryReader reader)
         {
-            Buffer = HwTexture.FromData(reader);
+            Buffer = HwTexture.FromData(reader, GameType.HZD);
         }
 
         public void SerializeExtraData(BinaryWriter writer)
