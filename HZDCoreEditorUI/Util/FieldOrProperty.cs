@@ -1,8 +1,8 @@
-﻿using System;
-using System.Reflection;
-
-namespace HZDCoreEditorUI.Util
+﻿namespace HZDCoreEditorUI.Util
 {
+    using System;
+    using System.Reflection;
+
     public struct FieldOrProperty
     {
         private readonly MemberInfo _info;

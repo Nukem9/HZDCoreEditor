@@ -1,19 +1,13 @@
-﻿using HZDCoreEditorUI.Util;
-using System.Collections.Generic;
-using System.Reflection;
-
-namespace HZDCoreEditorUI.UI
+﻿namespace HZDCoreEditorUI.UI
 {
-    class TreeObjectNode
-    {
-        public string Name => _nameFieldInfo?.GetValue(UnderlyingObject).ToString();
-        public string UUID => _UUIDFieldInfo?.GetValue(UnderlyingObject)?.ToString();
-        public string TypeName { get; private set; }
-        public object UnderlyingObject { get; private set; }
-        public List<TreeObjectNode> Children { get; private set; }
+    using System.Collections.Generic;
+    using System.Reflection;
+    using HZDCoreEditorUI.Util;
 
+    public class TreeObjectNode
+    {
         private readonly FieldInfo _nameFieldInfo;
-        private readonly FieldInfo _UUIDFieldInfo;
+        private readonly FieldInfo _uuidFieldInfo;
 
         public TreeObjectNode(string category, List<object> childObjects)
         {
@@ -22,7 +16,7 @@ namespace HZDCoreEditorUI.UI
             Children = new List<TreeObjectNode>();
 
             _nameFieldInfo = null;
-            _UUIDFieldInfo = null;
+            _uuidFieldInfo = null;
 
             foreach (var obj in childObjects)
                 Children.Add(new TreeObjectNode(obj));
@@ -37,7 +31,17 @@ namespace HZDCoreEditorUI.UI
             Children = null;
 
             _nameFieldInfo = objectType.GetField("Name");
-            _UUIDFieldInfo = objectType.GetField("ObjectUUID");
+            _uuidFieldInfo = objectType.GetField("ObjectUUID");
         }
+
+        public string Name => _nameFieldInfo?.GetValue(UnderlyingObject).ToString();
+
+        public string UUID => _uuidFieldInfo?.GetValue(UnderlyingObject)?.ToString();
+
+        public string TypeName { get; private set; }
+
+        public object UnderlyingObject { get; private set; }
+
+        public List<TreeObjectNode> Children { get; private set; }
     }
 }

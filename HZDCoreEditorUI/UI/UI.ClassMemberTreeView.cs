@@ -1,12 +1,12 @@
-﻿using BrightIdeasSoftware;
-using HZDCoreEditorUI.Util;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Windows.Forms;
-
-namespace HZDCoreEditorUI.UI
+﻿namespace HZDCoreEditorUI.UI
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Reflection;
+    using System.Windows.Forms;
+    using BrightIdeasSoftware;
+    using HZDCoreEditorUI.Util;
+
     public class ClassMemberTreeView : TreeListView
     {
         private readonly List<TreeDataNode> _children = new List<TreeDataNode>();
@@ -51,7 +51,8 @@ namespace HZDCoreEditorUI.UI
             CreateColumns();
         }
 
-        public ClassMemberTreeView(object baseObject) : this()
+        public ClassMemberTreeView(object baseObject)
+            : this()
         {
             RebuildTreeFromObject(baseObject);
         }
@@ -100,12 +101,12 @@ namespace HZDCoreEditorUI.UI
         private bool SortObjects(string aspectName, SortOrder order)
         {
             Func<TreeDataNode, TreeDataNode, int> compareFunc = null;
-            static int compareNames(TreeDataNode x, TreeDataNode y) => string.Compare(x.Name, y.Name);
+            static int CompareNames(TreeDataNode x, TreeDataNode y) => string.Compare(x.Name, y.Name);
 
             switch (aspectName)
             {
                 case nameof(TreeDataNode.Name):
-                    compareFunc = compareNames;
+                    compareFunc = CompareNames;
                     break;
 
                 case nameof(TreeDataNode.Value):
@@ -154,7 +155,7 @@ namespace HZDCoreEditorUI.UI
 
                 // Use the member name as a fallback so we have a stable sort order
                 if (result == 0)
-                    result = compareNames(x, y);
+                    result = CompareNames(x, y);
 
                 return result;
             });
@@ -162,17 +163,17 @@ namespace HZDCoreEditorUI.UI
             return true;
         }
 
-        private static bool CanExpandGetterHandler(object model)
+        private bool CanExpandGetterHandler(object model)
         {
             return (model as TreeDataNode).HasChildren;
         }
 
-        private static IEnumerable<TreeDataNode> ChildrenGetterHandler(object model)
+        private IEnumerable<TreeDataNode> ChildrenGetterHandler(object model)
         {
             return (model as TreeDataNode).Children;
         }
 
-        private static void CellEditStartingHandler(object sender, CellEditEventArgs e)
+        private void CellEditStartingHandler(object sender, CellEditEventArgs e)
         {
             var node = e.RowObject as TreeDataNode;
 
@@ -231,7 +232,7 @@ namespace HZDCoreEditorUI.UI
             e.MenuStrip = contextMenu;
         }
 
-        private static void BeforeSortingHandler(object sender, BeforeSortingEventArgs e)
+        private void BeforeSortingHandler(object sender, BeforeSortingEventArgs e)
         {
             var treeView = sender as ClassMemberTreeView;
             bool sortResult = treeView.SortObjects(e.ColumnToSort.AspectName, e.SortOrder);

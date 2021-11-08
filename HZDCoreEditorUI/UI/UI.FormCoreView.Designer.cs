@@ -101,7 +101,7 @@ namespace HZDCoreEditorUI.UI
             this.txtFile.ReadOnly = true;
             this.txtFile.Size = new System.Drawing.Size(744, 23);
             this.txtFile.TabIndex = 2;
-            this.txtFile.MouseClick += new System.Windows.Forms.MouseEventHandler(this.txtFile_MouseClick);
+            this.txtFile.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TxtFile_MouseClick);
             // 
             // pnlMain
             // 
@@ -120,7 +120,7 @@ namespace HZDCoreEditorUI.UI
             this.txtNotes.Name = "txtNotes";
             this.txtNotes.Size = new System.Drawing.Size(684, 23);
             this.txtNotes.TabIndex = 2;
-            this.txtNotes.TextChanged += new System.EventHandler(this.txtNotes_TextChanged);
+            this.txtNotes.TextChanged += new System.EventHandler(this.TxtNotes_TextChanged);
             // 
             // pnlData
             // 
@@ -141,7 +141,7 @@ namespace HZDCoreEditorUI.UI
             this.txtType.ReadOnly = true;
             this.txtType.Size = new System.Drawing.Size(334, 23);
             this.txtType.TabIndex = 1;
-            this.txtType.MouseClick += new System.Windows.Forms.MouseEventHandler(this.txtType_MouseClick);
+            this.txtType.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TxtType_MouseClick);
             // 
             // btnSearch
             // 
@@ -151,7 +151,7 @@ namespace HZDCoreEditorUI.UI
             this.btnSearch.TabIndex = 2;
             this.btnSearch.Text = "Search";
             this.btnSearch.UseVisualStyleBackColor = true;
-            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
+            this.btnSearch.Click += new System.EventHandler(this.BtnSearch_Click);
             // 
             // txtSearch
             // 
@@ -159,8 +159,8 @@ namespace HZDCoreEditorUI.UI
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(409, 23);
             this.txtSearch.TabIndex = 3;
-            this.txtSearch.MouseClick += new System.Windows.Forms.MouseEventHandler(this.txtSearch_MouseClick);
-            this.txtSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSearch_KeyDown);
+            this.txtSearch.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TxtSearch_MouseClick);
+            this.txtSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TxtSearch_KeyDown);
             // 
             // btnSearchAll
             // 
@@ -170,7 +170,7 @@ namespace HZDCoreEditorUI.UI
             this.btnSearchAll.TabIndex = 7;
             this.btnSearchAll.Text = "Search All";
             this.btnSearchAll.UseVisualStyleBackColor = true;
-            this.btnSearchAll.Click += new System.EventHandler(this.btnSearchAll_Click);
+            this.btnSearchAll.Click += new System.EventHandler(this.BtnSearchAll_Click);
             // 
             // mainMenuStrip
             // 
@@ -206,7 +206,7 @@ namespace HZDCoreEditorUI.UI
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             this.openToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.openToolStripMenuItem.Text = "Open...";
-            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
+            this.openToolStripMenuItem.Click += new System.EventHandler(this.OpenToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
@@ -219,21 +219,21 @@ namespace HZDCoreEditorUI.UI
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
             this.saveToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.saveToolStripMenuItem.Text = "Save";
-            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.SaveToolStripMenuItem_Click);
             // 
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
             this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.saveAsToolStripMenuItem.Text = "Save As...";
-            this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
+            this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.SaveAsToolStripMenuItem_Click);
             // 
             // saveAsArchiveToolStripMenuItem
             // 
             this.saveAsArchiveToolStripMenuItem.Name = "saveAsArchiveToolStripMenuItem";
             this.saveAsArchiveToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.saveAsArchiveToolStripMenuItem.Text = "Save As Archive...";
-            this.saveAsArchiveToolStripMenuItem.Click += new System.EventHandler(this.saveAsArchiveToolStripMenuItem_Click);
+            this.saveAsArchiveToolStripMenuItem.Click += new System.EventHandler(this.SaveAsArchiveToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
@@ -245,14 +245,14 @@ namespace HZDCoreEditorUI.UI
             this.exportAsJSONToolStripMenuItem.Name = "exportAsJSONToolStripMenuItem";
             this.exportAsJSONToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.exportAsJSONToolStripMenuItem.Text = "Export as Json...";
-            this.exportAsJSONToolStripMenuItem.Click += new System.EventHandler(this.exportAsJSONToolStripMenuItem_Click);
+            this.exportAsJSONToolStripMenuItem.Click += new System.EventHandler(this.ExportAsJSONToolStripMenuItem_Click);
             // 
             // exportAsJSONWithTypesToolStripMenuItem
             // 
             this.exportAsJSONWithTypesToolStripMenuItem.Name = "exportAsJSONWithTypesToolStripMenuItem";
             this.exportAsJSONWithTypesToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.exportAsJSONWithTypesToolStripMenuItem.Text = "Export as Typed Json...";
-            this.exportAsJSONWithTypesToolStripMenuItem.Click += new System.EventHandler(this.exportAsJSONWithTypesToolStripMenuItem_Click);
+            this.exportAsJSONWithTypesToolStripMenuItem.Click += new System.EventHandler(this.ExportAsJSONWithTypesToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
@@ -265,7 +265,7 @@ namespace HZDCoreEditorUI.UI
             this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.exitToolStripMenuItem.Text = "Exit";
-            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
             // editToolStripMenuItem
             // 
@@ -289,14 +289,14 @@ namespace HZDCoreEditorUI.UI
             this.goToPreviousSelectionToolStripMenuItem.Name = "goToPreviousSelectionToolStripMenuItem";
             this.goToPreviousSelectionToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
             this.goToPreviousSelectionToolStripMenuItem.Text = "Go to Previous Object";
-            this.goToPreviousSelectionToolStripMenuItem.Click += new System.EventHandler(this.goToPreviousSelectionToolStripMenuItem_Click);
+            this.goToPreviousSelectionToolStripMenuItem.Click += new System.EventHandler(this.GoToPreviousSelectionToolStripMenuItem_Click);
             // 
             // goToNextSelectionToolStripMenuItem
             // 
             this.goToNextSelectionToolStripMenuItem.Name = "goToNextSelectionToolStripMenuItem";
             this.goToNextSelectionToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
             this.goToNextSelectionToolStripMenuItem.Text = "Go to Next Object";
-            this.goToNextSelectionToolStripMenuItem.Click += new System.EventHandler(this.goToNextSelectionToolStripMenuItem_Click);
+            this.goToNextSelectionToolStripMenuItem.Click += new System.EventHandler(this.GoToNextSelectionToolStripMenuItem_Click);
             // 
             // toolStripSeparator4
             // 
@@ -308,7 +308,7 @@ namespace HZDCoreEditorUI.UI
             this.expandAllTreesToolStripMenuItem.Name = "expandAllTreesToolStripMenuItem";
             this.expandAllTreesToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
             this.expandAllTreesToolStripMenuItem.Text = "Expand All Trees";
-            this.expandAllTreesToolStripMenuItem.Click += new System.EventHandler(this.expandAllTreesToolStripMenuItem_Click);
+            this.expandAllTreesToolStripMenuItem.Click += new System.EventHandler(this.ExpandAllTreesToolStripMenuItem_Click);
             // 
             // FormCoreView
             // 

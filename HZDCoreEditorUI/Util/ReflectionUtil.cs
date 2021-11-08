@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace HZDCoreEditorUI.Util
+﻿namespace HZDCoreEditorUI.Util
 {
+    using System;
+
     internal static class ReflectionUtil
     {
         public static bool Inherits(this Type objectType, Type baseType)

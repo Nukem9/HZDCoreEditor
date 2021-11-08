@@ -1,86 +1,30 @@
-﻿using HZDCoreEditorUI.Util;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Windows.Forms;
-
-namespace HZDCoreEditorUI.UI
+﻿namespace HZDCoreEditorUI.UI
 {
-    public class TreeDataArrayNode : TreeDataNode
+    using System;
+    using System.Collections.Generic;
+    using System.Windows.Forms;
+    using HZDCoreEditorUI.Util;
+
+    public partial class TreeDataArrayNode : TreeDataNode
     {
-        public override object Value => $"Array<{TypeName}> ({GetArrayLength()})";
-
-        public override bool HasChildren => GetArrayLength() > 0;
-        public override List<TreeDataNode> Children => _children.Value;
-
         private readonly FieldOrProperty _memberFieldHandle;
         private readonly NodeAttributes _attributes;
         private Lazy<List<TreeDataNode>> _children;
 
-        #region Indexer node handler
-        public class IndexNode : TreeDataNode
-        {
-            public override object Value
-            {
-                get => ((Array)ParentObject).GetValue(_arrayIndex);
-                set => ((Array)ParentObject).SetValue(value, _arrayIndex);
-            }
-
-            public override bool IsEditable => _objectWrapperNode.IsEditable;
-
-            public override bool HasChildren => _objectWrapperNode.HasChildren;
-            public override List<TreeDataNode> Children => _objectWrapperNode.Children;
-
-            private readonly TreeDataArrayNode _parentNode;
-            private readonly int _arrayIndex;
-            private readonly TreeDataNode _objectWrapperNode;
-
-            public IndexNode(TreeDataArrayNode parentNode, int index, Type arrayElementType) : base(parentNode.GetArray(), arrayElementType)
-            {
-                Name = $"[{index}]";
-
-                _parentNode = parentNode;
-                _arrayIndex = index;
-                _objectWrapperNode = CreateNode(this, new FieldOrProperty(GetType(), nameof(Value)), arrayElementType);
-            }
-
-            public override Control CreateEditControl(Rectangle bounds)
-            {
-                return _objectWrapperNode.CreateEditControl(bounds);
-            }
-
-            public override void CreateContextMenuItems(ContextMenuStrip contextMenu, Action refreshTreeCallback)
-            {
-                base.CreateContextMenuItems(contextMenu, refreshTreeCallback);
-
-                if (contextMenu.Items.Count > 0)
-                    contextMenu.Items.Add(new ToolStripSeparator());
-
-                var insertItem = new ToolStripMenuItem();
-                insertItem.Text = $"Insert Element at {Name}";
-                insertItem.Click += (o, e) => { _parentNode.InsertArrayElement(_arrayIndex); refreshTreeCallback(); };
-                contextMenu.Items.Add(insertItem);
-
-                var removeItem = new ToolStripMenuItem();
-                removeItem.Text = $"Remove Element at {Name}";
-                removeItem.Click += (o, e) => { _parentNode.RemoveArrayElement(_arrayIndex); refreshTreeCallback(); };
-                contextMenu.Items.Add(removeItem);
-            }
-
-            public override bool FinishEditControl(Control control, Action refreshTreeCallback)
-            {
-                return _objectWrapperNode.FinishEditControl(control, refreshTreeCallback);
-            }
-        }
-        #endregion
-
-        public TreeDataArrayNode(object parent, FieldOrProperty member, NodeAttributes attributes) : base(parent, member)
+        public TreeDataArrayNode(object parent, FieldOrProperty member, NodeAttributes attributes)
+            : base(parent, member)
         {
             _memberFieldHandle = member;
             _attributes = attributes;
 
             RebuildArrayChildren();
         }
+
+        public override object Value => $"Array<{TypeName}> ({GetArrayLength()})";
+
+        public override bool HasChildren => GetArrayLength() > 0;
+
+        public override List<TreeDataNode> Children => _children.Value;
 
         public override void CreateContextMenuItems(ContextMenuStrip contextMenu, Action refreshTreeCallback)
         {
@@ -91,15 +35,23 @@ namespace HZDCoreEditorUI.UI
 
             var addItem = new ToolStripMenuItem();
             addItem.Text = $"Add New Element";
-            addItem.Click += (o, e) => { InsertArrayElement(GetArrayLength()); rebuildAll(); };
+            addItem.Click += (o, e) =>
+            {
+                InsertArrayElement(GetArrayLength());
+                RebuildAll();
+            };
             contextMenu.Items.Add(addItem);
 
             var removeAllItem = new ToolStripMenuItem();
             removeAllItem.Text = $"Remove All Elements";
-            removeAllItem.Click += (o, e) => { _memberFieldHandle.SetValue(ParentObject, Array.CreateInstance(GetContainedType(), 0)); rebuildAll(); };
+            removeAllItem.Click += (o, e) =>
+            {
+                _memberFieldHandle.SetValue(ParentObject, Array.CreateInstance(GetContainedType(), 0));
+                RebuildAll();
+            };
             contextMenu.Items.Add(removeAllItem);
 
-            void rebuildAll()
+            void RebuildAll()
             {
                 RebuildArrayChildren();
                 refreshTreeCallback();

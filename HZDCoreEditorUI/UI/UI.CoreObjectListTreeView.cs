@@ -1,11 +1,11 @@
-﻿using BrightIdeasSoftware;
-using HZDCoreEditorUI.Util;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
-
-namespace HZDCoreEditorUI.UI
+﻿namespace HZDCoreEditorUI.UI
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Windows.Forms;
+    using BrightIdeasSoftware;
+    using HZDCoreEditorUI.Util;
+
     public class CoreObjectListTreeView : TreeListView
     {
         private readonly List<TreeDataNode> _children = new List<TreeDataNode>();
@@ -74,12 +74,12 @@ namespace HZDCoreEditorUI.UI
             RebuildColumns();
         }
 
-        private static bool CanExpandGetterHandler(object model)
+        private bool CanExpandGetterHandler(object model)
         {
             return (model as TreeObjectNode).Children != null;
         }
 
-        private static IEnumerable<TreeObjectNode> ChildrenGetterHandler(object model)
+        private IEnumerable<TreeObjectNode> ChildrenGetterHandler(object model)
         {
             return (model as TreeObjectNode).Children;
         }

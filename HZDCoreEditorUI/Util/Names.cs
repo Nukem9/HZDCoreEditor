@@ -2,7 +2,8 @@
 {
     public class Names
     {
-        public static string[] RootNames = {
+        public static readonly string[] RootNames =
+        {
             "activityfeed",
             "ai",
             "ambience",

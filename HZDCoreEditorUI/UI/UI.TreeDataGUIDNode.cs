@@ -1,13 +1,14 @@
-﻿using HZDCoreEditorUI.Util;
-using System;
-using System.Drawing;
-using System.Windows.Forms;
-
-namespace HZDCoreEditorUI.UI
+﻿namespace HZDCoreEditorUI.UI
 {
+    using System;
+    using System.Drawing;
+    using System.Windows.Forms;
+    using HZDCoreEditorUI.Util;
+
     public class TreeDataGUIDNode : TreeDataClassMemberNode
     {
-        public TreeDataGUIDNode(object parent, FieldOrProperty member, NodeAttributes attributes) : base(parent, member, attributes | NodeAttributes.HideChildren)
+        public TreeDataGUIDNode(object parent, FieldOrProperty member, NodeAttributes attributes)
+            : base(parent, member, attributes | NodeAttributes.HideChildren)
         {
         }
 
@@ -17,7 +18,7 @@ namespace HZDCoreEditorUI.UI
             return new TextBox
             {
                 Bounds = bounds,
-                Text = Value?.ToString() ?? "",
+                Text = Value?.ToString() ?? string.Empty,
             };
         }
 

@@ -1,19 +1,15 @@
-﻿using HZDCoreEditorUI.Util;
-using System.Collections.Generic;
-using System.Reflection;
-
-namespace HZDCoreEditorUI.UI
+﻿namespace HZDCoreEditorUI.UI
 {
+    using System.Collections.Generic;
+    using System.Reflection;
+    using HZDCoreEditorUI.Util;
+
     public class TreeDataRefNode : TreeDataNode
     {
-        public override object Value => _memberFieldHandle.GetValue(ParentObject);
-
-        public override bool HasChildren => Children.Count > 0;
-        public override List<TreeDataNode> Children { get; }
-
         private readonly FieldOrProperty _memberFieldHandle;
 
-        public TreeDataRefNode(object parent, FieldOrProperty member, NodeAttributes attributes) : base(parent, member)
+        public TreeDataRefNode(object parent, FieldOrProperty member, NodeAttributes attributes)
+            : base(parent, member)
         {
             _memberFieldHandle = member;
 
@@ -23,6 +19,12 @@ namespace HZDCoreEditorUI.UI
                 AddObjectChildren();
             }
         }
+
+        public override object Value => _memberFieldHandle.GetValue(ParentObject);
+
+        public override bool HasChildren => Children.Count > 0;
+
+        public override List<TreeDataNode> Children { get; }
 
         private void AddObjectChildren()
         {

@@ -1,10 +1,10 @@
-﻿using Decima;
-using Newtonsoft.Json;
-using System;
-using System.Diagnostics.CodeAnalysis;
-
-namespace HZDCoreEditor.Util
+﻿namespace HZDCoreEditor.Util
 {
+    using System;
+    using System.Diagnostics.CodeAnalysis;
+    using Decima;
+    using Newtonsoft.Json;
+
     public class BaseGGUUIDConverter : JsonConverter<BaseGGUUID>
     {
         public override BaseGGUUID ReadJson(JsonReader reader, Type objectType, [AllowNull] BaseGGUUID existingValue, bool hasExistingValue, JsonSerializer serializer)

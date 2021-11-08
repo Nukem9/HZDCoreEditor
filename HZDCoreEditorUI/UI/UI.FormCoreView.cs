@@ -1,43 +1,50 @@
-﻿using Decima;
-using Decima.HZD;
-using HZDCoreEditor.Util;
-using HZDCoreEditorUI.Util;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Windows.Forms;
-
-namespace HZDCoreEditorUI.UI
+﻿namespace HZDCoreEditorUI.UI
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Linq;
+    using System.Windows.Forms;
+    using Decima;
+    using Decima.HZD;
+    using HZDCoreEditor.Util;
+    using HZDCoreEditorUI.Util;
+    using Newtonsoft.Json;
+
     public partial class FormCoreView : Form
     {
-        private readonly CmdOptions _cmdOptions;
-        private const string NotesFile = "notes.json";
+        private const string _notesFile = "notes.json";
 
-        private List<object> CoreObjectList;
-        private string LoadedFilePath;
-        private string RootDir;
+        private readonly Program.CmdOptions _cmdOptions;
+        private readonly CoreObjectListTreeView _objectsTreeView;
+        private readonly ClassMemberTreeView _membersTreeView;
+        private readonly object _noteLock = new object();
 
-        private List<object> UndoLog = new List<object>();
-        private int UndoPosition = 0;
-        private bool IgnoreUndo = false;
+        private List<object> _coreObjectList;
+        private object _lastSelectedObject;
+
+        private string _loadedFilePath;
+        private string _rootDir;
+
+        private List<object> _undoLog = new List<object>();
+        private int _undoPosition = 0;
+        private bool _ignoreUndo = false;
 
         private Timer _notesTimer;
         private Dictionary<(string Path, string Id), (string Note, DateTime Date)> _notes;
+        private bool _saveNotes = true;
 
-        private readonly CoreObjectListTreeView _objectsTreeView;
-        private readonly ClassMemberTreeView _membersTreeView;
-        private object _lastSelectedObject;
+        private int _searchNext = -1;
+        private int _searchIndex = -1;
+        private string _searchLast = null;
 
-        public FormCoreView(CmdOptions cmd)
+        public FormCoreView(Program.CmdOptions options)
         {
-            _cmdOptions = cmd;
+            _cmdOptions = options;
             _notesTimer = new Timer()
             {
-                Interval = 500
+                Interval = 500,
             };
             _notesTimer.Tick += NotesTimer_Tick;
             _notes = LoadNotes() ?? new Dictionary<(string Path, string Id), (string Note, DateTime Date)>();
@@ -49,7 +56,7 @@ namespace HZDCoreEditorUI.UI
             _objectsTreeView.FullRowSelect = true;
             _objectsTreeView.Dock = DockStyle.Fill;
             _objectsTreeView.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
-            _objectsTreeView.ItemSelectionChanged += TreeListView_ItemSelected;
+            _objectsTreeView.ItemSelectionChanged += ObjectsTreeView_ItemSelected;
 
             pnlMain.Controls.Clear();
             pnlMain.Controls.Add(_objectsTreeView);
@@ -59,7 +66,7 @@ namespace HZDCoreEditorUI.UI
             _membersTreeView.FullRowSelect = true;
             _membersTreeView.Dock = DockStyle.Fill;
             _membersTreeView.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
-            _membersTreeView.CellRightClick += TvData_CellRightClick;
+            _membersTreeView.CellRightClick += MembersTreeView_CellRightClick;
 
             pnlData.Controls.Clear();
             pnlData.Controls.Add(_membersTreeView);
@@ -88,12 +95,237 @@ namespace HZDCoreEditorUI.UI
 
             if (!string.IsNullOrEmpty(_cmdOptions.ObjectId))
             {
-                if (LoadedFilePath != null)
+                if (_loadedFilePath != null)
                     SelectNodeByGUID(_cmdOptions.ObjectId);
             }
         }
 
-        private void TvData_CellRightClick(object sender, BrightIdeasSoftware.CellRightClickEventArgs e)
+        private void FormCoreView_DragDrop(object sender, DragEventArgs e)
+        {
+            var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+            try
+            {
+                if (files.Any())
+                    LoadFile(files.First());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed to load file: " + ex.Message);
+            }
+        }
+
+        private void FormCoreView_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                e.Effect = DragDropEffects.Copy;
+        }
+
+        private void FormCoreView_MouseDown(object sender, MouseEventArgs e)
+        {
+            _ignoreUndo = true;
+
+            if (e.Button == MouseButtons.XButton1)
+            {
+                if (_undoPosition > 0)
+                {
+                    _undoPosition--;
+                    SelectNodeByObject(_undoLog[_undoPosition]);
+                }
+            }
+            else if (e.Button == MouseButtons.XButton2)
+            {
+                if (_undoPosition < _undoLog.Count - 1)
+                {
+                    _undoPosition++;
+                    SelectNodeByObject(_undoLog[_undoPosition]);
+                }
+            }
+
+            _ignoreUndo = false;
+        }
+
+        private void TxtSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+                btnSearch.PerformClick();
+        }
+
+        private void TxtNotes_TextChanged(object sender, EventArgs e)
+        {
+            if (_saveNotes)
+            {
+                _notesTimer.Stop();
+                _notesTimer.Start();
+            }
+        }
+
+        private void TxtSearch_MouseClick(object sender, MouseEventArgs e) => ((TextBox)sender).SelectAll();
+
+        private void TxtFile_MouseClick(object sender, MouseEventArgs e) => ((TextBox)sender).SelectAll();
+
+        private void TxtType_MouseClick(object sender, MouseEventArgs e) => ((TextBox)sender).SelectAll();
+
+        private void BtnSearch_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _ignoreUndo = true;
+                _searchIndex = 0;
+                if (_searchLast != txtSearch.Text)
+                    _searchNext = -1;
+                _searchLast = txtSearch.Text;
+
+                foreach (var node in _objectsTreeView.Objects.Cast<TreeObjectNode>())
+                {
+                    _objectsTreeView.Expand(node);
+                    if (SearchNode(node))
+                    {
+                        AddUndo();
+                        _objectsTreeView.SelectedItem?.EnsureVisible();
+                        return;
+                    }
+                }
+
+                _searchNext = -1;
+                MessageBox.Show("No more entries found");
+            }
+            finally
+            {
+                _ignoreUndo = false;
+            }
+        }
+
+        private void BtnSearchAll_Click(object sender, EventArgs e)
+        {
+            Process.Start("HZDCoreSearch.exe", Process.GetCurrentProcess().ProcessName);
+        }
+
+        private void TsmFollow_Click(object sender, EventArgs e)
+        {
+            var selected = GetSelectedRef();
+
+            if (selected.Type == BaseRef.Types.InternalLink || selected.Type == BaseRef.Types.UUIDRef)
+            {
+                SelectNodeByGUID(selected.GUID);
+            }
+
+            if (selected.Type == BaseRef.Types.ExternalLink || selected.Type == BaseRef.Types.StreamingRef)
+            {
+                if (_rootDir == null)
+                {
+                    MessageBox.Show("Unable to find root directory.", "External Follow Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                var path = Path.Combine(_rootDir, selected.ExternalFile + ".core");
+                if (!File.Exists(path))
+                {
+                    MessageBox.Show("Unable to find file.", "External Follow Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Load localization text
+                if (selected.GetType().IsGenericType && selected.GetType().GetGenericArguments().Any(x => x == typeof(LocalizedTextResource)))
+                {
+                    var core = CoreBinary.FromFile(path);
+                    var match = core.Objects.FirstOrDefault(x => x is LocalizedTextResource asResource && asResource.ObjectUUID == selected.GUID) as LocalizedTextResource;
+                    var text = match == null ? "null" : match.GetStringForLanguage(ELanguage.English);
+
+                    MessageBox.Show(text, "Localization Text", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    Process.Start(Process.GetCurrentProcess().ProcessName, $"\"{path}\" -o \"{selected.GUID}\"");
+                }
+            }
+        }
+
+        private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFile();
+        }
+
+        private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var sfd = new SaveFileDialog
+            {
+                Filter = "Decima CoreBinary files (*.core)|*.core|All files (*.*)|*.*",
+                FileName = Path.GetFileName(_loadedFilePath),
+            };
+
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                var coreBinary = new CoreBinary();
+
+                foreach (var obj in _coreObjectList)
+                    coreBinary.AddObject(obj);
+
+                coreBinary.ToFile(sfd.FileName, FileMode.Create);
+            }
+        }
+
+        private void SaveAsArchiveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var sfd = new SaveFileDialog
+            {
+                Filter = "Decima Archive files (*.bin)|*.bin",
+                FileName = "Patch_MyEdits.bin",
+            };
+
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                using var ms = new MemoryStream();
+                var coreBinary = new CoreBinary();
+
+                foreach (var obj in _coreObjectList)
+                    coreBinary.AddObject(obj);
+
+                coreBinary.ToData(new BinaryWriter(ms));
+                ms.Position = 0;
+
+                using var packfileWriter = new PackfileWriter(sfd.FileName, false, FileMode.Create);
+                packfileWriter.BuildFromStreamList(new List<(string CorePath, Stream Stream)> { ($"{txtFile.Text}.core", ms) });
+            }
+        }
+
+        private void ExportAsJSONToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ExportObjectsToJson(false);
+        }
+
+        private void ExportAsJSONWithTypesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ExportObjectsToJson(true);
+        }
+
+        private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void GoToPreviousSelectionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void GoToNextSelectionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ExpandAllTreesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _objectsTreeView.ExpandAll();
+            _membersTreeView.ExpandAll();
+        }
+
+        private void MembersTreeView_CellRightClick(object sender, BrightIdeasSoftware.CellRightClickEventArgs e)
         {
             // "Export Array..."
             byte[] asBytes = null;
@@ -124,8 +356,37 @@ namespace HZDCoreEditorUI.UI
 
                 var menuItem = new ToolStripMenuItem();
                 menuItem.Text = "Follow Reference";
-                menuItem.Click += tsmFollow_Click;
+                menuItem.Click += TsmFollow_Click;
                 e.MenuStrip.Items.Insert(0, menuItem);
+            }
+        }
+
+        private void ObjectsTreeView_ItemSelected(object sender, EventArgs e)
+        {
+            var underlying = (_objectsTreeView.SelectedObject as TreeObjectNode)?.UnderlyingObject;
+
+            // Ignore spurious selection changes
+            if (_lastSelectedObject == underlying)
+                return;
+
+            _lastSelectedObject = underlying;
+
+            if (underlying != null)
+            {
+                if (!_ignoreUndo)
+                    AddUndo();
+
+                _membersTreeView.RebuildTreeFromObject(underlying);
+                txtType.Text = underlying.GetType().GetFriendlyName();
+
+                _saveNotes = false;
+
+                if (underlying is RTTIRefObject obj && _notes.TryGetValue((txtFile.Text, obj.ObjectUUID?.ToString()), out var note))
+                    txtNotes.Text = note.Note;
+                else
+                    txtNotes.Text = string.Empty;
+
+                _saveNotes = true;
             }
         }
 
@@ -143,13 +404,13 @@ namespace HZDCoreEditorUI.UI
 
         private void OpenFile()
         {
-            SearchLast = null;
+            _searchLast = null;
             var ofd = new OpenFileDialog();
 
-            if (!string.IsNullOrEmpty(LoadedFilePath))
+            if (!string.IsNullOrEmpty(_loadedFilePath))
             {
-                ofd.InitialDirectory = Path.GetDirectoryName(LoadedFilePath);
-                ofd.FileName = Path.GetFileName(LoadedFilePath);
+                ofd.InitialDirectory = Path.GetDirectoryName(_loadedFilePath);
+                ofd.FileName = Path.GetFileName(_loadedFilePath);
             }
 
             if (ofd.ShowDialog() != DialogResult.OK)
@@ -160,97 +421,36 @@ namespace HZDCoreEditorUI.UI
 
         private void LoadFile(string path)
         {
-            UndoLog.Clear();
-            UndoPosition = 0;
-            LoadedFilePath = path;
-            this.Text = "Core - " + Path.GetFileName(LoadedFilePath);
+            _undoLog.Clear();
+            _undoPosition = 0;
+            _loadedFilePath = path;
+            Text = "Core - " + Path.GetFileName(_loadedFilePath);
 
-            var fullPath = Path.GetFullPath(LoadedFilePath);
+            var fullPath = Path.GetFullPath(_loadedFilePath);
             var nameRoots = Names.RootNames.Select(x => fullPath.IndexOf(x)).Where(x => x >= 0).ToList();
             if (!nameRoots.Any())
             {
-                txtFile.Text = LoadedFilePath;
-                RootDir = null;
+                txtFile.Text = _loadedFilePath;
+                _rootDir = null;
             }
             else
             {
                 txtFile.Text = Path.ChangeExtension(fullPath, null).Substring(nameRoots.Min()).Replace("\\", "/");
-                RootDir = fullPath.Substring(0, nameRoots.Min());
+                _rootDir = fullPath.Substring(0, nameRoots.Min());
             }
 
-            CoreObjectList = CoreBinary.FromFile(path, true).Objects.ToList();
-            _objectsTreeView.RebuildTreeFromObjects(CoreObjectList);
+            _coreObjectList = CoreBinary.FromFile(path, true).Objects.ToList();
+            _objectsTreeView.RebuildTreeFromObjects(_coreObjectList);
             _membersTreeView.ClearObjects();
-        }
-
-        private void TreeListView_ItemSelected(object sender, EventArgs e)
-        {
-            var underlying = (_objectsTreeView.SelectedObject as TreeObjectNode)?.UnderlyingObject;
-
-            // Ignore spurious selection changes
-            if (_lastSelectedObject == underlying)
-                return;
-
-            _lastSelectedObject = underlying;
-
-            if (underlying != null)
-            {
-                if (!IgnoreUndo)
-                    AddUndo();
-
-                _membersTreeView.RebuildTreeFromObject(underlying);
-                txtType.Text = underlying.GetType().GetFriendlyName();
-
-                _saveNotes = false;
-                if (underlying is RTTIRefObject obj && _notes.TryGetValue((txtFile.Text, obj.ObjectUUID?.ToString()), out var note))
-                    txtNotes.Text = note.Note;
-                else
-                    txtNotes.Text = "";
-                _saveNotes = true;
-            }
-        }
-
-        private int SearchNext = -1;
-        private int SearchIndex = -1;
-        private string SearchLast = null;
-
-        private void btnSearch_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                IgnoreUndo = true;
-                SearchIndex = 0;
-                if (SearchLast != txtSearch.Text)
-                    SearchNext = -1;
-                SearchLast = txtSearch.Text;
-
-                foreach (var node in _objectsTreeView.Objects.Cast<TreeObjectNode>())
-                {
-                    _objectsTreeView.Expand(node);
-                    if (SearchNode(node))
-                    {
-                        AddUndo();
-                        _objectsTreeView.SelectedItem?.EnsureVisible();
-                        return;
-                    }
-                }
-
-                SearchNext = -1;
-                MessageBox.Show("No more entries found");
-            }
-            finally
-            {
-                IgnoreUndo = false;
-            }
         }
 
         private void AddUndo()
         {
-            if (UndoLog.Count - (UndoPosition + 1) > 0)
-                UndoLog.RemoveRange(UndoPosition + 1, UndoLog.Count - (UndoPosition + 1));
-            if (UndoLog.Count > 0)
-                UndoPosition++;
-            UndoLog.Add(_objectsTreeView.SelectedObject);
+            if (_undoLog.Count - (_undoPosition + 1) > 0)
+                _undoLog.RemoveRange(_undoPosition + 1, _undoLog.Count - (_undoPosition + 1));
+            if (_undoLog.Count > 0)
+                _undoPosition++;
+            _undoLog.Add(_objectsTreeView.SelectedObject);
         }
 
         private bool SearchNode(TreeObjectNode node)
@@ -296,18 +496,20 @@ namespace HZDCoreEditorUI.UI
                 }
             }
 
-            if (SearchNext >= 0)
+            if (_searchNext >= 0)
             {
-                if (SearchIndex >= SearchNext)
-                    SearchNext = -1;
+                if (_searchIndex >= _searchNext)
+                {
+                    _searchNext = -1;
+                }
                 else
                 {
-                    SearchIndex++;
+                    _searchIndex++;
                     return false;
                 }
             }
 
-            SearchIndex++;
+            _searchIndex++;
 
             if (node.Value?.ToString().Contains(txtSearch.Text, StringComparison.OrdinalIgnoreCase) == true)
             {
@@ -319,7 +521,7 @@ namespace HZDCoreEditorUI.UI
                         _membersTreeView.Expand(p);
 
                     _membersTreeView.SelectObject(node, true);
-                    SearchNext = SearchIndex;
+                    _searchNext = _searchIndex;
                     return true;
                 }
             }
@@ -342,6 +544,7 @@ namespace HZDCoreEditorUI.UI
             parents.Reverse();
             return parents;
         }
+
         private bool FindNodeParents(List<TreeDataNode> parents, TreeDataNode curNode, TreeDataNode searchNode)
         {
             if (curNode.Children?.Any() == true)
@@ -359,83 +562,9 @@ namespace HZDCoreEditorUI.UI
             return ReferenceEquals(searchNode, curNode);
         }
 
-        private void txtSearch_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-                btnSearch.PerformClick();
-        }
-
-        private void FormCoreView_DragDrop(object sender, DragEventArgs e)
-        {
-            var files = (string[])e.Data.GetData(DataFormats.FileDrop);
-
-            try
-            {
-                if (files.Any())
-                    LoadFile(files.First());
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Failed to load file: " + ex.Message);
-            }
-        }
-
-        private void FormCoreView_DragEnter(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-                e.Effect = DragDropEffects.Copy;
-        }
-
-        private void btnSearchAll_Click(object sender, EventArgs e)
-        {
-            Process.Start("HZDCoreSearch.exe", Process.GetCurrentProcess().ProcessName);
-        }
-
-        private void txtSearch_MouseClick(object sender, MouseEventArgs e) => ((TextBox)sender).SelectAll();
-        private void txtFile_MouseClick(object sender, MouseEventArgs e) => ((TextBox)sender).SelectAll();
-        private void txtType_MouseClick(object sender, MouseEventArgs e) => ((TextBox)sender).SelectAll();
-
-        private void tsmFollow_Click(object sender, EventArgs e)
-        {
-            var selected = GetSelectedRef();
-            if (selected.Type == BaseRef.Types.InternalLink || selected.Type == BaseRef.Types.UUIDRef)
-            {
-                SelectNodeByGUID(selected.GUID);
-            }
-            if (selected.Type == BaseRef.Types.ExternalLink || selected.Type == BaseRef.Types.StreamingRef)
-            {
-                if (RootDir == null)
-                {
-                    MessageBox.Show("Unable to find root directory.", "External Follow Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                var path = Path.Combine(RootDir, selected.ExternalFile + ".core");
-                if (!File.Exists(path))
-                {
-                    MessageBox.Show("Unable to find file.", "External Follow Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                //load localization text
-                if (selected.GetType().IsGenericType && selected.GetType().GetGenericArguments().Any(x => x == typeof(LocalizedTextResource)))
-                {
-                    var core = CoreBinary.FromFile(path);
-                    var match = core.Objects.FirstOrDefault(x => x is LocalizedTextResource asResource && asResource.ObjectUUID == selected.GUID) as LocalizedTextResource;
-                    var text = match == null ? "null" : match.GetStringForLanguage(ELanguage.English);
-
-                    MessageBox.Show(text, "Localization Text", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                else
-                {
-                    Process.Start(Process.GetCurrentProcess().ProcessName, $"\"{path}\" -o \"{selected.GUID}\"");
-                }
-            }
-        }
-
         private bool SelectNode(Predicate<TreeObjectNode> selector)
         {
-            bool search(IEnumerable<TreeObjectNode> nodes)
+            bool Search(IEnumerable<TreeObjectNode> nodes)
             {
                 foreach (var node in nodes)
                 {
@@ -453,7 +582,7 @@ namespace HZDCoreEditorUI.UI
                     if (!wasExpanded)
                         _objectsTreeView.Expand(node);
 
-                    if (node.Children != null && search(node.Children))
+                    if (node.Children != null && Search(node.Children))
                         return true;
 
                     if (!wasExpanded)
@@ -463,7 +592,7 @@ namespace HZDCoreEditorUI.UI
                 return false;
             }
 
-            return search(_objectsTreeView.Objects.Cast<TreeObjectNode>());
+            return Search(_objectsTreeView.Objects.Cast<TreeObjectNode>());
         }
 
         private bool SelectNodeByGUID(BaseGGUUID objectGUID)
@@ -490,45 +619,12 @@ namespace HZDCoreEditorUI.UI
             return null;
         }
 
-        private void FormCoreView_MouseDown(object sender, MouseEventArgs e)
-        {
-            IgnoreUndo = true;
-
-            if (e.Button == MouseButtons.XButton1)
-            {
-                if (UndoPosition > 0)
-                {
-                    UndoPosition--;
-                    SelectNodeByObject(UndoLog[UndoPosition]);
-                }
-            }
-            else if (e.Button == MouseButtons.XButton2)
-            {
-                if (UndoPosition < UndoLog.Count - 1)
-                {
-                    UndoPosition++;
-                    SelectNodeByObject(UndoLog[UndoPosition]);
-                }
-            }
-
-            IgnoreUndo = false;
-        }
-
-        public void BindMouseEvents(Control control)
+        private void BindMouseEvents(Control control)
         {
             control.MouseDown += FormCoreView_MouseDown;
 
             foreach (Control c in control.Controls)
                 BindMouseEvents(c);
-        }
-
-        private void txtNotes_TextChanged(object sender, EventArgs e)
-        {
-            if (_saveNotes)
-            {
-                _notesTimer.Stop();
-                _notesTimer.Start();
-            }
         }
 
         private void NotesTimer_Tick(object sender, EventArgs e)
@@ -561,23 +657,22 @@ namespace HZDCoreEditorUI.UI
             SaveNotes();
         }
 
-        private bool _saveNotes = true;
-        private readonly object _noteLock = new object();
         private void SaveNotes()
         {
             lock (_noteLock)
             {
                 var json = JsonConvert.SerializeObject(_notes.Select(x => (x.Key, x.Value)), Formatting.Indented);
-                File.WriteAllText(NotesFile, json);
+                File.WriteAllText(_notesFile, json);
             }
         }
+
         private Dictionary<(string, string), (string, DateTime)> LoadNotes()
         {
             lock (_noteLock)
             {
-                if (File.Exists(NotesFile))
+                if (File.Exists(_notesFile))
                 {
-                    var json = File.ReadAllText(NotesFile);
+                    var json = File.ReadAllText(_notesFile);
                     var noteList = JsonConvert.DeserializeObject<List<((string, string), (string, DateTime))>>(json);
                     return noteList?.ToDictionary(x => x.Item1, x => x.Item2);
                 }
@@ -586,110 +681,26 @@ namespace HZDCoreEditorUI.UI
             return null;
         }
 
-        private void exportObjectsToJson(bool exportTypes)
+        private void ExportObjectsToJson(bool exportTypes)
         {
             var sfd = new SaveFileDialog
             {
                 Filter = "Json files (*.json)|*.json|All files (*.*)|*.*",
-                FileName = Path.GetFileNameWithoutExtension(LoadedFilePath) + ".json"
+                FileName = Path.GetFileNameWithoutExtension(_loadedFilePath) + ".json",
             };
 
             if (sfd.ShowDialog() == DialogResult.OK)
             {
-                var json = JsonConvert.SerializeObject(CoreObjectList, new JsonSerializerSettings()
+                var json = JsonConvert.SerializeObject(_coreObjectList, new JsonSerializerSettings()
                 {
                     Formatting = Formatting.Indented,
                     TypeNameHandling = exportTypes ? TypeNameHandling.Objects : TypeNameHandling.None,
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                    Converters = new List<JsonConverter>() { new BaseGGUUIDConverter() }
+                    Converters = new List<JsonConverter>() { new BaseGGUUIDConverter() },
                 });
 
                 File.WriteAllText(sfd.FileName, json);
             }
-        }
-
-        private void openToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenFile();
-        }
-
-        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var sfd = new SaveFileDialog
-            {
-                Filter = "Decima CoreBinary files (*.core)|*.core|All files (*.*)|*.*",
-                FileName = Path.GetFileName(LoadedFilePath),
-            };
-
-            if (sfd.ShowDialog() == DialogResult.OK)
-            {
-                var coreBinary = new CoreBinary();
-
-                foreach (var obj in CoreObjectList)
-                    coreBinary.AddObject(obj);
-
-                coreBinary.ToFile(sfd.FileName, FileMode.Create);
-            }
-        }
-
-        private void saveAsArchiveToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var sfd = new SaveFileDialog
-            {
-                Filter = "Decima Archive files (*.bin)|*.bin",
-                FileName = "Patch_MyEdits.bin",
-            };
-
-            if (sfd.ShowDialog() == DialogResult.OK)
-            {
-                using var ms = new MemoryStream();
-                var coreBinary = new CoreBinary();
-
-                foreach (var obj in CoreObjectList)
-                    coreBinary.AddObject(obj);
-
-                coreBinary.ToData(new BinaryWriter(ms));
-                ms.Position = 0;
-
-                using var packfileWriter = new PackfileWriter(sfd.FileName, false, FileMode.Create);
-                packfileWriter.BuildFromStreamList(new List<(string CorePath, Stream Stream)> { ($"{txtFile.Text}.core", ms) });
-            }
-        }
-
-        private void exportAsJSONToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            exportObjectsToJson(false);
-        }
-
-        private void exportAsJSONWithTypesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            exportObjectsToJson(true);
-        }
-
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
-
-        private void goToPreviousSelectionToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void goToNextSelectionToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void expandAllTreesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _objectsTreeView.ExpandAll();
-            _membersTreeView.ExpandAll();
         }
     }
 }
