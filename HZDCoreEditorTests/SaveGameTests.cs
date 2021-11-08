@@ -1,8 +1,8 @@
-﻿using Decima;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace HZDCoreEditorTests
+﻿namespace HZDCoreEditorTests
 {
+    using Decima;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+
     [TestClass]
     public class SaveGameTests
     {

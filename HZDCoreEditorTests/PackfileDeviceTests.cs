@@ -1,10 +1,10 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.IO;
-using System.Linq;
-
-namespace HZDCoreEditorTests
+﻿namespace HZDCoreEditorTests
 {
+    using System;
+    using System.IO;
+    using System.Linq;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+
     [TestClass]
     public class PackfileDeviceTests
     {

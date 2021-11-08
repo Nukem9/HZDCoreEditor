@@ -1,11 +1,11 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Decima;
-
-namespace HZDCoreEditorTests
+﻿namespace HZDCoreEditorTests
 {
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using Decima;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+
     [TestClass]
     public class PackfileTests
     {
@@ -51,8 +51,10 @@ namespace HZDCoreEditorTests
             Assert.IsTrue(archive.ContainsFile("prefetch/fullgame.prefetch.core"));
             Assert.IsTrue(archive.ContainsFile(Packfile.SanitizePath("prefetch/fullgame.prefetch")));
             Assert.IsTrue(archive.ContainsFile(Packfile.SanitizePath("prefetch\\fullgame.prefetch.core")));
-            //Assert.IsTrue(archive.ContainsFile("models/weapons/heavy_machinegun/model/model.core.stream")); - need to find a file present in Initial.bin
-            //Assert.IsTrue(archive.ContainsFile("sounds/effects/world/weather/habitats/fields/weather_fields.soundbank", ".core.stream"));
+#if false
+            Assert.IsTrue(archive.ContainsFile("models/weapons/heavy_machinegun/model/model.core.stream"));// Need to find files present in Initial.bin
+            Assert.IsTrue(archive.ContainsFile("sounds/effects/world/weather/habitats/fields/weather_fields.soundbank.core.stream"));
+#endif
 
             Assert.IsFalse(archive.ContainsFile("PREFETCH/fullgame.prefetch.core"));
             Assert.IsFalse(archive.ContainsFile("prefetch\\FULLGAME.prefetch.core"));

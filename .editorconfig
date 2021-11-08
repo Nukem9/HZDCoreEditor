@@ -3,6 +3,9 @@
 # SA1101: Prefix local calls with this
 dotnet_diagnostic.SA1101.severity = none
 
+# SA1139: Use literal suffix notation instead of casting
+dotnet_diagnostic.SA1139.severity = none
+
 # SA1309: Field names should not begin with underscore
 dotnet_diagnostic.SA1309.severity = none
 
