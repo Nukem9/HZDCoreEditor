@@ -25,10 +25,12 @@ namespace HZDCoreEditorUI.UI
         private int UndoPosition = 0;
         private bool IgnoreUndo = false;
 
-        private CoreObjectListTreeView tvMain;
-        private ClassMemberTreeView tvData;
         private Timer _notesTimer;
         private Dictionary<(string Path, string Id), (string Note, DateTime Date)> _notes;
+
+        private readonly CoreObjectListTreeView _objectsTreeView;
+        private readonly ClassMemberTreeView _membersTreeView;
+        private object _lastSelectedObject;
 
         public FormCoreView(CmdOptions cmd)
         {
@@ -41,9 +43,28 @@ namespace HZDCoreEditorUI.UI
             _notes = LoadNotes() ?? new Dictionary<(string Path, string Id), (string Note, DateTime Date)>();
 
             InitializeComponent();
-            CreateObjectView();
-            CreateDataView();
 
+            // Left panel
+            _objectsTreeView = new CoreObjectListTreeView();
+            _objectsTreeView.FullRowSelect = true;
+            _objectsTreeView.Dock = DockStyle.Fill;
+            _objectsTreeView.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
+            _objectsTreeView.ItemSelectionChanged += TreeListView_ItemSelected;
+
+            pnlMain.Controls.Clear();
+            pnlMain.Controls.Add(_objectsTreeView);
+
+            // Right panel
+            _membersTreeView = new ClassMemberTreeView();
+            _membersTreeView.FullRowSelect = true;
+            _membersTreeView.Dock = DockStyle.Fill;
+            _membersTreeView.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
+            _membersTreeView.CellRightClick += TvData_CellRightClick;
+
+            pnlData.Controls.Clear();
+            pnlData.Controls.Add(_membersTreeView);
+
+            // Recursively register mouse events
             BindMouseEvents(this);
         }
 
@@ -68,32 +89,8 @@ namespace HZDCoreEditorUI.UI
             if (!string.IsNullOrEmpty(_cmdOptions.ObjectId))
             {
                 if (LoadedFilePath != null)
-                    SelectNodeById(_cmdOptions.ObjectId);
+                    SelectNodeByGUID(_cmdOptions.ObjectId);
             }
-        }
-
-        private void CreateObjectView()
-        {
-            tvMain = new CoreObjectListTreeView();
-            tvMain.FullRowSelect = true;
-            tvMain.Dock = DockStyle.Fill;
-            tvMain.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
-            tvMain.ItemSelectionChanged += TreeListView_ItemSelected;
-
-            pnlMain.Controls.Clear();
-            pnlMain.Controls.Add(tvMain);
-        }
-
-        private void CreateDataView()
-        {
-            tvData = new ClassMemberTreeView();
-            tvData.FullRowSelect = true;
-            tvData.Dock = DockStyle.Fill;
-            tvData.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
-            tvData.CellRightClick += TvData_CellRightClick;
-
-            pnlData.Controls.Clear();
-            pnlData.Controls.Add(tvData);
         }
 
         private void TvData_CellRightClick(object sender, BrightIdeasSoftware.CellRightClickEventArgs e)
@@ -147,20 +144,26 @@ namespace HZDCoreEditorUI.UI
             }
 
             CoreObjectList = CoreBinary.FromFile(path, true).Objects.ToList();
-            tvMain.RebuildTreeFromObjects(CoreObjectList);
-            tvData.ClearObjects();
+            _objectsTreeView.RebuildTreeFromObjects(CoreObjectList);
+            _membersTreeView.ClearObjects();
         }
 
         private void TreeListView_ItemSelected(object sender, EventArgs e)
         {
-            var underlying = (tvMain.SelectedObject as TreeObjectNode)?.UnderlyingObject;
+            var underlying = (_objectsTreeView.SelectedObject as TreeObjectNode)?.UnderlyingObject;
+
+            // Ignore spurious selection changes
+            if (_lastSelectedObject == underlying)
+                return;
+
+            _lastSelectedObject = underlying;
 
             if (underlying != null)
             {
                 if (!IgnoreUndo)
                     AddUndo();
 
-                tvData.RebuildTreeFromObject(underlying);
+                _membersTreeView.RebuildTreeFromObject(underlying);
                 txtType.Text = underlying.GetType().GetFriendlyName();
 
                 _saveNotes = false;
@@ -186,13 +189,13 @@ namespace HZDCoreEditorUI.UI
                     SearchNext = -1;
                 SearchLast = txtSearch.Text;
 
-                foreach (var node in tvMain.Objects.Cast<TreeObjectNode>())
+                foreach (var node in _objectsTreeView.Objects.Cast<TreeObjectNode>())
                 {
-                    tvMain.Expand(node);
+                    _objectsTreeView.Expand(node);
                     if (SearchNode(node))
                     {
                         AddUndo();
-                        tvMain.SelectedItem?.EnsureVisible();
+                        _objectsTreeView.SelectedItem?.EnsureVisible();
                         return;
                     }
                 }
@@ -212,7 +215,7 @@ namespace HZDCoreEditorUI.UI
                 UndoLog.RemoveRange(UndoPosition + 1, UndoLog.Count - (UndoPosition + 1));
             if (UndoLog.Count > 0)
                 UndoPosition++;
-            UndoLog.Add(tvMain.SelectedObject);
+            UndoLog.Add(_objectsTreeView.SelectedObject);
         }
 
         private bool SearchNode(TreeObjectNode node)
@@ -221,7 +224,7 @@ namespace HZDCoreEditorUI.UI
             {
                 foreach (var subNode in node.Children)
                 {
-                    tvMain.Expand(subNode);
+                    _objectsTreeView.Expand(subNode);
 
                     if (SearchNode(subNode))
                         return true;
@@ -230,10 +233,10 @@ namespace HZDCoreEditorUI.UI
 
             if (node.UnderlyingObject != null)
             {
-                tvMain.SelectObject(node, true);
-                tvData.RebuildTreeFromObject(node.UnderlyingObject);
+                _objectsTreeView.SelectObject(node, true);
+                _membersTreeView.RebuildTreeFromObject(node.UnderlyingObject);
 
-                foreach (var dNode in tvData.Objects.Cast<TreeDataNode>())
+                foreach (var dNode in _membersTreeView.Objects.Cast<TreeDataNode>())
                 {
                     if (SearchDataNode(dNode))
                     {
@@ -273,14 +276,14 @@ namespace HZDCoreEditorUI.UI
 
             if (node.Value?.ToString().Contains(txtSearch.Text, StringComparison.OrdinalIgnoreCase) == true)
             {
-                var parents = GetParents(tvData.Objects.Cast<TreeDataNode>(), node);
+                var parents = GetParents(_membersTreeView.Objects.Cast<TreeDataNode>(), node);
                 var nodeParent = parents.LastOrDefault();
                 if (nodeParent?.Value?.ToString().StartsWith("Ref<") != true)
                 {
                     foreach (var p in parents)
-                        tvData.Expand(p);
+                        _membersTreeView.Expand(p);
 
-                    tvData.SelectObject(node, true);
+                    _membersTreeView.SelectObject(node, true);
                     SearchNext = SearchIndex;
                     return true;
                 }
@@ -362,7 +365,7 @@ namespace HZDCoreEditorUI.UI
             var selected = GetSelectedRef();
             if (selected.Type == BaseRef.Types.InternalLink || selected.Type == BaseRef.Types.UUIDRef)
             {
-                SelectNodeById(selected.GUID);
+                SelectNodeByGUID(selected.GUID);
             }
             if (selected.Type == BaseRef.Types.ExternalLink || selected.Type == BaseRef.Types.StreamingRef)
             {
@@ -395,36 +398,56 @@ namespace HZDCoreEditorUI.UI
             }
         }
 
-        private void SelectNodeById(BaseGGUUID objectId)
+        private bool SelectNode(Predicate<TreeObjectNode> selector)
         {
             bool search(IEnumerable<TreeObjectNode> nodes)
             {
                 foreach (var node in nodes)
                 {
-                    tvMain.Expand(node);
+                    // Try this node first
+                    if (selector(node))
+                    {
+                        _objectsTreeView.SelectObject(node, true);
+                        _objectsTreeView.SelectedItem?.EnsureVisible();
+                        return true;
+                    }
+
+                    // Then expand children under it
+                    bool wasExpanded = _objectsTreeView.IsExpanded(node);
+
+                    if (!wasExpanded)
+                        _objectsTreeView.Expand(node);
+
                     if (node.Children != null && search(node.Children))
                         return true;
 
-                    var id = node.UUID;
-                    if (id != null && id == objectId)
-                    {
-                        tvMain.SelectObject(node, true);
-                        tvMain.SelectedItem?.EnsureVisible();
-                        return true;
-                    }
+                    if (!wasExpanded)
+                        _objectsTreeView.Collapse(node);
                 }
+
                 return false;
             }
 
-            search(tvMain.Objects.Cast<TreeObjectNode>());
+            return search(_objectsTreeView.Objects.Cast<TreeObjectNode>());
+        }
+
+        private bool SelectNodeByGUID(BaseGGUUID objectGUID)
+        {
+            return SelectNode((node) => node.UUID != null && node.UUID == objectGUID);
+        }
+
+        private bool SelectNodeByObject(object obj)
+        {
+            return SelectNode((node) => ReferenceEquals(node, obj));
         }
 
         private BaseRef GetSelectedRef()
         {
-            if (tvData?.SelectedObject is TreeDataNode selected)
+            if (_membersTreeView.SelectedObject is TreeDataNode selected)
             {
                 if (selected.Value is BaseRef cr)
                     return cr;
+
                 if (selected.ParentObject is BaseRef pr)
                     return pr;
             }
@@ -434,26 +457,26 @@ namespace HZDCoreEditorUI.UI
 
         private void FormCoreView_MouseDown(object sender, MouseEventArgs e)
         {
+            IgnoreUndo = true;
+
             if (e.Button == MouseButtons.XButton1)
             {
-                IgnoreUndo = true;
                 if (UndoPosition > 0)
                 {
                     UndoPosition--;
-                    tvMain.SelectObject(UndoLog[UndoPosition], true);
+                    SelectNodeByObject(UndoLog[UndoPosition]);
                 }
-                IgnoreUndo = false;
             }
             else if (e.Button == MouseButtons.XButton2)
             {
-                IgnoreUndo = true;
                 if (UndoPosition < UndoLog.Count - 1)
                 {
                     UndoPosition++;
-                    tvMain.SelectObject(UndoLog[UndoPosition], true);
+                    SelectNodeByObject(UndoLog[UndoPosition]);
                 }
-                IgnoreUndo = false;
             }
+
+            IgnoreUndo = false;
         }
 
         public void BindMouseEvents(Control control)
@@ -461,9 +484,7 @@ namespace HZDCoreEditorUI.UI
             control.MouseDown += FormCoreView_MouseDown;
 
             foreach (Control c in control.Controls)
-            {
                 BindMouseEvents(c);
-            }
         }
 
         private void txtNotes_TextChanged(object sender, EventArgs e)
@@ -479,7 +500,7 @@ namespace HZDCoreEditorUI.UI
         {
             _notesTimer.Stop();
 
-            var obj = (tvMain.SelectedObject as TreeObjectNode)?.UnderlyingObject as RTTIRefObject;
+            var obj = (_objectsTreeView.SelectedObject as TreeObjectNode)?.UnderlyingObject as RTTIRefObject;
             if (obj == null)
                 return;
 
@@ -632,8 +653,8 @@ namespace HZDCoreEditorUI.UI
 
         private void expandAllTreesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            tvMain.ExpandAll();
-            tvData.ExpandAll();
+            _objectsTreeView.ExpandAll();
+            _membersTreeView.ExpandAll();
         }
     }
 }
