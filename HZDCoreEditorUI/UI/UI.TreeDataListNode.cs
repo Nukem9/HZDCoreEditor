@@ -108,12 +108,12 @@ namespace HZDCoreEditorUI.UI
             }
         }
 
-        private IList GetList()
+        public IList GetList()
         {
             return _memberFieldHandle.GetValue<IList>(ParentObject);
         }
 
-        private int GetListLength()
+        public int GetListLength()
         {
             return GetList()?.Count ?? 0;
         }

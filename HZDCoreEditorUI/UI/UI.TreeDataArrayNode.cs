@@ -106,12 +106,12 @@ namespace HZDCoreEditorUI.UI
             }
         }
 
-        private Array GetArray()
+        public Array GetArray()
         {
             return _memberFieldHandle.GetValue<Array>(ParentObject);
         }
 
-        private int GetArrayLength()
+        public int GetArrayLength()
         {
             return GetArray()?.Length ?? 0;
         }

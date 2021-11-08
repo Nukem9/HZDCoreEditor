@@ -95,6 +95,29 @@ namespace HZDCoreEditorUI.UI
 
         private void TvData_CellRightClick(object sender, BrightIdeasSoftware.CellRightClickEventArgs e)
         {
+            // "Export Array..."
+            byte[] asBytes = null;
+
+            if (e.Model is TreeDataListNode listNode)
+            {
+                if (listNode.GetList() is List<byte> list)
+                    asBytes = list.ToArray();
+            }
+            else if (e.Model is TreeDataArrayNode arrayNode)
+            {
+                if (arrayNode.GetArray() is byte[] bytes)
+                    asBytes = bytes;
+            }
+
+            if (asBytes != null)
+            {
+                var exportArray = new ToolStripMenuItem();
+                exportArray.Text = "Export Array...";
+                exportArray.Click += (o, e) => ExportByteArray(asBytes);
+                e.MenuStrip.Items.Insert(0, exportArray);
+            }
+
+            // "Follow Reference"
             if (GetSelectedRef() != null)
             {
                 e.MenuStrip.Items.Insert(0, new ToolStripSeparator());
@@ -104,6 +127,18 @@ namespace HZDCoreEditorUI.UI
                 menuItem.Click += tsmFollow_Click;
                 e.MenuStrip.Items.Insert(0, menuItem);
             }
+        }
+
+        private void ExportByteArray(byte[] data)
+        {
+            var sfd = new SaveFileDialog
+            {
+                Filter = "Raw data (*.*)|*.*",
+                FileName = "array.dat",
+            };
+
+            if (sfd.ShowDialog() == DialogResult.OK)
+                File.WriteAllBytes(sfd.FileName, data);
         }
 
         private void OpenFile()
