@@ -2,6 +2,7 @@
 using HZDCoreEditorUI.Util;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace HZDCoreEditorUI.UI
 {
@@ -14,6 +15,7 @@ namespace HZDCoreEditorUI.UI
         {
             CanExpandGetter = CanExpandGetterHandler;
             ChildrenGetter = ChildrenGetterHandler;
+            CellRightClick += CellRightClickHandler;
 
             // Columns are hardcoded. Keep them cached in case the view needs to be reset.
             _defaultColumns = new OLVColumn[3];
@@ -80,6 +82,25 @@ namespace HZDCoreEditorUI.UI
         private static IEnumerable<TreeObjectNode> ChildrenGetterHandler(object model)
         {
             return (model as TreeObjectNode).Children;
+        }
+
+        private void CellRightClickHandler(object sender, CellRightClickEventArgs e)
+        {
+            var contextMenu = new ContextMenuStrip();
+            contextMenu.SuspendLayout();
+
+            var expandAllItem = new ToolStripMenuItem();
+            expandAllItem.Text = "Expand All Rows";
+            expandAllItem.Click += (o, e) => ExpandAll();
+            contextMenu.Items.Add(expandAllItem);
+
+            var collapseAllItem = new ToolStripMenuItem();
+            collapseAllItem.Text = "Collapse All Rows";
+            collapseAllItem.Click += (o, e) => CollapseAll();
+            contextMenu.Items.Add(collapseAllItem);
+
+            contextMenu.ResumeLayout();
+            e.MenuStrip = contextMenu;
         }
     }
 }
