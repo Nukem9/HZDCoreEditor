@@ -18,5 +18,7 @@ namespace Decima
                 _ => throw new NotImplementedException(),
             };
         }
+
+        public abstract uint ResourceSize();
     }
 }

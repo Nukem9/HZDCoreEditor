@@ -6,8 +6,8 @@ namespace Decima.HZD
 {
     public class StreamHandle : BaseStreamHandle
     {
-        public ulong Unknown1;
-        public ulong Unknown2;
+        public ulong ResourceOffset;
+        public ulong ResourceLength;
 
         public override void ToData(BinaryWriter writer)
         {
@@ -16,22 +16,27 @@ namespace Decima.HZD
             if (ResourcePath.Length > 0)
                 writer.Write(Encoding.UTF8.GetBytes(ResourcePath));
 
-            writer.Write(Unknown1);
-            writer.Write(Unknown2);
+            writer.Write(ResourceOffset);
+            writer.Write(ResourceLength);
         }
 
         public static StreamHandle FromData(BinaryReader reader)
         {
-            var x = new StreamHandle();
+            var handle = new StreamHandle();
             uint stringLength = reader.ReadUInt32();
 
             if (stringLength > 0)
-                x.ResourcePath = Encoding.UTF8.GetString(reader.ReadBytesStrict(stringLength));
+                handle.ResourcePath = Encoding.UTF8.GetString(reader.ReadBytesStrict(stringLength));
 
-            x.Unknown1 = reader.ReadUInt64();
-            x.Unknown2 = reader.ReadUInt64();
+            handle.ResourceOffset = reader.ReadUInt64();
+            handle.ResourceLength = reader.ReadUInt64();
 
-            return x;
+            return handle;
+        }
+
+        public override uint ResourceSize()
+        {
+            return (uint)ResourceLength;
         }
     }
 }

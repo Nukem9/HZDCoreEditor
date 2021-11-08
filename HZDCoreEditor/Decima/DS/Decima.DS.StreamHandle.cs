@@ -1,4 +1,5 @@
 ﻿using HZDCoreEditor.Util;
+using System;
 using System.IO;
 using System.Text;
 
@@ -26,18 +27,23 @@ namespace Decima.DS
 
         public static StreamHandle FromData(BinaryReader reader)
         {
-            var x = new StreamHandle();
+            var handle = new StreamHandle();
             uint stringLength = reader.ReadUInt32();
 
             if (stringLength > 0)
-                x.ResourcePath = Encoding.UTF8.GetString(reader.ReadBytesStrict(stringLength));
+                handle.ResourcePath = Encoding.UTF8.GetString(reader.ReadBytesStrict(stringLength));
 
-            x.ResourceUUID = BaseGGUUID.FromData(reader);
-            x.Unknown1 = reader.ReadUInt32();
-            x.Unknown2 = reader.ReadUInt32();
-            x.Unknown3 = reader.ReadUInt32();
+            handle.ResourceUUID = BaseGGUUID.FromData(reader);
+            handle.Unknown1 = reader.ReadUInt32();
+            handle.Unknown2 = reader.ReadUInt32();
+            handle.Unknown3 = reader.ReadUInt32();
 
-            return x;
+            return handle;
+        }
+
+        public override uint ResourceSize()
+        {
+            throw new NotImplementedException("Fields haven't been decoded yet");
         }
     }
 }
