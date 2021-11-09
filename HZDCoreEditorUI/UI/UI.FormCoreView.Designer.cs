@@ -110,7 +110,7 @@ namespace HZDCoreEditorUI.UI
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlMain.Location = new System.Drawing.Point(0, 29);
             this.pnlMain.Name = "pnlMain";
-            this.pnlMain.Size = new System.Drawing.Size(744, 814);
+            this.pnlMain.Size = new System.Drawing.Size(744, 785);
             this.pnlMain.TabIndex = 1;
             // 
             // txtNotes
@@ -129,7 +129,7 @@ namespace HZDCoreEditorUI.UI
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlData.Location = new System.Drawing.Point(0, 29);
             this.pnlData.Name = "pnlData";
-            this.pnlData.Size = new System.Drawing.Size(1024, 814);
+            this.pnlData.Size = new System.Drawing.Size(1024, 785);
             this.pnlData.TabIndex = 0;
             // 
             // txtType
