@@ -123,26 +123,10 @@
 
         private void FormCoreView_MouseDown(object sender, MouseEventArgs e)
         {
-            _ignoreUndo = true;
-
             if (e.Button == MouseButtons.XButton1)
-            {
-                if (_undoPosition > 0)
-                {
-                    _undoPosition--;
-                    SelectNodeByObject(_undoLog[_undoPosition]);
-                }
-            }
+                goToPreviousSelectionToolStripMenuItem.PerformClick();
             else if (e.Button == MouseButtons.XButton2)
-            {
-                if (_undoPosition < _undoLog.Count - 1)
-                {
-                    _undoPosition++;
-                    SelectNodeByObject(_undoLog[_undoPosition]);
-                }
-            }
-
-            _ignoreUndo = false;
+                goToNextSelectionToolStripMenuItem.PerformClick();
         }
 
         private void TxtSearch_KeyDown(object sender, KeyEventArgs e)
@@ -181,7 +165,7 @@
                     _objectsTreeView.Expand(node);
                     if (SearchNode(node))
                     {
-                        AddUndo();
+                        AddUndoEntry(_objectsTreeView.SelectedObject);
                         _objectsTreeView.SelectedItem?.EnsureVisible();
                         return;
                     }
@@ -311,12 +295,28 @@
 
         private void GoToPreviousSelectionToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            _ignoreUndo = true;
+
+            if (_undoPosition > 0)
+            {
+                _undoPosition--;
+                SelectNodeByObject(_undoLog[_undoPosition]);
+            }
+
+            _ignoreUndo = false;
         }
 
         private void GoToNextSelectionToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            _ignoreUndo = true;
+
+            if (_undoPosition < _undoLog.Count - 1)
+            {
+                _undoPosition++;
+                SelectNodeByObject(_undoLog[_undoPosition]);
+            }
+
+            _ignoreUndo = false;
         }
 
         private void ExpandAllTreesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -345,7 +345,7 @@
             {
                 var exportArray = new ToolStripMenuItem();
                 exportArray.Text = "Export Array...";
-                exportArray.Click += (o, e) => ExportByteArray(asBytes);
+                exportArray.Click += (o, e) => ExportByteArrayToFile(asBytes);
                 e.MenuStrip.Items.Insert(0, exportArray);
             }
 
@@ -361,27 +361,28 @@
             }
         }
 
-        private void ObjectsTreeView_ItemSelected(object sender, EventArgs e)
+        private void ObjectsTreeView_ItemSelected(object sender, ListViewItemSelectionChangedEventArgs e)
         {
-            var underlying = (_objectsTreeView.SelectedObject as TreeObjectNode)?.UnderlyingObject;
+            var selectedNode = ((BrightIdeasSoftware.TreeListView)sender).SelectedObject as TreeObjectNode;
+            var targetObject = selectedNode?.UnderlyingObject;
 
             // Ignore spurious selection changes
-            if (_lastSelectedObject == underlying)
+            if (_lastSelectedObject == targetObject)
                 return;
 
-            _lastSelectedObject = underlying;
+            _lastSelectedObject = targetObject;
 
-            if (underlying != null)
+            if (targetObject != null)
             {
                 if (!_ignoreUndo)
-                    AddUndo();
+                    AddUndoEntry(selectedNode);
 
-                _membersTreeView.RebuildTreeFromObject(underlying);
-                txtType.Text = underlying.GetType().GetFriendlyName();
+                _membersTreeView.RebuildTreeFromObject(targetObject);
+                txtType.Text = selectedNode.TypeName;
 
                 _saveNotes = false;
 
-                if (underlying is RTTIRefObject obj && _notes.TryGetValue((txtFile.Text, obj.ObjectUUID?.ToString()), out var note))
+                if (targetObject is RTTIRefObject obj && _notes.TryGetValue((txtFile.Text, obj.ObjectUUID?.ToString()), out var note))
                     txtNotes.Text = note.Note;
                 else
                     txtNotes.Text = string.Empty;
@@ -390,7 +391,37 @@
             }
         }
 
-        private void ExportByteArray(byte[] data)
+        private void NotesTimer_Tick(object sender, EventArgs e)
+        {
+            _notesTimer.Stop();
+
+            var obj = (_objectsTreeView.SelectedObject as TreeObjectNode)?.UnderlyingObject as RTTIRefObject;
+            if (obj == null)
+                return;
+
+            _notes[(txtFile.Text, obj.ObjectUUID?.ToString())] = (txtNotes.Text, DateTime.Now);
+
+            var updated = LoadNotes();
+            if (updated != null)
+            {
+                foreach (var newNote in updated)
+                {
+                    if (_notes.TryGetValue(newNote.Key, out var note))
+                    {
+                        if (newNote.Value.Item2 > note.Date)
+                            _notes[newNote.Key] = newNote.Value;
+                    }
+                    else
+                    {
+                        _notes.Add(newNote.Key, newNote.Value);
+                    }
+                }
+            }
+
+            SaveNotes();
+        }
+
+        private void ExportByteArrayToFile(byte[] data)
         {
             var sfd = new SaveFileDialog
             {
@@ -444,13 +475,15 @@
             _membersTreeView.ClearObjects();
         }
 
-        private void AddUndo()
+        private void AddUndoEntry(object obj)
         {
             if (_undoLog.Count - (_undoPosition + 1) > 0)
                 _undoLog.RemoveRange(_undoPosition + 1, _undoLog.Count - (_undoPosition + 1));
+
             if (_undoLog.Count > 0)
                 _undoPosition++;
-            _undoLog.Add(_objectsTreeView.SelectedObject);
+
+            _undoLog.Add(obj);
         }
 
         private bool SearchNode(TreeObjectNode node)
@@ -469,14 +502,11 @@
             if (node.UnderlyingObject != null)
             {
                 _objectsTreeView.SelectObject(node, true);
-                _membersTreeView.RebuildTreeFromObject(node.UnderlyingObject);
 
-                foreach (var dNode in _membersTreeView.Objects.Cast<TreeDataNode>())
+                foreach (var dataNode in _membersTreeView.Objects.Cast<TreeDataNode>())
                 {
-                    if (SearchDataNode(dNode))
-                    {
+                    if (SearchDataNode(dataNode))
                         return true;
-                    }
                 }
             }
 
@@ -490,9 +520,7 @@
                 foreach (var subNode in node.Children)
                 {
                     if (SearchDataNode(subNode))
-                    {
                         return true;
-                    }
                 }
             }
 
@@ -513,7 +541,7 @@
 
             if (node.Value?.ToString().Contains(txtSearch.Text, StringComparison.OrdinalIgnoreCase) == true)
             {
-                var parents = GetParents(_membersTreeView.Objects.Cast<TreeDataNode>(), node);
+                var parents = GetNodeParents(_membersTreeView.Objects.Cast<TreeDataNode>(), node);
                 var nodeParent = parents.LastOrDefault();
                 if (nodeParent?.Value?.ToString().StartsWith("Ref<") != true)
                 {
@@ -529,14 +557,17 @@
             return false;
         }
 
-        private List<TreeDataNode> GetParents(IEnumerable<TreeDataNode> roots, TreeDataNode node)
+        private List<TreeDataNode> GetNodeParents(IEnumerable<TreeDataNode> roots, TreeDataNode node)
         {
             var parents = new List<TreeDataNode>();
+
             foreach (var root in roots)
             {
                 if (FindNodeParents(parents, root, node))
                 {
-                    if (parents.Any()) parents.Add(root);
+                    if (parents.Any())
+                        parents.Add(root);
+
                     break;
                 }
             }
@@ -562,7 +593,7 @@
             return ReferenceEquals(searchNode, curNode);
         }
 
-        private bool SelectNode(Predicate<TreeObjectNode> selector)
+        private bool SelectNodeByPredicate(Predicate<TreeObjectNode> selector)
         {
             bool Search(IEnumerable<TreeObjectNode> nodes)
             {
@@ -597,12 +628,12 @@
 
         private bool SelectNodeByGUID(BaseGGUUID objectGUID)
         {
-            return SelectNode((node) => node.UUID != null && node.UUID == objectGUID);
+            return SelectNodeByPredicate((node) => node.UUID != null && node.UUID == objectGUID);
         }
 
         private bool SelectNodeByObject(object obj)
         {
-            return SelectNode((node) => ReferenceEquals(node, obj));
+            return SelectNodeByPredicate((node) => ReferenceEquals(node, obj));
         }
 
         private BaseRef GetSelectedRef()
@@ -625,36 +656,6 @@
 
             foreach (Control c in control.Controls)
                 BindMouseEvents(c);
-        }
-
-        private void NotesTimer_Tick(object sender, EventArgs e)
-        {
-            _notesTimer.Stop();
-
-            var obj = (_objectsTreeView.SelectedObject as TreeObjectNode)?.UnderlyingObject as RTTIRefObject;
-            if (obj == null)
-                return;
-
-            _notes[(txtFile.Text, obj.ObjectUUID?.ToString())] = (txtNotes.Text, DateTime.Now);
-
-            var updated = LoadNotes();
-            if (updated != null)
-            {
-                foreach (var newNote in updated)
-                {
-                    if (_notes.TryGetValue(newNote.Key, out var note))
-                    {
-                        if (newNote.Value.Item2 > note.Date)
-                            _notes[newNote.Key] = newNote.Value;
-                    }
-                    else
-                    {
-                        _notes.Add(newNote.Key, newNote.Value);
-                    }
-                }
-            }
-
-            SaveNotes();
         }
 
         private void SaveNotes()

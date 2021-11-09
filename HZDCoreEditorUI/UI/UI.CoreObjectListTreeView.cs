@@ -8,7 +8,6 @@
 
     public class CoreObjectListTreeView : TreeListView
     {
-        private readonly List<TreeDataNode> _children = new List<TreeDataNode>();
         private readonly OLVColumn[] _defaultColumns;
 
         public CoreObjectListTreeView()
