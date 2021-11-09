@@ -1,33 +1,32 @@
-﻿namespace HZDCoreEditorUI.Util
+﻿namespace HZDCoreEditorUI.Util;
+
+using System;
+
+internal static class ReflectionUtil
 {
-    using System;
-
-    internal static class ReflectionUtil
+    public static bool Inherits(this Type objectType, Type baseType)
     {
-        public static bool Inherits(this Type objectType, Type baseType)
+        while (objectType != null)
         {
-            while (objectType != null)
-            {
-                if (objectType == baseType)
-                    return true;
+            if (objectType == baseType)
+                return true;
 
-                objectType = objectType.BaseType;
-            }
-
-            return false;
+            objectType = objectType.BaseType;
         }
 
-        public static bool InheritsGeneric(this Type objectType, Type genericType)
+        return false;
+    }
+
+    public static bool InheritsGeneric(this Type objectType, Type genericType)
+    {
+        while (objectType != null)
         {
-            while (objectType != null)
-            {
-                if (objectType.IsGenericType && objectType.GetGenericTypeDefinition() == genericType)
-                    return true;
+            if (objectType.IsGenericType && objectType.GetGenericTypeDefinition() == genericType)
+                return true;
 
-                objectType = objectType.BaseType;
-            }
-
-            return false;
+            objectType = objectType.BaseType;
         }
+
+        return false;
     }
 }

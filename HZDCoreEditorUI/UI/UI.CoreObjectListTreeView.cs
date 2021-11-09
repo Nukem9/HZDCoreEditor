@@ -1,105 +1,104 @@
-﻿namespace HZDCoreEditorUI.UI
+﻿namespace HZDCoreEditorUI.UI;
+
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
+using BrightIdeasSoftware;
+using HZDCoreEditorUI.Util;
+
+public class CoreObjectListTreeView : TreeListView
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Windows.Forms;
-    using BrightIdeasSoftware;
-    using HZDCoreEditorUI.Util;
+    private readonly OLVColumn[] _defaultColumns;
 
-    public class CoreObjectListTreeView : TreeListView
+    public CoreObjectListTreeView()
     {
-        private readonly OLVColumn[] _defaultColumns;
+        CanExpandGetter = CanExpandGetterHandler;
+        ChildrenGetter = ChildrenGetterHandler;
+        CellRightClick += CellRightClickHandler;
 
-        public CoreObjectListTreeView()
+        // Columns are hardcoded. Keep them cached in case the view needs to be reset.
+        _defaultColumns = new OLVColumn[3];
+
+        _defaultColumns[0] = new OLVColumn("Object", nameof(TreeObjectNode.TypeName))
         {
-            CanExpandGetter = CanExpandGetterHandler;
-            ChildrenGetter = ChildrenGetterHandler;
-            CellRightClick += CellRightClickHandler;
+            Width = 200,
+            IsEditable = false,
+        };
 
-            // Columns are hardcoded. Keep them cached in case the view needs to be reset.
-            _defaultColumns = new OLVColumn[3];
-
-            _defaultColumns[0] = new OLVColumn("Object", nameof(TreeObjectNode.TypeName))
-            {
-                Width = 200,
-                IsEditable = false,
-            };
-
-            _defaultColumns[1] = new OLVColumn("Name", nameof(TreeObjectNode.Name))
-            {
-                Width = 200,
-                IsEditable = false,
-            };
-
-            _defaultColumns[2] = new OLVColumn("UUID", nameof(TreeObjectNode.UUID))
-            {
-                Width = 300,
-                IsEditable = false,
-            };
-
-            CreateColumns();
-        }
-
-        public void RebuildTreeFromObjects(List<object> baseObjects)
+        _defaultColumns[1] = new OLVColumn("Name", nameof(TreeObjectNode.Name))
         {
-            // Sort object list into each category based on the type name
-            var categorizedObjects = new Dictionary<string, List<object>>();
+            Width = 200,
+            IsEditable = false,
+        };
 
-            foreach (var obj in baseObjects)
+        _defaultColumns[2] = new OLVColumn("UUID", nameof(TreeObjectNode.UUID))
+        {
+            Width = 300,
+            IsEditable = false,
+        };
+
+        CreateColumns();
+    }
+
+    public void RebuildTreeFromObjects(List<object> baseObjects)
+    {
+        // Sort object list into each category based on the type name
+        var categorizedObjects = new Dictionary<string, List<object>>();
+
+        foreach (var obj in baseObjects)
+        {
+            string typeString = obj.GetType().GetFriendlyName();
+
+            if (!categorizedObjects.TryGetValue(typeString, out List<object> categoryList))
             {
-                string typeString = obj.GetType().GetFriendlyName();
-
-                if (!categorizedObjects.TryGetValue(typeString, out List<object> categoryList))
-                {
-                    categoryList = new List<object>();
-                    categorizedObjects.Add(typeString, categoryList);
-                }
-
-                categoryList.Add(obj);
+                categoryList = new List<object>();
+                categorizedObjects.Add(typeString, categoryList);
             }
 
-            // Register list view categories
-            var treeViewRoots = new List<TreeObjectNode>();
-
-            foreach (string key in categorizedObjects.Keys.OrderBy(x => x))
-                treeViewRoots.Add(new TreeObjectNode(key, categorizedObjects[key]));
-
-            Roots = treeViewRoots;
+            categoryList.Add(obj);
         }
 
-        private void CreateColumns()
-        {
-            AllColumns.AddRange(_defaultColumns);
-            RebuildColumns();
-        }
+        // Register list view categories
+        var treeViewRoots = new List<TreeObjectNode>();
 
-        private bool CanExpandGetterHandler(object model)
-        {
-            return (model as TreeObjectNode).Children != null;
-        }
+        foreach (string key in categorizedObjects.Keys.OrderBy(x => x))
+            treeViewRoots.Add(new TreeObjectNode(key, categorizedObjects[key]));
 
-        private IEnumerable<TreeObjectNode> ChildrenGetterHandler(object model)
-        {
-            return (model as TreeObjectNode).Children;
-        }
+        Roots = treeViewRoots;
+    }
 
-        private void CellRightClickHandler(object sender, CellRightClickEventArgs e)
-        {
-            var contextMenu = new ContextMenuStrip();
-            contextMenu.SuspendLayout();
+    private void CreateColumns()
+    {
+        AllColumns.AddRange(_defaultColumns);
+        RebuildColumns();
+    }
 
-            var expandAllItem = new ToolStripMenuItem();
-            expandAllItem.Text = "Expand All Rows";
-            expandAllItem.Click += (o, e) => ExpandAll();
-            contextMenu.Items.Add(expandAllItem);
+    private bool CanExpandGetterHandler(object model)
+    {
+        return (model as TreeObjectNode).Children != null;
+    }
 
-            var collapseAllItem = new ToolStripMenuItem();
-            collapseAllItem.Text = "Collapse All Rows";
-            collapseAllItem.Click += (o, e) => CollapseAll();
-            contextMenu.Items.Add(collapseAllItem);
+    private IEnumerable<TreeObjectNode> ChildrenGetterHandler(object model)
+    {
+        return (model as TreeObjectNode).Children;
+    }
 
-            contextMenu.ResumeLayout();
-            e.MenuStrip = contextMenu;
-        }
+    private void CellRightClickHandler(object sender, CellRightClickEventArgs e)
+    {
+        var contextMenu = new ContextMenuStrip();
+        contextMenu.SuspendLayout();
+
+        var expandAllItem = new ToolStripMenuItem();
+        expandAllItem.Text = "Expand All Rows";
+        expandAllItem.Click += (o, e) => ExpandAll();
+        contextMenu.Items.Add(expandAllItem);
+
+        var collapseAllItem = new ToolStripMenuItem();
+        collapseAllItem.Text = "Collapse All Rows";
+        collapseAllItem.Click += (o, e) => CollapseAll();
+        contextMenu.Items.Add(collapseAllItem);
+
+        contextMenu.ResumeLayout();
+        e.MenuStrip = contextMenu;
     }
 }
