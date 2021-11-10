@@ -61,6 +61,7 @@ namespace HZDCoreEditorUI.UI
             this.goToNextSelectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.expandAllTreesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnSearchFirst = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
@@ -149,7 +150,7 @@ namespace HZDCoreEditorUI.UI
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(100, 23);
             this.btnSearch.TabIndex = 2;
-            this.btnSearch.Text = "Search";
+            this.btnSearch.Text = "Find Next";
             this.btnSearch.UseVisualStyleBackColor = true;
             this.btnSearch.Click += new System.EventHandler(this.BtnSearch_Click);
             // 
@@ -164,11 +165,11 @@ namespace HZDCoreEditorUI.UI
             // 
             // btnSearchAll
             // 
-            this.btnSearchAll.Location = new System.Drawing.Point(527, 27);
+            this.btnSearchAll.Location = new System.Drawing.Point(633, 27);
             this.btnSearchAll.Name = "btnSearchAll";
             this.btnSearchAll.Size = new System.Drawing.Size(100, 23);
             this.btnSearchAll.TabIndex = 7;
-            this.btnSearchAll.Text = "Search All";
+            this.btnSearchAll.Text = "Open Search All";
             this.btnSearchAll.UseVisualStyleBackColor = true;
             this.btnSearchAll.Click += new System.EventHandler(this.BtnSearchAll_Click);
             // 
@@ -310,12 +311,23 @@ namespace HZDCoreEditorUI.UI
             this.expandAllTreesToolStripMenuItem.Text = "Expand All Trees";
             this.expandAllTreesToolStripMenuItem.Click += new System.EventHandler(this.ExpandAllTreesToolStripMenuItem_Click);
             // 
+            // btnSearchFirst
+            // 
+            this.btnSearchFirst.Location = new System.Drawing.Point(527, 27);
+            this.btnSearchFirst.Name = "btnSearchFirst";
+            this.btnSearchFirst.Size = new System.Drawing.Size(100, 23);
+            this.btnSearchFirst.TabIndex = 9;
+            this.btnSearchFirst.Text = "Find First";
+            this.btnSearchFirst.UseVisualStyleBackColor = true;
+            this.btnSearchFirst.Click += new System.EventHandler(this.BtnSearchFirst_Click);
+            // 
             // FormCoreView
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1784, 877);
+            this.Controls.Add(this.btnSearchFirst);
             this.Controls.Add(this.mainMenuStrip);
             this.Controls.Add(this.btnSearchAll);
             this.Controls.Add(this.txtSearch);
@@ -370,5 +382,6 @@ namespace HZDCoreEditorUI.UI
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem expandAllTreesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveAsArchiveToolStripMenuItem;
+        private System.Windows.Forms.Button btnSearchFirst;
     }
 }

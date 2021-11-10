@@ -34,10 +34,6 @@ public partial class FormCoreView : Form
     private Dictionary<(string Path, string Id), (string Note, DateTime Date)> _notes;
     private bool _saveNotes = true;
 
-    private int _searchNext = -1;
-    private int _searchIndex = -1;
-    private string _searchLast = null;
-
     public FormCoreView(Program.CmdOptions options)
     {
         _cmdOptions = options;
@@ -151,32 +147,32 @@ public partial class FormCoreView : Form
 
     private void BtnSearch_Click(object sender, EventArgs e)
     {
-        try
-        {
-            _ignoreUndo = true;
-            _searchIndex = 0;
-            if (_searchLast != txtSearch.Text)
-                _searchNext = -1;
-            _searchLast = txtSearch.Text;
+        _ignoreUndo = true;
 
-            foreach (var node in _objectsTreeView.Objects.Cast<TreeObjectNode>())
-            {
-                _objectsTreeView.Expand(node);
-                if (SearchNode(node))
-                {
-                    AddUndoEntry(_objectsTreeView.SelectedObject);
-                    _objectsTreeView.SelectedItem?.EnsureVisible();
-                    return;
-                }
-            }
+        // Pick the initial list item to start with, which is usually what the user has selected. If there's
+        // no selection, start with element 0. If there's no items, bail.
+        var startObjectNode = _objectsTreeView.SelectedObject as TreeObjectNode;
+        var startDataNode = _membersTreeView.SelectedObject as TreeDataNode;
 
-            _searchNext = -1;
-            MessageBox.Show("No more entries found");
-        }
-        finally
+        if (SearchForObjectNode(startObjectNode, startDataNode, txtSearch.Text))
         {
-            _ignoreUndo = false;
+            AddUndoEntry(_objectsTreeView.SelectedObject);
+            _objectsTreeView.SelectedItem?.EnsureVisible();
+            _membersTreeView.SelectedItem?.EnsureVisible();
         }
+        else
+        {
+            MessageBox.Show("No entries were found.");
+        }
+
+        _ignoreUndo = false;
+    }
+
+    private void BtnSearchFirst_Click(object sender, EventArgs e)
+    {
+        _objectsTreeView.DeselectAll();
+        _membersTreeView.DeselectAll();
+        btnSearch.PerformClick();
     }
 
     private void BtnSearchAll_Click(object sender, EventArgs e)
@@ -434,7 +430,6 @@ public partial class FormCoreView : Form
 
     private void OpenFile()
     {
-        _searchLast = null;
         var ofd = new OpenFileDialog();
 
         if (!string.IsNullOrEmpty(_loadedFilePath))
@@ -485,72 +480,102 @@ public partial class FormCoreView : Form
         _undoLog.Add(obj);
     }
 
-    private bool SearchNode(TreeObjectNode node)
+    private bool SearchForObjectNode(TreeObjectNode previousObjectNode, TreeDataNode previousDataNode, string searchText)
     {
-        if (node.Children != null)
-        {
-            foreach (var subNode in node.Children)
-            {
-                _objectsTreeView.Expand(subNode);
+        bool targetNodeHit = previousObjectNode == null;
 
-                if (SearchNode(subNode))
+        foreach (var node in _objectsTreeView.Objects.Cast<TreeObjectNode>())
+        {
+            HitTest(node);
+
+            foreach (var childNode in node.Children)
+            {
+                if (Search(childNode))
                     return true;
             }
         }
 
-        if (node.UnderlyingObject != null)
+        bool Search(TreeObjectNode node)
         {
-            _objectsTreeView.SelectObject(node, true);
+            HitTest(node);
 
-            foreach (var dataNode in _membersTreeView.Objects.Cast<TreeDataNode>())
+            // Expand child nodes from categories
+            if (node.Children != null)
+                throw new NotImplementedException("Nested search of object list was unexpected.");
+
+            // Then check contained objects
+            if (targetNodeHit && node.UnderlyingObject != null)
             {
-                if (SearchDataNode(dataNode))
+                _objectsTreeView.SelectObject(node, true);
+
+                if (SearchForDataNode(previousDataNode, searchText))
                     return true;
             }
+
+            // This happens if the bottom of the list is hit. Clear the data member node and move on to the next object.
+            if (node == previousObjectNode)
+            {
+                previousDataNode = null;
+                _membersTreeView.DeselectAll();
+            }
+
+            return false;
+        }
+
+        void HitTest(TreeObjectNode node)
+        {
+            if (node == previousObjectNode)
+                targetNodeHit = true;
+
+            _objectsTreeView.Expand(node);
         }
 
         return false;
     }
 
-    private bool SearchDataNode(TreeDataNode node)
+    private bool SearchForDataNode(TreeDataNode previousDataNode, string searchText)
     {
-        if (node.Children != null)
+        bool targetNodeHit = previousDataNode == null;
+
+        foreach (var node in _membersTreeView.Objects.Cast<TreeDataNode>())
         {
-            foreach (var subNode in node.Children)
-            {
-                if (SearchDataNode(subNode))
-                    return true;
-            }
-        }
-
-        if (_searchNext >= 0)
-        {
-            if (_searchIndex >= _searchNext)
-            {
-                _searchNext = -1;
-            }
-            else
-            {
-                _searchIndex++;
-                return false;
-            }
-        }
-
-        _searchIndex++;
-
-        if (node.Value?.ToString().Contains(txtSearch.Text, StringComparison.OrdinalIgnoreCase) == true)
-        {
-            var parents = GetNodeParents(_membersTreeView.Objects.Cast<TreeDataNode>(), node);
-            var nodeParent = parents.LastOrDefault();
-            if (nodeParent?.Value?.ToString().StartsWith("Ref<") != true)
-            {
-                foreach (var p in parents)
-                    _membersTreeView.Expand(p);
-
-                _membersTreeView.SelectObject(node, true);
-                _searchNext = _searchIndex;
+            if (Search(node))
                 return true;
+        }
+
+        bool Search(TreeDataNode node)
+        {
+            if (!targetNodeHit && node == previousDataNode)
+            {
+                // This node needs to be skipped but it might have child nodes that can be searched
+                targetNodeHit = true;
             }
+            else if (targetNodeHit && node.Value?.ToString().Contains(searchText, StringComparison.OrdinalIgnoreCase) == true)
+            {
+                var parents = GetNodeParents(_membersTreeView.Objects.Cast<TreeDataNode>(), node);
+                var nodeParent = parents.LastOrDefault();
+
+                if (nodeParent?.Value?.ToString().StartsWith("Ref<") != true)
+                {
+                    foreach (var p in parents)
+                        _membersTreeView.Expand(p);
+
+                    _membersTreeView.SelectObject(node, true);
+                    return true;
+                }
+            }
+
+            // Expand child nodes
+            if (node.Children != null)
+            {
+                foreach (var subNode in node.Children)
+                {
+                    if (Search(subNode))
+                        return true;
+                }
+            }
+
+            return false;
         }
 
         return false;
