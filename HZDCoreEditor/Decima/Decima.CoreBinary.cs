@@ -125,16 +125,16 @@ namespace Decima
                     entry.ContainedObject = reader.ReadBytes(entry.ChunkSize);
                 }
 
+#if COREFILE_DEBUG
+                if (reader.BaseStream.Position < expectedStreamPos)
+                    System.Diagnostics.Debugger.Log(0, "Warn", $"Short read of a chunk while deserializing object. {reader.BaseStream.Position} < {expectedStreamPos}. TypeId = {entry.TypeId:X16}\n");
+#endif
+
                 // Check for overflows and underflows
                 if (reader.BaseStream.Position > expectedStreamPos)
                     throw new Exception("Read past the end of a chunk while deserializing object");
                 else if (reader.BaseStream.Position < expectedStreamPos)
                     throw new Exception("Short read of a chunk while deserializing object");
-
-#if COREFILE_DEBUG
-                if (reader.BaseStream.Position < expectedStreamPos)
-                    System.Diagnostics.Debugger.Log(0, "Warn", $"Short read of a chunk while deserializing object. {reader.BaseStream.Position} < {expectedStreamPos}. TypeId = {entry.TypeId:X16}\n");
-#endif
 
                 reader.BaseStream.Position = expectedStreamPos;
                 core._entries.Add(entry);

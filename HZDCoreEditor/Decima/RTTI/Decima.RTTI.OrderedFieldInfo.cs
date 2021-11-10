@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace Decima
+﻿namespace Decima
 {
     public static partial class RTTI
     {

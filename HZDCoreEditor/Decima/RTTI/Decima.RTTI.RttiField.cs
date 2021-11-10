@@ -30,7 +30,7 @@ namespace Decima
             public RttiField(PropertyInfo info)
             {
                 if (info.MemberType != MemberTypes.Property)
-                    throw new ArgumentException($"Expecting a Field type only. Got {info.MemberType}", nameof(info));
+                    throw new ArgumentException($"Expecting a Property type only. Got {info.MemberType}", nameof(info));
 
                 MemberInfo = info;
             }
