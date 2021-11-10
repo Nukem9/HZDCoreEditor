@@ -27,7 +27,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HZDCoreEditor\HZDCoreEditor.csproj" />
-    <ProjectReference Include="..\HZDCoreSearch\HZDCoreSearch.csproj" />
   </ItemGroup>
 
   <ItemGroup>

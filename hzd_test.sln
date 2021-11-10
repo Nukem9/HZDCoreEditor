@@ -1,11 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30225.117
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HZDCoreEditor", "HZDCoreEditor\HZDCoreEditor.csproj", "{81B71B4A-C1C6-404A-B220-EE5DCC9F92C9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HZDCoreEditorUI", "HZDCoreEditorUI\HZDCoreEditorUI.csproj", "{C5F0E407-63A5-4D81-8B1F-BD5CC441512F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3FEF5EF1-1BE5-4833-8C08-B9418A0E22F5} = {3FEF5EF1-1BE5-4833-8C08-B9418A0E22F5}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HZDCoreSearch", "HZDCoreSearch\HZDCoreSearch.csproj", "{3FEF5EF1-1BE5-4833-8C08-B9418A0E22F5}"
 EndProject
