@@ -83,7 +83,7 @@ namespace Decima
             {
                 var header = new PackfileHeader();
 
-                Span<byte> xorData = reader.ReadBytes(DataHeaderSize);
+                Span<byte> xorData = reader.ReadBytesStrict(DataHeaderSize);
                 header.Magic = BitConverter.ToUInt32(xorData.Slice(0));     // 0x0
                 header.XorKey = BitConverter.ToUInt32(xorData.Slice(4));    // 0x4
 
