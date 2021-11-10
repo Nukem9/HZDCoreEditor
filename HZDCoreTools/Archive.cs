@@ -1,13 +1,13 @@
-﻿using CommandLine;
-using Decima;
+﻿namespace HZDCoreTools;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
-
-namespace HZDCoreTools;
+using CommandLine;
+using Decima;
 
 public static class Archive
 {
@@ -50,11 +50,11 @@ public static class Archive
         var sourceFiles = Util.GatherFiles(options.InputPath, null, out string _);
         var ignoredFileFilter = string.IsNullOrEmpty(options.IgnoredRegex) ? null : new Regex(options.IgnoredRegex);
 
-        IEnumerable<string> gatherValidFiles()
+        IEnumerable<string> GatherValidFiles()
         {
             foreach ((string absolute, string relative) in sourceFiles)
             {
-                string sanitized = Packfile.SanitizePath(relative, "");
+                string sanitized = Packfile.SanitizePath(relative, string.Empty);
 
                 if (!options.ForceUnsupported)
                 {
@@ -80,7 +80,7 @@ public static class Archive
         }
 
         var packfile = new PackfileWriter(options.OutputPath, false, FileMode.Create);
-        packfile.BuildFromFileList(options.InputPath, gatherValidFiles());
+        packfile.BuildFromFileList(options.InputPath, GatherValidFiles());
     }
 
     public static void ExtractArchive(ExtractArchiveCommand options)
@@ -137,8 +137,8 @@ public static class Archive
                 return;
             }
 
-                // PathIdToFileName or prefetchNames are expected to resolve all names by themselves. Don't do any extra processing here.
-                string diskFilePath = Path.Combine(options.OutputPath, corePath);
+            // PathIdToFileName or prefetchNames are expected to resolve all names by themselves. Don't do any extra processing here.
+            string diskFilePath = Path.Combine(options.OutputPath, corePath);
 
             if (options.Verbose)
                 Console.WriteLine($"Extracting '{corePath}...");

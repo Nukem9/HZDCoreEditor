@@ -1,5 +1,5 @@
-﻿using CommandLine;
-using CommandLine.Text;
+﻿namespace HZDCoreTools;
+
 using Decima;
 using System;
 using System.Collections.Concurrent;
@@ -7,8 +7,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
-
-namespace HZDCoreTools;
+using CommandLine;
+using CommandLine.Text;
 
 public static class Localize
 {
@@ -49,7 +49,7 @@ public static class Localize
                 {
                     InputPath = @"E:\HZD\Packed_DX12\extracted\*.core",
                     Language = Decima.HZD.ELanguage.English,
-                    OutputPath = "ENG_translations.txt"
+                    OutputPath = "ENG_translations.txt",
                 });
 
                 yield return new Example("Export Spanish translations", new ExportLocalizationCommand
@@ -57,7 +57,7 @@ public static class Localize
                     InputPath = @"E:\HZD\Packed_DX12\*.bin",
                     Language = Decima.HZD.ELanguage.Spanish,
                     Delimiter = '*',
-                    OutputPath = "ES_translations.txt"
+                    OutputPath = "ES_translations.txt",
                 });
             }
         }
@@ -101,57 +101,6 @@ public static class Localize
         }
     }
 
-    static IEnumerable<(string corePath, Stream Stream)> CreateFileStreamEnumerator(IEnumerable<(string Absolute, string Relative)> files, bool useRawCoreFiles, Predicate<string> filter = null)
-    {
-        // If no filter is supplied, default to passing everything
-        filter ??= (x => true);
-
-        if (useRawCoreFiles)
-        {
-            // Core files stored on disk
-            foreach (var file in files)
-            {
-                var corePath = Packfile.SanitizePath(file.Relative);
-
-                if (!filter(corePath))
-                    continue;
-
-                yield return (corePath, File.OpenRead(file.Absolute));
-            }
-        }
-        else
-        {
-            // Core files stored in archives
-            using var device = new PackfileDevice();
-
-            foreach (var (archive, relative) in files)
-            {
-                Console.Write($"Mounting {relative}... ");
-
-                if (device.Mount(archive))
-                    Console.WriteLine("Succeeded");
-                else
-                    Console.WriteLine("Failed");
-            }
-
-            foreach (ulong pathId in device.ActiveFiles)
-            {
-                if (!device.PathIdToFileName(pathId, out string corePath))
-                    throw new Exception("Couldn't resolve a pathId to a file name. File enumeration isn't possible.");
-
-                if (!filter(corePath))
-                    continue;
-
-                // TODO: ExtractFile is running on a single thread here. How do I parallelize? Lazy<>?
-                var stream = new MemoryStream();
-                device.ExtractFile(pathId, stream);
-
-                stream.Position = 0;
-                yield return (corePath, stream);
-            }
-        }
-    }
-
     public static void ExportLocalization(ExportLocalizationCommand options)
     {
         var sourceFiles = Util.GatherFiles(options.InputPath, _validExtensions, out string ext);
@@ -164,8 +113,8 @@ public static class Localize
         {
             var coreBinary = CoreBinary.FromData(new BinaryReader(file.Stream));
 
-                // Dump all instances of LocalizedTextResource
-                foreach (var textResource in coreBinary.Objects.OfType<Decima.HZD.LocalizedTextResource>())
+            // Dump all instances of LocalizedTextResource
+            foreach (var textResource in coreBinary.Objects.OfType<Decima.HZD.LocalizedTextResource>())
                 allTextLines.Add(GenerateTranslationEntry(options, textResource, file.corePath));
         });
 
@@ -196,8 +145,8 @@ public static class Localize
                     .OfType<Decima.HZD.LocalizedTextResource>()
                     .Single(x => x.ObjectUUID == translation.ObjectUUID);
 
-                    // Don't patch unmodified lines
-                    if (!options.ForceUpdate)
+                // Don't patch unmodified lines
+                if (!options.ForceUpdate)
                 {
                     if (textResource.GetStringForLanguage(options.Language).Equals(translation.TextData))
                         continue;
@@ -209,8 +158,8 @@ public static class Localize
                 updated = true;
             }
 
-                // Keep track of modified objects
-                if (updated)
+            // Keep track of modified objects
+            if (updated)
             {
                 patchedCores.TryAdd(file.corePath, coreBinary);
                 Console.WriteLine($"Updated {file.corePath}");
@@ -227,7 +176,7 @@ public static class Localize
 
             foreach ((string corePath, CoreBinary core) in patchedCores)
             {
-                var ms = new MemoryStream();// Intentionally avoid using() here
+                var ms = new MemoryStream(); // Intentionally avoid using() here
                 core.ToData(new BinaryWriter(ms));
 
                 ms.Position = 0;
@@ -293,5 +242,54 @@ public static class Localize
         }
 
         return translationData;
+    }
+
+    private static IEnumerable<(string corePath, Stream Stream)> CreateFileStreamEnumerator(IEnumerable<(string Absolute, string Relative)> files, bool useRawCoreFiles, Predicate<string> filter = null)
+    {
+        if (useRawCoreFiles)
+        {
+            // Core files stored on disk
+            foreach (var file in files)
+            {
+                var corePath = Packfile.SanitizePath(file.Relative);
+
+                // If no filter is supplied, default to passing everything
+                if (filter != null && !filter(corePath))
+                    continue;
+
+                yield return (corePath, File.OpenRead(file.Absolute));
+            }
+        }
+        else
+        {
+            // Core files stored in archives
+            using var device = new PackfileDevice();
+
+            foreach (var (archive, relative) in files)
+            {
+                Console.Write($"Mounting {relative}... ");
+
+                if (device.Mount(archive))
+                    Console.WriteLine("Succeeded");
+                else
+                    Console.WriteLine("Failed");
+            }
+
+            foreach (ulong pathId in device.ActiveFiles)
+            {
+                if (!device.PathIdToFileName(pathId, out string corePath))
+                    throw new Exception("Couldn't resolve a pathId to a file name. File enumeration isn't possible.");
+
+                if (filter != null && !filter(corePath))
+                    continue;
+
+                // TODO: ExtractFile is running on a single thread here. How do I parallelize? Lazy<>?
+                var stream = new MemoryStream();
+                device.ExtractFile(pathId, stream);
+
+                stream.Position = 0;
+                yield return (corePath, stream);
+            }
+        }
     }
 }

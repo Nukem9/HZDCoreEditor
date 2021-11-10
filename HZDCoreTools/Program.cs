@@ -1,12 +1,12 @@
-﻿using CommandLine;
-using Decima;
+﻿namespace HZDCoreTools;
+
 using System;
+using CommandLine;
+using Decima;
 
-namespace HZDCoreTools;
-
-class Program
+public class Program
 {
-    static void Main(string[] args)
+    public static void Main(string[] args)
     {
         RTTI.SetGameMode(GameType.HZD);
 

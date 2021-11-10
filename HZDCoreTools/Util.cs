@@ -1,10 +1,10 @@
-﻿using Decima;
+﻿namespace HZDCoreTools;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
-namespace HZDCoreTools;
+using Decima;
 
 public static class Util
 {
