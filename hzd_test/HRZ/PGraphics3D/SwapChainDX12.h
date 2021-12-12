@@ -3,6 +3,8 @@
 #include <d3d12.h>
 #include <dxgi.h>
 
+#include "../../Offsets.h"
+
 #include "../PCore/Common.h"
 
 namespace HRZ
@@ -53,7 +55,7 @@ public:
 
 	bool Present()
 	{
-		return CallID<"SwapChainDX12::Present", bool(*)(SwapChainDX12 *)>(this);
+		return Offsets::CallID<"SwapChainDX12::Present", bool(*)(SwapChainDX12 *)>(this);
 	}
 };
 assert_offset(SwapChainDX12, m_RenderingConfig, 0x0);

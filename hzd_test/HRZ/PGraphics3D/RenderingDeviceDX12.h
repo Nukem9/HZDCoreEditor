@@ -3,6 +3,8 @@
 #include <d3d12.h>
 #include <dxgi.h>
 
+#include "../../Offsets.h"
+
 #include "../PCore/Common.h"
 
 namespace HRZ
@@ -11,8 +13,6 @@ namespace HRZ
 class RenderingDeviceDX12
 {
 public:
-	static inline auto& Instance = *ResolveOffset<RenderingDeviceDX12 *>(0x2D28AA0);
-
 	ID3D12Device *m_Device;
 	IDXGIFactory *m_Factory;
 	IDXGIAdapter *m_Adapter;
@@ -36,6 +36,11 @@ public:
 
 	SharedLock m_CommandListTableLock;
 	Array<ID3D12CommandList *> m_CommandListTable[6];
+
+	static RenderingDeviceDX12& Instance()
+	{
+		return *Offsets::Resolve<RenderingDeviceDX12 *>(0x2D28AA0);
+	}
 };
 assert_offset(RenderingDeviceDX12, m_Device, 0x0);
 assert_offset(RenderingDeviceDX12, m_RawDevice, 0x18);

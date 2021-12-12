@@ -2,6 +2,8 @@
 
 #include <intrin.h>
 
+#include "../../Offsets.h"
+
 #include "../PCore/Common.h"
 
 #include "RTTIObject.h"
@@ -31,7 +33,7 @@ public:
 
 	void DecRef()
 	{
-		CallOffset<0x02F5F00, void(*)(RTTIRefObject *)>(this);
+		Offsets::Call<0x02F5F00, void(*)(RTTIRefObject *)>(this);
 	}
 };
 assert_size(RTTIRefObject, 0x20);

@@ -340,10 +340,7 @@ public:
 			if (auto debugSettings = Application::Instance().m_DebugSettings; debugSettings)
 			{
 				if (ImGui::MenuItem("Enable Damage Logging"))
-				{
-					const static auto addr = g_ModuleBase + 0x1263BA0;
-					((void(__fastcall *)(void *, bool))(addr))(nullptr, true);
-				}
+					Offsets::Call<0x1263BA0, void(*)(void *, bool)>(nullptr, true);
 				ImGui::MenuItem("Enable Player Cover", "", &debugSettings->m_PlayerCoverEnabled);
 				ImGui::MenuItem("Show Debug Coordinates", "", &debugSettings->m_DrawDebugCoordinates);
 				ImGui::MenuItem("Disable Inactivity Check", "", &debugSettings->m_DisableInactivityCheck);

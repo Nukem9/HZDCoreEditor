@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../../Offsets.h"
+
 #include "../PCore/Common.h"
 
 #include "CoreObject.h"
@@ -51,7 +53,7 @@ public:
 
 	void SetWeatherOverride(const WeatherSetup *Setup, float TransitionTime, int Unknown)
 	{
-		CallOffset<0x04EEB50, void(*)(WeatherSystem *, const WeatherSetup *, float, int)>(this, Setup, TransitionTime, Unknown);
+		Offsets::Call<0x04EEB50, void(*)(WeatherSystem *, const WeatherSetup *, float, int)>(this, Setup, TransitionTime, Unknown);
 	}
 };
 assert_offset(WeatherSystem, m_SimulationRenderEffectResource, 0x160);

@@ -76,8 +76,7 @@ void InternalEngineLog(const char *Format, ...)
 
 void PackFileDevice_MountArchive(class PackFileDevice *Device, const String& BinPath, uint32_t Priority)
 {
-	const static auto addr = g_ModuleBase + 0x0147790;
-	((void(__fastcall *)(PackFileDevice *, const String&, uint32_t))(addr))(Device, BinPath, Priority);
+	Offsets::Call<0x0147790, void(*)(PackFileDevice *, const String&, uint32_t)>(Device, BinPath, Priority);
 
 	DebugUI::LogWindow::AddLog("[PackFileDevice] Mounted archive %s with priority %u\n", BinPath.c_str(), Priority);
 }
@@ -100,7 +99,7 @@ void hk_call_1413AB8FC(class CameraEntity *Entity, WorldTransform& Transform)
 	if (DebugUI::MainMenuBar::m_FreeCamMode == DebugUI::MainMenuBar::FreeCamMode::Free)
 		return;
 
-	CallOffset<0x0BB41A0, void(*)(CameraEntity *, WorldTransform&)>(Entity, Transform);
+	Offsets::Call<0x0BB41A0, void(*)(CameraEntity *, WorldTransform&)>(Entity, Transform);
 }
 
 void LoadSignatures()
@@ -119,88 +118,88 @@ void LoadSignatures()
 	else
 		__debugbreak();
 
-	auto scan = [](const char *Signature)
+	auto [moduleBase, moduleEnd] = Offsets::GetModule();
+
+	auto scan = [&](const char *Signature)
 	{
-		return XUtil::FindPattern(g_ModuleBase, g_ModuleSize, Signature);
+		return XUtil::FindPattern(moduleBase, moduleEnd - moduleBase, Signature) - moduleBase;
 	};
 
 	if (g_GameType == GameType::DeathStranding)
 	{
 		strcpy_s(g_GamePrefix, "DS");
 
-		g_OffsetMap["String::String"] = scan("40 53 48 83 EC 20 48 8B D9 48 C7 01 00 00 00 00 49 C7 C0 FF FF FF FF");
-		g_OffsetMap["String::~String"] = scan("40 53 48 83 EC 20 48 8B 19 48 8D 05 ? ? ? ? 48 83 EB 10");
-		g_OffsetMap["RTTI::GetCoreBinaryTypeId"] = scan("4C 8B DC 55 53 56 41 56 49 8D 6B A1 48 81 EC C8 00 00 00");
+		Offsets::MapSignature("String::String", "40 53 48 83 EC 20 48 8B D9 48 C7 01 00 00 00 00 49 C7 C0 FF FF FF FF");
+		Offsets::MapSignature("String::~String", "40 53 48 83 EC 20 48 8B 19 48 8D 05 ? ? ? ? 48 83 EB 10");
+		Offsets::MapSignature("RTTI::GetCoreBinaryTypeId", "4C 8B DC 55 53 56 41 56 49 8D 6B A1 48 81 EC C8 00 00 00");
 
 		// 1.04
-		g_OffsetMap["ExportedSymbolGroupArray"] = g_ModuleBase + 0x4870440;
+		Offsets::MapAddress("ExportedSymbolGroupArray", 0x4870440);
 	}
 	else if (g_GameType == GameType::HorizonZeroDawn)
 	{
 		strcpy_s(g_GamePrefix, "HZD");
 
-		g_OffsetMap["String::Assign"] = scan("48 89 5C 24 08 48 89 74 24 10 57 48 83 EC 20 48 8B 39 48");
-		g_OffsetMap["String::Concat"] = scan("40 53 48 83 EC 20 80 3A");
-		g_OffsetMap["String::CRC32"] = scan("48 8B 11 8B 42 F4");
-		g_OffsetMap["RTTI::GetCoreBinaryTypeId"] = scan("48 8B C4 44 89 40 18 48 89 50 10 48 89 48 08 55 53 56 41 56 48 8D 68 A1 48 81 EC 98 00 00 00 4C 89 60 D0");
-		g_OffsetMap["ShaderCachePresent"] = scan("48 89 5C 24 18 48 89 74 24 20 57 48 81 EC 90 00 00 00 48 8D");
-		g_OffsetMap["Player::GetLocalPlayer"] = g_ModuleBase + 0x0C2F710;
-		g_OffsetMap["SwapChainDX12::Present"] = g_ModuleBase + 0x02027A0;
-		g_OffsetMap["Entity::AddComponent"] = g_ModuleBase + 0x0B97960;
-		g_OffsetMap["Entity::RemoveComponent"] = g_ModuleBase + 0x0BAF7C0;
-		g_OffsetMap["SlowMotionManager::AddTimescaleModifier"] = g_ModuleBase + 0x11CB770;
-		g_OffsetMap["SlowMotionManager::RemoveTimescaleModifier"] = g_ModuleBase + 0x11CA9F0;
+		Offsets::MapSignature("String::Assign", "48 89 5C 24 08 48 89 74 24 10 57 48 83 EC 20 48 8B 39 48");
+		Offsets::MapSignature("String::Concat", "40 53 48 83 EC 20 80 3A");
+		Offsets::MapSignature("String::CRC32", "48 8B 11 8B 42 F4");
+		Offsets::MapSignature("RTTI::GetCoreBinaryTypeId", "48 8B C4 44 89 40 18 48 89 50 10 48 89 48 08 55 53 56 41 56 48 8D 68 A1 48 81 EC 98 00 00 00 4C 89 60 D0");
+		Offsets::MapSignature("ShaderCachePresent", "48 89 5C 24 18 48 89 74 24 20 57 48 81 EC 90 00 00 00 48 8D");
+		Offsets::MapAddress("Player::GetLocalPlayer", 0x0C2F710);
+		Offsets::MapAddress("SwapChainDX12::Present", 0x02027A0);
+		Offsets::MapAddress("Entity::AddComponent", 0x0B97960);
+		Offsets::MapAddress("Entity::RemoveComponent", 0x0BAF7C0);
+		Offsets::MapAddress("SlowMotionManager::AddTimescaleModifier", 0x11CB770);
+		Offsets::MapAddress("SlowMotionManager::RemoveTimescaleModifier", 0x11CA9F0);
 
 		// 1.0.10.5
-		g_OffsetMap["ExportedSymbolGroupArray"] = g_ModuleBase + 0x2A142F0;
+		Offsets::MapAddress("ExportedSymbolGroupArray", 0x2A142F0);
 	}
 }
 
 void ApplyHooks()
 {
+	auto [moduleBase, moduleEnd] = Offsets::GetModule();
+
 	if (g_GameType == GameType::DeathStranding)
 	{
 	}
 	else if (g_GameType == GameType::HorizonZeroDawn)
 	{
-		XUtil::GetPESectionRange(g_ModuleBase, ".text", &g_CodeBase, &g_CodeEnd);
-		XUtil::GetPESectionRange(g_ModuleBase, ".rdata", &g_RdataBase, &g_RdataEnd);
-		XUtil::GetPESectionRange(g_ModuleBase, ".data", &g_DataBase, &g_DataEnd);
-
 		MSRTTI::Initialize();
 		RTTIScanner::ScanForRTTIStructures();
 
 		// Intercept fullgame load
-		XUtil::PatchMemory(g_ModuleBase + 0x0237557, { 0x90, 0x90 });// Force enable debug command list names (render order)
-		XUtil::PatchMemory(g_ModuleBase + 0x01D41BC, { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 });// Force enable debug command list names (command list)
+		XUtil::PatchMemory(moduleBase + 0x0237557, { 0x90, 0x90 });// Force enable debug command list names (render order)
+		XUtil::PatchMemory(moduleBase + 0x01D41BC, { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 });// Force enable debug command list names (command list)
 
-		XUtil::PatchMemory(g_ModuleBase + 0x0379DF0, { 0xC3 });// Steam being retarded and they're not checking a nullptr when offline
-		XUtil::PatchMemory(g_ModuleBase + 0x037AD22, { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 });// Force disable exception handler
+		XUtil::PatchMemory(moduleBase + 0x0379DF0, { 0xC3 });// Steam being retarded and they're not checking a nullptr when offline
+		XUtil::PatchMemory(moduleBase + 0x037AD22, { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 });// Force disable exception handler
 
-		XUtil::DetourCall(g_ModuleBase + 0x023BBD0, &hk_SwapChainDX12_Present);
+		XUtil::DetourCall(moduleBase + 0x023BBD0, &hk_SwapChainDX12_Present);
 
-		XUtil::PatchMemoryNop(g_ModuleBase + 0x04A7F82, 7);// Rewriting instructions since the 5 byte call doesn't fit
-		XUtil::DetourCall(g_ModuleBase + 0x04A7F82, &PostLoadObjectHook);
+		XUtil::PatchMemoryNop(moduleBase + 0x04A7F82, 7);// Rewriting instructions since the 5 byte call doesn't fit
+		XUtil::DetourCall(moduleBase + 0x04A7F82, &PostLoadObjectHook);
 
-		XUtil::PatchMemoryNop(g_ModuleBase + 0x04A7F55, 7);// Rewriting instructions since the 5 byte call doesn't fit
-		XUtil::DetourCall(g_ModuleBase + 0x04A7F55, &PreLoadObjectHook);
+		XUtil::PatchMemoryNop(moduleBase + 0x04A7F55, 7);// Rewriting instructions since the 5 byte call doesn't fit
+		XUtil::DetourCall(moduleBase + 0x04A7F55, &PreLoadObjectHook);
 
-		XUtil::DetourJump(g_ModuleBase + 0x0603D00, NodeGraphAlert);
-		XUtil::DetourJump(g_ModuleBase + 0x0603D10, NodeGraphAlertWithName);
-		XUtil::DetourJump(g_ModuleBase + 0x0603D30, NodeGraphTrace);
-		XUtil::DetourJump(g_ModuleBase + 0x031AEF0, InternalEngineLog);
-		XUtil::DetourJump(g_ModuleBase + 0x03716B0, InternalEngineLog);
-		XUtil::DetourJump(g_ModuleBase + 0x03714A0, InternalEngineLog);
-		//*(bool *)(g_ModuleBase + 0x71158F0) = true; audio logging
+		XUtil::DetourJump(moduleBase + 0x0603D00, NodeGraphAlert);
+		XUtil::DetourJump(moduleBase + 0x0603D10, NodeGraphAlertWithName);
+		XUtil::DetourJump(moduleBase + 0x0603D30, NodeGraphTrace);
+		XUtil::DetourJump(moduleBase + 0x031AEF0, InternalEngineLog);
+		XUtil::DetourJump(moduleBase + 0x03716B0, InternalEngineLog);
+		XUtil::DetourJump(moduleBase + 0x03714A0, InternalEngineLog);
+		//*(bool *)(moduleBase + 0x71158F0) = true; audio logging
 
-		XUtil::DetourCall(g_ModuleBase + 0x01405F2, PackFileDevice_MountArchive);
-		XUtil::DetourCall(g_ModuleBase + 0x014065E, PackFileDevice_MountArchive);
+		XUtil::DetourCall(moduleBase + 0x01405F2, PackFileDevice_MountArchive);
+		XUtil::DetourCall(moduleBase + 0x014065E, PackFileDevice_MountArchive);
 
 		// Function to set 3rd person camera position
-		XUtil::DetourCall(g_ModuleBase + 0x13AB8FC, hk_call_1413AB8FC);
+		XUtil::DetourCall(moduleBase + 0x13AB8FC, hk_call_1413AB8FC);
 
 		// Kill one of the out of bounds checks
-		XUtil::PatchMemoryNop(g_ModuleBase + 0xEF5A4D, 2);
+		XUtil::PatchMemoryNop(moduleBase + 0xEF5A4D, 2);
 	}
 }
 
@@ -208,13 +207,6 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpReserved)
 {
 	if (fdwReason == DLL_PROCESS_ATTACH)
 	{
-		auto moduleBase = reinterpret_cast<uintptr_t>(GetModuleHandle(nullptr));
-		auto ntHeaders = reinterpret_cast<PIMAGE_NT_HEADERS64>(moduleBase + reinterpret_cast<PIMAGE_DOS_HEADER>(moduleBase)->e_lfanew);
-
-		// Determine the module/code section addresses and sizes
-		g_ModuleBase = moduleBase;
-		g_ModuleSize = ntHeaders->OptionalHeader.SizeOfImage;
-
 		LoadSignatures();
 		ApplyHooks();
 	}

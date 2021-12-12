@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../../Offsets.h"
+
 #include "../PCore/Common.h"
 
 #include "RTTI.h"
@@ -41,7 +43,7 @@ public:
 
 	static Application& Instance()
 	{
-		return *reinterpret_cast<Application *>(g_ModuleBase + 0x7120E40);
+		return *Offsets::Resolve<Application *>(0x7120E40);
 	}
 };
 assert_offset(Application, m_Game, 0x18);

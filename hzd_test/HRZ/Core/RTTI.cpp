@@ -108,7 +108,7 @@ std::string RTTI::GetSymbolName() const
 uint64_t RTTI::GetCoreBinaryTypeId() const
 {
 	uint64_t hashedData[2] = {};
-	CallID<"RTTI::GetCoreBinaryTypeId", void(*)(uint64_t *, const RTTI *, __int64)>(hashedData, this, 2);
+	Offsets::CallID<"RTTI::GetCoreBinaryTypeId", void(*)(uint64_t *, const RTTI *, __int64)>(hashedData, this, 2);
 
 	return hashedData[0];
 }

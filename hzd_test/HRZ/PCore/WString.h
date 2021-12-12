@@ -2,6 +2,8 @@
 
 #include <stdint.h>
 
+#include "../../Offsets.h"
+
 #include "Util.h"
 
 namespace HRZ
@@ -27,27 +29,27 @@ private:
 public:
 	WString()
 	{
-		CallOffset<0x012DCF0, WString *(*)(WString *)>(this);
+		Offsets::Call<0x012DCF0, WString *(*)(WString *)>(this);
 	}
 
 	WString(const WString& Other) : WString()
 	{
-		CallOffset<0x012DD30, WString *(*)(WString *, const WString&)>(this, Other);
+		Offsets::Call<0x012DD30, WString *(*)(WString *, const WString&)>(this, Other);
 	}
 
 	WString(const wchar_t *Value)
 	{
-		CallOffset<0x012D970, WString *(*)(WString *, const wchar_t *)>(this, Value);
+		Offsets::Call<0x012D970, WString *(*)(WString *, const wchar_t *)>(this, Value);
 	}
 
 	~WString()
 	{
-		CallOffset<0x012DD10, void(*)(WString *)>(this);
+		Offsets::Call<0x012DD10, void(*)(WString *)>(this);
 	}
 
 	WString& operator=(const WString& Other)
 	{
-		CallOffset<0x012DD30, WString *(*)(WString *, const WString&)>(this, Other);
+		Offsets::Call<0x012DD30, WString *(*)(WString *, const WString&)>(this, Other);
 		return *this;
 	}
 
@@ -74,7 +76,7 @@ public:
 	String EncodeUTF8() const
 	{
 		String str;
-		CallOffset<0x0129930, void(*)(const WString *, String&)>(this, str);
+		Offsets::Call<0x0129930, void(*)(const WString *, String&)>(this, str);
 
 		return str;
 	}

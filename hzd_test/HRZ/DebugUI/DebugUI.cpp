@@ -35,7 +35,7 @@ void Initialize(const SwapChainDX12 *SwapChain)
 {
 	// D3D resources
 	HRESULT hr = S_OK;
-	auto device = RenderingDeviceDX12::Instance.m_Device;
+	auto device = RenderingDeviceDX12::Instance().m_Device;
 
 	D3D12_DESCRIPTOR_HEAP_DESC desc
 	{
@@ -67,7 +67,7 @@ void Initialize(const SwapChainDX12 *SwapChain)
 	io.MouseDrawCursor = false;
 
 	ImGui_ImplWin32_Init(SwapChain->m_NativeWindowHandle);
-	ImGui_ImplDX12_Init(RenderingDeviceDX12::Instance.m_Device, SwapChainDX12::BackBufferCount, SwapChain->m_BackBuffers[0].m_Resource->GetDesc().Format, SrvDescHeap, SrvDescHeap->GetCPUDescriptorHandleForHeapStart(), SrvDescHeap->GetGPUDescriptorHandleForHeapStart());
+	ImGui_ImplDX12_Init(device, SwapChainDX12::BackBufferCount, SwapChain->m_BackBuffers[0].m_Resource->GetDesc().Format, SrvDescHeap, SrvDescHeap->GetCPUDescriptorHandleForHeapStart(), SrvDescHeap->GetGPUDescriptorHandleForHeapStart());
 
 	OriginalWndProc = reinterpret_cast<WNDPROC>(SetWindowLongPtrW(SwapChain->m_NativeWindowHandle, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&WndProc)));
 

@@ -37,16 +37,19 @@ void ScanForRTTIStructures()
 	//
 	// NOTE: Some types will be created at runtime. We don't care about them.
 	//
-	auto results = XUtil::FindPatterns(g_DataBase, g_DataEnd - g_DataBase, "FF FF FF FF ? ? ? ?");
+	auto [rdataBase, rdataEnd] = Offsets::GetRdataSection();
+	auto [dataBase, dataEnd] = Offsets::GetDataSection();
 
-	auto isDataSegment = []<typename T>(T *Pointer)
+	auto results = XUtil::FindPatterns(dataBase, dataEnd - dataBase, "FF FF FF FF ? ? ? ?");
+
+	auto isDataSegment = [&]<typename T>(T *Pointer)
 	{
-		return reinterpret_cast<uintptr_t>(Pointer) >= g_DataBase && reinterpret_cast<uintptr_t>(Pointer) < g_DataEnd;
+		return reinterpret_cast<uintptr_t>(Pointer) >= dataBase && reinterpret_cast<uintptr_t>(Pointer) < dataEnd;
 	};
 
-	auto isRdataSegment = []<typename T>(T *Pointer)
+	auto isRdataSegment = [&]<typename T>(T *Pointer)
 	{
-		return reinterpret_cast<uintptr_t>(Pointer) >= g_RdataBase && reinterpret_cast<uintptr_t>(Pointer) < g_RdataEnd;
+		return reinterpret_cast<uintptr_t>(Pointer) >= rdataBase && reinterpret_cast<uintptr_t>(Pointer) < rdataEnd;
 	};
 
 	for (uintptr_t result : results)

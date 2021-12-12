@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../../Offsets.h"
+
 #include "../PCore/Common.h"
 
 #include "WeakPtrTarget.h"
@@ -53,12 +55,12 @@ public:
 	// WARNING: Do NOT call this function while other entity locks are held. It can deadlock the main thread.
 	CameraEntity *GetLastActivatedCamera() const
 	{
-		return CallOffset<0x0C267E0, CameraEntity *(*)(const Player *)>(this);
+		return Offsets::Call<0x0C267E0, CameraEntity *(*)(const Player *)>(this);
 	}
 
 	static Player *GetLocalPlayer(int Index = 0)
 	{
-		return CallID<"Player::GetLocalPlayer", Player *(*)(int)>(Index);
+		return Offsets::CallID<"Player::GetLocalPlayer", Player *(*)(int)>(Index);
 	}
 };
 assert_offset(Player, m_Name, 0x58);

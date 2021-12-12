@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../../Offsets.h"
+
 #include "../PCore/Common.h"
 
 #include "RTTIRefObject.h"
@@ -32,7 +34,7 @@ public:
 
 	void SetTimeOfDay(float Time, float FastForwardDuration)
 	{
-		CallOffset<0x11D9E20, void(*)(WorldState *, float, float)>(this, Time, FastForwardDuration);
+		Offsets::Call<0x11D9E20, void(*)(WorldState *, float, float)>(this, Time, FastForwardDuration);
 	}
 };
 assert_offset(WorldState, m_PropertyContainer, 0x20);

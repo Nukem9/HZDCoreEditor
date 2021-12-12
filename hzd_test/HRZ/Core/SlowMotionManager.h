@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../../Offsets.h"
+
 #include "../PCore/Common.h"
 
 namespace HRZ
@@ -25,12 +27,12 @@ public:
 
 	TimescaleModifierId AddTimescaleModifier(float Timescale, float CameraTimescale, float BlendInTime)
 	{
-		return CallID<"SlowMotionManager::AddTimescaleModifier", TimescaleModifierId(*)(SlowMotionManager *, float, float, float)>(this, Timescale, CameraTimescale, BlendInTime);
+		return Offsets::CallID<"SlowMotionManager::AddTimescaleModifier", TimescaleModifierId(*)(SlowMotionManager *, float, float, float)>(this, Timescale, CameraTimescale, BlendInTime);
 	}
 
 	void RemoveTimescaleModifier(TimescaleModifierId& Id, float BlendOutTime)
 	{
-		return CallID<"SlowMotionManager::RemoveTimescaleModifier", void(*)(SlowMotionManager *, TimescaleModifierId&, float)>(this, Id, BlendOutTime);
+		return Offsets::CallID<"SlowMotionManager::RemoveTimescaleModifier", void(*)(SlowMotionManager *, TimescaleModifierId&, float)>(this, Id, BlendOutTime);
 	}
 };
 assert_offset(SlowMotionManager, m_TimescaleModifiers, 0x8);

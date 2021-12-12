@@ -2,6 +2,8 @@
 
 #include <stdint.h>
 
+#include "../../Offsets.h"
+
 #include "Util.h"
 
 namespace HRZ
@@ -27,27 +29,27 @@ private:
 public:
 	String()
 	{
-		CallOffset<0x010E860, String *(*)(String *, const char *)>(this, "");
+		Offsets::Call<0x010E860, String *(*)(String *, const char *)>(this, "");
 	}
 
 	String(const String& Other) : String()
 	{
-		CallOffset<0x010F000, String *(*)(String *, const String&)>(this, Other);
+		Offsets::Call<0x010F000, String *(*)(String *, const String&)>(this, Other);
 	}
 
 	String(const char *Value)
 	{
-		CallOffset<0x010E860, String *(*)(String *, const char *)>(this, Value);
+		Offsets::Call<0x010E860, String *(*)(String *, const char *)>(this, Value);
 	}
 
 	~String()
 	{
-		CallOffset<0x010EF40, void(*)(String *)>(this);
+		Offsets::Call<0x010EF40, void(*)(String *)>(this);
 	}
 
 	String& operator=(const String& Other)
 	{
-		CallOffset<0x010F000, String *(*)(String *, const String&)>(this, Other);
+		Offsets::Call<0x010F000, String *(*)(String *, const String&)>(this, Other);
 		return *this;
 	}
 

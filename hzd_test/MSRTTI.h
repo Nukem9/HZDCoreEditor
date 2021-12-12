@@ -119,8 +119,8 @@ namespace MSRTTI
 			uint32_t Attributes;					// Flags (BaseClassDescriptorFlags)
 		};
 
-		bool IsWithinRDATA(uintptr_t Address);
-		bool IsWithinCODE(uintptr_t Address);
+		bool IsWithinData(uintptr_t Address);
+		bool IsWithinCode(uintptr_t Address);
 		bool IsValidCOL(CompleteObjectLocator *Locator);
 		const char *strcasestr(const char *String, const char *Substring);
 	}

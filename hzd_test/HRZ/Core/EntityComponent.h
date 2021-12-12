@@ -115,16 +115,7 @@ public:
 		}
 
 		Index = lowBound;
-		bool result = m_Components[Index]->GetRTTI()->IsKindOf(Type);
-
-		auto test = Call<EntityComponent *(*)(EntityComponentContainer *, const RTTI *)>((uintptr_t)GetModuleHandleW(nullptr) + 0x0B5BAB0, this, Type);
-
-		if (result && test != m_Components[Index])
-			__debugbreak();
-		else if (!result && test != nullptr)
-			__debugbreak();
-
-		return result;
+		return m_Components[Index]->GetRTTI()->IsKindOf(Type);
 	}
 
 	EntityComponent *FindComponentByType(const RTTI *Type)

@@ -14,6 +14,7 @@ constexpr uintptr_t IDABaseAddressFullgame = 0x180000000;
 
 RTTIIDAExporter::RTTIIDAExporter(const std::unordered_set<const HRZ::RTTI*>& Types) : m_Types(Types)
 {
+	m_ModuleBase = Offsets::GetModule().first;
 }
 
 void RTTIIDAExporter::ExportRTTITypes(std::string_view Directory)
@@ -87,7 +88,7 @@ void RTTIIDAExporter::ExportMSRTTI()
 		{
 			uintptr_t vfuncPointer = rtti->VTableAddress + (i * sizeof(uintptr_t));
 			uintptr_t vfunc = *reinterpret_cast<uintptr_t *>(vfuncPointer);
-			uintptr_t vfuncDBAddress = vfunc - g_ModuleBase + IDABaseAddressExe;
+			uintptr_t vfuncDBAddress = vfunc - m_ModuleBase + IDABaseAddressExe;
 
 			// Make sure it's not a pure virtual function
 			if (*reinterpret_cast<uint8_t *>(vfunc + 0) == 0xFF && *reinterpret_cast<uint8_t *>(vfunc + 1) == 0x25)
@@ -245,7 +246,7 @@ void RTTIIDAExporter::ExportGGRTTI()
 			if (!Pointer)
 				return;
 
-			auto address = reinterpret_cast<uintptr_t>(Pointer) - g_ModuleBase + IDABaseAddressExe;
+			auto address = reinterpret_cast<uintptr_t>(Pointer) - m_ModuleBase + IDABaseAddressExe;
 			Print(Format, address, std::forward<TArgs>(Args)...);
 			Print("\n");
 		};
@@ -369,7 +370,7 @@ void RTTIIDAExporter::ExportGGRTTI()
 			}
 
 			for (auto& event : asClass->ClassMessageHandlers())
-				Print("// Event callback: {0:} = 0x{1:X}\n", event.m_Type->GetSymbolName(), reinterpret_cast<uintptr_t>(event.m_Callback) - g_ModuleBase + IDABaseAddressExe);
+				Print("// Event callback: {0:} = 0x{1:X}\n", event.m_Type->GetSymbolName(), reinterpret_cast<uintptr_t>(event.m_Callback) - m_ModuleBase + IDABaseAddressExe);
 
 			Print("class {0:}{1:}\n{{\npublic:\n", asClass->GetSymbolName(), inheritanceDecl);
 
@@ -398,7 +399,7 @@ void RTTIIDAExporter::ExportGGRTTI()
 	{
 		if (auto asClass = type->AsClass(); asClass)
 		{
-			Print("const RTTI *RTTI_{0:} = ResolveOffset<const RTTI *>(0x{1:X});\n", asClass->GetSymbolName(), reinterpret_cast<uintptr_t>(asClass) - g_ModuleBase);
+			Print("const RTTI *RTTI_{0:} = Offsets::Resolve<const RTTI *>(0x{1:X});\n", asClass->GetSymbolName(), reinterpret_cast<uintptr_t>(asClass) - m_ModuleBase);
 		}
 	}
 
@@ -407,7 +408,7 @@ void RTTIIDAExporter::ExportGGRTTI()
 
 void RTTIIDAExporter::ExportGameSymbolRTTI()
 {
-	auto& gameSymbolGroups = *reinterpret_cast<Array<ExportedSymbolGroup *> *>(g_OffsetMap["ExportedSymbolGroupArray"]);
+	auto& gameSymbolGroups = *Offsets::ResolveID<"ExportedSymbolGroupArray", Array<ExportedSymbolGroup *> *>();
 
 	for (auto& group : gameSymbolGroups)
 	{
@@ -420,7 +421,7 @@ void RTTIIDAExporter::ExportGameSymbolRTTI()
 			for (auto& info : member.m_Infos)
 			{
 				auto fullDeclaration = BuildGameSymbolFunctionDecl(info, false);
-				Print("set_name({0:#X}, \"{1:}\");// {2:};\n", reinterpret_cast<uintptr_t>(info.m_Address) - g_ModuleBase + IDABaseAddressExe, member.m_SymbolName, fullDeclaration);
+				Print("set_name({0:#X}, \"{1:}\");// {2:};\n", reinterpret_cast<uintptr_t>(info.m_Address) - m_ModuleBase + IDABaseAddressExe, member.m_SymbolName, fullDeclaration);
 
 				// Skip multiple localization entries for now
 				break;
@@ -437,7 +438,7 @@ void RTTIIDAExporter::ExportFullgameScriptSymbols()
 		return;
 
 	// Build symbol to address mapping
-	auto& gameSymbolGroups = *reinterpret_cast<Array<ExportedSymbolGroup *> *>(g_OffsetMap["ExportedSymbolGroupArray"]);
+	auto& gameSymbolGroups = *Offsets::ResolveID<"ExportedSymbolGroupArray", Array<ExportedSymbolGroup *> *>();
 	std::unordered_map<uintptr_t, const ExportedSymbolMember *> symbolAddressMap;
 
 	for (auto& group : gameSymbolGroups)

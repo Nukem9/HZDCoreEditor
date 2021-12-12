@@ -1,5 +1,6 @@
 #include "common.h"
 #include "MSRTTI.h"
+#include "Offsets.h"
 
 extern "C"
 {
@@ -16,7 +17,9 @@ namespace MSRTTI
 
 	void Initialize()
 	{
-		for (uintptr_t i = g_RdataBase; i < (g_RdataEnd - sizeof(uintptr_t) - sizeof(uintptr_t)); i++)
+		auto [rdataBase, rdataEnd] = Offsets::GetRdataSection();
+
+		for (uintptr_t i = rdataBase; i < (rdataEnd - sizeof(uintptr_t) - sizeof(uintptr_t)); i++)
 		{
 			// Skip all non-2-aligned addresses. Not sure if this is OK or it skips tables.
 			if (i % 2 != 0)
@@ -31,7 +34,7 @@ namespace MSRTTI
 			auto addr = *reinterpret_cast<uintptr_t *>(i);
 			auto vfuncAddr = *reinterpret_cast<uintptr_t *>(i + sizeof(uintptr_t));
 
-			if (!IsWithinRDATA(addr) || !IsWithinCODE(vfuncAddr))
+			if (!IsWithinData(addr) || !IsWithinCode(vfuncAddr))
 				continue;
 
 			auto locator = reinterpret_cast<CompleteObjectLocator *>(addr);
@@ -52,9 +55,9 @@ namespace MSRTTI
 			info.Name = __unDNameEx(nullptr, info.RawName + 1, 0, malloc, free, nullptr, 0x2800);
 
 			// Determine number of virtual functions
-			for (uintptr_t j = info.VTableAddress; j < (g_RdataEnd - sizeof(uintptr_t)); j += sizeof(uintptr_t))
+			for (uintptr_t j = info.VTableAddress; j < (rdataEnd - sizeof(uintptr_t)); j += sizeof(uintptr_t))
 			{
-				if (!IsWithinCODE(*reinterpret_cast<uintptr_t *>(j)))
+				if (!IsWithinCode(*reinterpret_cast<uintptr_t *>(j)))
 					break;
 
 				info.VFunctionCount++;
@@ -66,8 +69,10 @@ namespace MSRTTI
 
 	void Dump(FILE *File)
 	{
+		uintptr_t moduleBase = Offsets::GetModule().first;
+
 		for (const Info& info : Tables)
-			fprintf(File, "`%s`: VTable [0x%llX, 0x%llX offset, %lld functions] `%s`\n", info.Name, info.VTableAddress - g_ModuleBase, info.VTableOffset, info.VFunctionCount, info.RawName);
+			fprintf(File, "`%s`: VTable [0x%llX, 0x%llX offset, %lld functions] `%s`\n", info.Name, info.VTableAddress - moduleBase, info.VTableOffset, info.VFunctionCount, info.RawName);
 	}
 
 	const Info *Find(const char *Name, bool Exact)
@@ -121,19 +126,24 @@ namespace MSRTTI
 
 	namespace detail
 	{
-		bool IsWithinRDATA(uintptr_t Address)
+		bool IsWithinData(uintptr_t Address)
 		{
-			return (Address >= g_RdataBase && Address <= g_RdataEnd) || (Address >= g_DataBase && Address <= g_DataEnd);
+			const static auto [rdataBase, rdataEnd] = Offsets::GetRdataSection();
+			const static auto [dataBase, dataEnd] = Offsets::GetDataSection();
+
+			return (Address >= rdataBase && Address <= rdataEnd) || (Address >= dataBase && Address <= dataEnd);
 		}
 
-		bool IsWithinCODE(uintptr_t Address)
+		bool IsWithinCode(uintptr_t Address)
 		{
-			return Address >= g_CodeBase && Address <= g_CodeEnd;
+			const static auto [codeBase, codeEnd] = Offsets::GetCodeSection();
+
+			return Address >= codeBase && Address <= codeEnd;
 		}
 
 		bool IsValidCOL(CompleteObjectLocator *Locator)
 		{
-			return Locator->Signature == CompleteObjectLocator::COL_Signature64 && IsWithinRDATA(Locator->TypeDescriptor.Address());
+			return Locator->Signature == CompleteObjectLocator::COL_Signature64 && IsWithinData(Locator->TypeDescriptor.Address());
 		}
 
 		const char *strcasestr(const char *String, const char *Substring)

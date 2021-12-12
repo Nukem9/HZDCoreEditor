@@ -2,6 +2,8 @@
 
 #include <mutex>
 
+#include "../../Offsets.h"
+
 #include "../PCore/Common.h"
 
 #include "WorldPosition.h"
@@ -173,12 +175,12 @@ public:
 
 	void AddComponent(EntityComponent *Component)
 	{
-		return CallID<"Entity::AddComponent", void(*)(Entity *, EntityComponent *)>(this, Component);
+		return Offsets::CallID<"Entity::AddComponent", void(*)(Entity *, EntityComponent *)>(this, Component);
 	}
 
 	void RemoveComponent(EntityComponent *Component)
 	{
-		return CallID<"Entity::RemoveComponent", void(*)(Entity *, EntityComponent *)>(this, Component);
+		return Offsets::CallID<"Entity::RemoveComponent", void(*)(Entity *, EntityComponent *)>(this, Component);
 	}
 };
 assert_offset(Entity, m_Name, 0x38);

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../../Offsets.h"
+
 #include "../PCore/Common.h"
 
 #include "ResourceWithoutLegacyName.h"
@@ -24,7 +26,7 @@ public:
 	WString GetTranslation() const
 	{
 		WString str;
-		CallOffset<0x08823C0, void(*)(const LocalizedTextResource *, WString&)>(this, str);
+		Offsets::Call<0x08823C0, void(*)(const LocalizedTextResource *, WString&)>(this, str);
 
 		return str;
 	}
