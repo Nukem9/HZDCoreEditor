@@ -21,13 +21,13 @@
     <ClCompile Include="common.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MSRTTI.cpp">
+    <ClCompile Include="RTTI\MSRTTI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RTTICSharpExporter.cpp">
+    <ClCompile Include="RTTI\RTTICSharpExporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RTTIIDAExporter.cpp">
+    <ClCompile Include="RTTI\RTTIIDAExporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="XUtil.cpp">
@@ -51,7 +51,7 @@
     <ClCompile Include="HRZ\DebugUI\WeatherWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RTTIScanner.cpp">
+    <ClCompile Include="RTTI\RTTIScanner.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Offsets.cpp">
@@ -68,13 +68,13 @@
     <ClInclude Include="HRZ\Core\RTTI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MSRTTI.h">
+    <ClInclude Include="RTTI\MSRTTI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RTTICSharpExporter.h">
+    <ClInclude Include="RTTI\RTTICSharpExporter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RTTIIDAExporter.h">
+    <ClInclude Include="RTTI\RTTIIDAExporter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="XUtil.h">
@@ -287,7 +287,7 @@
     <ClInclude Include="HRZ\Core\PrefetchList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RTTIScanner.h">
+    <ClInclude Include="RTTI\RTTIScanner.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Offsets.h">

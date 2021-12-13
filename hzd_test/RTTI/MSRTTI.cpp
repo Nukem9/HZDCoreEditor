@@ -1,6 +1,6 @@
-#include "common.h"
+#include "../Offsets.h"
+
 #include "MSRTTI.h"
-#include "Offsets.h"
 
 extern "C"
 {

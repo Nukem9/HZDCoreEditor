@@ -8,10 +8,11 @@
 #include "HRZ/DebugUI/LogWindow.h"
 #include "HRZ/DebugUI/MainMenuBar.h"
 
+#include "RTTI/MSRTTI.h"
+#include "RTTI/RTTIIDAExporter.h"
+#include "RTTI/RTTIScanner.h"
+
 #include "common.h"
-#include "MSRTTI.h"
-#include "RTTIIDAExporter.h"
-#include "RTTIScanner.h"
 
 using namespace HRZ;
 
@@ -127,8 +128,6 @@ void LoadSignatures()
 
 	if (g_GameType == GameType::DeathStranding)
 	{
-		strcpy_s(g_GamePrefix, "DS");
-
 		// 1.04
 		Offsets::MapSignature("String::String", "40 53 48 83 EC 20 48 8B D9 48 C7 01 00 00 00 00 49 C7 C0 FF FF FF FF");
 		Offsets::MapSignature("String::~String", "40 53 48 83 EC 20 48 8B 19 48 8D 05 ? ? ? ? 48 83 EB 10");
@@ -138,8 +137,6 @@ void LoadSignatures()
 	}
 	else if (g_GameType == GameType::HorizonZeroDawn)
 	{
-		strcpy_s(g_GamePrefix, "HZD");
-
 		// Functions
 		Offsets::MapSignature("String::CtorCString", "48 89 5C 24 10 48 89 6C 24 18 48 89 7C 24 20 41 56 48 83 EC 20 33 FF 48 8B EA 48 89 39 4C 8B F1 48 C7 C3 FF FF FF FF");
 		Offsets::MapSignature("String::Dtor", "40 53 48 83 EC 20 48 8B 19 48 85 DB 74 37 48 83 C3 F0 48 8D");

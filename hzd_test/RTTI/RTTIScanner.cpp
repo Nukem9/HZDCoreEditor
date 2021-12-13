@@ -1,7 +1,8 @@
+#include "../XUtil.h"
+
 #include "RTTIScanner.h"
 #include "RTTIIDAExporter.h"
 #include "RTTICSharpExporter.h"
-#include "XUtil.h"
 
 namespace RTTIScanner
 {
@@ -20,12 +21,12 @@ const std::unordered_set<const RTTI *>& GetAllTypes()
 	return RegisteredRTTITypes;
 }
 
-void ExportAll(std::string_view Directory)
+void ExportAll(const std::string_view Directory, const std::string_view GameTypePrefix)
 {
-	RTTIIDAExporter idaExporter(GetAllTypes());
+	RTTIIDAExporter idaExporter(GetAllTypes(), GameTypePrefix);
 	idaExporter.ExportRTTITypes(Directory);
 
-	RTTICSharpExporter csExporter(GetAllTypes());
+	RTTICSharpExporter csExporter(GetAllTypes(), GameTypePrefix);
 	csExporter.ExportAll(Directory);
 }
 

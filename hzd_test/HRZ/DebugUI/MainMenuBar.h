@@ -2,8 +2,8 @@
 
 #include <imgui.h>
 
-#include "../../RTTIScanner.h"
-#include "../../RTTIIDAExporter.h"
+#include "../../RTTI/RTTIScanner.h"
+#include "../../RTTI/RTTIIDAExporter.h"
 
 #include "../PCore/Ref.h"
 #include "../Core/WorldPosition.h"
@@ -356,11 +356,11 @@ public:
 			ImGui::Separator();
 
 			if (ImGui::MenuItem("Dump RTTI Typeinfo"))
-				RTTIScanner::ExportAll("C:\\hzd_rtti_export");
+				RTTIScanner::ExportAll("C:\\hzd_rtti_export", "HZD");
 
 			if (ImGui::MenuItem("Dump Fullgame Typeinfo"))
 			{
-				RTTIIDAExporter idaExporter(RTTIScanner::GetAllTypes());
+				RTTIIDAExporter idaExporter(RTTIScanner::GetAllTypes(), "HZD");
 				idaExporter.ExportFullgameTypes("C:\\hzd_rtti_export");
 			}
 

@@ -22,4 +22,3 @@ enum class GameType
 };
 
 extern GameType g_GameType;
-extern char g_GamePrefix[64];

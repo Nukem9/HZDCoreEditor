@@ -1,6 +1,9 @@
 #pragma once
 
-#include "common.h"
+#include <cstdint>
+#include <vector>
+#include <Windows.h>
+#include <stdio.h>
 
 namespace MSRTTI
 {

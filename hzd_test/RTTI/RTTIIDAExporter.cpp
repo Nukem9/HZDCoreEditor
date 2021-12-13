@@ -1,9 +1,6 @@
+#include <windows.h>
 #include <regex>
 
-#include "HRZ/Core/RTTI.h"
-#include "HRZ/Core/ExportedSymbol.h"
-
-#include "common.h"
 #include "MSRTTI.h"
 #include "RTTIIDAExporter.h"
 
@@ -12,16 +9,16 @@ using namespace HRZ;
 constexpr uintptr_t IDABaseAddressExe = 0x140000000;
 constexpr uintptr_t IDABaseAddressFullgame = 0x180000000;
 
-RTTIIDAExporter::RTTIIDAExporter(const std::unordered_set<const HRZ::RTTI*>& Types) : m_Types(Types)
+RTTIIDAExporter::RTTIIDAExporter(const std::unordered_set<const RTTI *>& Types, const std::string_view GameTypePrefix) : m_Types(Types), m_GameTypePrefix(GameTypePrefix)
 {
 	m_ModuleBase = Offsets::GetModule().first;
 }
 
-void RTTIIDAExporter::ExportRTTITypes(std::string_view Directory)
+void RTTIIDAExporter::ExportRTTITypes(const std::string_view Directory)
 {
 	CreateDirectoryA(Directory.data(), nullptr);
 
-	auto outputPath = std::format("{0:}\\IDA_{1:}_Typeinfo.idc", Directory, g_GamePrefix);
+	auto outputPath = std::format("{0:}\\IDA_{1:}_Typeinfo.idc", Directory, m_GameTypePrefix);
 
 	if (fopen_s(&m_FileHandle, outputPath.c_str(), "w") == 0)
 	{
@@ -38,11 +35,11 @@ void RTTIIDAExporter::ExportRTTITypes(std::string_view Directory)
 	}
 }
 
-void RTTIIDAExporter::ExportFullgameTypes(std::string_view Directory)
+void RTTIIDAExporter::ExportFullgameTypes(const std::string_view Directory)
 {
 	CreateDirectoryA(Directory.data(), nullptr);
 
-	auto outputPath = std::format("{0:}\\IDA_{1:}_Fullgame_Typeinfo.idc", Directory, g_GamePrefix);
+	auto outputPath = std::format("{0:}\\IDA_{1:}_Fullgame_Typeinfo.idc", Directory, m_GameTypePrefix);
 
 	if (fopen_s(&m_FileHandle, outputPath.c_str(), "w") == 0)
 	{

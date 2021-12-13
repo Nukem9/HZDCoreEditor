@@ -97,14 +97,14 @@
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="HRZ\Core\RTTI.cpp" />
     <ClCompile Include="Offsets.cpp" />
-    <ClCompile Include="RTTIScanner.cpp" />
+    <ClCompile Include="RTTI\RTTIScanner.cpp" />
     <ClCompile Include="HRZ\DebugUI\ComponentViewWindow.cpp" />
     <ClCompile Include="HRZ\DebugUI\DebugUI.cpp" />
     <ClCompile Include="HRZ\DebugUI\EntityWindow.cpp" />
     <ClCompile Include="HRZ\DebugUI\WeatherWindow.cpp" />
-    <ClCompile Include="MSRTTI.cpp" />
-    <ClCompile Include="RTTICSharpExporter.cpp" />
-    <ClCompile Include="RTTIIDAExporter.cpp" />
+    <ClCompile Include="RTTI\MSRTTI.cpp" />
+    <ClCompile Include="RTTI\RTTICSharpExporter.cpp" />
+    <ClCompile Include="RTTI\RTTIIDAExporter.cpp" />
     <ClCompile Include="winhttp_exports.cpp" />
     <ClCompile Include="XUtil.cpp" />
   </ItemGroup>
@@ -144,7 +144,7 @@
     <ClInclude Include="HRZ\Core\RTTIBinaryReader.h" />
     <ClInclude Include="HRZ\Core\RTTIRefObject.h" />
     <ClInclude Include="Offsets.h" />
-    <ClInclude Include="RTTIScanner.h" />
+    <ClInclude Include="RTTI\RTTIScanner.h" />
     <ClInclude Include="HRZ\Core\SlowMotionManager.h" />
     <ClInclude Include="HRZ\Core\StateObject.h" />
     <ClInclude Include="HRZ\Core\StreamingRefTarget.h" />
@@ -182,10 +182,10 @@
     <ClInclude Include="HRZ\PCore\Util.h" />
     <ClInclude Include="HRZ\PCore\UUID.h" />
     <ClInclude Include="HRZ\PGraphics3D\SwapChainDX12.h" />
-    <ClInclude Include="MSRTTI.h" />
+    <ClInclude Include="RTTI\MSRTTI.h" />
     <ClInclude Include="HRZ\Core\RTTI.h" />
-    <ClInclude Include="RTTICSharpExporter.h" />
-    <ClInclude Include="RTTIIDAExporter.h" />
+    <ClInclude Include="RTTI\RTTICSharpExporter.h" />
+    <ClInclude Include="RTTI\RTTIIDAExporter.h" />
     <ClInclude Include="XUtil.h" />
   </ItemGroup>
   <ItemGroup>

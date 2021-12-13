@@ -5,18 +5,21 @@
 #include <unordered_set>
 #include <stdio.h>
 
-#include "HRZ/Core/RTTI.h"
+#include "../HRZ/Core/RTTI.h"
 
 class RTTICSharpExporter
 {
 private:
 	FILE *m_FileHandle = nullptr;
 	const std::unordered_set<const HRZ::RTTI *> m_Types;
+	const std::string m_GameTypePrefix;
 
 public:
-	RTTICSharpExporter(const std::unordered_set<const HRZ::RTTI *>& Types);
+	RTTICSharpExporter() = delete;
+	RTTICSharpExporter(const RTTICSharpExporter&) = delete;
+	RTTICSharpExporter(const std::unordered_set<const HRZ::RTTI *>& Types, const std::string_view GameTypePrefix);
 
-	void ExportAll(std::string_view Directory);
+	void ExportAll(const std::string_view Directory);
 
 private:
 	void ExportFileHeader();

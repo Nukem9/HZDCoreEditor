@@ -1,10 +1,12 @@
 #pragma once
 
+#include <unordered_set>
 #include <string_view>
 #include <format>
 #include <stdio.h>
 
-#include "HRZ/Core/ExportedSymbol.h"
+#include "../HRZ/Core/RTTI.h"
+#include "../HRZ/Core/ExportedSymbol.h"
 
 class RTTIIDAExporter
 {
@@ -12,12 +14,15 @@ private:
 	uintptr_t m_ModuleBase = 0;
 	FILE *m_FileHandle = nullptr;
 	const std::unordered_set<const HRZ::RTTI *> m_Types;
+	const std::string m_GameTypePrefix;
 
 public:
-	RTTIIDAExporter(const std::unordered_set<const HRZ::RTTI *>& Types);
+	RTTIIDAExporter() = delete;
+	RTTIIDAExporter(const RTTIIDAExporter&) = delete;
+	RTTIIDAExporter(const std::unordered_set<const HRZ::RTTI *>& Types, const std::string_view GameTypePrefix);
 
-	void ExportRTTITypes(std::string_view Directory);
-	void ExportFullgameTypes(std::string_view Directory);
+	void ExportRTTITypes(const std::string_view Directory);
+	void ExportFullgameTypes(const std::string_view Directory);
 
 private:
 	void ExportMSRTTI();

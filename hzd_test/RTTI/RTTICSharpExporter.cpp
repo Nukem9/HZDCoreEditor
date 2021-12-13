@@ -1,32 +1,32 @@
-#include "common.h"
+#include <windows.h>
+#include <algorithm>
+
 #include "RTTICSharpExporter.h"
 
-using namespace HRZ;
-
-RTTICSharpExporter::RTTICSharpExporter(const std::unordered_set<const HRZ::RTTI *>& Types) : m_Types(Types)
+RTTICSharpExporter::RTTICSharpExporter(const std::unordered_set<const HRZ::RTTI *>& Types, const std::string_view GameTypePrefix) : m_Types(Types), m_GameTypePrefix(GameTypePrefix)
 {
 }
 
-void RTTICSharpExporter::ExportAll(std::string_view Directory)
+void RTTICSharpExporter::ExportAll(const std::string_view Directory)
 {
 	CreateDirectoryA(Directory.data(), nullptr);
 
 	// Build a list of all {classes|enums}, sorted by name
-	std::vector<const RTTI *> sortedTypes;
+	std::vector<const HRZ::RTTI *> sortedTypes;
 
 	for (auto& type : m_Types)
 	{
 		switch (type->m_InfoType)
 		{
-		case RTTI::INFO_TYPE_CLASS:
-		case RTTI::INFO_TYPE_ENUM:
-		case RTTI::INFO_TYPE_ENUM_2:
+		case HRZ::RTTI::INFO_TYPE_CLASS:
+		case HRZ::RTTI::INFO_TYPE_ENUM:
+		case HRZ::RTTI::INFO_TYPE_ENUM_2:
 			sortedTypes.emplace_back(type);
 			break;
 		}
 	}
 
-	std::sort(sortedTypes.begin(), sortedTypes.end(), [](const RTTI *A, const RTTI *B)
+	std::sort(sortedTypes.begin(), sortedTypes.end(), [](const HRZ::RTTI *A, const HRZ::RTTI *B)
 	{
 		return A->GetSymbolName() < B->GetSymbolName();
 	});
@@ -90,13 +90,13 @@ void RTTICSharpExporter::ExportAll(std::string_view Directory)
 		"WwiseWemResource",
 	};
 
-	sortedTypes.erase(std::remove_if(sortedTypes.begin(), sortedTypes.end(), [&](const RTTI *Type)
+	sortedTypes.erase(std::remove_if(sortedTypes.begin(), sortedTypes.end(), [&](const HRZ::RTTI *Type)
 	{
 		for (auto name : separatedTypes)
 		{
 			if (Type->GetSymbolName() == name)
 			{
-				auto filePath = std::format("{0:}\\Decima.{1:}.{2:}.cs", Directory, g_GamePrefix, name);
+				auto filePath = std::format("{0:}\\Decima.{1:}.{2:}.cs", Directory, m_GameTypePrefix, name);
 
 				if (fopen_s(&m_FileHandle, filePath.c_str(), "w") == 0)
 				{
@@ -115,7 +115,7 @@ void RTTICSharpExporter::ExportAll(std::string_view Directory)
 
 	// Structures/classes
 	// TODO: Split classes into separate files if they all reference a common base (i.e > 30 instances per)
-	auto filePath = std::format("{0:}\\Decima.{1:}.AllStructs.cs", Directory, g_GamePrefix);
+	auto filePath = std::format("{0:}\\Decima.{1:}.AllStructs.cs", Directory, m_GameTypePrefix);
 
 	if (fopen_s(&m_FileHandle, filePath.c_str(), "w") == 0)
 	{
@@ -132,7 +132,7 @@ void RTTICSharpExporter::ExportAll(std::string_view Directory)
 	}
 
 	// Enums
-	filePath = std::format("{0:}\\Decima.{1:}.AllEnums.cs", Directory, g_GamePrefix);
+	filePath = std::format("{0:}\\Decima.{1:}.AllEnums.cs", Directory, m_GameTypePrefix);
 
 	if (fopen_s(&m_FileHandle, filePath.c_str(), "w") == 0)
 	{
@@ -181,7 +181,7 @@ void RTTICSharpExporter::ExportFileHeader()
 	Print("#pragma warning disable CS0649 // warning CS0649: 'member' is never assigned to, and will always have its default value 'value'.\n");
 	Print("#pragma warning disable CS0108 // warning CS0108: 'class' hides inherited member 'member'. Use the new keyword if hiding was intended.\n");
 	Print("\n");
-	Print("namespace Decima.{0:}\n{{", g_GamePrefix);
+	Print("namespace Decima.{0:}\n{{", m_GameTypePrefix);
 	Print(data);
 }
 
@@ -193,10 +193,10 @@ void RTTICSharpExporter::ExportFileFooter()
 	Print(data);
 }
 
-void RTTICSharpExporter::ExportRTTIEnum(const RTTIEnum *Type)
+void RTTICSharpExporter::ExportRTTIEnum(const HRZ::RTTIEnum *Type)
 {
 	// Attributes/decl
-	Print("[RTTI.Serializable(0x{0:X}, GameType.{1:})]\n", Type->GetCoreBinaryTypeId(), g_GamePrefix);
+	Print("[RTTI.Serializable(0x{0:X}, GameType.{1:})]\n", Type->GetCoreBinaryTypeId(), m_GameTypePrefix);
 	Print("public enum {0:} : {1:}\n{{\n", Type->GetSymbolName(), EnumTypeToString(Type));
 
 	// Members
@@ -230,7 +230,7 @@ void RTTICSharpExporter::ExportRTTIEnum(const RTTIEnum *Type)
 	Print("}}\n\n");
 }
 
-void RTTICSharpExporter::ExportRTTIClass(const RTTIClass *Type)
+void RTTICSharpExporter::ExportRTTIClass(const HRZ::RTTIClass *Type)
 {
 	// C# doesn't support multiple base classes, so pick one based on the order in RTTI data and treat the others as members (manual composition)
 	auto inheritance = Type->ClassInheritance();
@@ -265,7 +265,7 @@ void RTTICSharpExporter::ExportRTTIClass(const RTTIClass *Type)
 	//
 	// [RTTI.Serializable(0xDC3D43D192F22E9B, GameType.HZD)]
 	//
-	Print("[RTTI.Serializable(0x{0:X}, GameType.{1:})]\n", Type->GetCoreBinaryTypeId(), g_GamePrefix);
+	Print("[RTTI.Serializable(0x{0:X}, GameType.{1:})]\n", Type->GetCoreBinaryTypeId(), m_GameTypePrefix);
 	Print("{0:}\n{{\n", fullDecl);
 
 	//
@@ -327,7 +327,7 @@ void RTTICSharpExporter::ExportRTTIClass(const RTTIClass *Type)
 	Print("}}\n\n");
 }
 
-bool RTTICSharpExporter::IsBaseClassSuperfluous(const RTTIClass *Type)
+bool RTTICSharpExporter::IsBaseClassSuperfluous(const HRZ::RTTIClass *Type)
 {
 	// Returns true if this type and all subtypes have no members listed in the binary format
 	for (auto& member : Type->ClassMembers())
@@ -345,7 +345,7 @@ bool RTTICSharpExporter::IsBaseClassSuperfluous(const RTTIClass *Type)
 	return true;
 }
 
-bool RTTICSharpExporter::IsMemberNameDuplicated(const RTTIClass *Type, const RTTIClass::MemberEntry *MemberInfo)
+bool RTTICSharpExporter::IsMemberNameDuplicated(const HRZ::RTTIClass *Type, const HRZ::RTTIClass::MemberEntry *MemberInfo)
 {
 	for (auto& member : Type->ClassMembers())
 	{
@@ -359,7 +359,7 @@ bool RTTICSharpExporter::IsMemberNameDuplicated(const RTTIClass *Type, const RTT
 	return false;
 }
 
-std::string_view RTTICSharpExporter::EnumTypeToString(const RTTIEnum *Type)
+std::string_view RTTICSharpExporter::EnumTypeToString(const HRZ::RTTIEnum *Type)
 {
 	switch (Type->m_EnumUnderlyingTypeSize)
 	{
