@@ -19,7 +19,7 @@ public:
 	ID3D12Device *m_RawDevice;
 
 	uint32_t m_MinimumWaveLaneCount;
-	bool m_ShaderModelTierSupported;
+	bool m_ShaderModelTier6Supported;
 	bool m_DebugInterfaceEnabled;
 	uint64_t m_ResourceUsageCounters[3];
 	bool m_DebugBreadcrumbsEnabled;
@@ -39,7 +39,7 @@ public:
 
 	static RenderingDeviceDX12& Instance()
 	{
-		return *Offsets::Resolve<RenderingDeviceDX12 *>(0x2D28AA0);
+		return *Offsets::ResolveID<"RenderingDeviceDX12::Instance", RenderingDeviceDX12 *>();
 	}
 };
 assert_offset(RenderingDeviceDX12, m_Device, 0x0);

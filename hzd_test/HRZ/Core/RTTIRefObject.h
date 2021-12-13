@@ -33,7 +33,7 @@ public:
 
 	void DecRef()
 	{
-		Offsets::Call<0x02F5F00, void(*)(RTTIRefObject *)>(this);
+		Offsets::CallID<"RTTIRefObject::DecRef", void(*)(RTTIRefObject *)>(this);
 	}
 };
 assert_size(RTTIRefObject, 0x20);

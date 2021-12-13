@@ -201,7 +201,6 @@ public:
 					id = gameModule->m_SlowMotionManager->AddTimescaleModifier(Scale, 1.0f, 0.0f);
 			};
 
-
 			ImGui::Text("Days Passed: %u", worldState->m_DayNightCycleCount);
 			ImGui::Text("Current Time: %02u:%02u", hour, minute);
 
@@ -340,7 +339,7 @@ public:
 			if (auto debugSettings = Application::Instance().m_DebugSettings; debugSettings)
 			{
 				if (ImGui::MenuItem("Enable Damage Logging"))
-					Offsets::Call<0x1263BA0, void(*)(void *, bool)>(nullptr, true);
+					Offsets::CallID<"ToggleDamageLogging", void(*)(void *, bool)>(nullptr, true);
 				ImGui::MenuItem("Enable Player Cover", "", &debugSettings->m_PlayerCoverEnabled);
 				ImGui::MenuItem("Show Debug Coordinates", "", &debugSettings->m_DrawDebugCoordinates);
 				ImGui::MenuItem("Disable Inactivity Check", "", &debugSettings->m_DisableInactivityCheck);

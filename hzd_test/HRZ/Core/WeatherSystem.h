@@ -53,7 +53,7 @@ public:
 
 	void SetWeatherOverride(const WeatherSetup *Setup, float TransitionTime, int Unknown)
 	{
-		Offsets::Call<0x04EEB50, void(*)(WeatherSystem *, const WeatherSetup *, float, int)>(this, Setup, TransitionTime, Unknown);
+		Offsets::CallID<"WeatherSystem::SetWeatherOverride", void(*)(WeatherSystem *, const WeatherSetup *, float, int)>(this, Setup, TransitionTime, Unknown);
 	}
 };
 assert_offset(WeatherSystem, m_SimulationRenderEffectResource, 0x160);

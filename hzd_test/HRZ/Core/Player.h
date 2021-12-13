@@ -55,7 +55,7 @@ public:
 	// WARNING: Do NOT call this function while other entity locks are held. It can deadlock the main thread.
 	CameraEntity *GetLastActivatedCamera() const
 	{
-		return Offsets::Call<0x0C267E0, CameraEntity *(*)(const Player *)>(this);
+		return Offsets::CallID<"Player::GetLastActivatedCamera", CameraEntity *(*)(const Player *)>(this);
 	}
 
 	static Player *GetLocalPlayer(int Index = 0)

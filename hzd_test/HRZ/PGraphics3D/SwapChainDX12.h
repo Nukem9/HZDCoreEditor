@@ -44,14 +44,16 @@ public:
 	ID3D12Fence *m_PresentFence;				// 0x38
 	HANDLE m_FenceEventHandle;					// 0x40
 	uint32_t m_CurrentFrameIndex;				// 0x48 First frame is index 1
-	BackBuffer m_BackBuffers[BackBufferCount];	// 0x50
+	uint32_t m_PresentRefreshCount;				// 0x4C DXGI_FRAME_STATISTICS
+	uint32_t m_PresentRefreshesMissed;			// 0x50
+	BackBuffer m_BackBuffers[BackBufferCount];	// 0x58
 
-	bool m_Initialized;							// 0xC8
-	uint32_t m_BaseWidth;						// 0xCC
-	uint32_t m_BaseHeight;						// 0xD0
-	uint32_t m_RefreshRate;						// 0xD4
-	uint16_t m_UnknownD8;						// 0xD8
-	bool m_DisplayAllowsTearing;				// 0xDA
+	bool m_Initialized;							// 0xD0
+	uint32_t m_BaseWidth;						// 0xD4
+	uint32_t m_BaseHeight;						// 0xD8
+	uint32_t m_RefreshRate;						// 0xDC
+	uint16_t m_UnknownD8;						// 0xE0
+	bool m_DisplayAllowsTearing;				// 0xE2
 
 	bool Present()
 	{
@@ -61,10 +63,9 @@ public:
 assert_offset(SwapChainDX12, m_RenderingConfig, 0x0);
 assert_offset(SwapChainDX12, m_SystemWindow, 0x10);
 assert_offset(SwapChainDX12, m_NativeWindowHandle, 0x20);
-assert_offset(SwapChainDX12, m_BackBuffers, 0x50);
-assert_offset(SwapChainDX12, m_BaseWidth, 0xCC);
-assert_offset(SwapChainDX12, m_BaseHeight, 0xD0);
-assert_offset(SwapChainDX12, m_DisplayAllowsTearing, 0xDA);
-assert_size(SwapChainDX12, 0xE0);
+assert_offset(SwapChainDX12, m_BackBuffers, 0x58);
+assert_offset(SwapChainDX12, m_BaseWidth, 0xD4);
+assert_offset(SwapChainDX12, m_DisplayAllowsTearing, 0xE2);
+assert_size(SwapChainDX12, 0xE8);
 
 }

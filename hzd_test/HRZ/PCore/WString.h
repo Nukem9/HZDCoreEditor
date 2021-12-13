@@ -29,27 +29,27 @@ private:
 public:
 	WString()
 	{
-		Offsets::Call<0x012DCF0, WString *(*)(WString *)>(this);
-	}
-
-	WString(const WString& Other) : WString()
-	{
-		Offsets::Call<0x012DD30, WString *(*)(WString *, const WString&)>(this, Other);
+		Offsets::CallID<"WString::Ctor", WString *(*)(WString *)>(this);
 	}
 
 	WString(const wchar_t *Value)
 	{
-		Offsets::Call<0x012D970, WString *(*)(WString *, const wchar_t *)>(this, Value);
+		Offsets::CallID<"WString::CtorCString", WString *(*)(WString *, const wchar_t *)>(this, Value);
+	}
+
+	WString(const WString& Other) : WString()
+	{
+		Offsets::CallID<"WString::AssignFromOther", WString *(*)(WString *, const WString&)>(this, Other);
 	}
 
 	~WString()
 	{
-		Offsets::Call<0x012DD10, void(*)(WString *)>(this);
+		Offsets::CallID<"WString::Dtor", void(*)(WString *)>(this);
 	}
 
 	WString& operator=(const WString& Other)
 	{
-		Offsets::Call<0x012DD30, WString *(*)(WString *, const WString&)>(this, Other);
+		Offsets::CallID<"WString::AssignFromOther", WString *(*)(WString *, const WString&)>(this, Other);
 		return *this;
 	}
 
@@ -76,7 +76,7 @@ public:
 	String EncodeUTF8() const
 	{
 		String str;
-		Offsets::Call<0x0129930, void(*)(const WString *, String&)>(this, str);
+		Offsets::CallID<"WString::EncodeUTF8", void(*)(const WString *, String&)>(this, str);
 
 		return str;
 	}

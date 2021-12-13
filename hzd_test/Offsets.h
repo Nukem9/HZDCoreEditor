@@ -26,7 +26,7 @@ struct LiteralHash
 	LiteralHash() = delete;
 
 	template<size_t Size>
-	consteval LiteralHash(const char(&Value)[Size]) : Value(FNV1A(Value, Size))
+	consteval LiteralHash(const char(&Value)[Size]) : Value(FNV1A(Value, Size - 1))
 	{
 	}
 

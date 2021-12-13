@@ -43,7 +43,7 @@ public:
 
 	static Application& Instance()
 	{
-		return *Offsets::Resolve<Application *>(0x7120E40);
+		return *Offsets::ResolveID<"Application::Instance", Application *>();
 	}
 };
 assert_offset(Application, m_Game, 0x18);

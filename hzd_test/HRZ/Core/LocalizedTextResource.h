@@ -26,7 +26,7 @@ public:
 	WString GetTranslation() const
 	{
 		WString str;
-		Offsets::Call<0x08823C0, void(*)(const LocalizedTextResource *, WString&)>(this, str);
+		Offsets::CallID<"LocalizedTextResource::GetTranslation", void(*)(const LocalizedTextResource *, WString&)>(this, str);
 
 		return str;
 	}

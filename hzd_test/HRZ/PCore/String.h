@@ -29,27 +29,27 @@ private:
 public:
 	String()
 	{
-		Offsets::Call<0x010E860, String *(*)(String *, const char *)>(this, "");
-	}
-
-	String(const String& Other) : String()
-	{
-		Offsets::Call<0x010F000, String *(*)(String *, const String&)>(this, Other);
+		Offsets::CallID<"String::CtorCString", String *(*)(String *, const char *)>(this, "");
 	}
 
 	String(const char *Value)
 	{
-		Offsets::Call<0x010E860, String *(*)(String *, const char *)>(this, Value);
+		Offsets::CallID<"String::CtorCString", String *(*)(String *, const char*)>(this, Value);
+	}
+
+	String(const String& Other) : String()
+	{
+		Offsets::CallID<"String::AssignFromOther", String *(*)(String *, const String&)>(this, Other);
 	}
 
 	~String()
 	{
-		Offsets::Call<0x010EF40, void(*)(String *)>(this);
+		Offsets::CallID<"String::Dtor", void(*)(String *)>(this);
 	}
 
 	String& operator=(const String& Other)
 	{
-		Offsets::Call<0x010F000, String *(*)(String *, const String&)>(this, Other);
+		Offsets::CallID<"String::AssignString", String *(*)(String *, const String&)>(this, Other);
 		return *this;
 	}
 
