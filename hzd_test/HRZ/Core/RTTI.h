@@ -12,6 +12,8 @@ namespace HRZ
 #define DECL_RTTI(Type) extern const RTTI *RTTI_##Type
 #define TYPE_RTTI(Type) static inline auto& TypeInfo = RTTI_##Type
 
+class RTTI;
+class RTTIObject;
 class RTTIPrimitive;
 class RTTIContainer;
 class RTTIEnum;
@@ -173,14 +175,14 @@ class RTTIClass : public RTTI
 public:
 	using ConstructFunctionPfn = void *(*)(void *, void *);
 	using DestructFunctionPfn = void(*)(void *, void *);
-	using DeserializeFromStringPfn = void(*)();
-	using SerializeToStringPfn = void(*)();
+	using DeserializeFromStringPfn = bool(*)(void *Object, String& InText);
+	using SerializeToStringPfn = bool(*)(void *Object, String& OutText);
 	using ExportedSymbolsGetterPfn = const RTTI *(*)();
 
 	class InheritanceEntry
 	{
 	public:
-		RTTI *m_Type;
+		RTTIClass *m_Type;
 		uint32_t m_Offset;
 	};
 	assert_size(InheritanceEntry, 0x10);
@@ -188,7 +190,7 @@ public:
 	class MemberEntry
 	{
 	public:
-		using PropertyValuePfn = void(*)(void *, void *);
+		using PropertyValuePfn = void(*)(void *Object, void *Value);
 
 		enum Flags : uint8_t
 		{
@@ -205,6 +207,7 @@ public:
 
 		bool IsGroupMarker() const;
 		bool IsSaveStateOnly() const;
+		bool IsProperty() const;
 	};
 	assert_offset(MemberEntry, m_Type, 0x0);
 	assert_offset(MemberEntry, m_Offset, 0x8);
@@ -288,20 +291,13 @@ public:
 		return std::span{ m_InheritedMessageTable, m_InheritedMessageCount };
 	}
 
-	bool IsPostLoadCallbackEnabled() const;
+	bool HasPostLoadCallback() const;
 	std::vector<std::tuple<const MemberEntry *, const char *, size_t>> GetCategorizedClassMembers() const;
 
 private:
-	struct SorterEntry
-	{
-		size_t m_DeclOrder;
-		const MemberEntry *m_Type;
-		const char *m_Category;
-		uint32_t m_Offset;
-		bool m_TopLevel;
-	};
+	using MemberEnumCallback = std::function<bool(const RTTIClass::MemberEntry& Member, const char *Category, uint32_t BaseOffset, bool TopLevel)>;
 
-	static void BuildFullClassMemberLayout(const RTTIClass *Type, std::vector<SorterEntry>& Members, uint32_t Offset, bool TopLevel);
+	static bool EnumerateClassMembersByInheritance(const RTTIClass *Type, MemberEnumCallback Callback, uint32_t BaseOffset = 0, bool TopLevel = true);
 };
 assert_offset(RTTIClass, m_MessageHandlerCount, 0x8);
 assert_offset(RTTIClass, m_Size, 0x10);

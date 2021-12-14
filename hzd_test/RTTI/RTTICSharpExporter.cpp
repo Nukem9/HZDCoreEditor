@@ -123,8 +123,8 @@ void RTTICSharpExporter::ExportAll(const std::string_view Directory)
 
 		for (auto& type : sortedTypes)
 		{
-			if (type->AsClass())
-				ExportRTTIClass(type->AsClass());
+			if (auto c = type->AsClass(); c)
+				ExportRTTIClass(c);
 		}
 
 		ExportFileFooter();
@@ -140,8 +140,8 @@ void RTTICSharpExporter::ExportAll(const std::string_view Directory)
 
 		for (auto& type : sortedTypes)
 		{
-			if (type->AsEnum())
-				ExportRTTIEnum(type->AsEnum());
+			if (auto e = type->AsEnum(); e)
+				ExportRTTIEnum(e);
 		}
 
 		ExportFileFooter();
@@ -242,7 +242,7 @@ void RTTICSharpExporter::ExportRTTIClass(const HRZ::RTTIClass *Type)
 		inheritanceDecl = std::format(" : {0:}", inheritance[0].m_Type->GetSymbolName());
 	}
 
-	if (Type->IsPostLoadCallbackEnabled())
+	if (Type->HasPostLoadCallback())
 	{
 		if (!inheritanceDecl.empty())
 			inheritanceDecl += ", RTTI.IExtraBinaryDataCallback";
@@ -283,7 +283,7 @@ void RTTICSharpExporter::ExportRTTIClass(const HRZ::RTTIClass *Type)
 	// Insert fake members from base classes, skipping the first one
 	for (size_t i = 1; i < inheritance.size(); i++)
 	{
-		if (IsBaseClassSuperfluous(inheritance[i].m_Type->AsClass()))
+		if (IsBaseClassSuperfluous(inheritance[i].m_Type))
 			continue;
 
 		Print("\t[RTTI.BaseClass(0x{0:X})] public {1:} @{1:};\n", inheritance[i].m_Offset, inheritance[i].m_Type->GetSymbolName());
@@ -338,7 +338,7 @@ bool RTTICSharpExporter::IsBaseClassSuperfluous(const HRZ::RTTIClass *Type)
 
 	for (auto& base : Type->ClassInheritance())
 	{
-		if (!IsBaseClassSuperfluous(base.m_Type->AsClass()))
+		if (!IsBaseClassSuperfluous(base.m_Type))
 			return false;
 	}
 

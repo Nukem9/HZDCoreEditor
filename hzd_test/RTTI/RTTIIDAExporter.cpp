@@ -379,7 +379,7 @@ void RTTIIDAExporter::ExportGGRTTI()
 				// Regular data member
 				Print("\t{0:} {1:};// 0x{2:X}", member->m_Type->GetSymbolName(), member->m_Name, member->m_Offset);
 
-				if (member->m_PropertyGetter || member->m_PropertySetter)
+				if (member->IsProperty())
 					Print(" (Property)");
 
 				if (member->IsSaveStateOnly())

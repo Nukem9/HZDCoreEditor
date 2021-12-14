@@ -123,7 +123,12 @@ bool RTTIClass::MemberEntry::IsSaveStateOnly() const
 	return (m_Flags & SAVE_STATE_ONLY) == SAVE_STATE_ONLY;
 }
 
-bool RTTIClass::IsPostLoadCallbackEnabled() const
+bool RTTIClass::MemberEntry::IsProperty() const
+{
+	return m_PropertyGetter || m_PropertySetter;
+}
+
+bool RTTIClass::HasPostLoadCallback() const
 {
 	for (auto& event : ClassMessageHandlers())
 	{
@@ -136,8 +141,32 @@ bool RTTIClass::IsPostLoadCallbackEnabled() const
 
 std::vector<std::tuple<const RTTIClass::MemberEntry *, const char *, size_t>> RTTIClass::GetCategorizedClassMembers() const
 {
+	// Build a list of all fields from this class and its parent classes
+	struct SorterEntry
+	{
+		size_t m_DeclOrder;
+		const MemberEntry *m_Type;
+		const char *m_Category;
+		uint32_t m_Offset;
+		bool m_TopLevel;
+	};
+
 	std::vector<SorterEntry> sortedEntries;
-	BuildFullClassMemberLayout(this, sortedEntries, 0, true);
+
+	EnumerateClassMembersByInheritance(this, [&](const RTTIClass::MemberEntry& Member, const char *Category, uint32_t BaseOffset, bool TopLevel)
+	{
+		SorterEntry entry
+		{
+			.m_DeclOrder = sortedEntries.size(),
+			.m_Type = &Member,
+			.m_Category = Category,
+			.m_Offset = BaseOffset + Member.m_Offset,
+			.m_TopLevel = TopLevel,
+		};
+
+		sortedEntries.emplace_back(entry);
+		return false;
+	});
 
 	// Decima's specific quicksort algorithm is mandatory
 	PCore_Quicksort<SorterEntry>(sortedEntries, [](const SorterEntry *A, const SorterEntry *B)
@@ -160,29 +189,26 @@ std::vector<std::tuple<const RTTIClass::MemberEntry *, const char *, size_t>> RT
 	return out;
 }
 
-void RTTIClass::BuildFullClassMemberLayout(const RTTIClass *Type, std::vector<SorterEntry>& Members, uint32_t Offset, bool TopLevel)
+bool RTTIClass::EnumerateClassMembersByInheritance(const RTTIClass *Type, MemberEnumCallback Callback, uint32_t BaseOffset, bool TopLevel)
 {
 	const char *activeCategory = "";
 
 	for (auto& base : Type->ClassInheritance())
-		BuildFullClassMemberLayout(base.m_Type->AsClass(), Members, Offset + base.m_Offset, false);
+	{
+		if (EnumerateClassMembersByInheritance(base.m_Type->AsClass(), Callback, BaseOffset + base.m_Offset, false))
+			return true;
+	}
 
 	for (auto& member : Type->ClassMembers())
 	{
-		if (!member.m_Type)
+		if (member.IsGroupMarker())
 			activeCategory = member.m_Name;
 
-		SorterEntry entry
-		{
-			.m_DeclOrder = Members.size(),
-			.m_Type = &member,
-			.m_Category = activeCategory,
-			.m_Offset = member.m_Offset + Offset,
-			.m_TopLevel = TopLevel,
-		};
-
-		Members.emplace_back(entry);
+		if (Callback(member, activeCategory, BaseOffset, TopLevel))
+			return true;
 	}
+
+	return false;
 }
 
 }

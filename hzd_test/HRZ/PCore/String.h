@@ -49,7 +49,7 @@ public:
 
 	String& operator=(const String& Other)
 	{
-		Offsets::CallID<"String::AssignString", String *(*)(String *, const String&)>(this, Other);
+		Offsets::CallID<"String::AssignFromOther", String *(*)(String *, const String&)>(this, Other);
 		return *this;
 	}
 
@@ -71,6 +71,11 @@ public:
 	size_t length() const
 	{
 		return size();
+	}
+
+	bool empty() const
+	{
+		return size() == 0;
 	}
 
 private:
