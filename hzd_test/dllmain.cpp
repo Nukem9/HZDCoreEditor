@@ -141,6 +141,7 @@ void LoadSignatures()
 		Offsets::MapSignature("String::CtorCString", "48 89 5C 24 10 48 89 6C 24 18 48 89 7C 24 20 41 56 48 83 EC 20 33 FF 48 8B EA 48 89 39 4C 8B F1 48 C7 C3 FF FF FF FF");
 		Offsets::MapSignature("String::Dtor", "40 53 48 83 EC 20 48 8B 19 48 85 DB 74 37 48 83 C3 F0 48 8D");
 		Offsets::MapSignature("String::AssignFromOther", "48 89 5C 24 10 48 89 74 24 18 57 48 83 EC 20 48 8B 39 48 8B F2 48 8B D9 48 3B 3A 74 54");
+		Offsets::MapSignature("String::operatorEquality", "48 89 74 24 10 57 48 83 EC 20 4C 8B 09 48 8B FA 4C 8B 02 48 8B F1 4D 3B C8 75 0D B0 01 48 8B 74 24 38 48 83 C4 20 5F C3 41 8B 40 F8");
 
 		Offsets::MapSignature("WString::Ctor", "B8 01 00 00 00 F0 0F C1 ? ? ? ? 02 48 8D 15 ? ? ? ? 48 8B C1 48 89 11 C3");
 		Offsets::MapSignature("WString::CtorCString", "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 20 33 ED 48 8B F2 8B DD 48 89 29");
@@ -149,7 +150,7 @@ void LoadSignatures()
 		Offsets::MapSignature("WString::EncodeUTF8", "48 89 5C 24 08 48 89 74 24 10 57 48 83 EC 20 48 8B 01 48 8B F2 48 8B D9 48 8B CE 8B 78 08");
 
 		Offsets::MapSignature("Player::GetLocalPlayer", "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 30 48 63 E9 85 C9 0F 85 E2 00 00 00");
-		Offsets::MapAddress("Player::GetLastActivatedCamera", 0x0C29FC0);
+		Offsets::MapAddress("Player::GetLastActivatedCamera", 0x0C2A030);
 
 		Offsets::MapSignature("Entity::AddComponent", "48 89 5C 24 10 48 89 6C 24 18 48 89 74 24 20 57 41 56 41 57 48 83 EC 40 48 8B F9 48 8B F2 48 8B 4A 30");
 		Offsets::MapSignature("Entity::RemoveComponent", "48 8B C4 56 57 48 83 EC 68 83 B9 30 02 00 00 00 48 8B F2 48 8B F9");
@@ -167,9 +168,9 @@ void LoadSignatures()
 		Offsets::MapSignature("ToggleDamageLogging", "40 53 48 83 EC 20 84 D2 0F 84 B9 00 00 00 48 8B 05 ? ? ? ? 33 DB");
 
 		// Globals
-		Offsets::MapAddress("ExportedSymbolGroupArray", 0x2A256F0);
-		Offsets::MapAddress("Application::Instance", 0x7132AF0);
-		Offsets::MapAddress("RenderingDeviceDX12::Instance", 0x2D39E80);
+		Offsets::MapAddress("ExportedSymbolGroupArray", 0x2A2A8F0);
+		Offsets::MapAddress("Application::Instance", 0x7137CF0);
+		Offsets::MapAddress("RenderingDeviceDX12::Instance", 0x2D3F090);
 	}
 }
 
@@ -204,10 +205,10 @@ void ApplyHooks()
 		XUtil::DetourCall(moduleBase + 0x0140A1E, PackFileDevice_MountArchive);
 
 		// Function to set 3rd person camera position
-		XUtil::DetourCall(moduleBase + 0x13AF47C, hk_call_1413AB8FC);
+		XUtil::DetourCall(moduleBase + 0x13AF84C, hk_call_1413AB8FC);
 
 		// Kill one of the out of bounds checks
-		XUtil::PatchMemoryNop(moduleBase + 0x0EF92FD, 2);
+		XUtil::PatchMemoryNop(moduleBase + 0x0EF937D, 2);
 	}
 }
 
