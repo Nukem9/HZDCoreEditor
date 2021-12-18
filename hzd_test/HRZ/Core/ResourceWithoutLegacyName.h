@@ -16,7 +16,7 @@ public:
 
 	virtual const RTTI *GetRTTI() const override;		// 0
 	virtual ~ResourceWithoutLegacyName() override;		// 1
-	virtual String& GetName() override;					// 5
+	virtual String& GetName() const override;			// 5
 	virtual void ResourceWithoutLegacyNameUnknown17();	// 17
 };
 assert_size(ResourceWithoutLegacyName, 0x20);

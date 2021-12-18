@@ -17,7 +17,7 @@ public:
 	virtual const RTTI *GetRTTI() const override;	// 0
 	virtual ~CoreObject() override;					// 1
 	virtual void CoreObjectUnknown04();				// 4
-	virtual String& GetName();						// 5
+	virtual String& GetName() const;				// 5
 	virtual bool CoreObjectUnknown06();				// 6
 	virtual void CoreObjectUnknown07();				// 7
 	virtual void CoreObjectUnknown08();				// 8

@@ -131,7 +131,7 @@ public:
 
 	virtual const RTTI *GetRTTI() const override;													// 0
 	virtual ~Entity() override;																		// 1
-	virtual String& GetName() override;																// 5
+	virtual String& GetName() const override;														// 5
 	virtual void CoreObjectUnknown09() override;													// 9
 	virtual void CoreObjectUnknown10() override;													// 10
 	virtual void CoreObjectUnknown11() override;													// 11

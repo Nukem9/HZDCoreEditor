@@ -66,7 +66,7 @@ public:
 
 	virtual const RTTI *GetRTTI() const override;	// 0
 	virtual ~WeatherSetup() override;				// 1
-	virtual String& GetName() override;				// 5
+	virtual String& GetName() const override;		// 5
 	virtual void SetName(String Name);				// 16
 };
 assert_size(WeatherSetup, 0xD0);

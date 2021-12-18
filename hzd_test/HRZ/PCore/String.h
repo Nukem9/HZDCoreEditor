@@ -53,6 +53,11 @@ public:
 		return *this;
 	}
 
+	bool operator==(const String& Other) const
+	{
+		return Offsets::CallID<"String::operatorEquality", bool(*)(const String&, const String&)>(*this, Other);
+	}
+
 	const char *c_str() const
 	{
 		return m_Data;

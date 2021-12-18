@@ -18,7 +18,7 @@ public:
 
 	virtual const RTTI *GetRTTI() const override;				// 0
 	virtual ~Resource() override;								// 1
-	virtual String& GetName() override;							// 5
+	virtual String& GetName() const override;					// 5
 	virtual void SetName(String Name);							// 17
 };
 assert_size(Resource, 0x28);
