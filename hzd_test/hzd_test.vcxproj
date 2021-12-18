@@ -143,6 +143,17 @@
     <ClInclude Include="HRZ\Core\ResourceWithoutLegacyName.h" />
     <ClInclude Include="HRZ\Core\RTTIBinaryReader.h" />
     <ClInclude Include="HRZ\Core\RTTIRefObject.h" />
+    <ClInclude Include="HRZ\PGraphics3D\CommonDX12.h" />
+    <ClInclude Include="HRZ\PGraphics3D\DataBufferDX12.h" />
+    <ClInclude Include="HRZ\PGraphics3D\HwBuffer.h" />
+    <ClInclude Include="HRZ\PGraphics3D\HwManaged.h" />
+    <ClInclude Include="HRZ\PGraphics3D\HwReferencableBase.h" />
+    <ClInclude Include="HRZ\PGraphics3D\HwResource.h" />
+    <ClInclude Include="HRZ\PGraphics3D\HwTexture.h" />
+    <ClInclude Include="HRZ\PGraphics3D\HwVertexArray.h" />
+    <ClInclude Include="HRZ\PGraphics3D\IRenderDataCallbackObject.h" />
+    <ClInclude Include="HRZ\PGraphics3D\IRenderDataStreamingEventHandler.h" />
+    <ClInclude Include="HRZ\PGraphics3D\TextureDX12.h" />
     <ClInclude Include="Offsets.h" />
     <ClInclude Include="RTTI\RTTIScanner.h" />
     <ClInclude Include="HRZ\Core\SlowMotionManager.h" />

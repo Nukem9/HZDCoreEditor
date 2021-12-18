@@ -293,7 +293,38 @@
     <ClInclude Include="Offsets.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
+    <ClInclude Include="HRZ\PGraphics3D\HwTexture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\PGraphics3D\HwReferencableBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\PGraphics3D\HwManaged.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\PGraphics3D\HwResource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\PGraphics3D\IRenderDataCallbackObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\PGraphics3D\IRenderDataStreamingEventHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\PGraphics3D\TextureDX12.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\PGraphics3D\HwBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\PGraphics3D\DataBufferDX12.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\PGraphics3D\HwVertexArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>    <ClInclude Include="HRZ\PGraphics3D\CommonDX12.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>  </ItemGroup>
   <ItemGroup>
     <None Include="HRZ\Core\RTTI.inl">
       <Filter>Header Files</Filter>
