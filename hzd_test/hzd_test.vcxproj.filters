@@ -293,6 +293,9 @@
     <ClInclude Include="Offsets.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HRZ\Core\Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="HRZ\PGraphics3D\HwTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -322,9 +325,23 @@
     </ClInclude>
     <ClInclude Include="HRZ\PGraphics3D\HwVertexArray.h">
       <Filter>Header Files</Filter>
-    </ClInclude>    <ClInclude Include="HRZ\PGraphics3D\CommonDX12.h">
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\VertexArrayResource.h">
       <Filter>Header Files</Filter>
-    </ClInclude>  </ItemGroup>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\PlayerGame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\DebugUI\FocusEditorWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\FocusComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\PGraphics3D\CommonDX12.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
   <ItemGroup>
     <None Include="HRZ\Core\RTTI.inl">
       <Filter>Header Files</Filter>

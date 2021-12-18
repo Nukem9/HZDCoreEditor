@@ -123,6 +123,7 @@
     <ClInclude Include="HRZ\Core\DebugSettings.h" />
     <ClInclude Include="HRZ\Core\Entity.h" />
     <ClInclude Include="HRZ\Core\EntityComponent.h" />
+    <ClInclude Include="HRZ\Core\FocusComponent.h" />
     <ClInclude Include="HRZ\Core\FRange.h" />
     <ClInclude Include="HRZ\Core\GameModule.h" />
     <ClInclude Include="HRZ\Core\HumanoidInventory.h" />
@@ -136,6 +137,7 @@
     <ClInclude Include="HRZ\Core\NetReplicatedObject.h" />
     <ClInclude Include="HRZ\Core\PhysicsCollisionListener.h" />
     <ClInclude Include="HRZ\Core\Player.h" />
+    <ClInclude Include="HRZ\Core\PlayerGame.h" />
     <ClInclude Include="HRZ\Core\PrefetchList.h" />
     <ClInclude Include="HRZ\Core\PropertyContainer.h" />
     <ClInclude Include="HRZ\Core\PropertyContainerData.h" />
@@ -143,6 +145,8 @@
     <ClInclude Include="HRZ\Core\ResourceWithoutLegacyName.h" />
     <ClInclude Include="HRZ\Core\RTTIBinaryReader.h" />
     <ClInclude Include="HRZ\Core\RTTIRefObject.h" />
+    <ClInclude Include="HRZ\Core\Texture.h" />
+    <ClInclude Include="HRZ\Core\VertexArrayResource.h" />
     <ClInclude Include="HRZ\PGraphics3D\CommonDX12.h" />
     <ClInclude Include="HRZ\PGraphics3D\DataBufferDX12.h" />
     <ClInclude Include="HRZ\PGraphics3D\HwBuffer.h" />

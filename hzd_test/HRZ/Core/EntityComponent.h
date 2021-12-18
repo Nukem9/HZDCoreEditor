@@ -93,7 +93,7 @@ public:
 	Array<EntityComponent *> m_Components;		// Grouped by component type
 	Array<RTTI::TypeId> m_ComponentRTTITypes;	// Sorted for quick binary searches. Each entry index corresponds to a m_Components entry.
 
-	bool GetFirstComponentIndexByType(const RTTI *Type, size_t& Index)
+	bool GetFirstComponentIndexByType(const RTTI *Type, size_t& Index) const
 	{
 		// Binary search on array by finding the lowest bound first (multiple entries with the same type are possible)
 		ptrdiff_t lowBound = 0;
@@ -118,7 +118,7 @@ public:
 		return m_Components[Index]->GetRTTI()->IsKindOf(Type);
 	}
 
-	EntityComponent *FindComponentByType(const RTTI *Type)
+	EntityComponent *FindComponentByType(const RTTI *Type) const
 	{
 		if (size_t index; GetFirstComponentIndexByType(Type, index))
 			return m_Components[index];
@@ -126,8 +126,22 @@ public:
 		return nullptr;
 	}
 
+	EntityComponent *FindComponentByResourceName(const String& Name) const
+	{
+		for (auto& component : m_Components)
+		{
+			if (!component->m_Resource)
+				continue;
+
+			if (component->m_Resource->GetName() == Name)
+				return component;
+		}
+
+		return nullptr;
+	}
+
 	template<typename T>
-	T *FindComponent()
+	T *FindComponent() const
 	{
 		return static_cast<T *>(FindComponentByType(T::TypeInfo));
 	}
