@@ -1,11 +1,11 @@
 #pragma once
 
-#include <d3d12.h>
 #include <dxgi.h>
 
 #include "../../Offsets.h"
-
 #include "../PCore/Common.h"
+
+#include "CommonDX12.h"
 
 namespace HRZ
 {
@@ -21,7 +21,7 @@ public:
 	uint32_t m_MinimumWaveLaneCount;
 	bool m_ShaderModelTier6Supported;
 	bool m_DebugInterfaceEnabled;
-	uint64_t m_ResourceUsageCounters[3];
+	uint64_t m_ResourceUsageCounters[(int)EDX12HeapType::Count];
 	bool m_DebugBreadcrumbsEnabled;
 
 	HashMap<uint32_t, ID3D12Heap *> m_HeapTable;
@@ -35,7 +35,7 @@ public:
 	char _pad90[0x10];
 
 	SharedLock m_CommandListTableLock;
-	Array<ID3D12CommandList *> m_CommandListTable[6];
+	Array<ID3D12CommandList *> m_CommandListTable[(int)ED3D12CommandListType::Count];
 
 	static RenderingDeviceDX12& Instance()
 	{
