@@ -74,7 +74,7 @@ void ScanForRTTIStructures()
 		}
 		else if (auto asClass = rtti->AsClass(); asClass)
 		{
-			if (!isRdataSegment(asClass->m_Name))
+			if (!isRdataSegment(asClass->m_Name) || asClass->m_Alignment <= 0)
 				continue;
 		}
 		else

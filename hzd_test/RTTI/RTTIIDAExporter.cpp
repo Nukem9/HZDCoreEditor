@@ -128,15 +128,15 @@ void RTTIIDAExporter::ExportGGRTTIStructures()
 		REFL_MEMBER(m_ParentType);
 		REFL_MEMBER(m_DeserializeString);
 		REFL_MEMBER(m_SerializeString);
-		REFL_MEMBER(m_SwapValues);
-		REFL_MEMBER(m_TestEqualityValues);
+		REFL_MEMBER(m_AssignValue);
+		REFL_MEMBER(m_TestEquality);
 		REFL_MEMBER(m_Constructor);
-		REFL_MEMBER(m_UnknownFunction1);
+		REFL_MEMBER(m_Destructor);
 		REFL_MEMBER(m_SwapEndianness);
-		REFL_MEMBER(m_AssignValues);
-		REFL_MEMBER(m_GetSize);
+		REFL_MEMBER(m_TryAssignValue);
+		REFL_MEMBER(m_GetSizeInMemory);
 		REFL_MEMBER(m_CompareByStrings);
-		REFL_MEMBER(m_UnknownFunction2);
+		REFL_MEMBER(m_UnknownFunction);
 	});
 
 	REFL_STRUCT(RTTIContainer,
@@ -274,7 +274,21 @@ void RTTIIDAExporter::ExportGGRTTI()
 			pprint(type, "create_struct({0:#X}, -1, \"{1:}\");", rttiTypeName);
 			pprint(type, "set_name({0:#X}, \"RTTI_{1:}_{0:X}\", SN_CHECK);// {2:#X}", symbolName, type->GetCoreBinaryTypeId());
 
-			if (auto asEnum = type->AsEnum(); asEnum)
+			if (auto asPrimitive = type->AsPrimitive(); asPrimitive)
+			{
+				pprint(asPrimitive->m_DeserializeString, "set_name({0:#X}, \"{1:}::RTTIDeserializeString_{0:X}\");", symbolName);
+				pprint(asPrimitive->m_SerializeString, "set_name({0:#X}, \"{1:}::RTTISerializeString_{0:X}\");", symbolName);
+				pprint(asPrimitive->m_AssignValue, "set_name({0:#X}, \"{1:}::RTTIAssignValue_{0:X}\");", symbolName);
+				pprint(asPrimitive->m_TestEquality, "set_name({0:#X}, \"{1:}::RTTITestEquality_{0:X}\");", symbolName);
+				pprint(asPrimitive->m_Constructor, "set_name({0:#X}, \"{1:}::RTTIConstructor_{0:X}\");", symbolName);
+				pprint(asPrimitive->m_Destructor, "set_name({0:#X}, \"{1:}::RTTIDestructor_{0:X}\");", symbolName);
+				pprint(asPrimitive->m_SwapEndianness, "set_name({0:#X}, \"{1:}::RTTISwapEndianness_{0:X}\");", symbolName);
+				pprint(asPrimitive->m_TryAssignValue, "set_name({0:#X}, \"{1:}::RTTITryAssignValue_{0:X}\");", symbolName);
+				pprint(asPrimitive->m_GetSizeInMemory, "set_name({0:#X}, \"{1:}::RTTIGetSizeInMemory_{0:X}\");", symbolName);
+				pprint(asPrimitive->m_CompareByStrings, "set_name({0:#X}, \"{1:}::RTTICompareByStrings_{0:X}\");", symbolName);
+				pprint(asPrimitive->m_UnknownFunction, "set_name({0:#X}, \"{1:}::RTTIUnknownFunction_{0:X}\");", symbolName);
+			}
+			else if (auto asEnum = type->AsEnum(); asEnum)
 			{
 				exportTable(asEnum->EnumMembers(), symbolName, "Values");// m_Values
 			}

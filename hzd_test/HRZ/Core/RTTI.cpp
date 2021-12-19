@@ -15,6 +15,14 @@ bool RTTI::IsKindOf(const RTTI *Other) const
 	return static_cast<TypeId>(m_RuntimeTypeId1 - Other->m_RuntimeTypeId1) <= Other->m_RuntimeTypeId2;
 }
 
+const RTTIPrimitive *RTTI::AsPrimitive() const
+{
+	if (m_InfoType != INFO_TYPE_PRIMITIVE)
+		return nullptr;
+
+	return static_cast<const RTTIPrimitive *>(this);
+}
+
 const RTTIContainer *RTTI::AsContainer() const
 {
 	if (m_InfoType != INFO_TYPE_REFERENCE && m_InfoType != INFO_TYPE_CONTAINER)
@@ -187,28 +195,6 @@ std::vector<std::tuple<const RTTIClass::MemberEntry *, const char *, size_t>> RT
 	}
 
 	return out;
-}
-
-bool RTTIClass::EnumerateClassMembersByInheritance(const RTTIClass *Type, MemberEnumCallback Callback, uint32_t BaseOffset, bool TopLevel)
-{
-	const char *activeCategory = "";
-
-	for (auto& base : Type->ClassInheritance())
-	{
-		if (EnumerateClassMembersByInheritance(base.m_Type->AsClass(), Callback, BaseOffset + base.m_Offset, false))
-			return true;
-	}
-
-	for (auto& member : Type->ClassMembers())
-	{
-		if (member.IsGroupMarker())
-			activeCategory = member.m_Name;
-
-		if (Callback(member, activeCategory, BaseOffset, TopLevel))
-			return true;
-	}
-
-	return false;
 }
 
 }

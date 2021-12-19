@@ -63,6 +63,7 @@ public:
 	bool IsExactKindOf(const RTTI *Other) const;
 	bool IsKindOf(const RTTI *Other) const;
 
+	const RTTIPrimitive *AsPrimitive() const;
 	const RTTIContainer *AsContainer() const;
 	const RTTIEnum *AsEnum() const;
 	const RTTIClass *AsClass() const;
@@ -99,27 +100,27 @@ class RTTIPrimitive : public RTTI
 {
 public:
 	// Type 0 = Primitive (float, int, bool, String)
-	char _pad0[0x8];			// +0x8
-	const char *m_Name;			// +0x10
-	RTTI *m_ParentType;			// +0x18
-	void *m_DeserializeString;	// +0x20
-	void *m_SerializeString;	// +0x28
-	void *m_SwapValues;			// +0x30
-	void *m_TestEqualityValues;	// +0x38
-	void *m_Constructor;		// +0x40
-	void *m_UnknownFunction1;	// +0x48
-	void *m_SwapEndianness;		// +0x50
-	void *m_AssignValues;		// +0x58
-	void *m_GetSize;			// +0x60
-	void *m_CompareByStrings;	// +0x68
-	void *m_UnknownFunction2;	// +0x70
+	char _pad0[0x8];																// +0x8
+	const char *m_Name;																// +0x10
+	RTTI *m_ParentType;																// +0x18
+	bool (* m_DeserializeString)(const String& InText, void *Object);				// +0x20
+	bool (* m_SerializeString)(void *Object, String& OutText);						// +0x28
+	void (* m_AssignValue)(void *Lhs, const void *Rhs);								// +0x30
+	bool (* m_TestEquality)(const void *Lhs, const void *Rhs);						// +0x38
+	void (* m_Constructor)(void *Unused, void *Object);								// +0x40
+	void (* m_Destructor)(void *Unused, void *Object);								// +0x48
+	bool (* m_SwapEndianness)(const void *Source, const void *Dest, uint8_t Type);	// +0x50
+	bool (* m_TryAssignValue)(void *Lhs, const void *Rhs);							// +0x58 No clue what this is doing for String
+	size_t (* m_GetSizeInMemory)(const void *Object);								// +0x60
+	bool (* m_CompareByStrings)(const void *Object, const char *, const char *);	// +0x68 Purpose unknown
+	void (* m_UnknownFunction)();													// +0x70 Unused?
 };
 assert_offset(RTTIPrimitive, m_Name, 0x10);
 assert_offset(RTTIPrimitive, m_ParentType, 0x18);
 assert_offset(RTTIPrimitive, m_DeserializeString, 0x20);
-assert_offset(RTTIPrimitive, m_UnknownFunction1, 0x48);
+assert_offset(RTTIPrimitive, m_Destructor, 0x48);
 assert_offset(RTTIPrimitive, m_CompareByStrings, 0x68);
-assert_offset(RTTIPrimitive, m_UnknownFunction2, 0x70);
+assert_offset(RTTIPrimitive, m_UnknownFunction, 0x70);
 assert_size(RTTIPrimitive, 0x78);
 
 class RTTIContainer : public RTTI
@@ -175,7 +176,7 @@ class RTTIClass : public RTTI
 public:
 	using ConstructFunctionPfn = void *(*)(void *, void *);
 	using DestructFunctionPfn = void(*)(void *, void *);
-	using DeserializeFromStringPfn = bool(*)(void *Object, String& InText);
+	using DeserializeFromStringPfn = bool(*)(void *Object, const String& InText);
 	using SerializeToStringPfn = bool(*)(void *Object, String& OutText);
 	using ExportedSymbolsGetterPfn = const RTTI *(*)();
 
@@ -294,10 +295,51 @@ public:
 	bool HasPostLoadCallback() const;
 	std::vector<std::tuple<const MemberEntry *, const char *, size_t>> GetCategorizedClassMembers() const;
 
-private:
-	using MemberEnumCallback = std::function<bool(const RTTIClass::MemberEntry& Member, const char *Category, uint32_t BaseOffset, bool TopLevel)>;
+	template<typename T>
+	bool GetMemberValue(const void *Object, const char *Name, T *OutValue) const
+	{
+		return EnumerateClassMembersByInheritance(this, [&](const RTTIClass::MemberEntry& Member, const char *, uint32_t BaseOffset, bool)
+		{
+			if (Member.IsGroupMarker())
+				return false;
 
-	static bool EnumerateClassMembersByInheritance(const RTTIClass *Type, MemberEnumCallback Callback, uint32_t BaseOffset = 0, bool TopLevel = true);
+			if (strcmp(Name, Member.m_Name) != 0)
+				return false;
+
+			if (Member.IsProperty())
+				__debugbreak();
+
+			if (OutValue)
+				*OutValue = *reinterpret_cast<T *>(reinterpret_cast<uintptr_t>(Object) + BaseOffset + Member.m_Offset);
+
+			return true;
+		});
+	}
+
+private:
+	template<typename Func>
+	requires (std::is_invocable_r_v<bool, Func, const RTTIClass::MemberEntry& /*Member*/, const char */*Category*/, uint32_t /*BaseOffset*/, bool /*TopLevel*/>)
+	static bool EnumerateClassMembersByInheritance(const RTTIClass *Type, const Func& Callback, uint32_t BaseOffset = 0, bool TopLevel = true)
+	{
+		const char *activeCategory = "";
+
+		for (auto& base : Type->ClassInheritance())
+		{
+			if (EnumerateClassMembersByInheritance(base.m_Type, Callback, BaseOffset + base.m_Offset, false))
+				return true;
+		}
+
+		for (auto& member : Type->ClassMembers())
+		{
+			if (member.IsGroupMarker())
+				activeCategory = member.m_Name;
+
+			if (Callback(member, activeCategory, BaseOffset, TopLevel))
+				return true;
+		}
+
+		return false;
+	}
 };
 assert_offset(RTTIClass, m_MessageHandlerCount, 0x8);
 assert_offset(RTTIClass, m_Size, 0x10);
