@@ -1,32 +1,36 @@
 #pragma once
 
-#include <stdint.h>
-
 #include "Util.h"
+#include "HashContainerBase.h"
 
 namespace HRZ
 {
 
 template<typename Key, typename Value>
-struct HashMapKVP
+struct HashMapKVP : std::pair<Key, Value>
 {
-	Key m_Key;
-	Value m_Value;
 };
 
 template<typename Key, typename Value>
-class HashMap
+class HashMap : public HashContainerBase<HashMapKVP<const Key, Value>, uint32_t>
 {
+public:
 	using key_type = Key;
 	using mapped_type = Value;
+	using value_type = HashMapKVP<const Key, Value>;
+
+	using reference = value_type&;
+	using const_reference = const value_type&;
 
 public:
-	key_type **m_Table;
-	uint32_t m_Count;
-	uint32_t m_AllocatedCount;
+	HashMap() = default;
+	HashMap(const HashMap&) = delete;
+	~HashMap() = delete;
+	HashMap& operator=(const HashMap&) = delete;
 };
 
-using __xTestHashMap = HashMap<uint32_t, void *>;
-assert_size(__xTestHashMap, 0x10);
+using __TestHashMap = HashMap<uint32_t, void *>;
+assert_size(__TestHashMap, 0x10);
+assert_size(__TestHashMap::value_type, 0x10);
 
 }

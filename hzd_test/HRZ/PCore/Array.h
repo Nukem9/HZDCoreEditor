@@ -10,70 +10,129 @@ namespace HRZ
 template<typename T>
 class Array
 {
+public:
+	template<bool Const, typename PtrType = std::conditional_t<Const, const_pointer, pointer>>
+	class internal_iterator;
+
+	using value_type = T;
+	using size_type = size_t;
+	using difference_type = ptrdiff_t;
+
+	using reference = value_type&;
+	using const_reference = const value_type&;
+
+	using pointer = value_type*;
+	using const_pointer = const value_type*;
+
+	using iterator = internal_iterator<true>;
+	using const_iterator = internal_iterator<false>;
+
 private:
-	int m_Count;
-	int m_Capacity;
-	T *m_Entries;
+	uint32_t m_Count = 0;
+	uint32_t m_Capacity = 0;
+	T *m_Entries = nullptr;
 
 public:
-	class iterator
+	template<bool Const, typename PtrType>
+	class internal_iterator
 	{
 	private:
-		T *m_Current;
+		PtrType m_Current = nullptr;
 
 	public:
-		explicit iterator(T *Current) : m_Current(Current)
+		internal_iterator() = delete;
+
+		explicit internal_iterator(PtrType Current) : m_Current(Current)
 		{
 		}
 
-		iterator& operator++()
+		internal_iterator& operator++()
 		{
 			m_Current++;
 			return *this;
 		}
 
-		bool operator==(iterator Other) const
+		bool operator==(const internal_iterator& Other) const
 		{
 			return m_Current == Other.m_Current;
 		}
 
-		bool operator!=(iterator Other) const
+		bool operator!=(const internal_iterator& Other) const
 		{
 			return m_Current != Other.m_Current;
 		}
 
-		T& operator *() const
+		template<typename = void>
+		requires(!Const)
+		reference operator*()
+		{
+			return *m_Current;
+		}
+
+		const_reference operator*() const
 		{
 			return *m_Current;
 		}
 	};
 
-	iterator begin() const
+	Array() = default;
+
+	Array(const Array&) = delete;
+
+	~Array()
+	{
+		if constexpr (!std::is_trivially_destructible_v<T>)
+		{
+			for (int i = 0; i < m_Count; i++)
+				std::destroy_at(&m_Entries[i]);
+		}
+
+		Offsets::Call<0x0376D20, void(*)(void *)>(m_Entries);
+	}
+
+	iterator begin()
 	{
 		return iterator(&m_Entries[0]);
 	}
 
-	iterator end() const
+	iterator end()
 	{
 		return iterator(&m_Entries[m_Count]);
 	}
 
-	T *data() const
+	const_iterator begin() const
+	{
+		return const_iterator(&m_Entries[0]);
+	}
+
+	const_iterator end() const
+	{
+		return const_iterator(&m_Entries[m_Count]);
+	}
+
+	T *data()
 	{
 		return m_Entries;
 	}
 
-	size_t size() const
+	bool empty() const
+	{
+		return m_Count != 0;
+	}
+
+	size_type size() const
 	{
 		return m_Count;
 	}
 
-	T& operator[](size_t Pos)
+	Array& operator=(const Array&) = delete;
+
+	reference operator[](size_type Pos)
 	{
 		return m_Entries[Pos];
 	}
 
-	const T& operator[](size_t Pos) const
+	const_reference operator[](size_type Pos) const
 	{
 		return m_Entries[Pos];
 	}
@@ -86,7 +145,7 @@ void PCore_Quicksort_Impl(T*& Left, T*& Right, const std::function<bool(const T 
 		return;
 
 	PivotSeed = 0x19660D * PivotSeed + 0x3C6EF35F;
-	uint32_t pivot = (PivotSeed >> 8) % (Right - Left);
+	const uint32_t pivot = (PivotSeed >> 8) % (Right - Left);
 
 	std::swap(Left[pivot], Right[0]);
 

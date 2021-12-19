@@ -147,6 +147,8 @@
     <ClInclude Include="HRZ\Core\RTTIRefObject.h" />
     <ClInclude Include="HRZ\Core\Texture.h" />
     <ClInclude Include="HRZ\Core\VertexArrayResource.h" />
+    <ClInclude Include="HRZ\PCore\HashContainerBase.h" />
+    <ClInclude Include="HRZ\PCore\HashSet.h" />
     <ClInclude Include="HRZ\PGraphics3D\CommonDX12.h" />
     <ClInclude Include="HRZ\PGraphics3D\DataBufferDX12.h" />
     <ClInclude Include="HRZ\PGraphics3D\HwBuffer.h" />

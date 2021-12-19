@@ -9,3 +9,4 @@
 #include "UUIDRef.h"
 #include "Array.h"
 #include "HashMap.h"
+#include "HashSet.h"

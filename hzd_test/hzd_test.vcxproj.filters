@@ -341,7 +341,12 @@
     <ClInclude Include="HRZ\PGraphics3D\CommonDX12.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
+    <ClInclude Include="HRZ\PCore\HashContainerBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\PCore\HashSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>  </ItemGroup>
   <ItemGroup>
     <None Include="HRZ\Core\RTTI.inl">
       <Filter>Header Files</Filter>
