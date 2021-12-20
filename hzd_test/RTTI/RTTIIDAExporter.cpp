@@ -350,6 +350,8 @@ void RTTIIDAExporter::ExportGGRTTI()
 		{
 			Print("// Binary type = 0x{0:X}\n", asEnum->GetCoreBinaryTypeId());
 			Print("// sizeof() = 0x{0:X}\n", asEnum->m_EnumUnderlyingTypeSize);
+			if (asEnum->m_InfoType == RTTI::InfoType::EnumFlags)
+				Print("// Enum flags\n");
 			Print("enum {0:}\n{{\n", asEnum->GetSymbolName());
 
 			for (auto& member : asEnum->EnumMembers())

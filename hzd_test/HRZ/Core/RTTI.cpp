@@ -1,3 +1,5 @@
+#include <format>
+
 #include "RTTI.h"
 
 namespace HRZ
@@ -17,7 +19,7 @@ bool RTTI::IsKindOf(const RTTI *Other) const
 
 const RTTIPrimitive *RTTI::AsPrimitive() const
 {
-	if (m_InfoType != INFO_TYPE_PRIMITIVE)
+	if (m_InfoType != InfoType::Primitive)
 		return nullptr;
 
 	return static_cast<const RTTIPrimitive *>(this);
@@ -25,7 +27,7 @@ const RTTIPrimitive *RTTI::AsPrimitive() const
 
 const RTTIContainer *RTTI::AsContainer() const
 {
-	if (m_InfoType != INFO_TYPE_REFERENCE && m_InfoType != INFO_TYPE_CONTAINER)
+	if (m_InfoType != InfoType::Reference && m_InfoType != InfoType::Container)
 		return nullptr;
 
 	return static_cast<const RTTIContainer *>(this);
@@ -33,7 +35,7 @@ const RTTIContainer *RTTI::AsContainer() const
 
 const RTTIEnum *RTTI::AsEnum() const
 {
-	if (m_InfoType != INFO_TYPE_ENUM && m_InfoType != INFO_TYPE_ENUM_2)
+	if (m_InfoType != InfoType::Enum && m_InfoType != InfoType::EnumFlags)
 		return nullptr;
 
 	return static_cast<const RTTIEnum *>(this);
@@ -41,7 +43,7 @@ const RTTIEnum *RTTI::AsEnum() const
 
 const RTTIClass *RTTI::AsClass() const
 {
-	if (m_InfoType != INFO_TYPE_CLASS)
+	if (m_InfoType != InfoType::Class)
 		return nullptr;
 
 	return static_cast<const RTTIClass *>(this);
@@ -51,8 +53,8 @@ const RTTI *RTTI::GetContainedType() const
 {
 	switch (m_InfoType)
 	{
-	case INFO_TYPE_REFERENCE:
-	case INFO_TYPE_CONTAINER:
+	case InfoType::Reference:
+	case InfoType::Container:
 		return static_cast<const RTTIContainer *>(this)->m_Type;
 	}
 
@@ -63,13 +65,13 @@ std::string_view RTTI::GetRTTITypeName() const
 {
 	switch (m_InfoType)
 	{
-	case INFO_TYPE_PRIMITIVE: return "RTTIPrimitive";
-	case INFO_TYPE_REFERENCE: return "RTTIContainer";
-	case INFO_TYPE_CONTAINER: return "RTTIContainer";
-	case INFO_TYPE_ENUM: return "RTTIEnum";
-	case INFO_TYPE_CLASS: return "RTTIClass";
-	case INFO_TYPE_ENUM_2: return "RTTIEnum";
-	case INFO_TYPE_POD: return "RTTIPOD";
+	case InfoType::Primitive: return "RTTIPrimitive";
+	case InfoType::Reference: return "RTTIContainer";
+	case InfoType::Container: return "RTTIContainer";
+	case InfoType::Enum: return "RTTIEnum";
+	case InfoType::Class: return "RTTIClass";
+	case InfoType::EnumFlags: return "RTTIEnum";
+	case InfoType::POD: return "RTTIPOD";
 	}
 
 	return "";
@@ -79,35 +81,29 @@ std::string RTTI::GetSymbolName() const
 {
 	switch (m_InfoType)
 	{
-	case INFO_TYPE_PRIMITIVE:
+	case InfoType::Primitive:
 		return static_cast<const RTTIPrimitive *>(this)->m_Name;
 
-	case INFO_TYPE_REFERENCE:
-	case INFO_TYPE_CONTAINER:
+	case InfoType::Reference:
+	case InfoType::Container:
 	{
-		char refType[1024];
 		auto container = static_cast<const RTTIContainer *>(this);
 
 		if (!strcmp(container->m_Data->m_Name, "cptr"))
-			sprintf_s(refType, "CPtr<%s>", container->m_Type->GetSymbolName().c_str());
-		else
-			sprintf_s(refType, "%s<%s>", container->m_Data->m_Name, container->m_Type->GetSymbolName().c_str());
+			return std::format("CPtr<{0:}>", container->m_Type->GetSymbolName());
 
-		return refType;
+		return std::format("{0:}{1:}", container->m_Data->m_Name, container->m_Type->GetSymbolName());
 	}
 
-	case INFO_TYPE_ENUM:
-	case INFO_TYPE_ENUM_2:
+	case InfoType::Enum:
+	case InfoType::EnumFlags:
 		return static_cast<const RTTIEnum *>(this)->m_Name;
 
-	case INFO_TYPE_CLASS:
+	case InfoType::Class:
 		return static_cast<const RTTIClass *>(this)->m_Name;
 
-	case INFO_TYPE_POD:
-		char podType[16];
-		sprintf_s(podType, "POD%d", static_cast<const RTTIPOD *>(this)->m_Size);
-
-		return podType;
+	case InfoType::POD:
+		return std::format("POD{0:}", static_cast<const RTTIPOD *>(this)->m_Size);
 	}
 
 	return "";
@@ -119,6 +115,131 @@ uint64_t RTTI::GetCoreBinaryTypeId() const
 	Offsets::CallID<"RTTI::GetCoreBinaryTypeId", void(*)(uint64_t *, const RTTI *, __int64)>(hashedData, this, 2);
 
 	return hashedData[0];
+}
+
+std::optional<std::string> RTTI::SerializeObject(const void *Object) const
+{
+	switch (m_InfoType)
+	{
+	case InfoType::Primitive:
+		return static_cast<const RTTIPrimitive *>(this)->SerializeObject(Object);
+
+	case InfoType::Reference:
+	case InfoType::Container:
+		return static_cast<const RTTIContainer *>(this)->SerializeObject(Object);
+
+	case InfoType::Enum:
+	case InfoType::EnumFlags:
+		return static_cast<const RTTIEnum *>(this)->SerializeObject(Object);
+
+	case InfoType::Class:
+		return static_cast<const RTTIClass *>(this)->SerializeObject(Object);
+
+	case InfoType::POD:
+		return std::nullopt;
+	}
+
+	return std::nullopt;
+}
+
+bool RTTI::DeserializeObject(void *Object, const std::string_view InText) const
+{
+	switch (m_InfoType)
+	{
+	case InfoType::Primitive:
+		return static_cast<const RTTIPrimitive *>(this)->DeserializeObject(Object, InText);
+
+	case InfoType::Reference:
+	case InfoType::Container:
+		return static_cast<const RTTIContainer *>(this)->DeserializeObject(Object, InText);
+
+	case InfoType::Enum:
+	case InfoType::EnumFlags:
+		return static_cast<const RTTIEnum *>(this)->DeserializeObject(Object, InText);
+
+	case InfoType::Class:
+		return static_cast<const RTTIClass *>(this)->DeserializeObject(Object, InText);
+
+	case InfoType::POD:
+		return false;
+	}
+
+	return false;
+}
+
+std::optional<std::string> RTTIPrimitive::SerializeObject(const void *Object) const
+{
+	if (String str; m_SerializeString && m_SerializeString(Object, str))
+		return str.c_str();
+
+	return std::nullopt;
+}
+
+bool RTTIPrimitive::DeserializeObject(void *Object, const std::string_view InText) const
+{
+	return (m_DeserializeString && m_DeserializeString(InText, Object));
+}
+
+std::optional<std::string> RTTIContainer::SerializeObject(const void *Object) const
+{
+	if (m_InfoType == InfoType::Reference)
+		return std::nullopt;
+
+	if (m_Data)
+	{
+		auto containerData = static_cast<const ContainerData *>(m_Data);
+
+		if (String str; containerData->m_SerializeString && containerData->m_SerializeString(Object, this, str))
+			return str.c_str();
+	}
+
+	return std::nullopt;
+}
+
+bool RTTIContainer::DeserializeObject(void *Object, const std::string_view InText) const
+{
+	if (m_InfoType == InfoType::Reference)
+		return false;
+
+	if (m_Data)
+	{
+		auto containerData = static_cast<const ContainerData *>(m_Data);
+
+		return (containerData->m_DeserializeString && containerData->m_DeserializeString(InText, this, Object));
+	}
+
+	return false;
+}
+
+std::optional<std::string> RTTIEnum::SerializeObject(const void *Object) const
+{
+	if (m_InfoType == InfoType::EnumFlags)
+		__debugbreak();
+
+	for (auto& member : EnumMembers())
+	{
+		if (memcmp(&member.m_Value, Object, m_EnumUnderlyingTypeSize) == 0)
+			return member.m_Name;
+	}
+
+	return std::nullopt;
+}
+
+bool RTTIEnum::DeserializeObject(void *Object, const std::string_view InText) const
+{
+	if (m_InfoType == InfoType::EnumFlags)
+		__debugbreak();
+
+	for (auto& member : EnumMembers())
+	{
+		if (member.m_Name == InText)
+		{
+			memcpy(Object, &member.m_Value, m_EnumUnderlyingTypeSize);
+			return true;
+		}
+	}
+
+	return false;
 }
 
 bool RTTIClass::MemberEntry::IsGroupMarker() const
@@ -161,7 +282,7 @@ std::vector<std::tuple<const RTTIClass::MemberEntry *, const char *, size_t>> RT
 
 	std::vector<SorterEntry> sortedEntries;
 
-	EnumerateClassMembersByInheritance(this, [&](const RTTIClass::MemberEntry& Member, const char *Category, uint32_t BaseOffset, bool TopLevel)
+	this->EnumerateClassMembersByInheritance([&](const RTTIClass::MemberEntry& Member, const char *Category, uint32_t BaseOffset, bool TopLevel)
 	{
 		SorterEntry entry
 		{
@@ -195,6 +316,47 @@ std::vector<std::tuple<const RTTIClass::MemberEntry *, const char *, size_t>> RT
 	}
 
 	return out;
+}
+
+std::optional<std::string> RTTIClass::SerializeObject(const void *Object) const
+{
+	// Check if a dedicated decoding function was implemented
+	if (m_SerializeString)
+	{
+		if (String str; m_SerializeString(Object, str))
+			return str.c_str();
+
+		return std::nullopt;
+	}
+
+	// Split each member by a newline
+	std::string finalDecl;
+
+	EnumerateClassMembersByInheritance([&](const RTTIClass::MemberEntry& Member, const char *, uint32_t BaseOffset, bool)
+	{
+		// TODO: Properties need to be handled
+		if (Member.IsGroupMarker() || Member.IsProperty())
+			return false;
+
+		auto memberObject = reinterpret_cast<const void *>(reinterpret_cast<uintptr_t>(Object) + BaseOffset + Member.m_Offset);
+		auto decl = Member.m_Type->SerializeObject(memberObject);
+
+		if (decl)
+			finalDecl += decl.value().append("\n");
+
+		return false;
+	});
+
+	return finalDecl;
+}
+
+bool RTTIClass::DeserializeObject(void *Object, const std::string_view InText) const
+{
+	if (m_DeserializeString)
+		return m_DeserializeString(Object, InText);
+
+	__debugbreak();
+	return false;
 }
 
 }

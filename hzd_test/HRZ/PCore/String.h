@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <string_view>
 
 #include "../../Offsets.h"
 
@@ -35,6 +36,11 @@ public:
 	String(const char *Value)
 	{
 		Offsets::CallID<"String::CtorCString", String *(*)(String *, const char*)>(this, Value);
+	}
+
+	String(const std::string_view Value)
+	{
+		__debugbreak();
 	}
 
 	String(const String& Other) : String()

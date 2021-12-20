@@ -57,7 +57,7 @@ void ScanForRTTIStructures()
 	{
 		auto rtti = reinterpret_cast<const RTTI *>(result);
 
-		if (rtti->m_InfoType < RTTI::INFO_TYPE_PRIMITIVE || rtti->m_InfoType > RTTI::INFO_TYPE_POD)
+		if (rtti->m_InfoType < RTTI::InfoType::Primitive || rtti->m_InfoType > RTTI::InfoType::POD)
 			continue;
 
 		// Validate pointers before blindly adding them to the collection. RTTI entries typically have

@@ -18,9 +18,9 @@ void RTTICSharpExporter::ExportAll(const std::string_view Directory)
 	{
 		switch (type->m_InfoType)
 		{
-		case HRZ::RTTI::INFO_TYPE_CLASS:
-		case HRZ::RTTI::INFO_TYPE_ENUM:
-		case HRZ::RTTI::INFO_TYPE_ENUM_2:
+		case HRZ::RTTI::InfoType::Class:
+		case HRZ::RTTI::InfoType::Enum:
+		case HRZ::RTTI::InfoType::EnumFlags:
 			sortedTypes.emplace_back(type);
 			break;
 		}

@@ -3,6 +3,7 @@
 #include <span>
 #include <string>
 #include <vector>
+#include <optional>
 
 #include "../PCore/Common.h"
 
@@ -28,15 +29,15 @@ public:
 		InvalidTypeId = 0xFFFF,
 	};
 
-	enum InfoType : uint8_t
+	enum class InfoType : uint8_t
 	{
-		INFO_TYPE_PRIMITIVE = 0,
-		INFO_TYPE_REFERENCE = 1,
-		INFO_TYPE_CONTAINER = 2,
-		INFO_TYPE_ENUM = 3,
-		INFO_TYPE_CLASS = 4,
-		INFO_TYPE_ENUM_2 = 5,
-		INFO_TYPE_POD = 6,
+		Primitive = 0,
+		Reference = 1,
+		Container = 2,
+		Enum = 3,
+		Class = 4,
+		EnumFlags = 5,
+		POD = 6,
 	};
 
 	TypeId m_RuntimeTypeId1;
@@ -73,6 +74,9 @@ public:
 	std::string GetSymbolName() const;
 	uint64_t GetCoreBinaryTypeId() const;
 
+	std::optional<std::string> SerializeObject(const void *Object) const;
+	bool DeserializeObject(void *Object, const std::string_view InText) const;
+
 	template<typename T, typename U>
 	static T *Cast(U *Other)
 	{
@@ -104,7 +108,7 @@ public:
 	const char *m_Name;																// +0x10
 	RTTI *m_ParentType;																// +0x18
 	bool (* m_DeserializeString)(const String& InText, void *Object);				// +0x20
-	bool (* m_SerializeString)(void *Object, String& OutText);						// +0x28
+	bool (* m_SerializeString)(const void *Object, String& OutText);				// +0x28
 	void (* m_AssignValue)(void *Lhs, const void *Rhs);								// +0x30
 	bool (* m_TestEquality)(const void *Lhs, const void *Rhs);						// +0x38
 	void (* m_Constructor)(void *Unused, void *Object);								// +0x40
@@ -114,6 +118,9 @@ public:
 	size_t (* m_GetSizeInMemory)(const void *Object);								// +0x60
 	bool (* m_CompareByStrings)(const void *Object, const char *, const char *);	// +0x68 Purpose unknown
 	void (* m_UnknownFunction)();													// +0x70 Unused?
+
+	std::optional<std::string> SerializeObject(const void *Object) const;
+	bool DeserializeObject(void *Object, const std::string_view InText) const;
 };
 assert_offset(RTTIPrimitive, m_Name, 0x10);
 assert_offset(RTTIPrimitive, m_ParentType, 0x18);
@@ -126,16 +133,30 @@ assert_size(RTTIPrimitive, 0x78);
 class RTTIContainer : public RTTI
 {
 public:
-	class ContainerData
+	struct Data
 	{
-	public:
 		const char *m_Name;
 	};
 
-	// Type 1 = Reference/Pointer (UUIDRef<>, StreamingRef<>, WeakPtr<>)
-	// Type 2 = Container (Array<float>)
-	RTTI *m_Type;			// +0x8
-	ContainerData *m_Data;	// +0x10
+	struct RefData : Data
+	{
+	};
+
+	struct ContainerData : Data
+	{
+		char _pad8[0x88];
+		bool (* m_SerializeString)(const void *Object, const RTTI *RTTIType, String& OutText);	// +0x90
+		bool (* m_DeserializeString)(const String& InText, const RTTI *RTTIType, void *Object);	// +0x98
+	};
+	assert_offset(ContainerData, m_SerializeString, 0x90);
+
+	// Type 1 = Reference/Pointer (Ref<>, UUIDRef<>, StreamingRef<>, WeakPtr<>)
+	// Type 2 = Container (Array<float>, HashMap<>, HashSet<>)
+	RTTI *m_Type;	// +0x8
+	Data *m_Data;	// +0x10
+
+	std::optional<std::string> SerializeObject(const void *Object) const;
+	bool DeserializeObject(void *Object, const std::string_view InText) const;
 };
 assert_offset(RTTIContainer, m_Type, 0x8);
 assert_offset(RTTIContainer, m_Data, 0x10);
@@ -166,6 +187,9 @@ public:
 	{
 		return std::span{ m_Values, m_EnumMemberCount };
 	}
+
+	std::optional<std::string> SerializeObject(const void *Object) const;
+	bool DeserializeObject(void *Object, const std::string_view InText) const;
 };
 assert_offset(RTTIEnum, m_Name, 0x10);
 assert_offset(RTTIEnum, m_Values, 0x18);
@@ -177,7 +201,7 @@ public:
 	using ConstructFunctionPfn = void *(*)(void *, void *);
 	using DestructFunctionPfn = void(*)(void *, void *);
 	using DeserializeFromStringPfn = bool(*)(void *Object, const String& InText);
-	using SerializeToStringPfn = bool(*)(void *Object, String& OutText);
+	using SerializeToStringPfn = bool(*)(const void *Object, String& OutText);
 	using ExportedSymbolsGetterPfn = const RTTI *(*)();
 
 	class InheritanceEntry
@@ -191,8 +215,6 @@ public:
 	class MemberEntry
 	{
 	public:
-		using PropertyValuePfn = void(*)(void *Object, void *Value);
-
 		enum Flags : uint8_t
 		{
 			SAVE_STATE_ONLY = 2,
@@ -202,8 +224,8 @@ public:
 		uint16_t m_Offset;
 		Flags m_Flags;
 		const char *m_Name;
-		PropertyValuePfn m_PropertyGetter;
-		PropertyValuePfn m_PropertySetter;
+		void (* m_PropertyGetter)(const void *Object, void *Value);
+		void (* m_PropertySetter)(void *Object, const void *Value);
 		char _pad0[0x10];
 
 		bool IsGroupMarker() const;
@@ -295,10 +317,13 @@ public:
 	bool HasPostLoadCallback() const;
 	std::vector<std::tuple<const MemberEntry *, const char *, size_t>> GetCategorizedClassMembers() const;
 
+	std::optional<std::string> SerializeObject(const void *Object) const;
+	bool DeserializeObject(void *Object, const std::string_view InText) const;
+
 	template<typename T>
 	bool GetMemberValue(const void *Object, const char *Name, T *OutValue) const
 	{
-		return EnumerateClassMembersByInheritance(this, [&](const RTTIClass::MemberEntry& Member, const char *, uint32_t BaseOffset, bool)
+		return this->EnumerateClassMembersByInheritance([&](const RTTIClass::MemberEntry& Member, const char *, uint32_t BaseOffset, bool)
 		{
 			if (Member.IsGroupMarker())
 				return false;
@@ -316,20 +341,19 @@ public:
 		});
 	}
 
-private:
 	template<typename Func>
 	requires (std::is_invocable_r_v<bool, Func, const RTTIClass::MemberEntry& /*Member*/, const char */*Category*/, uint32_t /*BaseOffset*/, bool /*TopLevel*/>)
-	static bool EnumerateClassMembersByInheritance(const RTTIClass *Type, const Func& Callback, uint32_t BaseOffset = 0, bool TopLevel = true)
+	bool EnumerateClassMembersByInheritance(const Func& Callback, uint32_t BaseOffset = 0, bool TopLevel = true) const
 	{
 		const char *activeCategory = "";
 
-		for (auto& base : Type->ClassInheritance())
+		for (auto& base : ClassInheritance())
 		{
-			if (EnumerateClassMembersByInheritance(base.m_Type, Callback, BaseOffset + base.m_Offset, false))
+			if (base.m_Type->EnumerateClassMembersByInheritance(Callback, BaseOffset + base.m_Offset, false))
 				return true;
 		}
 
-		for (auto& member : Type->ClassMembers())
+		for (auto& member : ClassMembers())
 		{
 			if (member.IsGroupMarker())
 				activeCategory = member.m_Name;
