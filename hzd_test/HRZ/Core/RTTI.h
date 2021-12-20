@@ -7,10 +7,12 @@
 
 #include "../PCore/Common.h"
 
+#include "RTTILazyResolver.h"
+
 namespace HRZ
 {
 
-#define DECL_RTTI(Type) extern const RTTI *RTTI_##Type
+#define DECL_RTTI(Type) static const RTTILazyResolver RTTI_##Type = RTTILazyResolver(#Type)
 #define TYPE_RTTI(Type) static inline auto& TypeInfo = RTTI_##Type
 
 class RTTI;

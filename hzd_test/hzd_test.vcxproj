@@ -96,6 +96,7 @@
     <ClCompile Include="common.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="HRZ\Core\RTTI.cpp" />
+    <ClCompile Include="HRZ\Core\RTTILazyResolver.cpp" />
     <ClCompile Include="Offsets.cpp" />
     <ClCompile Include="RTTI\RTTIScanner.cpp" />
     <ClCompile Include="HRZ\DebugUI\ComponentViewWindow.cpp" />
@@ -144,6 +145,7 @@
     <ClInclude Include="HRZ\Core\Resource.h" />
     <ClInclude Include="HRZ\Core\ResourceWithoutLegacyName.h" />
     <ClInclude Include="HRZ\Core\RTTIBinaryReader.h" />
+    <ClInclude Include="HRZ\Core\RTTILazyResolver.h" />
     <ClInclude Include="HRZ\Core\RTTIRefObject.h" />
     <ClInclude Include="HRZ\Core\Texture.h" />
     <ClInclude Include="HRZ\Core\VertexArrayResource.h" />
@@ -204,9 +206,6 @@
     <ClInclude Include="RTTI\RTTICSharpExporter.h" />
     <ClInclude Include="RTTI\RTTIIDAExporter.h" />
     <ClInclude Include="XUtil.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="HRZ\Core\RTTI.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

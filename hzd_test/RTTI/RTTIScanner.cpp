@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "../XUtil.h"
 
 #include "RTTIScanner.h"
@@ -7,18 +9,27 @@
 namespace RTTIScanner
 {
 
-using namespace HRZ;
+std::unordered_set<const HRZ::RTTI *> ScannedRTTITypes;
+std::unordered_set<const HRZ::RTTI *> RegisteredRTTITypes;
 
-std::unordered_set<const RTTI *> ScannedRTTITypes;
-std::unordered_set<const RTTI *> RegisteredRTTITypes;
-
-const std::unordered_set<const RTTI *>& GetAllTypes()
+const std::unordered_set<const HRZ::RTTI *>& GetAllTypes()
 {
 	// If no types are present, try to gather them now
 	if (!ScannedRTTITypes.empty() && RegisteredRTTITypes.empty())
 		RegisterRTTIStructures();
 
 	return RegisteredRTTITypes;
+}
+
+const HRZ::RTTI *GetTypeByName(const std::string_view Name)
+{
+	for (auto rtti : GetAllTypes())
+	{
+		if (rtti->GetSymbolName() == Name)
+			return rtti;
+	}
+
+	return nullptr;
 }
 
 void ExportAll(const std::string_view Directory, const std::string_view GameTypePrefix)
@@ -55,9 +66,9 @@ void ScanForRTTIStructures()
 
 	for (uintptr_t result : results)
 	{
-		auto rtti = reinterpret_cast<const RTTI *>(result);
+		auto rtti = reinterpret_cast<const HRZ::RTTI *>(result);
 
-		if (rtti->m_InfoType < RTTI::InfoType::Primitive || rtti->m_InfoType > RTTI::InfoType::POD)
+		if (rtti->m_InfoType < HRZ::RTTI::InfoType::Primitive || rtti->m_InfoType > HRZ::RTTI::InfoType::POD)
 			continue;
 
 		// Validate pointers before blindly adding them to the collection. RTTI entries typically have
@@ -87,7 +98,7 @@ void ScanForRTTIStructures()
 	}
 }
 
-void RegisterTypeInfoRecursively(const RTTI *Info)
+void RegisterTypeInfoRecursively(const HRZ::RTTI *Info)
 {
 	if (!Info)
 		return;
@@ -125,7 +136,7 @@ void RegisterRTTIStructures()
 {
 	RegisteredRTTITypes.clear();
 
-	for (auto& rtti : ScannedRTTITypes)
+	for (auto rtti : ScannedRTTITypes)
 		RegisterTypeInfoRecursively(rtti);
 
 	ScannedRTTITypes.clear();

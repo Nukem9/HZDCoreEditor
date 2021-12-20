@@ -5,8 +5,6 @@
 namespace HRZ
 {
 
-#include "RTTI.inl"
-
 bool RTTI::IsExactKindOf(const RTTI *Other) const
 {
 	return this == Other;
