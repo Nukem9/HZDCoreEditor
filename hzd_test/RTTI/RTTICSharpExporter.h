@@ -18,6 +18,7 @@ public:
 	RTTICSharpExporter() = delete;
 	RTTICSharpExporter(const RTTICSharpExporter&) = delete;
 	RTTICSharpExporter(const std::unordered_set<const HRZ::RTTI *>& Types, const std::string_view GameTypePrefix);
+	RTTICSharpExporter& operator=(const RTTICSharpExporter&) = delete;
 
 	void ExportAll(const std::string_view Directory);
 

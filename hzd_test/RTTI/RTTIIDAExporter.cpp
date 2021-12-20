@@ -233,8 +233,6 @@ void RTTIIDAExporter::ExportGGRTTIStructures()
 
 void RTTIIDAExporter::ExportGGRTTI()
 {
-	std::unordered_set<const RTTI *> visitedRTTITypes;
-
 	// RTTI metadata
 	for (auto& type : m_Types)
 	{
@@ -248,7 +246,7 @@ void RTTIIDAExporter::ExportGGRTTI()
 			Print("\n");
 		};
 
-		auto exportTable = [&]<typename T>(const std::span<T>& Span, std::string_view Symbol, std::string_view Name)
+		auto exportTable = [&]<typename T>(const std::span<T>&Span, std::string_view Symbol, std::string_view Name)
 		{
 			if (Span.empty())
 				return;
@@ -260,85 +258,63 @@ void RTTIIDAExporter::ExportGGRTTI()
 			pprint(Span.data(), "set_name({0:#X}, \"{1:}::{2:}_{0:X}\");", Symbol, Name);
 		};
 
-		std::function<void(const RTTI *)> visitType = [&](const RTTI *Type)
+		auto rttiTypeName = type->GetRTTITypeName();
+		auto symbolName = type->GetSymbolName();
+
+		pprint(type, "del_items({0:#X}, DELIT_SIMPLE, get_struc_size(get_struc_id(\"{1:}\")));", rttiTypeName);
+		pprint(type, "create_struct({0:#X}, -1, \"{1:}\");", rttiTypeName);
+		pprint(type, "set_name({0:#X}, \"RTTI_{1:}_{0:X}\", SN_CHECK);// {2:#X}", symbolName, type->GetCoreBinaryTypeId());
+
+		if (auto asPrimitive = type->AsPrimitive(); asPrimitive)
 		{
-			if (visitedRTTITypes.contains(type))
-				return;
-
-			visitedRTTITypes.emplace(Type);
-
-			auto rttiTypeName = type->GetRTTITypeName();
-			auto symbolName = type->GetSymbolName();
-
-			pprint(type, "del_items({0:#X}, DELIT_SIMPLE, get_struc_size(get_struc_id(\"{1:}\")));", rttiTypeName);
-			pprint(type, "create_struct({0:#X}, -1, \"{1:}\");", rttiTypeName);
-			pprint(type, "set_name({0:#X}, \"RTTI_{1:}_{0:X}\", SN_CHECK);// {2:#X}", symbolName, type->GetCoreBinaryTypeId());
-
-			if (auto asPrimitive = type->AsPrimitive(); asPrimitive)
+			pprint(asPrimitive->m_DeserializeString, "set_name({0:#X}, \"{1:}::RTTIDeserializeString_{0:X}\");", symbolName);
+			pprint(asPrimitive->m_SerializeString, "set_name({0:#X}, \"{1:}::RTTISerializeString_{0:X}\");", symbolName);
+			pprint(asPrimitive->m_AssignValue, "set_name({0:#X}, \"{1:}::RTTIAssignValue_{0:X}\");", symbolName);
+			pprint(asPrimitive->m_TestEquality, "set_name({0:#X}, \"{1:}::RTTITestEquality_{0:X}\");", symbolName);
+			pprint(asPrimitive->m_Constructor, "set_name({0:#X}, \"{1:}::RTTIConstructor_{0:X}\");", symbolName);
+			pprint(asPrimitive->m_Destructor, "set_name({0:#X}, \"{1:}::RTTIDestructor_{0:X}\");", symbolName);
+			pprint(asPrimitive->m_SwapEndianness, "set_name({0:#X}, \"{1:}::RTTISwapEndianness_{0:X}\");", symbolName);
+			pprint(asPrimitive->m_TryAssignValue, "set_name({0:#X}, \"{1:}::RTTITryAssignValue_{0:X}\");", symbolName);
+			pprint(asPrimitive->m_GetSizeInMemory, "set_name({0:#X}, \"{1:}::RTTIGetSizeInMemory_{0:X}\");", symbolName);
+			pprint(asPrimitive->m_CompareByStrings, "set_name({0:#X}, \"{1:}::RTTICompareByStrings_{0:X}\");", symbolName);
+			pprint(asPrimitive->m_UnknownFunction, "set_name({0:#X}, \"{1:}::RTTIUnknownFunction_{0:X}\");", symbolName);
+		}
+		else if (auto asEnum = type->AsEnum(); asEnum)
+		{
+			exportTable(asEnum->EnumMembers(), symbolName, "Values");// m_Values
+		}
+		else if (auto asClass = type->AsClass(); asClass)
+		{
+			for (auto& message : asClass->ClassMessageHandlers())
 			{
-				pprint(asPrimitive->m_DeserializeString, "set_name({0:#X}, \"{1:}::RTTIDeserializeString_{0:X}\");", symbolName);
-				pprint(asPrimitive->m_SerializeString, "set_name({0:#X}, \"{1:}::RTTISerializeString_{0:X}\");", symbolName);
-				pprint(asPrimitive->m_AssignValue, "set_name({0:#X}, \"{1:}::RTTIAssignValue_{0:X}\");", symbolName);
-				pprint(asPrimitive->m_TestEquality, "set_name({0:#X}, \"{1:}::RTTITestEquality_{0:X}\");", symbolName);
-				pprint(asPrimitive->m_Constructor, "set_name({0:#X}, \"{1:}::RTTIConstructor_{0:X}\");", symbolName);
-				pprint(asPrimitive->m_Destructor, "set_name({0:#X}, \"{1:}::RTTIDestructor_{0:X}\");", symbolName);
-				pprint(asPrimitive->m_SwapEndianness, "set_name({0:#X}, \"{1:}::RTTISwapEndianness_{0:X}\");", symbolName);
-				pprint(asPrimitive->m_TryAssignValue, "set_name({0:#X}, \"{1:}::RTTITryAssignValue_{0:X}\");", symbolName);
-				pprint(asPrimitive->m_GetSizeInMemory, "set_name({0:#X}, \"{1:}::RTTIGetSizeInMemory_{0:X}\");", symbolName);
-				pprint(asPrimitive->m_CompareByStrings, "set_name({0:#X}, \"{1:}::RTTICompareByStrings_{0:X}\");", symbolName);
-				pprint(asPrimitive->m_UnknownFunction, "set_name({0:#X}, \"{1:}::RTTIUnknownFunction_{0:X}\");", symbolName);
+				pprint(message.m_Callback, "set_name({0:#X}, \"{1:}::{2:}Callback_{0:X}\");", symbolName, message.m_Type->GetSymbolName());
 			}
-			else if (auto asEnum = type->AsEnum(); asEnum)
+
+			for (auto& member : asClass->ClassMembers())
 			{
-				exportTable(asEnum->EnumMembers(), symbolName, "Values");// m_Values
+				if (member.IsGroupMarker())
+					continue;
+
+				pprint(member.m_PropertyGetter, "set_name({0:#X}, \"{1:}::{2:}Getter_{0:X}\");", symbolName, member.m_Name);
+				pprint(member.m_PropertySetter, "set_name({0:#X}, \"{1:}::{2:}Setter_{0:X}\");", symbolName, member.m_Name);
 			}
-			else if (auto asClass = type->AsClass(); asClass)
+
+			for (auto& luaFunc : asClass->ClassLuaFunctions())
 			{
-				for (auto& event : asClass->ClassMessageHandlers())
-				{
-					visitType(event.m_Type);
-
-					pprint(event.m_Callback, "set_name({0:#X}, \"{1:}::{2:}Callback_{0:X}\");", symbolName, event.m_Type->GetSymbolName());
-				}
-
-				for (auto& member : asClass->ClassMembers())
-				{
-					if (!member.m_Type)
-						continue;
-
-					visitType(member.m_Type);
-
-					pprint(member.m_PropertyGetter, "set_name({0:#X}, \"{1:}::{2:}Getter_{0:X}\");", symbolName, member.m_Name);
-					pprint(member.m_PropertySetter, "set_name({0:#X}, \"{1:}::{2:}Setter_{0:X}\");", symbolName, member.m_Name);
-				}
-
-				for (auto& luaFunc : asClass->ClassLuaFunctions())
-				{
-					pprint(luaFunc.m_Function, "set_name({0:#X}, \"{1:}::{2:}Lua_{0:X}\");", symbolName, luaFunc.m_Name);
-				}
-
-				pprint(asClass->m_Constructor, "set_name({0:#X}, \"{1:}::RTTIConstructor_{0:X}\");", symbolName);
-				pprint(asClass->m_Destructor, "set_name({0:#X}, \"{1:}::RTTIDestructor_{0:X}\");", symbolName);
-				pprint(asClass->m_DeserializeString, "set_name({0:#X}, \"{1:}::RTTIDeserializeString_{0:X}\");", symbolName);
-				pprint(asClass->m_SerializeString, "set_name({0:#X}, \"{1:}::RTTISerializeText_{0:X}\");", symbolName);
-				exportTable(asClass->ClassInheritance(), symbolName, "InheritanceTable");// m_InheritanceTable
-				exportTable(asClass->ClassMembers(), symbolName, "MemberTable");// m_MemberTable
-				exportTable(asClass->ClassLuaFunctions(), symbolName, "LuaFunctionTable");// m_LuaFunctionTable
-				exportTable(asClass->ClassMessageHandlers(), symbolName, "MessageHandlerTable");// m_MessageHandlerTable
-				exportTable(asClass->ClassInheritedMessages(), symbolName, "InheritedMessageTable");// m_InheritedMessageTable
-				pprint(asClass->m_GetExportedSymbols, "set_name({0:#X}, \"{1:}::GetExportedSymbols_{0:X}\");", symbolName);
-
-				if (asClass->m_GetExportedSymbols)
-					visitType(asClass->m_GetExportedSymbols());
-
+				pprint(luaFunc.m_Function, "set_name({0:#X}, \"{1:}::{2:}Lua_{0:X}\");", symbolName, luaFunc.m_Name);
 			}
-			else if (auto containedType = type->GetContainedType(); containedType)
-			{
-				visitType(containedType);
-			}
-		};
 
-		visitType(type);
+			pprint(asClass->m_Constructor, "set_name({0:#X}, \"{1:}::RTTIConstructor_{0:X}\");", symbolName);
+			pprint(asClass->m_Destructor, "set_name({0:#X}, \"{1:}::RTTIDestructor_{0:X}\");", symbolName);
+			pprint(asClass->m_DeserializeString, "set_name({0:#X}, \"{1:}::RTTIDeserializeString_{0:X}\");", symbolName);
+			pprint(asClass->m_SerializeString, "set_name({0:#X}, \"{1:}::RTTISerializeText_{0:X}\");", symbolName);
+			exportTable(asClass->ClassInheritance(), symbolName, "InheritanceTable");// m_InheritanceTable
+			exportTable(asClass->ClassMembers(), symbolName, "MemberTable");// m_MemberTable
+			exportTable(asClass->ClassLuaFunctions(), symbolName, "LuaFunctionTable");// m_LuaFunctionTable
+			exportTable(asClass->ClassMessageHandlers(), symbolName, "MessageHandlerTable");// m_MessageHandlerTable
+			exportTable(asClass->ClassInheritedMessages(), symbolName, "InheritedMessageTable");// m_InheritedMessageTable
+			pprint(asClass->m_GetExportedSymbols, "set_name({0:#X}, \"{1:}::GetExportedSymbols_{0:X}\");", symbolName);
+		}
 	}
 
 	Print("/*\n");

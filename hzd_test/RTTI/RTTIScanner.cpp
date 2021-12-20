@@ -106,6 +106,14 @@ void RegisterTypeInfoRecursively(const RTTI *Info)
 		// Then field types
 		for (auto& member : asClass->ClassMembers())
 			RegisterTypeInfoRecursively(member.m_Type);
+
+		// Then message types
+		for (auto& message : asClass->ClassMessageHandlers())
+			RegisterTypeInfoRecursively(message.m_Type);
+
+		// Then exported script symbols
+		if (asClass->m_GetExportedSymbols)
+			RegisterTypeInfoRecursively(asClass->m_GetExportedSymbols());
 	}
 	else if (auto asContainer = Info->AsContainer(); asContainer)
 	{

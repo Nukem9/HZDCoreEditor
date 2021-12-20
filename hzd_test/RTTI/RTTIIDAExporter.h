@@ -20,6 +20,7 @@ public:
 	RTTIIDAExporter() = delete;
 	RTTIIDAExporter(const RTTIIDAExporter&) = delete;
 	RTTIIDAExporter(const std::unordered_set<const HRZ::RTTI *>& Types, const std::string_view GameTypePrefix);
+	RTTIIDAExporter& operator=(const RTTIIDAExporter&) = delete;
 
 	void ExportRTTITypes(const std::string_view Directory);
 	void ExportFullgameTypes(const std::string_view Directory);
