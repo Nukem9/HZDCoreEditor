@@ -16,8 +16,13 @@ private:
 	WeakPtr<T> *m_PreviousRef = nullptr;
 
 public:
+	WeakPtr()
+	{
+	}
+
 	WeakPtr(T *Target) : m_Ptr(Target)
 	{
+		// TODO: m_Ptr should be assigned while a lock is held. Thread safety issue.
 		Acquire();
 	}
 
@@ -31,7 +36,13 @@ public:
 		Release();
 	}
 
-	WeakPtr& operator=(const WeakPtr&) = delete;
+	WeakPtr& operator=(const WeakPtr& Other)
+	{
+		m_Ptr = Other.m_Ptr;
+		Acquire();
+
+		return *this;
+	}
 
 	T *get() const
 	{

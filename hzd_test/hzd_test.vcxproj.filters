@@ -57,6 +57,9 @@
     <ClCompile Include="Offsets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="HRZ\Core\RTTILazyResolver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h">
@@ -341,15 +344,32 @@
     <ClInclude Include="HRZ\PGraphics3D\CommonDX12.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HRZ\Core\ObjectSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\StreamingManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="HRZ\PCore\HashContainerBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HRZ\PCore\HashSet.h">
       <Filter>Header Files</Filter>
-    </ClInclude>  </ItemGroup>
-  <ItemGroup>
-    <None Include="HRZ\Core\RTTI.inl">
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\CoreFileManager.h">
       <Filter>Header Files</Filter>
-    </None>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\WorldNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\RTTILazyResolver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\PCore\WeakPtr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\PCore\StreamingRef.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

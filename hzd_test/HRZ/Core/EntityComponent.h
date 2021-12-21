@@ -55,11 +55,11 @@ class EntityComponent : public RTTIRefObject, public WeakPtrTarget
 public:
 	TYPE_RTTI(EntityComponent);
 
-	Ref<EntityComponentResource> m_Resource;
-	bool m_Unknown38 = false;
-	void *m_Unknown40 = nullptr;
-	Entity *m_Entity = nullptr;
-	uint32_t m_Unknown50 = -1;// Component index?
+	Ref<EntityComponentResource> m_Resource;	// 0x30
+	bool m_Unknown38 = false;					// 0x38
+	void *m_Unknown40 = nullptr;				// 0x40
+	Entity *m_Entity = nullptr;					// 0x48
+	uint32_t m_Unknown50 = -1;					// 0x50 Component index?
 
 	virtual const RTTI *GetRTTI() const override;						// 0
 	virtual ~EntityComponent() override;								// 1

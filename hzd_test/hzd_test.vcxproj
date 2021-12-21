@@ -119,6 +119,7 @@
     <ClInclude Include="HRZ\Core\ClimateBase.h" />
     <ClInclude Include="HRZ\Core\ClimateWeatherState.h" />
     <ClInclude Include="HRZ\Core\ConditionListener.h" />
+    <ClInclude Include="HRZ\Core\CoreFileManager.h" />
     <ClInclude Include="HRZ\Core\CoreObject.h" />
     <ClInclude Include="HRZ\Core\CursorManager.h" />
     <ClInclude Include="HRZ\Core\DebugSettings.h" />
@@ -136,6 +137,7 @@
     <ClInclude Include="HRZ\Core\Module.h" />
     <ClInclude Include="HRZ\Core\Mover.h" />
     <ClInclude Include="HRZ\Core\NetReplicatedObject.h" />
+    <ClInclude Include="HRZ\Core\ObjectSystem.h" />
     <ClInclude Include="HRZ\Core\PhysicsCollisionListener.h" />
     <ClInclude Include="HRZ\Core\Player.h" />
     <ClInclude Include="HRZ\Core\PlayerGame.h" />
@@ -147,8 +149,10 @@
     <ClInclude Include="HRZ\Core\RTTIBinaryReader.h" />
     <ClInclude Include="HRZ\Core\RTTILazyResolver.h" />
     <ClInclude Include="HRZ\Core\RTTIRefObject.h" />
+    <ClInclude Include="HRZ\Core\StreamingManager.h" />
     <ClInclude Include="HRZ\Core\Texture.h" />
     <ClInclude Include="HRZ\Core\VertexArrayResource.h" />
+    <ClInclude Include="HRZ\Core\WorldNode.h" />
     <ClInclude Include="HRZ\PCore\HashContainerBase.h" />
     <ClInclude Include="HRZ\PCore\HashSet.h" />
     <ClInclude Include="HRZ\PCore\StreamingRef.h" />

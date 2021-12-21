@@ -22,6 +22,8 @@ DECL_RTTI(FocusComponentResource);
 class FocusComponentResource : public EntityComponentResource
 {
 public:
+	TYPE_RTTI(FocusComponentResource);
+
 	Ref<EntityResource> m_OutlineEntityResource;
 	float m_OutlineEntityRemoveDelay;
 	Ref<FocusOutlineColorSettings> m_OutlineColorSettings;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../PCore/Util.h"
+#include "../PCore/WeakPtr.h"
 
 #include "RTTI.h"
 
@@ -14,7 +15,7 @@ class WeakPtrTarget
 public:
 	TYPE_RTTI(WeakPtrTarget);
 
-	void *m_UnknownList = nullptr;
+	WeakPtr<WeakPtrTarget> *m_WeakPtrList = nullptr;	// 0x8
 
 	virtual const RTTI *GetRTTI() const;	// 0
 	virtual ~WeakPtrTarget();				// 1
