@@ -20,12 +20,12 @@ namespace HRZ::DebugUI
 class ComponentViewWindow : public Window
 {
 private:
-	EntityComponent *m_Component = nullptr;
+	WeakPtr<EntityComponent> m_Component;
 	bool m_WindowOpen = true;
 	ImGuiTextFilter m_ScratchFilter;
 
 public:
-	ComponentViewWindow(EntityComponent *Component);
+	ComponentViewWindow(WeakPtr<EntityComponent> Component);
 
 	virtual void Render() override;
 	virtual bool Close() override;

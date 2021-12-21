@@ -103,7 +103,7 @@ public:
 	String m_Name;										// +0x38
 	char _pad40[0x8];
 	AIEntity *m_AIEntity;								// +0x48 Pointer is deleted in dtor
-	RecursiveLock m_DataLock;							// +0x50
+	mutable RecursiveLock m_DataLock;					// +0x50
 	char _pad78[0x10];
 	uint32_t m_UpdateStepTicks;							// +0x88
 	char _pad90[0x50];
@@ -123,8 +123,8 @@ public:
 	AIFaction *m_Faction;								// +0x228
 	uint32_t m_Flags;									// +0x230
 	char _pad238[0x8];
-	InstigatorData *m_InstigatorData;					// +0x240 Lock WeakPtr<>
-	char _pad248[0x38];
+	WeakPtr<InstigatorData> m_InstigatorData;			// +0x240 Lock
+	char _pad258[0x28];
 	Ref<AttackEventContext> m_AttackEventContext;		// +0x280 Lock
 	EntityComponentContainer m_Components;				// +0x288 Lock
 	char _pad290[0x18];

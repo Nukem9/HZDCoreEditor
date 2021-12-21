@@ -9,16 +9,19 @@
 namespace HRZ::DebugUI
 {
 
-EntityWindow::EntityWindow(Entity *TargetEntity) : m_Entity(TargetEntity)
+EntityWindow::EntityWindow(WeakPtr<Entity> TargetEntity) : m_Entity(TargetEntity)
 {
 }
 
 void EntityWindow::Render()
 {
+	if (!m_Entity)
+		return;
+
 	ImGui::SetNextWindowSize(ImVec2(850.0f, 760.0f), ImGuiCond_FirstUseEver);
 
 	char windowName[512];
-	sprintf_s(windowName, "Entity \"%s\" (%p)", m_Entity->GetName().c_str(), m_Entity);
+	sprintf_s(windowName, "Entity \"%s\" (%p)", m_Entity->GetName().c_str(), m_Entity.get());
 
 	if (!ImGui::Begin(windowName, &m_WindowOpen))
 	{

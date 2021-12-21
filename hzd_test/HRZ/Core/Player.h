@@ -1,18 +1,17 @@
 #pragma once
 
-#include "../../Offsets.h"
+#include <mutex>
 
+#include "../../Offsets.h"
 #include "../PCore/Common.h"
 
-#include "WeakPtrTarget.h"
+#include "CameraEntity.h"
 #include "NetReplicatedObject.h"
 
 namespace HRZ
 {
 
 class AIFaction;
-class CameraEntity;
-class Entity;
 
 DECL_RTTI(Player);
 
@@ -22,14 +21,15 @@ public:
 	TYPE_RTTI(Player);
 
 	char _pad50[0x8];
-	String m_Name;				// 0x58
-	String m_Unknown60;			// 0x60 Clan tag?
-	Entity *m_PlayerEntity;		// 0x68
-	Entity *m_Entity;			// 0x70
+	String m_Name;							// 0x58
+	String m_Unknown60;						// 0x60 Clan tag?
+	Entity *m_PlayerEntity;					// 0x68
+	Entity *m_Entity;						// 0x70
 	char _pad78[0x8];
-	AIFaction *m_Faction;		// 0x80
-	char _pad88[0x60];
-	RecursiveLock m_DataLock;	// 0xE8
+	AIFaction *m_Faction;					// 0x80
+	char _pad88[0x50];
+	Array<WeakPtr<CameraEntity>> m_Cameras;	// 0xD8
+	mutable RecursiveLock m_DataLock;		// 0xE8
 	char _pad[0x18];
 
 	virtual const RTTI *GetRTTI() const override;			// 0
@@ -55,7 +55,12 @@ public:
 	// WARNING: Do NOT call this function while other entity locks are held. It can deadlock the main thread.
 	CameraEntity *GetLastActivatedCamera() const
 	{
-		return Offsets::CallID<"Player::GetLastActivatedCamera", CameraEntity *(*)(const Player *)>(this);
+		std::lock_guard lock(m_DataLock);
+
+		if (!m_Cameras.empty())
+			return m_Cameras[m_Cameras.size() - 1].get();
+
+		return nullptr;
 	}
 
 	static Player *GetLocalPlayer(int Index = 0)
@@ -68,7 +73,7 @@ assert_offset(Player, m_Unknown60, 0x60);
 assert_offset(Player, m_PlayerEntity, 0x68);
 assert_offset(Player, m_Entity, 0x70);
 assert_offset(Player, m_Faction, 0x80);
-assert_offset(Player, m_DataLock, 0xE8);
+assert_offset(Player, m_Cameras, 0xD8);
 assert_size(Player, 0x128);
 
 }

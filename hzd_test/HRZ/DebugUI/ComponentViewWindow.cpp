@@ -14,16 +14,21 @@
 namespace HRZ::DebugUI
 {
 
-ComponentViewWindow::ComponentViewWindow(EntityComponent *Component) : m_Component(Component)
+ComponentViewWindow::ComponentViewWindow(WeakPtr<EntityComponent> Component) : m_Component(Component)
 {
 }
 
 void ComponentViewWindow::Render()
 {
+	if (!m_Component)
+		return;
+
+	auto component = m_Component.get();
+
 	ImGui::SetNextWindowSize(ImVec2(500.0f, 500.0f), ImGuiCond_FirstUseEver);
 
 	char windowName[512];
-	sprintf_s(windowName, "Component \"%s\" for Entity \"%s\" (%p)", m_Component->GetUnderlyingName().c_str(), m_Component->m_Entity->GetName().c_str(), m_Component);
+	sprintf_s(windowName, "Component \"%s\" for Entity \"%s\" (%p)", component->GetUnderlyingName().c_str(), component->m_Entity->GetName().c_str(), component);
 
 	if (!ImGui::Begin(windowName, &m_WindowOpen))
 	{
@@ -32,11 +37,11 @@ void ComponentViewWindow::Render()
 	}
 
 	if (m_Component->GetRTTI()->IsKindOf(HumanoidInventory::TypeInfo))
-		DrawComponent(static_cast<HumanoidInventory *>(m_Component));
+		DrawComponent(static_cast<HumanoidInventory *>(component));
 	else if (m_Component->GetRTTI()->IsKindOf(InventoryItemComponent::TypeInfo))
-		DrawComponent(static_cast<InventoryItemComponent *>(m_Component));
+		DrawComponent(static_cast<InventoryItemComponent *>(component));
 	else if (m_Component->GetRTTI()->IsKindOf(ItemDescriptionComponent::TypeInfo))
-		DrawComponent(static_cast<ItemDescriptionComponent *>(m_Component));
+		DrawComponent(static_cast<ItemDescriptionComponent *>(component));
 
 	ImGui::End();
 }

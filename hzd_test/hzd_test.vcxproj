@@ -152,6 +152,7 @@
     <ClInclude Include="HRZ\PCore\HashContainerBase.h" />
     <ClInclude Include="HRZ\PCore\HashSet.h" />
     <ClInclude Include="HRZ\PCore\StreamingRef.h" />
+    <ClInclude Include="HRZ\PCore\WeakPtr.h" />
     <ClInclude Include="HRZ\PGraphics3D\CommonDX12.h" />
     <ClInclude Include="HRZ\PGraphics3D\DataBufferDX12.h" />
     <ClInclude Include="HRZ\PGraphics3D\HwBuffer.h" />

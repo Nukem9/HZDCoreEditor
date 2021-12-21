@@ -13,13 +13,13 @@ namespace HRZ::DebugUI
 class EntityWindow : public Window
 {
 private:
-	Entity *m_Entity = nullptr;
+	WeakPtr<Entity> m_Entity;
 	bool m_WindowOpen = true;
 	ImGuiTextFilter m_ComponentListFilter;
 	WorldPosition m_SavedWorldPosition;
 
 public:
-	EntityWindow(Entity *TargetEntity);
+	EntityWindow(WeakPtr<Entity> TargetEntity);
 
 	virtual void Render() override;
 	virtual bool Close() override;
