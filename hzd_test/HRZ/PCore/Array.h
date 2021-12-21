@@ -81,12 +81,7 @@ public:
 
 	~Array()
 	{
-		if constexpr (!std::is_trivially_destructible_v<T>)
-		{
-			for (int i = 0; i < m_Count; i++)
-				std::destroy_at(&m_Entries[i]);
-		}
-
+		DestructElements();
 		Offsets::Call<0x0376D20, void(*)(void *)>(m_Entries);
 	}
 
@@ -117,12 +112,18 @@ public:
 
 	bool empty() const
 	{
-		return m_Count != 0;
+		return m_Count == 0;
 	}
 
 	size_type size() const
 	{
 		return m_Count;
+	}
+
+	void clear()
+	{
+		DestructElements();
+		m_Count = 0;
 	}
 
 	Array& operator=(const Array&) = delete;
@@ -135,6 +136,16 @@ public:
 	const_reference operator[](size_type Pos) const
 	{
 		return m_Entries[Pos];
+	}
+
+private:
+	void DestructElements()
+	{
+		if constexpr (!std::is_trivially_destructible_v<T>)
+		{
+			for (uint32_t i = 0; i < m_Count; i++)
+				std::destroy_at(&m_Entries[i]);
+		}
 	}
 };
 
