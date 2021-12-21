@@ -64,6 +64,18 @@ public:
 		return Offsets::CallID<"String::operatorEquality", bool(*)(const String&, const String&)>(*this, Other);
 	}
 
+	std::strong_ordering operator<=>(const String& Other) const
+	{
+		int cmp = memcmp(data(), Other.data(), std::min(size(), Other.size()));
+
+		if (cmp < 0)
+			return std::strong_ordering::less;
+		else if (cmp > 0)
+			return std::strong_ordering::greater;
+
+		return std::strong_ordering::equal;
+	}
+
 	const char *c_str() const
 	{
 		return m_Data;

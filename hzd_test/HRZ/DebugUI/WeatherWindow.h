@@ -2,6 +2,11 @@
 
 #include "DebugUIWindow.h"
 
+namespace HRZ
+{
+class WeatherSetup;
+}
+
 namespace HRZ::DebugUI
 {
 
@@ -13,6 +18,9 @@ private:
 public:
 	virtual void Render() override;
 	virtual bool Close() override;
+
+private:
+	void DrawWeatherSetupEditor(WeatherSetup *Setup, bool ForceSet);
 };
 
 }
