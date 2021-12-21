@@ -6,6 +6,7 @@
 #include "String.h"
 #include "WString.h"
 #include "Ref.h"
+#include "StreamingRef.h"
 #include "UUIDRef.h"
 #include "Array.h"
 #include "HashMap.h"
