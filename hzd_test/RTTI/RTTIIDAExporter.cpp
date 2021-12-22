@@ -402,7 +402,7 @@ void RTTIIDAExporter::ExportGameSymbolRTTI()
 		for (auto& member : group->m_Members)
 		{
 			// Dump functions and variables only - everything else is handled by RTTI
-			if (member.m_Type != HRZ::ExportedSymbolMember::MEMBER_TYPE_FUNCTION && member.m_Type != HRZ::ExportedSymbolMember::MEMBER_TYPE_VARIABLE)
+			if (member.m_Type != HRZ::ExportedSymbolMember::MemberType::Function && member.m_Type != HRZ::ExportedSymbolMember::MemberType::Variable)
 				continue;
 
 			for (auto& info : member.m_Infos)
@@ -432,7 +432,7 @@ void RTTIIDAExporter::ExportFullgameScriptSymbols()
 	{
 		for (auto& member : group->m_Members)
 		{
-			if (member.m_Type != HRZ::ExportedSymbolMember::MEMBER_TYPE_FUNCTION && member.m_Type != HRZ::ExportedSymbolMember::MEMBER_TYPE_VARIABLE)
+			if (member.m_Type != HRZ::ExportedSymbolMember::MemberType::Function && member.m_Type != HRZ::ExportedSymbolMember::MemberType::Variable)
 				continue;
 
 			for (auto& info : member.m_Infos)

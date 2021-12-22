@@ -12,17 +12,17 @@ DECL_RTTI(ExportedSymbolGroup);
 class ExportedSymbolMember
 {
 public:
-	enum MemberType : uint32_t
+	enum class MemberType : uint32_t
 	{
-		MEMBER_TYPE_SIMPLE = 0,
-		MEMBER_TYPE_ENUM = 1,
-		MEMBER_TYPE_CLASS = 2,
-		MEMBER_TYPE_STRUCT = 3,
-		MEMBER_TYPE_TYPEDEF = 4,
-		MEMBER_TYPE_FUNCTION = 5,
-		MEMBER_TYPE_VARIABLE = 6,
-		MEMBER_TYPE_CONTAINER = 7,
-		MEMBER_TYPE_SOURCEFILE = 8,
+		Simple = 0,
+		Enum = 1,
+		Class = 2,
+		Struct = 3,
+		Typedef = 4,
+		Function = 5,
+		Variable = 6,
+		Container = 7,
+		SourceFile = 8,
 	};
 
 	class LanguageInfo
@@ -33,25 +33,40 @@ public:
 		public:
 			String m_BaseType;
 			String m_Modifiers;
-			void *m_Unknown;
+#if 1 // if (Horizon Zero Dawn)
+			char _pad10[0x8];
+#else // if (Death Stranding)
+			char _pad10[0x18];
+#endif
 		};
+#if 1 // if (Horizon Zero Dawn)
 		assert_size(SignaturePart, 0x18);
+#else // if (Death Stranding)
+		assert_size(SignaturePart, 0x28);
+#endif
 
 		void *m_Address;
 		const char *m_Name;
 		const char *m_IncludeName;
 		char _pad0[0x8];
 		Array<SignaturePart> m_Signature;
-		char _pad1[0x40];
+#if 1 // if (Horizon Zero Dawn)
+		char _pad30[0x40];
+#else // if (Death Stranding)
+		char _pad30[0x10];
+#endif
 	};
 	assert_offset(LanguageInfo, m_Address, 0x0);
 	assert_offset(LanguageInfo, m_Name, 0x8);
 	assert_offset(LanguageInfo, m_IncludeName, 0x10);
 	assert_offset(LanguageInfo, m_Signature, 0x20);
+#if 1 // if (Horizon Zero Dawn)
 	assert_size(LanguageInfo, 0x70);
+#else // if (Death Stranding)
+	assert_size(LanguageInfo, 0x40);
+#endif
 
 	MemberType m_Type;
-	char _pad0[0x4];
 	const RTTI *m_TypeInfo;
 	const char *m_SymbolNamespace;
 	const char *m_SymbolName;
@@ -63,7 +78,11 @@ assert_offset(ExportedSymbolMember, m_TypeInfo, 0x8);
 assert_offset(ExportedSymbolMember, m_SymbolNamespace, 0x10);
 assert_offset(ExportedSymbolMember, m_SymbolName, 0x18);
 assert_offset(ExportedSymbolMember, m_Infos, 0x28);
+#if 1 // if (Horizon Zero Dawn)
 assert_size(ExportedSymbolMember, 0x178);
+#else // if (Death Stranding)
+assert_size(ExportedSymbolMember, 0xE8);
+#endif
 
 class ExportedSymbolGroup
 {
