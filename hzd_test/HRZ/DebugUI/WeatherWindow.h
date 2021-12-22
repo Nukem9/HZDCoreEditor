@@ -14,6 +14,7 @@ class WeatherWindow : public Window
 {
 private:
 	bool m_WindowOpen = true;
+	ImGuiTextFilter m_WeatherNameFilter;
 
 public:
 	virtual void Render() override;

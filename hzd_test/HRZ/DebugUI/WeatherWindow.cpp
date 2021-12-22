@@ -1,3 +1,4 @@
+#include <mutex>
 #include <unordered_set>
 #include <algorithm>
 #include <imgui.h>
@@ -10,7 +11,8 @@
 #include "DebugUI.h"
 #include "WeatherWindow.h"
 
-extern std::unordered_set<HRZ::RTTIRefObject *> AllResources;
+extern HRZ::SharedLock ResourceListLock;
+extern std::unordered_set<HRZ::RTTIRefObject *> CachedWeatherSetups;
 
 namespace HRZ::DebugUI
 {
@@ -25,41 +27,55 @@ void WeatherWindow::Render()
 		return;
 	}
 
+	// Gather & sort
+	std::scoped_lock lock(ResourceListLock);
 	std::vector<WeatherSetup *> sortedSetups;
 
-	for (auto resource : AllResources)
-	{
-		if (auto asWeatherSetup = RTTI::Cast<WeatherSetup>(resource); asWeatherSetup)
-			sortedSetups.push_back(asWeatherSetup);
-	}
+	for (auto refObject : CachedWeatherSetups)
+		sortedSetups.push_back(RTTI::Cast<WeatherSetup>(refObject));
 
 	std::sort(sortedSetups.begin(), sortedSetups.end(), [](WeatherSetup *A, WeatherSetup *B)
 	{
 		return A->GetName() < B->GetName();
 	});
 
-	static size_t selectedIndex = std::numeric_limits<size_t>::max();
+	// Draw list
+	static GGUUID selectedUUID;
+	WeatherSetup *selectedObjectThisFrame = nullptr;
 	bool forceSet = false;
+
+	m_WeatherNameFilter.Draw();
 
 	if (ImGui::BeginListBox("##WeatherSelector", ImVec2(-FLT_MIN, 250)))
 	{
-		for (size_t i = 0; i < sortedSetups.size(); i++)
+		for (auto setup : sortedSetups)
 		{
-			char itemText[512];
-			sprintf_s(itemText, "%s##%p", sortedSetups[i]->GetName().c_str(), sortedSetups[i]);
+			auto& name = setup->GetName();
 
-			if (ImGui::Selectable(itemText, selectedIndex == i))
+			if (!m_WeatherNameFilter.PassFilter(name.c_str()))
+				continue;
+
+			char itemText[512];
+			sprintf_s(itemText, "%s##%p", name.c_str(), setup);
+
+			if (ImGui::Selectable(itemText, setup->m_ObjectUUID == selectedUUID))
 			{
-				selectedIndex = i;
+				selectedUUID = setup->m_ObjectUUID;
 				forceSet = true;
 			}
+
+			if (setup->m_ObjectUUID == selectedUUID)
+				selectedObjectThisFrame = setup;
 		}
 
 		ImGui::EndListBox();
 	}
 
-	if (selectedIndex < sortedSetups.size())
-		DrawWeatherSetupEditor(sortedSetups[selectedIndex], forceSet);
+	ImGui::Separator();
+
+	// Draw options
+	if (selectedObjectThisFrame)
+		DrawWeatherSetupEditor(selectedObjectThisFrame, forceSet);
 
 	ImGui::End();
 }
@@ -72,6 +88,9 @@ bool WeatherWindow::Close()
 void WeatherWindow::DrawWeatherSetupEditor(WeatherSetup *Setup, bool ForceSet)
 {
 	bool changed = false;
+
+	static bool setOnUpdates = true;
+	ImGui::Checkbox("Update weather on value change", &setOnUpdates);
 
 	ImGui::PushItemWidth(200.0f);
 	{
@@ -113,9 +132,6 @@ void WeatherWindow::DrawWeatherSetupEditor(WeatherSetup *Setup, bool ForceSet)
 #undef DO_FLOAT_INPUT
 	}
 	ImGui::PopItemWidth();
-
-	static bool setOnUpdates = true;
-	ImGui::Checkbox("Set weather on value change", &setOnUpdates);
 
 	if ((changed && setOnUpdates) || ForceSet)
 	{
