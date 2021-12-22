@@ -30,7 +30,7 @@ public:
 	virtual void PlayerUnknown17() override;					// 17
 	virtual bool PlayerUnknown18() override;					// 18
 	virtual bool PlayerUnknown19() override;					// 19
-	virtual void SetFaction(AIFaction *Faction) override;		// 20
+	virtual void SetPlayerFaction(AIFaction *Faction) override;	// 20
 	virtual void PlayerUnknown21() override;					// 21
 	virtual void PlayerUnknown22() override;					// 22
 	virtual void PlayerUnknown23() override;					// 23

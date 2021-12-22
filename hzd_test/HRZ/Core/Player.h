@@ -45,7 +45,7 @@ public:
 	virtual void PlayerUnknown17();							// 17
 	virtual bool PlayerUnknown18();							// 18
 	virtual bool PlayerUnknown19();							// 19
-	virtual void SetFaction(AIFaction *Faction);			// 20
+	virtual void SetPlayerFaction(AIFaction *Faction);		// 20
 	virtual void PlayerUnknown21();							// 21
 	virtual void PlayerUnknown22();							// 22
 	virtual void PlayerUnknown23();							// 23
