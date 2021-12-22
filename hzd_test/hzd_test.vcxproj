@@ -95,6 +95,7 @@
   <ItemGroup>
     <ClCompile Include="common.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="HRZ\Core\Application.cpp" />
     <ClCompile Include="HRZ\Core\RTTI.cpp" />
     <ClCompile Include="HRZ\Core\RTTILazyResolver.cpp" />
     <ClCompile Include="HRZ\DebugUI\EntitySpawnerWindow.cpp" />

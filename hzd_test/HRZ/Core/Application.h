@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../../Offsets.h"
-
 #include "../PCore/Common.h"
 
 #include "RTTI.h"
@@ -41,10 +40,8 @@ public:
 
 	virtual ~Application(); // 0
 
-	static Application& Instance()
-	{
-		return *Offsets::ResolveID<"Application::Instance", Application *>();
-	}
+	static Application& Instance();
+	static bool IsInGame();
 };
 assert_offset(Application, m_Game, 0x18);
 assert_offset(Application, m_LevelData, 0x38);

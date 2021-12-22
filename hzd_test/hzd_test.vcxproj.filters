@@ -59,12 +59,23 @@
     </ClCompile>
     <ClCompile Include="HRZ\DebugUI\FocusEditorWindow.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>    <ClCompile Include="HRZ\Core\RTTILazyResolver.cpp">
+    </ClCompile>
+    <ClCompile Include="HRZ\Core\RTTILazyResolver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HRZ\Core\Application.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HRZ\DebugUI\MainMenuBar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HRZ\DebugUI\EntitySpawnerWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RTTI\RTTIYamlExporter.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>  </ItemGroup>
+    </ClCompile>
+  </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h">
       <Filter>Header Files</Filter>
@@ -375,7 +386,11 @@
     <ClInclude Include="HRZ\PCore\StreamingRef.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HRZ\DebugUI\EntitySpawnerWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="RTTI\RTTIYamlExporter.h">
       <Filter>Header Files</Filter>
-    </ClInclude>  </ItemGroup>
+    </ClInclude>
+  </ItemGroup>
 </Project>
