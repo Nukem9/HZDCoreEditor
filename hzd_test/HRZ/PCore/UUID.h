@@ -1,5 +1,6 @@
 #pragma once
 
+#include <objbase.h>
 #include <cstddef>
 #include <array>
 
@@ -34,6 +35,16 @@ struct GGUUID final
 		return All != Other.All;
 	}
 
+	static GGUUID Generate()
+	{
+		static_assert(sizeof(GUID) == sizeof(GGUUID));
+
+		GGUUID id {};
+		CoCreateGuid(reinterpret_cast<GUID *>(&id));
+
+		return id;
+	}
+
 	template<typename T, size_t Digits = sizeof(T) * 2>
 	constexpr static uint32_t UUIDHexToBytes(const char *Hex)
 	{
@@ -49,7 +60,7 @@ struct GGUUID final
 			throw "Invalid hexadecimal digit";
 		};
 
-		T value{};
+		T value {};
 
 		for (size_t i = 0; i < Digits; i++)
 			value |= charToByte(Hex[i]) << (4 * (Digits - i - 1));
@@ -72,7 +83,7 @@ struct GGUUID final
 		if (add && (UUID[0] != '{' || UUID[Len - 1] != '}'))
 			throw "Invalid bracket pair used";
 
-		GGUUID id{};
+		GGUUID id {};
 		id.Data1 = UUIDHexToBytes<uint32_t>(UUID + 0 + add);
 		id.Data2 = UUIDHexToBytes<uint16_t>(UUID + 9 + add);
 		id.Data3 = UUIDHexToBytes<uint16_t>(UUID + 14 + add);
