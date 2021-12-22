@@ -13,7 +13,7 @@ class RTTIIDAExporter
 private:
 	uintptr_t m_ModuleBase = 0;
 	FILE *m_FileHandle = nullptr;
-	const std::unordered_set<const HRZ::RTTI *> m_Types;
+	std::vector<const HRZ::RTTI *> m_Types;
 	const std::string m_GameTypePrefix;
 
 public:

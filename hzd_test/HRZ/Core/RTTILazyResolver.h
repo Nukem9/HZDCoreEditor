@@ -25,6 +25,7 @@ public:
 
 	const HRZ::RTTI *get() const;
 
+	const HRZ::RTTI *operator->() const;
 	operator const HRZ::RTTI *() const;
 	RTTILazyResolver *operator&() = delete;
 };

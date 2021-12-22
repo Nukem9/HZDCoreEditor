@@ -90,7 +90,7 @@ std::string RTTI::GetSymbolName() const
 		if (!strcmp(container->m_Data->m_Name, "cptr"))
 			return std::format("CPtr<{0:}>", container->m_Type->GetSymbolName());
 
-		return std::format("{0:}{1:}", container->m_Data->m_Name, container->m_Type->GetSymbolName());
+		return std::format("{0:}<{1:}>", container->m_Data->m_Name, container->m_Type->GetSymbolName());
 	}
 
 	case InfoType::Enum:
@@ -109,7 +109,7 @@ std::string RTTI::GetSymbolName() const
 
 uint64_t RTTI::GetCoreBinaryTypeId() const
 {
-	uint64_t hashedData[2] = {};
+	uint64_t hashedData[2] {};
 	Offsets::CallID<"RTTI::GetCoreBinaryTypeId", void(*)(uint64_t *, const RTTI *, __int64)>(hashedData, this, 2);
 
 	return hashedData[0];

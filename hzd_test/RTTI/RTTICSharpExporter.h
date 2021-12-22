@@ -11,7 +11,7 @@ class RTTICSharpExporter
 {
 private:
 	FILE *m_FileHandle = nullptr;
-	const std::unordered_set<const HRZ::RTTI *> m_Types;
+	std::vector<const HRZ::RTTI *> m_Types;
 	const std::string m_GameTypePrefix;
 
 public:

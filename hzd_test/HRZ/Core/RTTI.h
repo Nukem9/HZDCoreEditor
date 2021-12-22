@@ -318,9 +318,30 @@ public:
 
 	bool HasPostLoadCallback() const;
 	std::vector<std::tuple<const MemberEntry *, const char *, size_t>> GetCategorizedClassMembers() const;
-
 	std::optional<std::string> SerializeObject(const void *Object) const;
 	bool DeserializeObject(void *Object, const std::string_view InText) const;
+
+	template<typename T>
+	bool SetMemberValue(void *Object, const char *Name, const T& Value) const
+	{
+		return this->EnumerateClassMembersByInheritance([&](const RTTIClass::MemberEntry& Member, const char *, uint32_t BaseOffset, bool)
+		{
+			if (Member.IsGroupMarker())
+				return false;
+
+			if (strcmp(Name, Member.m_Name) != 0)
+				return false;
+
+			void *rawObject = reinterpret_cast<void *>(reinterpret_cast<uintptr_t>(Object) + BaseOffset + Member.m_Offset);
+
+			if (Member.IsProperty())
+				Member.m_PropertySetter(rawObject, &Value);
+			else
+				*reinterpret_cast<T *>(rawObject) = Value;
+
+			return true;
+		});
+	}
 
 	template<typename T>
 	bool GetMemberValue(const void *Object, const char *Name, T *OutValue) const

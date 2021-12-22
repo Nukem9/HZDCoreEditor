@@ -3,33 +3,18 @@
 
 #include "RTTICSharpExporter.h"
 
-RTTICSharpExporter::RTTICSharpExporter(const std::unordered_set<const HRZ::RTTI *>& Types, const std::string_view GameTypePrefix) : m_Types(Types), m_GameTypePrefix(GameTypePrefix)
+RTTICSharpExporter::RTTICSharpExporter(const std::unordered_set<const HRZ::RTTI *>& Types, const std::string_view GameTypePrefix) : m_Types(Types.begin(), Types.end()), m_GameTypePrefix(GameTypePrefix)
 {
+	// Always sort by name during export
+	std::sort(m_Types.begin(), m_Types.end(), [](const HRZ::RTTI *A, const HRZ::RTTI *B)
+	{
+		return A->GetSymbolName() < B->GetSymbolName();
+	});
 }
 
 void RTTICSharpExporter::ExportAll(const std::string_view Directory)
 {
 	CreateDirectoryA(Directory.data(), nullptr);
-
-	// Build a list of all {classes|enums}, sorted by name
-	std::vector<const HRZ::RTTI *> sortedTypes;
-
-	for (auto& type : m_Types)
-	{
-		switch (type->m_InfoType)
-		{
-		case HRZ::RTTI::InfoType::Class:
-		case HRZ::RTTI::InfoType::Enum:
-		case HRZ::RTTI::InfoType::EnumFlags:
-			sortedTypes.emplace_back(type);
-			break;
-		}
-	}
-
-	std::sort(sortedTypes.begin(), sortedTypes.end(), [](const HRZ::RTTI *A, const HRZ::RTTI *B)
-	{
-		return A->GetSymbolName() < B->GetSymbolName();
-	});
 
 	// Dump these types into their own separate files
 	static const char *separatedTypes[] =
@@ -90,11 +75,15 @@ void RTTICSharpExporter::ExportAll(const std::string_view Directory)
 		"WwiseWemResource",
 	};
 
-	sortedTypes.erase(std::remove_if(sortedTypes.begin(), sortedTypes.end(), [&](const HRZ::RTTI *Type)
+	// Structures/classes
+	// TODO: Split classes into separate files if they all reference a common base (i.e > 30 instances per). This is done manually right now.
+	auto tryExportSeparateFile = [&](const HRZ::RTTI *Type)
 	{
+		const auto typeName = Type->GetSymbolName();
+
 		for (auto name : separatedTypes)
 		{
-			if (Type->GetSymbolName() == name)
+			if (typeName == name)
 			{
 				auto filePath = std::format("{0:}\\Decima.{1:}.{2:}.cs", Directory, m_GameTypePrefix, name);
 
@@ -111,20 +100,23 @@ void RTTICSharpExporter::ExportAll(const std::string_view Directory)
 		}
 
 		return false;
-	}), sortedTypes.end());
+	};
 
-	// Structures/classes
-	// TODO: Split classes into separate files if they all reference a common base (i.e > 30 instances per)
 	auto filePath = std::format("{0:}\\Decima.{1:}.AllStructs.cs", Directory, m_GameTypePrefix);
 
 	if (fopen_s(&m_FileHandle, filePath.c_str(), "w") == 0)
 	{
 		ExportFileHeader();
 
-		for (auto& type : sortedTypes)
+		for (auto& type : m_Types)
 		{
-			if (auto c = type->AsClass(); c)
-				ExportRTTIClass(c);
+			auto asClass = type->AsClass();
+
+			if (!asClass)
+				continue;
+
+			if (!tryExportSeparateFile(asClass))
+				ExportRTTIClass(asClass);
 		}
 
 		ExportFileFooter();
@@ -138,7 +130,7 @@ void RTTICSharpExporter::ExportAll(const std::string_view Directory)
 	{
 		ExportFileHeader();
 
-		for (auto& type : sortedTypes)
+		for (auto& type : m_Types)
 		{
 			if (auto e = type->AsEnum(); e)
 				ExportRTTIEnum(e);

@@ -4,14 +4,18 @@
 #include "MSRTTI.h"
 #include "RTTIIDAExporter.h"
 
-using namespace HRZ;
-
 constexpr uintptr_t IDABaseAddressExe = 0x140000000;
 constexpr uintptr_t IDABaseAddressFullgame = 0x180000000;
 
-RTTIIDAExporter::RTTIIDAExporter(const std::unordered_set<const RTTI *>& Types, const std::string_view GameTypePrefix) : m_Types(Types), m_GameTypePrefix(GameTypePrefix)
+RTTIIDAExporter::RTTIIDAExporter(const std::unordered_set<const HRZ::RTTI *>& Types, const std::string_view GameTypePrefix) : m_Types(Types.begin(), Types.end()), m_GameTypePrefix(GameTypePrefix)
 {
 	m_ModuleBase = Offsets::GetModule().first;
+
+	// Always sort by name during export
+	std::sort(m_Types.begin(), m_Types.end(), [](const HRZ::RTTI *A, const HRZ::RTTI *B)
+	{
+		return A->GetSymbolName() < B->GetSymbolName();
+	});
 }
 
 void RTTIIDAExporter::ExportRTTITypes(const std::string_view Directory)
@@ -98,6 +102,8 @@ void RTTIIDAExporter::ExportMSRTTI()
 
 void RTTIIDAExporter::ExportGGRTTIStructures()
 {
+	using namespace HRZ;
+
 	// One day C++ will have reflection...
 	Print("auto id = 0; auto mid = 0;\n");
 
@@ -236,7 +242,7 @@ void RTTIIDAExporter::ExportGGRTTI()
 	// RTTI metadata
 	for (auto& type : m_Types)
 	{
-		auto pprint = [&]<typename... TArgs>(const void *Pointer, std::string_view Format, TArgs&&... Args)
+		auto pprint = [&]<typename... TArgs>(const void *Pointer, const std::string_view Format, TArgs&&... Args)
 		{
 			if (!Pointer)
 				return;
@@ -326,7 +332,7 @@ void RTTIIDAExporter::ExportGGRTTI()
 		{
 			Print("// Binary type = 0x{0:X}\n", asEnum->GetCoreBinaryTypeId());
 			Print("// sizeof() = 0x{0:X}\n", asEnum->m_EnumUnderlyingTypeSize);
-			if (asEnum->m_InfoType == RTTI::InfoType::EnumFlags)
+			if (asEnum->m_InfoType == HRZ::RTTI::InfoType::EnumFlags)
 				Print("// Enum flags\n");
 			Print("enum {0:}\n{{\n", asEnum->GetSymbolName());
 
@@ -384,33 +390,25 @@ void RTTIIDAExporter::ExportGGRTTI()
 		}
 	}
 
-	for (auto& type : m_Types)
-	{
-		if (auto asClass = type->AsClass(); asClass)
-		{
-			Print("const RTTI *RTTI_{0:} = Offsets::Resolve<const RTTI *>(0x{1:X});\n", asClass->GetSymbolName(), reinterpret_cast<uintptr_t>(asClass) - m_ModuleBase);
-		}
-	}
-
 	Print("*/\n");
 }
 
 void RTTIIDAExporter::ExportGameSymbolRTTI()
 {
-	auto& gameSymbolGroups = *Offsets::ResolveID<"ExportedSymbolGroupArray", Array<ExportedSymbolGroup *> *>();
+	auto& gameSymbolGroups = *Offsets::ResolveID<"ExportedSymbolGroupArray", HRZ::Array<HRZ::ExportedSymbolGroup *> *>();
 
 	for (auto& group : gameSymbolGroups)
 	{
 		for (auto& member : group->m_Members)
 		{
 			// Dump functions and variables only - everything else is handled by RTTI
-			if (member.m_Type != ExportedSymbolMember::MEMBER_TYPE_FUNCTION && member.m_Type != ExportedSymbolMember::MEMBER_TYPE_VARIABLE)
+			if (member.m_Type != HRZ::ExportedSymbolMember::MEMBER_TYPE_FUNCTION && member.m_Type != HRZ::ExportedSymbolMember::MEMBER_TYPE_VARIABLE)
 				continue;
 
 			for (auto& info : member.m_Infos)
 			{
 				auto fullDeclaration = BuildGameSymbolFunctionDecl(info, false);
-				Print("set_name({0:#X}, \"{1:}\");// {2:};\n", reinterpret_cast<uintptr_t>(info.m_Address) - m_ModuleBase + IDABaseAddressExe, member.m_SymbolName, fullDeclaration);
+				Print("set_name({0:#X}, \"{1:}\", SN_FORCE|SN_DELTAIL|SN_NOWARN);// {2:};\n", reinterpret_cast<uintptr_t>(info.m_Address) - m_ModuleBase + IDABaseAddressExe, member.m_SymbolName, fullDeclaration);
 
 				// Skip multiple localization entries for now
 				break;
@@ -427,14 +425,14 @@ void RTTIIDAExporter::ExportFullgameScriptSymbols()
 		return;
 
 	// Build symbol to address mapping
-	auto& gameSymbolGroups = *Offsets::ResolveID<"ExportedSymbolGroupArray", Array<ExportedSymbolGroup *> *>();
-	std::unordered_map<uintptr_t, const ExportedSymbolMember *> symbolAddressMap;
+	auto& gameSymbolGroups = *Offsets::ResolveID<"ExportedSymbolGroupArray", HRZ::Array<HRZ::ExportedSymbolGroup *> *>();
+	std::unordered_map<uintptr_t, const HRZ::ExportedSymbolMember *> symbolAddressMap;
 
 	for (auto& group : gameSymbolGroups)
 	{
 		for (auto& member : group->m_Members)
 		{
-			if (member.m_Type != ExportedSymbolMember::MEMBER_TYPE_FUNCTION && member.m_Type != ExportedSymbolMember::MEMBER_TYPE_VARIABLE)
+			if (member.m_Type != HRZ::ExportedSymbolMember::MEMBER_TYPE_FUNCTION && member.m_Type != HRZ::ExportedSymbolMember::MEMBER_TYPE_VARIABLE)
 				continue;
 
 			for (auto& info : member.m_Infos)
@@ -450,20 +448,20 @@ void RTTIIDAExporter::ExportFullgameScriptSymbols()
 	for (uintptr_t i = (baseAddress + 0xA465FE0); i < (baseAddress + 0xA46A000); i++)
 	{
 		auto symbolPointer = *reinterpret_cast<uintptr_t *>(i);
-		auto asRTTI = reinterpret_cast<const RTTI *>(symbolPointer);
+		auto asRTTI = reinterpret_cast<const HRZ::RTTI *>(symbolPointer);
 
 		if (auto itr = symbolAddressMap.find(symbolPointer); itr != symbolAddressMap.end())
 		{
 			auto symNamespace = itr->second->m_SymbolNamespace ? itr->second->m_SymbolNamespace : "";
 
-			Print("set_name({0:#X}, \"{1:}::{2:}\", SN_FORCE);\n", i - baseAddress + IDABaseAddressFullgame, symNamespace, itr->second->m_Infos[0].m_Name);
+			Print("set_name({0:#X}, \"{1:}::{2:}\", SN_FORCE|SN_DELTAIL|SN_NOWARN);\n", i - baseAddress + IDABaseAddressFullgame, symNamespace, itr->second->m_Infos[0].m_Name);
 			Print("apply_type({0:#X}, \"{1:}\");\n", i - baseAddress + IDABaseAddressFullgame, BuildGameSymbolFunctionDecl(itr->second->m_Infos[0], true));
 		}
 
-		if (m_Types.contains(asRTTI))
-		{
-			Print("set_name({0:#X}, \"RTTI_{1:}\", SN_FORCE);\n", i - baseAddress + IDABaseAddressFullgame, asRTTI->GetSymbolName());
-		}
+		//if (m_Types.contains(asRTTI))
+		//{
+		//	Print("set_name({0:#X}, \"RTTI_{1:}\", SN_FORCE|SN_DELTAIL|SN_NOWARN);\n", i - baseAddress + IDABaseAddressFullgame, asRTTI->GetSymbolName());
+		//}
 	}
 }
 
@@ -505,10 +503,10 @@ std::string RTTIIDAExporter::BuildArgType(size_t Index, std::string BaseType, st
 		{
 			switch (Index)
 			{
-			case 0: return BaseType + "@<xmm0>";
-			case 1: return BaseType + "@<xmm1>";
-			case 2: return BaseType + "@<xmm2>";
-			case 3: return BaseType + "@<xmm3>";
+			case 0: return BaseType.append("@<xmm0>");
+			case 1: return BaseType.append("@<xmm1>");
+			case 2: return BaseType.append("@<xmm2>");
+			case 3: return BaseType.append("@<xmm3>");
 			}
 
 			return BaseType;
@@ -530,7 +528,7 @@ std::string RTTIIDAExporter::BuildArgType(size_t Index, std::string BaseType, st
 	return std::format("{0:}{1:}", BaseType, Modifiers);
 }
 
-std::string RTTIIDAExporter::BuildGameSymbolFunctionDecl(const ExportedSymbolMember::LanguageInfo& Info, bool IDAFormat)
+std::string RTTIIDAExporter::BuildGameSymbolFunctionDecl(const HRZ::ExportedSymbolMember::LanguageInfo& Info, bool IDAFormat)
 {
 	std::string decl;
 
@@ -543,17 +541,17 @@ std::string RTTIIDAExporter::BuildGameSymbolFunctionDecl(const ExportedSymbolMem
 			decl = BuildReturnType(signature.m_BaseType.c_str(), signature.m_Modifiers.c_str(), IDAFormat);
 
 			if (!IDAFormat)
-				decl += Info.m_Name;
+				decl.append(Info.m_Name);
 
-			decl += "(";
+			decl.append("(");
 		}
 		else
 		{
 			decl += BuildArgType(i - 1, signature.m_BaseType.c_str(), signature.m_Modifiers.c_str(), IDAFormat);
-			decl += ", ";
+			decl.append(", ");
 		}
 	}
 
-	decl += ")";
+	decl.append(")");
 	return std::regex_replace(decl, std::regex("\\, \\)"), ")");
 }

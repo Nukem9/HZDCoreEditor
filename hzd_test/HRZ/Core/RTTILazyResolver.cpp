@@ -21,6 +21,11 @@ const HRZ::RTTI *RTTILazyResolver::get() const
 	return m_Ptr;
 }
 
+const HRZ::RTTI *RTTILazyResolver::operator->() const
+{
+	return get();
+}
+
 RTTILazyResolver::operator const HRZ::RTTI*() const
 {
 	return get();
