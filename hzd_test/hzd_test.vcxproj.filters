@@ -57,7 +57,9 @@
     <ClCompile Include="Offsets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HRZ\Core\RTTILazyResolver.cpp">
+    <ClCompile Include="HRZ\DebugUI\FocusEditorWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>    <ClCompile Include="HRZ\Core\RTTILazyResolver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RTTI\RTTIYamlExporter.cpp">

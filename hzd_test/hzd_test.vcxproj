@@ -97,6 +97,7 @@
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="HRZ\Core\RTTI.cpp" />
     <ClCompile Include="HRZ\Core\RTTILazyResolver.cpp" />
+    <ClCompile Include="HRZ\DebugUI\FocusEditorWindow.cpp" />
     <ClCompile Include="Offsets.cpp" />
     <ClCompile Include="RTTI\RTTIScanner.cpp" />
     <ClCompile Include="HRZ\DebugUI\ComponentViewWindow.cpp" />
@@ -154,6 +155,7 @@
     <ClInclude Include="HRZ\Core\Texture.h" />
     <ClInclude Include="HRZ\Core\VertexArrayResource.h" />
     <ClInclude Include="HRZ\Core\WorldNode.h" />
+    <ClInclude Include="HRZ\DebugUI\FocusEditorWindow.h" />
     <ClInclude Include="HRZ\PCore\HashContainerBase.h" />
     <ClInclude Include="HRZ\PCore\HashSet.h" />
     <ClInclude Include="HRZ\PCore\StreamingRef.h" />
