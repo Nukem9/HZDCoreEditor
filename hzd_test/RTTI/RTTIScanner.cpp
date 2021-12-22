@@ -5,6 +5,7 @@
 #include "RTTIScanner.h"
 #include "RTTIIDAExporter.h"
 #include "RTTICSharpExporter.h"
+#include "RTTIYamlExporter.h"
 
 namespace RTTIScanner
 {
@@ -36,6 +37,9 @@ void ExportAll(const std::string_view Directory, const std::string_view GameType
 {
 	RTTIIDAExporter idaExporter(GetAllTypes(), GameTypePrefix);
 	idaExporter.ExportRTTITypes(Directory);
+
+	RTTIYamlExporter yamlExporter(GetAllTypes(), GameTypePrefix);
+	yamlExporter.ExportRTTITypes(Directory);
 
 	RTTICSharpExporter csExporter(GetAllTypes(), GameTypePrefix);
 	csExporter.ExportAll(Directory);

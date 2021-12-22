@@ -106,6 +106,7 @@
     <ClCompile Include="RTTI\MSRTTI.cpp" />
     <ClCompile Include="RTTI\RTTICSharpExporter.cpp" />
     <ClCompile Include="RTTI\RTTIIDAExporter.cpp" />
+    <ClCompile Include="RTTI\RTTIYamlExporter.cpp" />
     <ClCompile Include="winhttp_exports.cpp" />
     <ClCompile Include="XUtil.cpp" />
   </ItemGroup>
@@ -211,6 +212,7 @@
     <ClInclude Include="HRZ\Core\RTTI.h" />
     <ClInclude Include="RTTI\RTTICSharpExporter.h" />
     <ClInclude Include="RTTI\RTTIIDAExporter.h" />
+    <ClInclude Include="RTTI\RTTIYamlExporter.h" />
     <ClInclude Include="XUtil.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

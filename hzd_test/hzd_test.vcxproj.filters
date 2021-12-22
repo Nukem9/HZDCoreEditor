@@ -60,7 +60,9 @@
     <ClCompile Include="HRZ\Core\RTTILazyResolver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
+    <ClCompile Include="RTTI\RTTIYamlExporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>  </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h">
       <Filter>Header Files</Filter>
@@ -371,5 +373,7 @@
     <ClInclude Include="HRZ\PCore\StreamingRef.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
+    <ClInclude Include="RTTI\RTTIYamlExporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>  </ItemGroup>
 </Project>
