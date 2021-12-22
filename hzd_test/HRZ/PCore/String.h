@@ -66,14 +66,17 @@ public:
 
 	std::strong_ordering operator<=>(const String& Other) const
 	{
-		int cmp = memcmp(data(), Other.data(), std::min(size(), Other.size()));
+		const size_t s1 = size();
+		const size_t s2 = Other.size();
+		const int cmp = memcmp(data(), Other.data(), std::min(s1, s2));
 
 		if (cmp < 0)
 			return std::strong_ordering::less;
 		else if (cmp > 0)
 			return std::strong_ordering::greater;
 
-		return std::strong_ordering::equal;
+		// cmp might be 0 but lengths don't always match
+		return s1 <=> s2;
 	}
 
 	const char *c_str() const
