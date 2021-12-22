@@ -99,6 +99,7 @@
     <ClCompile Include="HRZ\Core\RTTILazyResolver.cpp" />
     <ClCompile Include="HRZ\DebugUI\EntitySpawnerWindow.cpp" />
     <ClCompile Include="HRZ\DebugUI\FocusEditorWindow.cpp" />
+    <ClCompile Include="HRZ\DebugUI\MainMenuBar.cpp" />
     <ClCompile Include="Offsets.cpp" />
     <ClCompile Include="RTTI\RTTIScanner.cpp" />
     <ClCompile Include="HRZ\DebugUI\ComponentViewWindow.cpp" />
