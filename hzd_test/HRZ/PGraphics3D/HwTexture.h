@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../PCore/Util.h"
+#include "../PCore/UUID.h"
 
 #include "HwResource.h"
 #include "IRenderDataCallbackObject.h"

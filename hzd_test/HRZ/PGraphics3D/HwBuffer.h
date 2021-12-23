@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../../Offsets.h"
 #include "../PCore/Util.h"
 
 #include "HwResource.h"
