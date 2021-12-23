@@ -332,7 +332,7 @@ public:
 			if (strcmp(Name, Member.m_Name) != 0)
 				return false;
 
-			void *rawObject = reinterpret_cast<void *>(reinterpret_cast<uintptr_t>(Object) + BaseOffset + Member.m_Offset);
+			auto rawObject = reinterpret_cast<void *>(reinterpret_cast<uintptr_t>(Object) + BaseOffset + Member.m_Offset);
 
 			if (Member.IsProperty())
 				Member.m_PropertySetter(rawObject, &Value);
@@ -354,11 +354,15 @@ public:
 			if (strcmp(Name, Member.m_Name) != 0)
 				return false;
 
-			if (Member.IsProperty())
-				__debugbreak();
+			auto rawObject = reinterpret_cast<const void *>(reinterpret_cast<uintptr_t>(Object) + BaseOffset + Member.m_Offset);
 
 			if (OutValue)
-				*OutValue = *reinterpret_cast<T *>(reinterpret_cast<uintptr_t>(Object) + BaseOffset + Member.m_Offset);
+			{
+				if (Member.IsProperty())
+					Member.m_PropertyGetter(rawObject, OutValue);
+				else
+					*OutValue = *reinterpret_cast<std::add_const_t<T> *>(rawObject);
+			}
 
 			return true;
 		});
