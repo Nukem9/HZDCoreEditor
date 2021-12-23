@@ -159,11 +159,7 @@ public static class Archive
         // No prefetch present -> return nothing
         if (device.HasFile(PrefetchCorePath))
         {
-            using var ms = new MemoryStream();
-            device.ExtractFile(PrefetchCorePath, ms);
-
-            ms.Position = 0;
-            var prefetchCore = CoreBinary.FromData(new BinaryReader(ms));
+            var prefetchCore = Util.ExtractCoreBinaryInMemory(device, PrefetchCorePath);
             var prefetch = prefetchCore.Objects.OfType<Decima.HZD.PrefetchList>().Single();
 
             foreach (var file in prefetch.Files.Select(x => x.Path))

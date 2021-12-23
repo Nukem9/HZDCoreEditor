@@ -24,7 +24,7 @@ namespace Decima
                 uint entryHash = reader.ReadUInt32();
                 var newObj = RTTI.DeserializeType<T>(reader);
 
-                // TODO: is entryHash actually a hash?
+                // Hash is derived from the key member in T
                 Add(entryHash, newObj);
             }
         }
