@@ -1,3 +1,6 @@
+#include <Windows.h>
+#include <unordered_map>
+
 #include "Offsets.h"
 #include "XUtil.h"
 
@@ -8,8 +11,8 @@ std::unordered_map<uint64_t, uintptr_t> OffsetMapping;
 
 std::pair<uintptr_t, uintptr_t> GetModule()
 {
-	static uintptr_t moduleBase = reinterpret_cast<uintptr_t>(GetModuleHandleW(nullptr));
-	static uintptr_t moduleEnd = [&]()
+	const static uintptr_t moduleBase = reinterpret_cast<uintptr_t>(GetModuleHandleW(nullptr));
+	const static uintptr_t moduleEnd = [&]()
 	{
 		auto ntHeaders = reinterpret_cast<PIMAGE_NT_HEADERS64>(moduleBase + reinterpret_cast<PIMAGE_DOS_HEADER>(moduleBase)->e_lfanew);
 		return moduleBase + ntHeaders->OptionalHeader.SizeOfImage;
@@ -31,19 +34,19 @@ std::pair<uintptr_t, uintptr_t> GetModuleSection(const std::string_view Section)
 
 std::pair<uintptr_t, uintptr_t> GetCodeSection()
 {
-	static auto section = GetModuleSection(".text");
+	const static auto section = GetModuleSection(".text");
 	return section;
 }
 
 std::pair<uintptr_t, uintptr_t> GetRdataSection()
 {
-	static auto section = GetModuleSection(".rdata");
+	const static auto section = GetModuleSection(".rdata");
 	return section;
 }
 
 std::pair<uintptr_t, uintptr_t> GetDataSection()
 {
-	static auto section = GetModuleSection(".data");
+	const static auto section = GetModuleSection(".data");
 	return section;
 }
 

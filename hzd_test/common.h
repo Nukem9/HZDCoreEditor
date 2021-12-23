@@ -10,9 +10,6 @@
 #include <unordered_set>
 #include <unordered_map>
 
-#include <detours/Detours.h>
-#pragma comment(lib, "detours.lib")
-
 #include "xutil.h"
 
 enum class GameType
