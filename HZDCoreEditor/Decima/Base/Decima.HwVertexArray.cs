@@ -1,20 +1,19 @@
-﻿using HZDCoreEditor.Util;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 
 namespace Decima
 {
     public class HwVertexArray
     {
-        public uint VertexCount;    // TODO: Determine from HwBuffer entries (what happens if there's none?)
+        public uint VertexCount;                            // TODO: Determine from HwBuffer entries (what happens if there's none?)
         public List<VertexStream> Streams;
-        public bool IsStreaming;    // TODO: Determine from HwBuffer entries (what happens if there's none?)
+        public BaseRenderDataStreamingMode StreamingMode;   // TODO: Determine from HwBuffer entries (what happens if there's none?)
 
         public class VertexStream
         {
             public uint Flags;
             public List<VertexElementDesc> ElementInfo;
-            public BaseGGUUID GUID;
+            public BaseGGUUID ResourceDataHash;// Actually MurmurHashValue
             public HwBuffer Buffer;
         }
 
@@ -30,7 +29,7 @@ namespace Decima
         {
             writer.Write(VertexCount);
             writer.Write((uint)Streams.Count);
-            writer.Write(IsStreaming);
+            writer.Write((byte)StreamingMode);
 
             foreach (var stream in Streams)
             {
@@ -46,7 +45,7 @@ namespace Decima
                     writer.Write((byte)desc.ElementType);
                 }
 
-                stream.GUID.ToData(writer);
+                stream.ResourceDataHash.ToData(writer);
                 stream.Buffer.ToData(writer);
             }
         }
@@ -57,7 +56,7 @@ namespace Decima
 
             array.VertexCount = reader.ReadUInt32();
             uint streamCount = reader.ReadUInt32();
-            array.IsStreaming = reader.ReadBooleanStrict();
+            array.StreamingMode = (BaseRenderDataStreamingMode)reader.ReadByte();
 
             array.Streams = new List<VertexStream>((int)streamCount);
 
@@ -82,8 +81,8 @@ namespace Decima
                     });
                 }
 
-                stream.GUID = BaseGGUUID.FromData(reader);
-                stream.Buffer = HwBuffer.FromVertexData(reader, gameType, array.IsStreaming, byteStride, array.VertexCount);
+                stream.ResourceDataHash = BaseGGUUID.FromData(reader);
+                stream.Buffer = HwBuffer.FromVertexData(reader, gameType, array.StreamingMode, byteStride, array.VertexCount);
 
                 array.Streams.Add(stream);
             }

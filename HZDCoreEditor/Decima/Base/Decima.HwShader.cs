@@ -7,8 +7,7 @@ namespace Decima
 {
     public class HwShader
     {
-        // Identical impl to HZD
-        BaseGGUUID ResourceGUID;
+        BaseGGUUID ResourceDataHash;// Actually MurmurHashValue
         public uint Unknown1;
         public BaseProgramTypeMask TypeMask;
         public uint Unknown2;
@@ -101,7 +100,7 @@ namespace Decima
             bw.Write(RootSignatureData);
 
             writer.Write((uint)ms.Length);
-            ResourceGUID.ToData(writer);
+            ResourceDataHash.ToData(writer);
             ms.WriteTo(writer.BaseStream);
         }
 
@@ -111,7 +110,7 @@ namespace Decima
 
             // shaderDataLength is discarded
             uint shaderDataLength = reader.ReadUInt32();
-            shader.ResourceGUID = BaseGGUUID.FromData(reader);
+            shader.ResourceDataHash = BaseGGUUID.FromData(reader);
 
             shader.Unknown1 = reader.ReadUInt32();
             shader.TypeMask = (BaseProgramTypeMask)reader.ReadUInt32();

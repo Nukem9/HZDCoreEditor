@@ -6,7 +6,7 @@ namespace Decima
     public class HwIndexArray
     {
         public uint Flags;
-        public BaseGGUUID ResourceGUID;
+        public BaseGGUUID ResourceDataHash;// Actually MurmurHashValue
         public HwBuffer Buffer;
 
         public void ToData(BinaryWriter writer)
@@ -25,8 +25,8 @@ namespace Decima
             {
                 writer.Write(Flags);
                 writer.Write((uint)dataFormat);
-                writer.Write((uint)(Buffer.Streaming ? 1 : 0));
-                ResourceGUID.ToData(writer);
+                writer.Write((uint)Buffer.StreamingMode);
+                ResourceDataHash.ToData(writer);
                 Buffer.ToData(writer);
             }
         }
@@ -40,13 +40,10 @@ namespace Decima
             {
                 array.Flags = reader.ReadUInt32();
                 var format = (BaseIndexFormat)reader.ReadUInt32();
-                uint isStreaming = reader.ReadUInt32();
+                var streamingMode = (BaseRenderDataStreamingMode)reader.ReadUInt32();
 
-                if (isStreaming != 0 && isStreaming != 1)
-                    throw new InvalidDataException("Must be true or false");
-
-                array.ResourceGUID = BaseGGUUID.FromData(reader);
-                array.Buffer = HwBuffer.FromIndexData(reader, gameType, format, isStreaming != 0, indexElementCount);
+                array.ResourceDataHash = BaseGGUUID.FromData(reader);
+                array.Buffer = HwBuffer.FromIndexData(reader, gameType, format, streamingMode, indexElementCount);
             }
 
             return array;

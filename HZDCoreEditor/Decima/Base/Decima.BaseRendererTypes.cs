@@ -191,4 +191,13 @@
         VP_FP = 12,
         FP_CP = 9,
     }
+
+    /// <summary>
+    /// Assumes that the TypeId is 0x255B21D736738454 for DS/HZD.
+    /// </summary>
+    public enum BaseRenderDataStreamingMode : byte
+    {
+        NotStreaming = 0,
+        Streaming = 1,
+    };
 }

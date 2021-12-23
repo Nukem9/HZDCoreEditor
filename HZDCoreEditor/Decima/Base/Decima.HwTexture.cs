@@ -27,7 +27,7 @@ namespace Decima
             public byte Flags;
             public byte Unknown4;
             public byte Unknown5;
-            public BaseGGUUID ResourceGUID;
+            public BaseGGUUID ResourceDataHash;// Actually MurmurHashValue
         }
 
         public void ToData(BinaryWriter writer)
@@ -65,7 +65,7 @@ namespace Decima
             writer.Write(Header.Flags);
             writer.Write(Header.Unknown4);
             writer.Write(Header.Unknown5);
-            Header.ResourceGUID.ToData(writer);
+            Header.ResourceDataHash.ToData(writer);
 
             // Raw pixel data handling
             using var ms = new MemoryStream();
@@ -126,7 +126,7 @@ namespace Decima
             header.Flags = reader.ReadByte();                       // 13
             header.Unknown4 = reader.ReadByte();                    // 14 Something to do with mips. Autogen?
             header.Unknown5 = reader.ReadByte();                    // 15
-            header.ResourceGUID = BaseGGUUID.FromData(reader);      // 16
+            header.ResourceDataHash = BaseGGUUID.FromData(reader);  // 16
             texture.Header = header;
 
             // Raw pixel data handling

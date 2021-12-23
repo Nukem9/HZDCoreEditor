@@ -9,29 +9,32 @@ namespace Decima
         public BaseDataBufferFormat Format;
         public uint ElementStride;
         public uint ElementCount;
-        public bool Streaming { get; private set; }
+        public BaseRenderDataStreamingMode StreamingMode { get; private set; }
         public BaseStreamHandle StreamInfo;
         public byte[] Data;
 
         public void ToData(BinaryWriter writer)
         {
-            if (Streaming)
+            if (StreamingMode == BaseRenderDataStreamingMode.Streaming)
                 StreamInfo?.ToData(writer);
             else
                 writer.Write(Data);
         }
 
-        public static HwBuffer FromData(BinaryReader reader, GameType gameType, BaseDataBufferFormat format, bool streaming, uint byteStride, uint elementCount)
+        public static HwBuffer FromData(BinaryReader reader, GameType gameType, BaseDataBufferFormat format, BaseRenderDataStreamingMode streamingMode, uint byteStride, uint elementCount)
         {
+            if (streamingMode != BaseRenderDataStreamingMode.NotStreaming && streamingMode != BaseRenderDataStreamingMode.Streaming)
+                throw new InvalidDataException("Invalid streaming mode");
+
             var buffer = new HwBuffer
             {
                 Format = format,
                 ElementStride = byteStride,
                 ElementCount = elementCount,
-                Streaming = streaming,
+                StreamingMode = streamingMode,
             };
 
-            if (buffer.Streaming)
+            if (buffer.StreamingMode == BaseRenderDataStreamingMode.Streaming)
             {
                 if (gameType == GameType.HZD)
                     buffer.StreamInfo = BaseStreamHandle.FromData(reader, gameType);
@@ -47,12 +50,12 @@ namespace Decima
             return buffer;
         }
 
-        public static HwBuffer FromVertexData(BinaryReader reader, GameType gameType, bool streaming, uint ByteStride, uint ElementCount)
+        public static HwBuffer FromVertexData(BinaryReader reader, GameType gameType, BaseRenderDataStreamingMode streamingMode, uint ByteStride, uint ElementCount)
         {
-            return FromData(reader, gameType, BaseDataBufferFormat.Structured, streaming, ByteStride, ElementCount);
+            return FromData(reader, gameType, BaseDataBufferFormat.Structured, streamingMode, ByteStride, ElementCount);
         }
 
-        public static HwBuffer FromIndexData(BinaryReader reader, GameType gameType, BaseIndexFormat format, bool streaming, uint elementCount)
+        public static HwBuffer FromIndexData(BinaryReader reader, GameType gameType, BaseIndexFormat format, BaseRenderDataStreamingMode streamingMode, uint elementCount)
         {
             var dataFormat = format switch
             {
@@ -61,7 +64,7 @@ namespace Decima
                 _ => throw new NotSupportedException("Unknown index buffer type"),
             };
 
-            return FromData(reader, gameType, dataFormat, streaming, GetStrideForFormat(dataFormat), elementCount);
+            return FromData(reader, gameType, dataFormat, streamingMode, GetStrideForFormat(dataFormat), elementCount);
         }
 
         public static uint GetStrideForFormat(BaseDataBufferFormat format)
