@@ -8,40 +8,59 @@
 #include "HRZ/DebugUI/LogWindow.h"
 #include "HRZ/DebugUI/MainMenuBar.h"
 
+#include "HRZ/Core/StreamingManager.h"
+#include "HRZ/Core/CoreFileManager.h"
+#include "HRZ/Core/WorldTransform.h"
+#include "HRZ/Core/CameraEntity.h"
+#include "HRZ/Core/GameModule.h"
+
 #include "RTTI/MSRTTI.h"
-#include "RTTI/RTTIIDAExporter.h"
 #include "RTTI/RTTIScanner.h"
 
+#include "ModCoreEvents.h"
 #include "common.h"
 
 using namespace HRZ;
-
-constexpr auto test = GGUUID::Parse("40e36691-5fd0-4a79-b3b3-87b2a3d13e9c");
-constexpr auto test2 = GGUUID::Parse("{40e36691-5fd0-4a79-b3b3-87b2a3d13e9c}");
-constexpr auto test3 = GGUUID::Parse("{40E36691-5FD0-4A79-B3B3-87B2A3D13E9C}");
 
 void PreLoadObjectHook(RTTIBinaryReader *Reader)
 {
 	auto object = Reader->m_CurrentObject;
 	Reader->OnObjectPreInit(object);
 
-	// Subtract 12 for the core entry header length (uint64, uint)
-	uint64_t assetOffset = Reader->GetStreamPosition() - 12;
+	if (false)
+	{
+		// Subtract 12 for the core entry header length (uint64, uint)
+		uint64_t assetOffset = Reader->GetStreamPosition() - 12;
 
-	DebugUI::LogWindow::AddLog("[Asset] Loading %s at [offset %lld, address 0x%p] (%s)\n", object->GetRTTI()->GetSymbolName().c_str(), assetOffset, object, Reader->m_FullFilePath.c_str());
+		DebugUI::LogWindow::AddLog("[Asset] Loading %s at [offset %lld, address 0x%p] (%s)\n", object->GetRTTI()->GetSymbolName().c_str(), assetOffset, object, Reader->m_FullFilePath.c_str());
+	}
 }
 
 void PostLoadObjectHook(RTTIBinaryReader *Reader)
 {
 	auto object = Reader->m_CurrentObject;
+	auto rtti = object->GetRTTI();
+
 	Reader->OnObjectPostInit(object);
 
-	if (auto prefetch = RTTI::Cast<PrefetchList>(object); prefetch)
+	if (false)
 	{
-		DebugUI::LogWindow::AddLog("[Asset] Finished prefetch load: %lld\n", Reader->GetStreamPosition());
-		DebugUI::LogWindow::AddLog("[Asset] Total files: %d\n", prefetch->m_Files.size());
-		DebugUI::LogWindow::AddLog("[Asset] Total sizes: %d\n", prefetch->m_Sizes.size());
-		DebugUI::LogWindow::AddLog("[Asset] Total links: %d\n", prefetch->m_Links.size());
+		DebugUI::LogWindow::AddLog("[Asset] Finished loading %s at [offset %lld, address 0x%p] (%s)", rtti->GetSymbolName().c_str(), Reader->GetStreamPosition(), object, Reader->m_FullFilePath.c_str());
+
+		// Dump the name
+		if (String assetName; rtti->AsClass()->GetMemberValue(object, "Name", &assetName) && !assetName.empty())
+			DebugUI::LogWindow::AddLog(" (%s)\n", assetName.c_str());
+		else
+			DebugUI::LogWindow::AddLog("\n");
+
+		// Log prefetch values for debugging purposes
+		if (auto prefetch = RTTI::Cast<PrefetchList>(object); prefetch)
+		{
+			DebugUI::LogWindow::AddLog("[Asset] Prefetch load done\n");
+			DebugUI::LogWindow::AddLog("[Asset] Total files: %d\n", prefetch->m_Files.size());
+			DebugUI::LogWindow::AddLog("[Asset] Total sizes: %d\n", prefetch->m_Sizes.size());
+			DebugUI::LogWindow::AddLog("[Asset] Total links: %d\n", prefetch->m_Links.size());
+		}
 	}
 }
 
@@ -90,27 +109,64 @@ bool hk_SwapChainDX12_Present(SwapChainDX12 *SwapChain)
 		return true;
 	}();
 
+	static bool initCoreEvents = false;
+	auto streamingManager = HRZ::StreamingManager::Instance();
+
+	if (streamingManager && !initCoreEvents)
+	{
+		streamingManager->m_CoreFileManager->RegisterEventListener(ModCoreEvents::Instance());
+		initCoreEvents = true;
+	}
+
+	/*
+	uintptr_t playerProfile = *Offsets::Resolve<uintptr_t *>(0x7133A40);
+
+	if (playerProfile)
+	{
+		// Set the highest NG+ difficulty that has been unlocked. Used for custom face paints and focus models.
+		*(int *)(playerProfile + 0x25C) = 5;
+	}*/
+
 	DebugUI::RenderUI();
 	DebugUI::RenderUID3D(SwapChain);
 	return SwapChain->Present();
 }
 
-void hk_call_1413AB8FC(class CameraEntity *Entity, WorldTransform& Transform)
+void hk_call_1413AB8FC(HRZ::CameraEntity *This, WorldTransform& Transform)
 {
 	if (DebugUI::MainMenuBar::m_FreeCamMode == DebugUI::MainMenuBar::FreeCamMode::Free)
 		return;
 
-	Entity->SetTransform(Transform);
+	This->SetTransform(Transform);
+}
+
+void hk_call_1411E3210(HRZ::GameModule *This, float Timescale, float TransitionTime)
+{
+	if (DebugUI::MainMenuBar::m_TimescaleOverride && (!This->IsSuspended() || DebugUI::MainMenuBar::m_TimescaleOverrideInMenus))
+	{
+		This->m_TimescaleTransitionCurrent = DebugUI::MainMenuBar::m_Timescale;
+		This->m_TimescaleTransitionTarget = DebugUI::MainMenuBar::m_Timescale;
+		This->m_ActiveTimescale = DebugUI::MainMenuBar::m_Timescale;
+		return;
+	}
+
+	This->SetTimescale(Timescale, TransitionTime);
+}
+
+void hk_call_14345CD56()
+{
+	RTTIScanner::ExportAll("C:\\ds_rtti_export", "DS");
+	ExitProcess(0);
 }
 
 void LoadSignatures()
 {
-	wchar_t modulePath[MAX_PATH];
-	GetModuleFileNameW(GetModuleHandleW(nullptr), modulePath, MAX_PATH);
+	wchar_t modulePath[MAX_PATH] {};
+	wchar_t executableName[MAX_PATH] {};
 
-	wchar_t executableName[MAX_PATH];
+	GetModuleFileNameW(GetModuleHandleW(nullptr), modulePath, std::size(modulePath));
 	_wcslwr_s(modulePath);
-	_wsplitpath_s(modulePath, nullptr, 0, nullptr, 0, executableName, ARRAYSIZE(executableName), nullptr, 0);
+	_wsplitpath_s(modulePath, nullptr, 0, nullptr, 0, executableName, std::size(executableName), nullptr, 0);
 
 	if (!wcscmp(executableName, L"ds"))
 		g_GameType = GameType::DeathStranding;
@@ -128,12 +184,13 @@ void LoadSignatures()
 
 	if (g_GameType == GameType::DeathStranding)
 	{
-		// 1.04
-		Offsets::MapSignature("String::String", "40 53 48 83 EC 20 48 8B D9 48 C7 01 00 00 00 00 49 C7 C0 FF FF FF FF");
-		Offsets::MapSignature("String::~String", "40 53 48 83 EC 20 48 8B 19 48 8D 05 ? ? ? ? 48 83 EB 10");
+		// Functions
+		Offsets::MapSignature("String::CtorCString", "40 53 48 83 EC 20 48 8B D9 48 C7 01 00 00 00 00 49 C7 C0 FF FF FF FF");
+		Offsets::MapSignature("String::Dtor", "40 53 48 83 EC 20 48 8B 19 48 8D 05 ? ? ? ? 48 83 EB 10");
 		Offsets::MapSignature("RTTI::GetCoreBinaryTypeId", "4C 8B DC 55 53 56 41 56 49 8D 6B A1 48 81 EC C8 00 00 00");
 
-		Offsets::MapAddress("ExportedSymbolGroupArray", 0x4870440);
+		// Globals
+		Offsets::MapAddress("ExportedSymbolGroupArray", 0x4875780);
 	}
 	else if (g_GameType == GameType::HorizonZeroDawn)
 	{
@@ -149,14 +206,13 @@ void LoadSignatures()
 		Offsets::MapSignature("WString::AssignFromOther", "48 89 5C 24 08 57 48 83 EC 20 48 8B D9 48 8B FA 48 8B 09 48 3B 0A 74 22");
 		Offsets::MapSignature("WString::EncodeUTF8", "48 89 5C 24 08 48 89 74 24 10 57 48 83 EC 20 48 8B 01 48 8B F2 48 8B D9 48 8B CE 8B 78 08");
 
+		Offsets::MapSignature("WeakPtr::Acquire", "40 57 48 83 EC 20 48 8B F9 48 8B 09 48 85 C9 74 58 33 C0 48 89 5C 24 30");
+		Offsets::MapSignature("WeakPtr::Release", "40 57 48 83 EC 20 48 8B F9 48 8B 09 48 85 C9 0F 84 8D 00 00 00 33 C0 48 89 5C 24 30 F2 48 0F 38 F1 C1");
+
 		Offsets::MapSignature("Player::GetLocalPlayer", "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 30 48 63 E9 85 C9 0F 85 E2 00 00 00");
-		Offsets::MapAddress("Player::GetLastActivatedCamera", 0x0C2A030);
 
 		Offsets::MapSignature("Entity::AddComponent", "48 89 5C 24 10 48 89 6C 24 18 48 89 74 24 20 57 41 56 41 57 48 83 EC 40 48 8B F9 48 8B F2 48 8B 4A 30");
 		Offsets::MapSignature("Entity::RemoveComponent", "48 8B C4 56 57 48 83 EC 68 83 B9 30 02 00 00 00 48 8B F2 48 8B F9");
-
-		Offsets::MapSignature("SlowMotionManager::AddTimescaleModifier", "48 8B C4 53 56 48 83 EC 68 8B 31 48 8B D9 F3 0F 10");
-		Offsets::MapSignature("SlowMotionManager::RemoveTimescaleModifier", "48 89 5C 24 10 56 48 83 EC 20 48 63 41 08 45 33 C0 48 8B F2 48 8B D9 85 C0");
 
 		Offsets::MapSignature("RTTI::GetCoreBinaryTypeId", "48 8B C4 44 89 40 18 48 89 50 10 48 89 48 08 55 53 56 41 56 48 8D 68 A1 48 81 EC 98 00 00 00 4C 89 60 D0");
 		Offsets::MapSignature("SwapChainDX12::Present", "48 89 5C 24 08 48 89 74 24 10 57 48 83 EC 40 48 8B 05 ? ? ? ? 48 8B D9");
@@ -180,6 +236,10 @@ void ApplyHooks()
 
 	if (g_GameType == GameType::DeathStranding)
 	{
+		MSRTTI::Initialize();
+		RTTIScanner::ScanForRTTIStructures();
+
+		XUtil::DetourCall(moduleBase + 0x1728A57, hk_call_14345CD56);
 	}
 	else if (g_GameType == GameType::HorizonZeroDawn)
 	{
@@ -207,8 +267,14 @@ void ApplyHooks()
 		// Function to set 3rd person camera position
 		XUtil::DetourCall(moduleBase + 0x13AF84C, hk_call_1413AB8FC);
 
+		// Override GameModule timescale function
+		XUtil::DetourCall(moduleBase + 0x11E3210, hk_call_1411E3210);
+
 		// Kill one of the out of bounds checks
 		XUtil::PatchMemoryNop(moduleBase + 0x0EF937D, 2);
+
+		// Enable all entitlements
+		XUtil::PatchMemory(moduleBase + 0x0ED5D50, { 0xB0, 0x01, 0xC3 });
 	}
 }
 
