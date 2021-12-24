@@ -140,7 +140,7 @@ std::optional<std::string> RTTI::SerializeObject(const void *Object) const
 	return std::nullopt;
 }
 
-bool RTTI::DeserializeObject(void *Object, const std::string_view InText) const
+bool RTTI::DeserializeObject(void *Object, const String& InText) const
 {
 	switch (m_InfoType)
 	{
@@ -173,7 +173,7 @@ std::optional<std::string> RTTIPrimitive::SerializeObject(const void *Object) co
 	return std::nullopt;
 }
 
-bool RTTIPrimitive::DeserializeObject(void *Object, const std::string_view InText) const
+bool RTTIPrimitive::DeserializeObject(void *Object, const String& InText) const
 {
 	return (m_DeserializeString && m_DeserializeString(InText, Object));
 }
@@ -194,7 +194,7 @@ std::optional<std::string> RTTIContainer::SerializeObject(const void *Object) co
 	return std::nullopt;
 }
 
-bool RTTIContainer::DeserializeObject(void *Object, const std::string_view InText) const
+bool RTTIContainer::DeserializeObject(void *Object, const String& InText) const
 {
 	if (m_InfoType == InfoType::Reference)
 		return false;
@@ -223,7 +223,7 @@ std::optional<std::string> RTTIEnum::SerializeObject(const void *Object) const
 	return std::nullopt;
 }
 
-bool RTTIEnum::DeserializeObject(void *Object, const std::string_view InText) const
+bool RTTIEnum::DeserializeObject(void *Object, const String& InText) const
 {
 	if (m_InfoType == InfoType::EnumFlags)
 		__debugbreak();
@@ -280,7 +280,7 @@ std::vector<std::tuple<const RTTIClass::MemberEntry *, const char *, size_t>> RT
 
 	std::vector<SorterEntry> sortedEntries;
 
-	this->EnumerateClassMembersByInheritance([&](const RTTIClass::MemberEntry& Member, const char *Category, uint32_t BaseOffset, bool TopLevel)
+	this->EnumerateOrderedRTTIClassMembers([&](const RTTIClass::MemberEntry& Member, const char *Category, uint32_t BaseOffset, bool TopLevel)
 	{
 		SorterEntry entry
 		{
@@ -330,7 +330,7 @@ std::optional<std::string> RTTIClass::SerializeObject(const void *Object) const
 	// Split each member by a newline
 	std::string finalDecl;
 
-	EnumerateClassMembersByInheritance([&](const RTTIClass::MemberEntry& Member, const char *, uint32_t BaseOffset, bool)
+	EnumerateOrderedRTTIClassMembers([&](const RTTIClass::MemberEntry& Member, const char *, uint32_t BaseOffset, bool)
 	{
 		// TODO: Properties need to be handled
 		if (Member.IsGroupMarker() || Member.IsProperty())
@@ -348,7 +348,7 @@ std::optional<std::string> RTTIClass::SerializeObject(const void *Object) const
 	return finalDecl;
 }
 
-bool RTTIClass::DeserializeObject(void *Object, const std::string_view InText) const
+bool RTTIClass::DeserializeObject(void *Object, const String& InText) const
 {
 	if (m_DeserializeString)
 		return m_DeserializeString(Object, InText);

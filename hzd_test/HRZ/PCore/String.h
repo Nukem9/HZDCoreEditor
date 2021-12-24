@@ -38,11 +38,6 @@ public:
 		Offsets::CallID<"String::CtorCString", String *(*)(String *, const char*)>(this, Value);
 	}
 
-	String(const std::string_view Value)
-	{
-		__debugbreak();
-	}
-
 	String(const String& Other) : String()
 	{
 		Offsets::CallID<"String::AssignFromOther", String *(*)(String *, const String&)>(this, Other);

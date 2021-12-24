@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <optional>
+#include <stdexcept>
 
 #include "../PCore/Common.h"
 
@@ -77,7 +78,7 @@ public:
 	uint64_t GetCoreBinaryTypeId() const;
 
 	std::optional<std::string> SerializeObject(const void *Object) const;
-	bool DeserializeObject(void *Object, const std::string_view InText) const;
+	bool DeserializeObject(void *Object, const String& InText) const;
 
 	template<typename T, typename U>
 	static T *Cast(U *Other)
@@ -122,7 +123,7 @@ public:
 	void (* m_UnknownFunction)();													// +0x70 Unused?
 
 	std::optional<std::string> SerializeObject(const void *Object) const;
-	bool DeserializeObject(void *Object, const std::string_view InText) const;
+	bool DeserializeObject(void *Object, const String& InText) const;
 };
 assert_offset(RTTIPrimitive, m_Name, 0x10);
 assert_offset(RTTIPrimitive, m_ParentType, 0x18);
@@ -158,7 +159,7 @@ public:
 	Data *m_Data;	// +0x10
 
 	std::optional<std::string> SerializeObject(const void *Object) const;
-	bool DeserializeObject(void *Object, const std::string_view InText) const;
+	bool DeserializeObject(void *Object, const String& InText) const;
 };
 assert_offset(RTTIContainer, m_Type, 0x8);
 assert_offset(RTTIContainer, m_Data, 0x10);
@@ -191,7 +192,7 @@ public:
 	}
 
 	std::optional<std::string> SerializeObject(const void *Object) const;
-	bool DeserializeObject(void *Object, const std::string_view InText) const;
+	bool DeserializeObject(void *Object, const String& InText) const;
 };
 assert_offset(RTTIEnum, m_Name, 0x10);
 assert_offset(RTTIEnum, m_Values, 0x18);
@@ -226,8 +227,8 @@ public:
 		uint16_t m_Offset;
 		Flags m_Flags;
 		const char *m_Name;
-		void (* m_PropertyGetter)(const void *Object, void *Value);
-		void (* m_PropertySetter)(void *Object, const void *Value);
+		void (* m_PropertyGetter)(const void *ClassObject, void *Value);
+		void (* m_PropertySetter)(void *ClassObject, const void *Value);
 		char _pad0[0x10];
 
 		bool IsGroupMarker() const;
@@ -319,64 +320,110 @@ public:
 	bool HasPostLoadCallback() const;
 	std::vector<std::tuple<const MemberEntry *, const char *, size_t>> GetCategorizedClassMembers() const;
 	std::optional<std::string> SerializeObject(const void *Object) const;
-	bool DeserializeObject(void *Object, const std::string_view InText) const;
+	bool DeserializeObject(void *Object, const String& InText) const;
 
 	template<typename T>
 	bool SetMemberValue(void *Object, const char *Name, const T& Value) const
 	{
-		return this->EnumerateClassMembersByInheritance([&](const RTTIClass::MemberEntry& Member, const char *, uint32_t BaseOffset, bool)
+		return VisitClassMembersByInheritance(Object, [&](const RTTIClass::MemberEntry& Member, void *MemberObject)
 		{
-			if (Member.IsGroupMarker())
-				return false;
-
 			if (strcmp(Name, Member.m_Name) != 0)
 				return false;
 
-			auto rawObject = reinterpret_cast<void *>(reinterpret_cast<uintptr_t>(Object) + BaseOffset + Member.m_Offset);
-
 			if (Member.IsProperty())
-				Member.m_PropertySetter(rawObject, &Value);
+				Member.m_PropertySetter(Object, &Value);
 			else
-				*reinterpret_cast<T *>(rawObject) = Value;
+				*reinterpret_cast<T *>(MemberObject) = Value;
 
 			return true;
 		});
 	}
 
-	template<typename T>
-	bool GetMemberValue(const void *Object, const char *Name, T *OutValue) const
+	bool SetMemberValueByString(void *Object, const char *Name, const String& Value) const
 	{
-		return this->EnumerateClassMembersByInheritance([&](const RTTIClass::MemberEntry& Member, const char *, uint32_t BaseOffset, bool)
-		{
-			if (Member.IsGroupMarker())
-				return false;
+		bool succeeded = false;
 
+		VisitClassMembersByInheritance(Object, [&](const RTTIClass::MemberEntry& Member, void *MemberObject)
+		{
 			if (strcmp(Name, Member.m_Name) != 0)
 				return false;
 
-			auto rawObject = reinterpret_cast<const void *>(reinterpret_cast<uintptr_t>(Object) + BaseOffset + Member.m_Offset);
+			if (Member.IsProperty())
+				__debugbreak();
+
+			succeeded = Member.m_Type->DeserializeObject(MemberObject, Value);
+			return true;
+		});
+
+		return succeeded;
+	}
+
+	template<typename T>
+	bool GetMemberValue(const void *Object, const char *Name, T *OutValue) const
+	{
+		return VisitClassMembersByInheritance(const_cast<void *>(Object), [&](const RTTIClass::MemberEntry& Member, void *MemberObject)
+		{
+			if (strcmp(Name, Member.m_Name) != 0)
+				return false;
 
 			if (OutValue)
 			{
 				if (Member.IsProperty())
-					Member.m_PropertyGetter(rawObject, OutValue);
+					Member.m_PropertyGetter(Object, OutValue);
 				else
-					*OutValue = *reinterpret_cast<std::add_const_t<T> *>(rawObject);
+					*OutValue = *reinterpret_cast<std::add_const_t<T> *>(MemberObject);
 			}
 
 			return true;
 		});
 	}
 
+	template<typename T>
+	T& GetMemberRefUnsafe(void *Object, const char *Name) const
+	{
+		void *memberObjectPointer = nullptr;
+
+		VisitClassMembersByInheritance(Object, [&](const RTTIClass::MemberEntry& Member, void *MemberObject)
+		{
+			if (strcmp(Name, Member.m_Name) != 0)
+				return false;
+
+			if (Member.IsProperty())
+				throw std::logic_error("Cannot obtain a reference to a property function");
+
+			memberObjectPointer = MemberObject;
+			return true;
+		});
+
+		if (!memberObjectPointer)
+			throw std::logic_error("Couldn't resolve member name");
+
+		return *reinterpret_cast<T *>(memberObjectPointer);
+	}
+
+	template<typename Func>
+	requires (std::is_invocable_r_v<bool, Func, const RTTIClass::MemberEntry& /*Member*/, void */*MemberObject*/>)
+	bool VisitClassMembersByInheritance(void *Object, const Func& Callback) const
+	{
+		return EnumerateOrderedRTTIClassMembers([&](const RTTIClass::MemberEntry& Member, const char *, uint32_t BaseOffset, bool)
+		{
+			if (Member.IsGroupMarker())
+				return false;
+
+			auto rawObject = reinterpret_cast<void *>(reinterpret_cast<uintptr_t>(Object) + BaseOffset + Member.m_Offset);
+			return Callback(Member, rawObject);
+		});
+	}
+
 	template<typename Func>
 	requires (std::is_invocable_r_v<bool, Func, const RTTIClass::MemberEntry& /*Member*/, const char */*Category*/, uint32_t /*BaseOffset*/, bool /*TopLevel*/>)
-	bool EnumerateClassMembersByInheritance(const Func& Callback, uint32_t BaseOffset = 0, bool TopLevel = true) const
+	bool EnumerateOrderedRTTIClassMembers(const Func& Callback, uint32_t BaseOffset = 0, bool TopLevel = true) const
 	{
 		const char *activeCategory = "";
 
 		for (auto& base : ClassInheritance())
 		{
-			if (base.m_Type->EnumerateClassMembersByInheritance(Callback, BaseOffset + base.m_Offset, false))
+			if (base.m_Type->EnumerateOrderedRTTIClassMembers(Callback, BaseOffset + base.m_Offset, false))
 				return true;
 		}
 

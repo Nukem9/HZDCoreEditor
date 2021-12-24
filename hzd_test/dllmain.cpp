@@ -48,7 +48,7 @@ void PostLoadObjectHook(RTTIBinaryReader *Reader)
 		DebugUI::LogWindow::AddLog("[Asset] Finished loading %s at [offset %lld, address 0x%p] (%s)", rtti->GetSymbolName().c_str(), Reader->GetStreamPosition(), object, Reader->m_FullFilePath.c_str());
 
 		// Dump the name
-		if (String assetName; rtti->AsClass()->GetMemberValue(object, "Name", &assetName) && !assetName.empty())
+		if (String assetName; object->GetMemberValue("Name", &assetName) && !assetName.empty())
 			DebugUI::LogWindow::AddLog(" (%s)\n", assetName.c_str());
 		else
 			DebugUI::LogWindow::AddLog("\n");
