@@ -3,6 +3,7 @@
 #include <objbase.h>
 #include <cstddef>
 #include <array>
+#include <string_view>
 
 namespace HRZ
 {
@@ -68,8 +69,20 @@ struct GGUUID final
 		return value;
 	}
 
+	constexpr static GGUUID Parse(const std::string_view UUID)
+	{
+		return Parse(UUID.data(), UUID.length());
+	}
+
 	template<size_t N, size_t Len = N - 1>
 	consteval static GGUUID Parse(const char(&UUID)[N])
+	{
+		static_assert(Len == 36 || Len == 38, "UUIDs are expected to be 36 or 38 characters long with dashes included. Brackets are optional.");
+		
+		return Parse(UUID, Len);
+	}
+
+	constexpr static GGUUID Parse(const char *UUID, size_t Length)
 	{
 		//
 		// Parse as:
@@ -77,10 +90,12 @@ struct GGUUID final
 		// 40E36691-5FD0-4A79-B3B3-87B2A3D13E9C
 		// {40E36691-5FD0-4A79-B3B3-87B2A3D13E9C}
 		//
-		static_assert(Len == 36 || Len == 38, "UUIDs are expected to be 36 or 38 characters long with dashes included. Brackets are optional.");
-		const size_t add = (Len == 38) ? 1 : 0;
+		const size_t add = (Length == 38) ? 1 : 0;
 
-		if (add && (UUID[0] != '{' || UUID[Len - 1] != '}'))
+		if (Length != 36 && Length != 38)
+			throw "Invalid GUID length specified";
+
+		if (add && (UUID[0] != '{' || UUID[Length - 1] != '}'))
 			throw "Invalid bracket pair used";
 
 		GGUUID id {};
@@ -94,6 +109,28 @@ struct GGUUID final
 			id.Data4[i + 2] = UUIDHexToBytes<uint8_t>(UUID + 24 + (i * 2) + add);
 
 		return id;
+	}
+};
+
+}
+
+namespace std
+{
+
+template<>
+struct hash<HRZ::GGUUID>
+{
+	constexpr size_t operator()(const HRZ::GGUUID& Key) const
+	{
+		size_t hash = 0x100000001B3ull;
+
+		for (auto k : Key.All)
+		{
+			hash ^= k;
+			hash *= 0xCBF29CE484222325ull;
+		}
+
+		return hash;
 	}
 };
 

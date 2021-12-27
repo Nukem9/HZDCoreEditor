@@ -42,28 +42,28 @@ private:
 	}
 
 	template<typename T>
-	void WriteReflectedMemberT(const char *Name, size_t Offset, const char *Type)
+	void WriteReflectedMemberT(const char *Name, size_t Offset, const char *StructType)
 	{
-		uint32_t typeFlags = 0;
+		uint32_t typeFlags = 0x60000000;// FF_STRUCT
 
-		switch (sizeof(T))
+		if (!StructType)
 		{
-		case 1: typeFlags = 0x0; break;// FF_BYTE
-		case 2: typeFlags = 0x10000000; break;// FF_WORD
-		case 4: typeFlags = 0x20000000; break;// FF_DWORD
-		case 8: typeFlags = 0x30000000; break;// FF_QWORD
+			switch (sizeof(T))
+			{
+			case 1: typeFlags = 0x0; break;// FF_BYTE
+			case 2: typeFlags = 0x10000000; break;// FF_WORD
+			case 4: typeFlags = 0x20000000; break;// FF_DWORD
+			case 8: typeFlags = 0x30000000; break;// FF_QWORD
+			}
 		}
-
-		if (Type)
-			typeFlags = 0x60000000;// FF_STRUCT
 
 		if constexpr (std::is_pointer_v<T>)
 			typeFlags |= 0x5500400;// FF_DATA | FF_0OFF | FF_1OFF (data offset)
 
-		if (!Type)
+		if (!StructType)
 			Print("mid = add_struc_member(id, \"{0:}\", {1:#X}, {2:#X}, -1, {3:});\n", Name, Offset, typeFlags, sizeof(T));
 		else
-			Print("mid = add_struc_member(id, \"{0:}\", {1:#X}, {2:#X}, get_struc_id(\"{3:}\"), {4:});\n", Name, Offset, typeFlags, Type, sizeof(T));
+			Print("mid = add_struc_member(id, \"{0:}\", {1:#X}, {2:#X}, get_struc_id(\"{3:}\"), {4:});\n", Name, Offset, typeFlags, StructType, sizeof(T));
 	}
 
 	static std::string BuildReturnType(std::string_view BaseType, std::string_view Modifiers, bool IDAFormat);

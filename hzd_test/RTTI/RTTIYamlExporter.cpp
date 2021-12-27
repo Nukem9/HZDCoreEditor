@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <string_view>
 
 #include "RTTIYamlExporter.h"
 
@@ -107,7 +108,9 @@ void RTTIYamlExporter::DecreaseIndent()
 
 std::string RTTIYamlExporter::EscapeString(std::string Value)
 {
-	auto replaceAll = [&](const std::string& From, const std::string& To)
+	using namespace std::literals::string_view_literals;
+
+	auto replaceAll = [&](const std::string_view From, const std::string_view To)
 	{
 		for (size_t startPos = 0; (startPos = Value.find(From, startPos)) != std::string::npos;)
 		{
@@ -116,7 +119,7 @@ std::string RTTIYamlExporter::EscapeString(std::string Value)
 		}
 	};
 
-	replaceAll("\\", "\\\\");
-	replaceAll("\"", "\\\"");
+	replaceAll("\\"sv, "\\\\"sv);
+	replaceAll("\""sv, "\\\""sv);
 	return Value;
 }
