@@ -53,10 +53,10 @@ public:
 		Offsets::CallID<"String::AssignFromOther", String *(*)(String *, const String&)>(this, Other);
 		return *this;
 	}
-
+	
 	bool operator==(const String& Other) const
 	{
-		return Offsets::CallID<"String::operatorEquality", bool(*)(const String&, const String&)>(*this, Other);
+		return (size() == Other.size()) && (memcmp(data(), Other.data(), size()) == 0);
 	}
 
 	std::strong_ordering operator<=>(const String& Other) const
