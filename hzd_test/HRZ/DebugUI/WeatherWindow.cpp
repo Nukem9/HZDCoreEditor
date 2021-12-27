@@ -21,7 +21,7 @@ void WeatherWindow::Render()
 {
 	ImGui::SetNextWindowSize(ImVec2(500, 1000), ImGuiCond_FirstUseEver);
 
-	if (!ImGui::Begin("Weather Editor", &m_WindowOpen))
+	if (!ImGui::Begin(GetId().c_str(), &m_WindowOpen))
 	{
 		ImGui::End();
 		return;
@@ -83,6 +83,11 @@ void WeatherWindow::Render()
 bool WeatherWindow::Close()
 {
 	return !m_WindowOpen;
+}
+
+std::string WeatherWindow::GetId() const
+{
+	return "Weather Editor";
 }
 
 void WeatherWindow::DrawWeatherSetupEditor(WeatherSetup *Setup, bool ForceSet)

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "DebugUIWindow.h"
 
 namespace HRZ::DebugUI
@@ -13,6 +15,8 @@ private:
 public:
 	virtual void Render() override;
 	virtual bool Close() override;
+	virtual std::string GetId() const override;
+
 };
 
 }

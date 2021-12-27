@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+
+#include "../PCore/Common.h"
 #include "../Core/EntityComponent.h"
 
 #include "DebugUIWindow.h"
@@ -29,6 +32,7 @@ public:
 
 	virtual void Render() override;
 	virtual bool Close() override;
+	virtual std::string GetId() const override;
 
 	void DrawComponent(EntityComponent *Component);
 	void DrawComponent(ItemDescriptionComponent *Component);

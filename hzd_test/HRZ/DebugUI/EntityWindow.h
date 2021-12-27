@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <imgui.h>
 
 #include "../Core/Entity.h"
@@ -23,6 +24,7 @@ public:
 
 	virtual void Render() override;
 	virtual bool Close() override;
+	virtual std::string GetId() const override;
 };
 
 }

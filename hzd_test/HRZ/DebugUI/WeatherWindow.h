@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "DebugUIWindow.h"
 
 namespace HRZ
@@ -19,6 +21,7 @@ private:
 public:
 	virtual void Render() override;
 	virtual bool Close() override;
+	virtual std::string GetId() const override;
 
 private:
 	void DrawWeatherSetupEditor(WeatherSetup *Setup, bool ForceSet);

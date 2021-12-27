@@ -1,15 +1,14 @@
+#include <format>
 #include <imgui.h>
 
-#include "../PCore/Common.h"
 #include "../Core/HumanoidInventory.h"
+#include "../Core/ItemDescriptionComponent.h"
+#include "../Core/InventoryItemComponent.h"
+#include "../Core/LocalizedTextResource.h"
 
 #include "DebugUI.h"
 #include "EntityWindow.h"
 #include "ComponentViewWindow.h"
-
-#include "../Core/ItemDescriptionComponent.h"
-#include "../Core/InventoryItemComponent.h"
-#include "../Core/LocalizedTextResource.h"
 
 namespace HRZ::DebugUI
 {
@@ -23,18 +22,15 @@ void ComponentViewWindow::Render()
 	if (!m_Component)
 		return;
 
-	auto component = m_Component.get();
-
 	ImGui::SetNextWindowSize(ImVec2(500.0f, 500.0f), ImGuiCond_FirstUseEver);
 
-	char windowName[512];
-	sprintf_s(windowName, "Component \"%s\" for Entity \"%s\" (%p)", component->GetUnderlyingName().c_str(), component->m_Entity->GetName().c_str(), component);
-
-	if (!ImGui::Begin(windowName, &m_WindowOpen))
+	if (!ImGui::Begin(GetId().c_str(), &m_WindowOpen, ImGuiWindowFlags_NoSavedSettings))
 	{
 		ImGui::End();
 		return;
 	}
+
+	auto component = m_Component.get();
 
 	if (m_Component->GetRTTI()->IsKindOf(HumanoidInventory::TypeInfo))
 		DrawComponent(static_cast<HumanoidInventory *>(component));
@@ -48,7 +44,14 @@ void ComponentViewWindow::Render()
 
 bool ComponentViewWindow::Close()
 {
-	return !m_WindowOpen;
+	return !m_WindowOpen || !m_Component;
+}
+
+std::string ComponentViewWindow::GetId() const
+{
+	auto c = m_Component.get();
+
+	return std::format("Component \"{0:}\" for Entity \"{1:}\" ({2:X})", c->GetUnderlyingName().c_str(), c->m_Entity->GetName().c_str(), reinterpret_cast<uintptr_t>(c));
 }
 
 void ComponentViewWindow::DrawComponent(EntityComponent *Component)
@@ -123,7 +126,7 @@ void ComponentViewWindow::DrawComponent(HumanoidInventory *Component)
 				{
 					if (ImGui::Selectable("View Entity"))
 					{
-						AddWindow(std::make_unique<EntityWindow>(item));
+						AddWindow(std::make_shared<EntityWindow>(item));
 						ImGui::CloseCurrentPopup();
 					}
 

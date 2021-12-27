@@ -1,6 +1,6 @@
 #pragma once
 
-#include <imgui.h>
+#include <string>
 
 #include "DebugUIWindow.h"
 
@@ -13,15 +13,9 @@ private:
 	bool m_WindowOpen = true;
 
 public:
-	virtual void Render() override
-	{
-		ImGui::ShowDemoWindow(&m_WindowOpen);
-	}
-
-	virtual bool Close() override
-	{
-		return !m_WindowOpen;
-	}
+	virtual void Render() override;
+	virtual bool Close() override;
+	virtual std::string GetId() const override;
 };
 
 }

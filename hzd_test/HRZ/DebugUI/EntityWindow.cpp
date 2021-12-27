@@ -20,17 +20,14 @@ void EntityWindow::Render()
 
 	ImGui::SetNextWindowSize(ImVec2(850.0f, 760.0f), ImGuiCond_FirstUseEver);
 
-	char windowName[512];
-	sprintf_s(windowName, "Entity \"%s\" (%p)", m_Entity->GetName().c_str(), m_Entity.get());
-
-	if (!ImGui::Begin(windowName, &m_WindowOpen))
+	if (!ImGui::Begin(GetId().c_str(), &m_WindowOpen, ImGuiWindowFlags_NoSavedSettings))
 	{
 		ImGui::End();
 		return;
 	}
 
 	ImGui::Text("Entity name: %s", m_Entity->GetName().c_str());
-	ImGui::Text("Resource type: %s", m_Entity->m_Resource ? m_Entity->m_Resource->GetName().c_str() : "");
+	ImGui::Text("Resource type: %s (%p)", m_Entity->m_Resource ? m_Entity->m_Resource->GetName().c_str() : "", m_Entity->m_Resource.get());
 	ImGui::Spacing();
 	ImGui::Separator();
 
@@ -99,7 +96,7 @@ void EntityWindow::Render()
 				{
 					if (ImGui::Selectable("View Component"))
 					{
-						AddWindow(std::make_unique<ComponentViewWindow>(component));
+						AddWindow(std::make_shared<ComponentViewWindow>(component));
 						ImGui::CloseCurrentPopup();
 					}
 
@@ -145,7 +142,12 @@ void EntityWindow::Render()
 
 bool EntityWindow::Close()
 {
-	return !m_WindowOpen;
+	return !m_WindowOpen || !m_Entity;
+}
+
+std::string EntityWindow::GetId() const
+{
+	return std::format("Entity \"{0:}\" ({1:X})", m_Entity->GetName().c_str(), reinterpret_cast<uintptr_t>(m_Entity.get()));
 }
 
 }

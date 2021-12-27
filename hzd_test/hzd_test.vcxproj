@@ -94,6 +94,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="common.cpp" />
+    <ClCompile Include="HRZ\DebugUI\DemoWindow.cpp" />
+    <ClCompile Include="HRZ\DebugUI\LogWindow.cpp" />
     <ClCompile Include="ModCoreEvents.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="HRZ\Core\Application.cpp" />

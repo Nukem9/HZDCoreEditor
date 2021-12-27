@@ -18,8 +18,7 @@ private:
 public:
 	virtual void Render() override;
 	virtual bool Close() override;
-
-private:
+	virtual std::string GetId() const override;
 };
 
 }

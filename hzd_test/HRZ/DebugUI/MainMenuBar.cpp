@@ -101,24 +101,29 @@ bool MainMenuBar::Close()
 	return false;
 }
 
+std::string MainMenuBar::GetId() const
+{
+	return "Main Menu Bar";
+}
+
 void MainMenuBar::DrawWorldMenu()
 {
 	if (ImGui::MenuItem("Weather Editor"))
-		AddWindow(std::make_unique<WeatherWindow>());
+		AddWindow(std::make_shared<WeatherWindow>());
 
 	if (ImGui::MenuItem("Entity Spawner"))
-		AddWindow(std::make_unique<EntitySpawnerWindow>());
+		AddWindow(std::make_shared<EntitySpawnerWindow>());
 
 	ImGui::Separator();
 
 	if (ImGui::MenuItem("Player Entity"))
-		AddWindow(std::make_unique<EntityWindow>(Player::GetLocalPlayer()->m_Entity));
+		AddWindow(std::make_shared<EntityWindow>(Player::GetLocalPlayer()->m_Entity));
 
 	if (ImGui::MenuItem("Player Camera Entity"))
-		AddWindow(std::make_unique<EntityWindow>(Player::GetLocalPlayer()->GetLastActivatedCamera()));
+		AddWindow(std::make_shared<EntityWindow>(Player::GetLocalPlayer()->GetLastActivatedCamera()));
 
 	if (ImGui::MenuItem("Player Focus Entity"))
-		AddWindow(std::make_unique<FocusEditorWindow>());
+		AddWindow(std::make_shared<FocusEditorWindow>());
 }
 
 void MainMenuBar::DrawTimeMenu()
@@ -153,7 +158,7 @@ void MainMenuBar::DrawTimeMenu()
 
 	ImGui::MenuItem("Time of Day", nullptr, nullptr, false);
 
-	if (ImGui::SliderFloat("##timeofdaybar", &timeOfDay, 0.0f, 23.999f))
+	if (ImGui::SliderFloat("##timeofdaybar", &timeOfDay, 0.0f, 23.9999f))
 	{
 		worldState->SetTimeOfDay(timeOfDay, 0.0f);
 		worldState->m_DayNightCycleCount = cycleCount;
@@ -181,7 +186,7 @@ void MainMenuBar::DrawTimeMenu()
 			ImGui::SameLine();
 	};
 
-	if (ImGui::SliderFloat("##TimescaleDragFloat", &m_Timescale, 0.01f, 10.0f))
+	if (ImGui::SliderFloat("##TimescaleDragFloat", &m_Timescale, 0.001f, 10.0f))
 		m_TimescaleOverride = true;
 
 	modifyTimescale(0.01f);
@@ -272,7 +277,7 @@ void MainMenuBar::DrawCheatsMenu()
 				continue;
 
 			String assetName;
-			refObject->GetRTTI()->AsClass()->GetMemberValue(refObject, "Name", &assetName);
+			refObject->GetMemberValue("Name", &assetName);
 
 			if (ImGui::Selectable(assetName.c_str(), player->m_Entity->m_Faction == (HRZ::AIFaction *)refObject))
 				player->m_Entity->SetFaction((HRZ::AIFaction *)refObject);

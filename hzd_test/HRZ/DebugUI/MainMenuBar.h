@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <imgui.h>
 
 #include "../Core/WorldPosition.h"
@@ -29,7 +30,9 @@ public:
 
 	virtual void Render() override;
 	virtual bool Close() override;
+	virtual std::string GetId() const override;
 
+private:
 	void DrawWorldMenu();
 	void DrawTimeMenu();
 	void DrawCheatsMenu();

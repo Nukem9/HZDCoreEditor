@@ -27,7 +27,7 @@ void EntitySpawnerWindow::Render()
 {
 	ImGui::SetNextWindowSize(ImVec2(500, 600), ImGuiCond_FirstUseEver);
 
-	if (!ImGui::Begin("Entity Spawner", &m_WindowOpen))
+	if (!ImGui::Begin(GetId().c_str(), &m_WindowOpen))
 	{
 		ImGui::End();
 		return;
@@ -122,7 +122,6 @@ void EntitySpawnerWindow::Render()
 
 	if (ImGui::Button("Spawn"))
 	{
-
 		for (int i = 0; i < spawnCount; i++)
 		{
 			auto spawnpoint = (RTTIRefObject *)Offsets::Call<0x02F5CD0, void *(*)(const RTTI *)>(RTTI_Spawnpoint);
@@ -151,6 +150,11 @@ void EntitySpawnerWindow::Render()
 bool EntitySpawnerWindow::Close()
 {
 	return !m_WindowOpen;
+}
+
+std::string DebugUI::EntitySpawnerWindow::GetId() const
+{
+	return "Entity Spawner";
 }
 
 }

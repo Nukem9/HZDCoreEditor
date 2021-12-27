@@ -18,7 +18,7 @@ void FocusEditorWindow::Render()
 {
 	ImGui::SetNextWindowSize(ImVec2(500, 500), ImGuiCond_FirstUseEver);
 
-	if (!ImGui::Begin("Focus Editor", &m_WindowOpen))
+	if (!ImGui::Begin(GetId().c_str(), &m_WindowOpen))
 	{
 		ImGui::End();
 		return;
