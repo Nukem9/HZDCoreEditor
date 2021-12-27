@@ -62,6 +62,8 @@ void RTTIYamlExporter::ExportGGRTTI()
 			Print("typeid: {0:}", asClass->GetCoreBinaryTypeId());
 			Print("size: {0:}", asClass->m_Size);
 			Print("alignment: {0:}", asClass->m_Alignment);
+			Print("flags: {0:}", asClass->m_Flags);
+			Print("unknownC: {0:}", asClass->m_UnknownC);
 
 			Print("messages:");
 			IncreaseIndent();
@@ -81,11 +83,12 @@ void RTTIYamlExporter::ExportGGRTTI()
 			IncreaseIndent();
 			for (auto& [member, category, _] : members)
 			{
-				Print("- {{name: \"{0:}\", type: \"{1:}\", category: \"{2}\", offset: {3:}, is_property: {4:s}, is_savestate: {5:s}}}",
+				Print("- {{name: \"{0:}\", type: \"{1:}\", category: \"{2:}\", offset: {3:}, flags: {4:}, is_property: {5:s}, is_savestate: {6:s}}}",
 					member->m_Name,
 					member->m_Type->GetSymbolName(),
 					category,
 					member->m_Offset,
+					static_cast<uint32_t>(member->m_Flags),
 					member->IsProperty(),
 					member->IsSaveStateOnly());
 			}
