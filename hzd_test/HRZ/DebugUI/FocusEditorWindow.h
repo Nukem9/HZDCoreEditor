@@ -17,6 +17,8 @@ public:
 	virtual bool Close() override;
 	virtual std::string GetId() const override;
 
+private:
+	void UpdateFocusVertexColors();
 };
 
 }
