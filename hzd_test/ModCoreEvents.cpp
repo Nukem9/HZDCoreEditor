@@ -7,6 +7,8 @@
 #include "HRZ/DebugUI/LogWindow.h"
 #include "HRZ/Core/Texture.h"
 #include "HRZ/Core/VertexArrayResource.h"
+#include "RTTI/RTTIScanner.h"
+#include "ModConfig.h"
 #include "ModCoreEvents.h"
 
 using namespace HRZ;
@@ -24,13 +26,84 @@ std::unordered_set<RTTIRefObject *> CachedWeatherSetups;
 std::unordered_set<RTTIRefObject *> CachedSpawnSetupBases;
 std::unordered_set<RTTIRefObject *> CachedAIFactions;
 
-HRZ::Ref<HwTexture> TestTexture;
-HRZ::Ref<HwBuffer> TestBuffer;
-
-ModCoreEvents& ModCoreEvents::Instance()
+ModCoreEvents::ValuePatchVisitor::ValuePatchVisitor(const RTTIValuePatch& Patch) : m_Patch(Patch)
 {
-	static ModCoreEvents handler;
-	return handler;
+}
+
+void ModCoreEvents::ValuePatchVisitor::SetValue(void *Object, const RTTI *Type)
+{
+	bool result = Type->DeserializeObject(Object, m_Patch.m_Value);
+
+	if (!result)
+	{
+		DebugUI::LogWindow::AddLog("[AssetOverride] Failed to set variable '%s' to '%s' for object %p\n", m_Patch.m_Path.c_str(), m_Patch.m_Value.c_str(), Object);
+		__debugbreak();
+	}
+}
+
+int ModCoreEvents::ValuePatchVisitor::GetFlags()
+{
+	return 1;
+}
+
+ModCoreEvents::ModCoreEvents()
+{
+	auto splitStringByDelimiter = []<typename Func>(const std::string_view & Text, char Delim, const Func& Callback)
+	{
+		if (Text.empty())
+			return;
+
+		size_t last = 0;
+		size_t next = 0;
+		
+		while ((next = Text.find(Delim, last)) != std::string_view::npos)
+		{
+			Callback(Text.substr(last, next - last));
+			last = next + 1;
+		}
+		
+		Callback(Text.substr(last));
+	};
+
+	// Create all of the patch instances from mod configuration data
+	for (auto& override : ModConfiguration.AssetOverrides)
+	{
+		if (!override.Enabled)
+			continue;
+
+		// Lookup is done by UUID
+		splitStringByDelimiter(override.ObjectUUIDs, ',', [&](const std::string_view& UUID)
+		{
+			auto uuid = GGUUID::Parse(UUID);
+
+			RTTIValuePatch patch
+			{
+				.m_MatchCriteria = uuid,
+				.m_Path = override.Path.c_str(),
+				.m_Value = override.Value.c_str(),
+			};
+
+			m_RTTIPatchesByUUID[uuid].emplace_back(patch);
+		});
+
+		// Lookup is done by type
+		splitStringByDelimiter(override.ObjectTypes, ',', [&](const std::string_view& Type)
+		{
+			auto type = RTTIScanner::GetTypeByName(Type);
+
+			if (!type)
+				__debugbreak();
+
+			RTTIValuePatch patch
+			{
+				.m_MatchCriteria = type,
+				.m_Path = override.Path.c_str(),
+				.m_Value = override.Value.c_str(),
+			};
+
+			m_RTTIPatchesByType[type].emplace_back(patch);
+		});
+	}
 }
 
 void ModCoreEvents::OnBeginRootCoreLoad(const String& CorePath)
@@ -48,7 +121,7 @@ void ModCoreEvents::OnBeginCoreUnload(const String& CorePath)
 	DebugUI::LogWindow::AddLog("OnBeginCoreUnload %s\n", CorePath.c_str());
 }
 
-void ModCoreEvents::OnEndCoreUnload(/* 'const String& CorePath' argument is passed but the pointer is invalid */)
+void ModCoreEvents::OnEndCoreUnload()
 {
 	DebugUI::LogWindow::AddLog("OnEndCoreUnload\n");
 }
@@ -62,42 +135,32 @@ void ModCoreEvents::OnCoreLoad(const String& CorePath, const Array<Ref<RTTIRefOb
 			// Disable the intro menu
 			*(HRZ::Ref<HRZ::RTTIRefObject> *)((uintptr_t)refObject.get() + 0x158) = *(HRZ::Ref<HRZ::RTTIRefObject> *)((uintptr_t)refObject.get() + 0xB0);
 		}
-
-		if (refObject->m_ObjectUUID == GGUUID::Parse("{9DE4FAD6-597C-3533-BCE4-73A3335438C4}"))
+		else if (refObject->m_ObjectUUID == GGUUID::Parse("{F5F801CF-5F14-F34F-8695-E701F7BF3728}"))
 		{
-			auto texture = RTTI::Cast<Texture>(refObject.get());
-			auto b = static_cast<TextureDX12 *>(texture->m_HwTexture.get());
-			b->m_Copies[0].m_State.m_D3DResource->SetName(L"MY SPECIAL RESOURCE");
-
-			TestTexture = texture->m_HwTexture;
+			auto& array = refObject->GetMemberRefUnsafe<Array<void *>>("OutOfBoundsAreaTags");
+			array.clear();
 		}
 
-		if (refObject->m_ObjectUUID == GGUUID::Parse("{3F7C9F06-44F9-8A3F-85F4-BA9C2C8D3500}"))
-		{
-			auto b = RTTI::Cast<VertexArrayResource>(refObject.get());
+		auto rtti = refObject->GetRTTI()->AsClass();
+		auto object = refObject.get();
 
-			TestBuffer = b->m_VertexArray->m_VertexStreams[1].m_Resource->m_Buffer;
-		}
-
-		if (refObject->m_ObjectUUID == GGUUID::Parse("{28846CC1-96AF-AA4A-8AB9-C491D56BC17E}") ||
-			refObject->m_ObjectUUID == GGUUID::Parse("{68FF19FB-A372-6947-8216-66FF83DB0A1F}"))
+		auto applyPatches = [&](const std::vector<RTTIValuePatch>& Patches)
 		{
-			// Ref<Extern> {'sounds/effects/movements/gear/aloy_outfit_warbot/wav/shield_loop_b_1_m', {28846CC1-96AF-AA4A-8AB9-C491D56BC17E}}
-			// Ref<Extern> {'sounds/effects/movements/gear/aloy_outfit_warbot/wav/shield_loop_a_1_m', {68FF19FB-A372-6947-8216-66FF83DB0A1F}}
-			// SampleCount = 0
-			*(int *)((uintptr_t)refObject.get() + 0x64) = 0;
-		}
+			for (auto& patch : Patches)
+			{
+				ValuePatchVisitor v(patch);
+				RTTIObjectTweaker::VisitObjectPath(object, rtti, patch.m_Path, &v);
 
-		if (refObject->m_ObjectUUID == GGUUID::Parse("{0867F5E6-0375-7434-9534-BB9B73FB1103}"))
-		{
-			// Ref<Extern> {'models/characters/humans/aloyadvancedwarbot/animation/parts/shield', {{0867F5E6-0375-7434-9534-BB9B73FB1103}}
-			// EndIndex = 0
-			*(int *)((uintptr_t)refObject.get() + 0x74) = 0;
-		}
+				if (!v.m_LastError.empty())
+					__debugbreak();
+			}
+		};
 
-		if (refObject->m_ObjectUUID == GGUUID::Parse("{44E1CF57-24A6-9A43-B087-172C87BB0DFE}"))
-		{
-		}
+		if (auto itr = m_RTTIPatchesByUUID.find(object->m_ObjectUUID); itr != m_RTTIPatchesByUUID.end())
+			applyPatches(itr->second);
+
+		if (auto itr = m_RTTIPatchesByType.find(rtti); itr != m_RTTIPatchesByType.end())
+			applyPatches(itr->second);
 	}
 
 	DebugUI::LogWindow::AddLog("OnCoreLoad (%lld) %s\n", Objects.size(), CorePath.c_str());
@@ -141,4 +204,10 @@ void ModCoreEvents::OnUnloadCoreObjects(const String& CorePath, const Array<Ref<
 	ResourceListLock.unlock();
 
 	DebugUI::LogWindow::AddLog("OnUnloadCoreObjects (%lld) %s\n", Objects.size(), CorePath.c_str());
+}
+
+ModCoreEvents& ModCoreEvents::Instance()
+{
+	static ModCoreEvents handler;
+	return handler;
 }
