@@ -14,8 +14,7 @@
 
 enum class GameType
 {
-	DeathStranding = 0,
-	HorizonZeroDawn = 1,
+	Invalid = 0,
+	DeathStranding = 1,
+	HorizonZeroDawn = 2,
 };
-
-extern GameType g_GameType;

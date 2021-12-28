@@ -17,6 +17,7 @@
 #include "RTTI/MSRTTI.h"
 #include "RTTI/RTTIScanner.h"
 
+#include "ModConfig.h"
 #include "ModCoreEvents.h"
 #include "common.h"
 
@@ -94,11 +95,11 @@ void InternalEngineLog(const char *Format, ...)
 		DebugUI::LogWindow::AddLog("[Engine] %s\n", buffer);
 }
 
-void PackFileDevice_MountArchive(class PackFileDevice *Device, const String& BinPath, uint32_t Priority)
+void PackfileDevice_MountArchive(class PackFileDevice *Device, const String& BinPath, uint32_t Priority)
 {
-	Offsets::CallID<"PackFileDevice::MountArchive", void(*)(PackFileDevice *, const String&, uint32_t)>(Device, BinPath, Priority);
+	Offsets::CallID<"PackfileDevice::MountArchive", void(*)(PackFileDevice *, const String&, uint32_t)>(Device, BinPath, Priority);
 
-	DebugUI::LogWindow::AddLog("[PackFileDevice] Mounted archive %s with priority %u\n", BinPath.c_str(), Priority);
+	DebugUI::LogWindow::AddLog("[PackfileDevice] Mounted archive %s with priority %u\n", BinPath.c_str(), Priority);
 }
 
 bool hk_SwapChainDX12_Present(SwapChainDX12 *SwapChain)
@@ -153,36 +154,38 @@ void hk_call_1411E3210(HRZ::GameModule *This, float Timescale, float TransitionT
 	This->SetTimescale(Timescale, TransitionTime);
 }
 
-void hk_call_14345CD56()
+void hk_call_1417BC7AA()
 {
 	RTTIScanner::ExportAll("C:\\ds_rtti_export", "DS");
 	ExitProcess(0);
 }
 
-void LoadSignatures()
+void hk_call_1417B52CF(uint64_t *Hash, const char *Data, size_t DataLength)
 {
-	wchar_t modulePath[MAX_PATH] {};
-	wchar_t executableName[MAX_PATH] {};
+	static FILE *temp = fopen("C:\\ds_rtti_export\\hash_listing.txt", "w");
 
-	GetModuleFileNameW(GetModuleHandleW(nullptr), modulePath, std::size(modulePath));
-	_wcslwr_s(modulePath);
-	_wsplitpath_s(modulePath, nullptr, 0, nullptr, 0, executableName, std::size(executableName), nullptr, 0);
+	Offsets::Call<0x16B9B60, void(*)(uint64_t *, const char *, size_t)>(Hash, Data, DataLength);
 
-	if (!wcscmp(executableName, L"ds"))
-		g_GameType = GameType::DeathStranding;
-	else if (!wcscmp(executableName, L"horizonzerodawn"))
-		g_GameType = GameType::HorizonZeroDawn;
-	else
-		__debugbreak();
+	if (temp)
+	{
+		fprintf(temp, "%llX%llX = %s\n", Hash[0], Hash[1], Data);
+		fflush(temp);
+	}
+}
 
+void LoadSignatures(GameType Game)
+{
 	auto [moduleBase, moduleEnd] = Offsets::GetModule();
 
-	auto scan = [&](const char *Signature)
+	auto offsetFromInstruction = [&](const char *Signature, uint32_t Add)
 	{
-		return XUtil::FindPattern(moduleBase, moduleEnd - moduleBase, Signature) - moduleBase;
+		auto addr = XUtil::FindPattern(moduleBase, moduleEnd - moduleBase, Signature);
+		auto relOffset = *reinterpret_cast<int32_t *>(addr + Add) + sizeof(int32_t);
+
+		return addr + Add + relOffset - moduleBase;;
 	};
 
-	if (g_GameType == GameType::DeathStranding)
+	if (Game == GameType::DeathStranding)
 	{
 		// Functions
 		Offsets::MapSignature("String::CtorCString", "40 53 48 83 EC 20 48 8B D9 48 C7 01 00 00 00 00 49 C7 C0 FF FF FF FF");
@@ -190,9 +193,9 @@ void LoadSignatures()
 		Offsets::MapSignature("RTTI::GetCoreBinaryTypeId", "4C 8B DC 55 53 56 41 56 49 8D 6B A1 48 81 EC C8 00 00 00");
 
 		// Globals
-		Offsets::MapAddress("ExportedSymbolGroupArray", 0x4875780);
+		Offsets::MapAddress("ExportedSymbolGroupArray", offsetFromInstruction("48 8B C2 4C 8D ? ? ? ? ? 48 8D ? ? ? ? ? 4C 8D ? ? ? ? ? 48 8D ? ? ? ? ? 48 FF E0", 6));
 	}
-	else if (g_GameType == GameType::HorizonZeroDawn)
+	else if (Game == GameType::HorizonZeroDawn)
 	{
 		// Functions
 		Offsets::MapSignature("String::CtorCString", "48 89 5C 24 10 48 89 6C 24 18 48 89 7C 24 20 41 56 48 83 EC 20 33 FF 48 8B EA 48 89 39 4C 8B F1 48 C7 C3 FF FF FF FF");
@@ -216,7 +219,7 @@ void LoadSignatures()
 
 		Offsets::MapSignature("RTTI::GetCoreBinaryTypeId", "48 8B C4 44 89 40 18 48 89 50 10 48 89 48 08 55 53 56 41 56 48 8D 68 A1 48 81 EC 98 00 00 00 4C 89 60 D0");
 		Offsets::MapSignature("SwapChainDX12::Present", "48 89 5C 24 08 48 89 74 24 10 57 48 83 EC 40 48 8B 05 ? ? ? ? 48 8B D9");
-		Offsets::MapSignature("PackFileDevice::MountArchive", "44 89 44 24 18 48 89 54 24 10 48 89 4C 24 08 55 53 56 57 41 56");
+		Offsets::MapSignature("PackfileDevice::MountArchive", "44 89 44 24 18 48 89 54 24 10 48 89 4C 24 08 55 53 56 57 41 56");
 		Offsets::MapSignature("LocalizedTextResource::GetTranslation", "48 89 5C 24 10 57 48 83 EC 20 48 8B F9 48 8B DA 48 8B 0D ? ? ? ? 48 8B 01");
 		Offsets::MapSignature("RTTIRefObject::DecRef", "40 53 48 83 EC 20 48 8B D9 B8 FF FF FF FF F0 0F C1 41 08 25 FF FF FF 00 83 F8 01");
 		Offsets::MapSignature("WeatherSystem::SetWeatherOverride", "48 8B C4 53 48 81 EC 90 00 00 00 48 89 70 10 48 8D 99 30 01 00 00 48 89 78 18 48 8B F9");
@@ -224,25 +227,31 @@ void LoadSignatures()
 		Offsets::MapSignature("ToggleDamageLogging", "40 53 48 83 EC 20 84 D2 0F 84 B9 00 00 00 48 8B 05 ? ? ? ? 33 DB");
 
 		// Globals
-		Offsets::MapAddress("ExportedSymbolGroupArray", 0x2A2A8F0);
-		Offsets::MapAddress("Application::Instance", 0x7137CF0);
-		Offsets::MapAddress("RenderingDeviceDX12::Instance", 0x2D3F090);
+		Offsets::MapAddress("ExportedSymbolGroupArray", offsetFromInstruction("48 8B C2 4C 8D ? ? ? ? ? 48 8D ? ? ? ? ? 48 8D ? ? ? ? ? 48 FF E0", 6));
+		Offsets::MapAddress("Application::Instance", offsetFromInstruction("48 89 5C 24 08 57 48 83 EC 20 48 83 79 28 00 48 8B DA 48 8B F9 74 5A 33 D2 48 8D", 28));
+		Offsets::MapAddress("RenderingDeviceDX12::Instance", offsetFromInstruction("48 89 5C 24 08 48 89 74 24 10 57 48 83 EC 20 48 83 B9 38 01 00 00 00 48 8D ? ? ? ? ? 48 89 01 48 8B F9 74 13 48 8D 91 30 01 00 00 48 8D", 48));
 	}
 }
 
-void ApplyHooks()
+void ApplyHooks(GameType Game)
 {
 	auto [moduleBase, _] = Offsets::GetModule();
 
-	if (g_GameType == GameType::DeathStranding)
+	if (Game == GameType::DeathStranding)
 	{
 		MSRTTI::Initialize();
 		RTTIScanner::ScanForRTTIStructures();
 
-		XUtil::DetourCall(moduleBase + 0x1728A57, hk_call_14345CD56);
+		XUtil::DetourCall(moduleBase + 0x17BC7AA, hk_call_1417BC7AA);
+		XUtil::DetourCall(moduleBase + 0x17B52CF, hk_call_1417B52CF);
+
+		// Kill SteamAPI_RestartAppIfNecessary check
+		XUtil::PatchMemoryNop(moduleBase + 0x16A5864, 9);
 	}
-	else if (g_GameType == GameType::HorizonZeroDawn)
+	else if (Game == GameType::HorizonZeroDawn)
 	{
+		ModConfig::InitializeDefault();
+
 		MSRTTI::Initialize();
 		RTTIScanner::ScanForRTTIStructures();
 
@@ -261,8 +270,8 @@ void ApplyHooks()
 		XUtil::DetourJump(moduleBase + 0x0372D60, InternalEngineLog);
 		XUtil::DetourJump(moduleBase + 0x0372B50, InternalEngineLog);
 
-		XUtil::DetourCall(moduleBase + 0x01409B2, PackFileDevice_MountArchive);
-		XUtil::DetourCall(moduleBase + 0x0140A1E, PackFileDevice_MountArchive);
+		XUtil::DetourCall(moduleBase + 0x01409B2, PackfileDevice_MountArchive);
+		XUtil::DetourCall(moduleBase + 0x0140A1E, PackfileDevice_MountArchive);
 
 		// Function to set 3rd person camera position
 		XUtil::DetourCall(moduleBase + 0x13AF84C, hk_call_1413AB8FC);
@@ -271,10 +280,16 @@ void ApplyHooks()
 		XUtil::DetourCall(moduleBase + 0x11E3210, hk_call_1411E3210);
 
 		// Kill one of the out of bounds checks
-		XUtil::PatchMemoryNop(moduleBase + 0x0EF937D, 2);
+		if (ModConfiguration.UnlockMapBorders)
+		{
+			XUtil::PatchMemoryNop(moduleBase + 0x0EF937D, 2);
+		}
 
 		// Enable all entitlements
-		XUtil::PatchMemory(moduleBase + 0x0ED5D50, { 0xB0, 0x01, 0xC3 });
+		if (ModConfiguration.UnlockEntitlementExtras)
+		{
+			XUtil::PatchMemory(moduleBase + 0x0ED5D50, { 0xB0, 0x01, 0xC3 });
+		}
 	}
 }
 
@@ -282,8 +297,21 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpReserved)
 {
 	if (fdwReason == DLL_PROCESS_ATTACH)
 	{
-		LoadSignatures();
-		ApplyHooks();
+		wchar_t modulePath[MAX_PATH] {};
+		GetModuleFileNameW(GetModuleHandleW(nullptr), modulePath, std::size(modulePath));
+
+		wchar_t executableName[MAX_PATH] {};
+		_wsplitpath_s(modulePath, nullptr, 0, nullptr, 0, executableName, std::size(executableName), nullptr, 0);
+
+		auto gameType = GameType::Invalid;
+
+		if (!_wcsicmp(executableName, L"ds"))
+			gameType = GameType::DeathStranding;
+		else if (!_wcsicmp(executableName, L"HorizonZeroDawn"))
+			gameType = GameType::HorizonZeroDawn;
+
+		LoadSignatures(gameType);
+		ApplyHooks(gameType);
 	}
 
 	return TRUE;
