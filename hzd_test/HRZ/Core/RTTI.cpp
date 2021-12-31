@@ -280,7 +280,7 @@ std::vector<std::tuple<const RTTIClass::MemberEntry *, const char *, size_t>> RT
 
 	std::vector<SorterEntry> sortedEntries;
 
-	this->EnumerateOrderedRTTIClassMembers([&](const RTTIClass::MemberEntry& Member, const char *Category, uint32_t BaseOffset, bool TopLevel)
+	EnumerateOrderedRTTIClassMembers([&](const RTTIClass::MemberEntry& Member, const char *Category, uint32_t BaseOffset, bool TopLevel)
 	{
 		SorterEntry entry
 		{

@@ -218,7 +218,7 @@ public:
 	class MemberEntry
 	{
 	public:
-		enum Flags : uint8_t
+		enum Flags : uint16_t
 		{
 			SAVE_STATE_ONLY = 2,
 		};
@@ -239,7 +239,6 @@ public:
 	assert_offset(MemberEntry, m_Offset, 0x8);
 	assert_offset(MemberEntry, m_Flags, 0xA);
 	assert_offset(MemberEntry, m_Name, 0x10);
-	assert_offset(MemberEntry, m_PropertyGetter, 0x18);
 	assert_offset(MemberEntry, m_PropertySetter, 0x20);
 	assert_size(MemberEntry, 0x38);
 
