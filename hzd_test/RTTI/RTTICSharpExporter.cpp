@@ -86,6 +86,7 @@ void RTTICSharpExporter::ExportAll(const std::string_view Directory)
 			if (typeName == name)
 			{
 				auto filePath = std::format("{0:}\\Decima.{1:}.{2:}.cs", Directory, m_GameTypePrefix, name);
+				auto oldHandle = m_FileHandle;
 
 				if (fopen_s(&m_FileHandle, filePath.c_str(), "w") == 0)
 				{
@@ -95,6 +96,7 @@ void RTTICSharpExporter::ExportAll(const std::string_view Directory)
 					fclose(m_FileHandle);
 				}
 
+				m_FileHandle = oldHandle;
 				return true;
 			}
 		}
