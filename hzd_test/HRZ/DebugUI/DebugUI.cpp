@@ -7,6 +7,7 @@
 #include "../Core/Application.h"
 #include "../Core/CursorManager.h"
 #include "../Core/PlayerGame.h"
+#include "../Core/Mover.h"
 #include "../PGraphics3D/RenderingDeviceDX12.h"
 #include "../PGraphics3D/RenderingConfiguration.h"
 #include "../PGraphics3D/SwapChainDX12.h"
@@ -91,8 +92,19 @@ void Initialize(const SwapChainDX12 *SwapChain)
 	DebugUI::AddWindow(std::make_shared<MainMenuBar>());
 }
 
+void AddWindow(std::shared_ptr<Window> Handle)
+{
+	// Immediately discard duplicate window instances
+	auto id = Handle->GetId();
+
+	if (!m_Windows.contains(id))
+		m_Windows.emplace(id, Handle);
+}
+
 void RenderUI()
 {
+	UpdateFreecam();
+
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
@@ -163,13 +175,103 @@ void RenderUID3D(const SwapChainDX12 *SwapChain)
 	SwapChain->m_RenderingConfig->GetCommandQueue()->ExecuteCommandLists(1, reinterpret_cast<ID3D12CommandList * const *>(&CommandList));
 }
 
-void AddWindow(std::shared_ptr<Window> Handle)
+bool ShouldInterceptInput()
 {
-	// Immediately discard duplicate window instances
-	auto id = Handle->GetId();
+	return InterceptInput;
+}
 
-	if (!m_Windows.contains(id))
-		m_Windows.emplace(id, Handle);
+void UpdateFreecam()
+{
+	auto cameraMode = MainMenuBar::m_FreeCamMode;
+	auto& cameraPosition = MainMenuBar::m_FreeCamPosition;
+
+	if (cameraMode == MainMenuBar::FreeCamMode::Off)
+		return;
+
+	auto player = Player::GetLocalPlayer();
+
+	if (!player)
+		return;
+
+	auto camera = player->GetLastActivatedCamera();
+
+	if (!camera)
+		return;
+
+	auto& io = ImGui::GetIO();
+
+	// Set up the camera's rotation matrix
+	RotMatrix cameraMatrix;
+	float yaw = 0.0f;
+	float pitch = 0.0f;
+
+	if (cameraMode == MainMenuBar::FreeCamMode::Free)
+	{
+		// Convert mouse X/Y to yaw/pitch angles in radians
+		static float degreesX = 0.0f;
+		static float degreesY = 0.0f;
+
+		if (ImGui::IsMouseDragging(ImGuiMouseButton_Right, 0.0f))
+		{
+			degreesX = fmodf(degreesX + io.MouseDelta.x, 360.0f);
+			degreesY = fmodf(degreesY + io.MouseDelta.y, 360.0f);
+		}
+
+		yaw = degreesX * (3.14159f / 180.0f);
+		pitch = degreesY * (3.14159f / 180.0f);
+
+		cameraMatrix = RotMatrix(yaw, pitch, 0.0f);
+	}
+	else if (cameraMode == MainMenuBar::FreeCamMode::Noclip)
+	{
+		std::scoped_lock lock(camera->m_DataLock);
+
+		// Convert matrix components to angles
+		cameraMatrix = camera->m_Orientation.Orientation;
+		cameraMatrix.Decompose(&yaw, &pitch, nullptr);
+	}
+
+	// Scale camera velocity based on delta time
+	float speed = io.DeltaTime * 5.0f;
+
+	if (io.KeysDown[VK_SHIFT])
+		speed *= 10.0f;
+	else if (io.KeysDown[VK_CONTROL])
+		speed /= 5.0f;
+
+	// WSAD keys for movement
+	Vec3 moveDirection(sin(yaw) * cos(pitch), cos(yaw) * cos(pitch), -sin(pitch));
+
+	if (io.KeysDown['W'])
+		cameraPosition += moveDirection * speed;
+
+	if (io.KeysDown['S'])
+		cameraPosition -= moveDirection * speed;
+
+	if (io.KeysDown['A'])
+		cameraPosition -= moveDirection.CrossProduct(Vec3(0, 0, 1)) * speed;
+
+	if (io.KeysDown['D'])
+		cameraPosition += moveDirection.CrossProduct(Vec3(0, 0, 1)) * speed;
+
+	WorldTransform newTransform
+	{
+		.Position = cameraPosition,
+		.Orientation = cameraMatrix,
+	};
+
+	if (cameraMode == MainMenuBar::FreeCamMode::Free)
+	{
+		std::scoped_lock lock(camera->m_DataLock);
+
+		camera->m_PreviousOrientation = newTransform;
+		camera->m_Orientation = newTransform;
+		camera->m_Flags |= Entity::WorldTransformChanged;
+	}
+	else if (cameraMode == MainMenuBar::FreeCamMode::Noclip)
+	{
+		player->m_Entity->m_Mover->MoveToWorldTransform(newTransform, 0.01f, false);
+	}
 }
 
 LRESULT WINAPI WndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
@@ -225,11 +327,6 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 
 	ImGui_ImplWin32_WndProcHandler(hWnd, Msg, wParam, lParam);
 	return CallWindowProcW(OriginalWndProc, hWnd, Msg, wParam, lParam);
-}
-
-bool ShouldInterceptInput()
-{
-	return InterceptInput;
 }
 
 }

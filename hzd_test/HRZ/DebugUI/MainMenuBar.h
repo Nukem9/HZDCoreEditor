@@ -38,7 +38,7 @@ private:
 	void DrawCheatsMenu();
 	void DrawSavesMenu();
 	void DrawDebugMenu();
-	void UpdateFreecam();
+	void DrawMiscellaneousMenu();
 };
 
 }

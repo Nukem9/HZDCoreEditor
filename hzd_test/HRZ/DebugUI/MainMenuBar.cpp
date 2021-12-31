@@ -10,7 +10,6 @@
 #include "../Core/WorldPosition.h"
 #include "../Core/Vec3.h"
 #include "../Core/GameModule.h"
-#include "../Core/SlowMotionManager.h"
 #include "../Core/Player.h"
 #include "../Core/PlayerGame.h"
 #include "../Core/CameraEntity.h"
@@ -46,8 +45,6 @@ namespace HRZ::DebugUI
 
 void MainMenuBar::Render()
 {
-	UpdateFreecam();
-
 	if (!ShouldInterceptInput())
 		return;
 
@@ -90,6 +87,13 @@ void MainMenuBar::Render()
 	if (ImGui::BeginMenu("Debug"))
 	{
 		DrawDebugMenu();
+		ImGui::EndMenu();
+	}
+
+	// "Miscellaneous" menu
+	if (ImGui::BeginMenu("Miscellaneous"))
+	{
+		DrawMiscellaneousMenu();
 		ImGui::EndMenu();
 	}
 
@@ -200,7 +204,7 @@ void MainMenuBar::DrawTimeMenu()
 
 void MainMenuBar::DrawCheatsMenu()
 {
-	auto& debugSettings = Application::Instance().m_DebugSettings;
+	auto debugSettings = Application::Instance().m_DebugSettings;
 
 	if (ImGui::MenuItem("Enable Freefly Cam", nullptr, m_FreeCamMode == FreeCamMode::Free))
 	{
@@ -265,9 +269,7 @@ void MainMenuBar::DrawCheatsMenu()
 		ImGui::EndMenu();
 	}
 
-	ImGui::Separator();
-
-	if (ImGui::BeginMenu("Set Player Faction"))
+	if (ImGui::BeginMenu("Set Faction"))
 	{
 		auto player = Player::GetLocalPlayer();
 
@@ -275,12 +277,12 @@ void MainMenuBar::DrawCheatsMenu()
 		{
 			if (!refObject->GetRTTI()->IsExactKindOf(RTTI_AIFaction))
 				continue;
-
-			String assetName;
-			refObject->GetMemberValue("Name", &assetName);
-
-			if (ImGui::Selectable(assetName.c_str(), player->m_Entity->m_Faction == (HRZ::AIFaction *)refObject))
-				player->m_Entity->SetFaction((HRZ::AIFaction *)refObject);
+			
+			if (String assetName; refObject->GetMemberValue("Name", &assetName))
+			{
+				if (ImGui::MenuItem(assetName.c_str(), nullptr, player->m_Entity->m_Faction == (HRZ::AIFaction *)refObject))
+					player->m_Entity->SetFaction((HRZ::AIFaction *)refObject);
+			}
 		}
 
 		ImGui::EndMenu();
@@ -322,22 +324,25 @@ void MainMenuBar::DrawDebugMenu()
 {
 	if (auto debugSettings = Application::Instance().m_DebugSettings; debugSettings)
 	{
-		if (ImGui::MenuItem("Enable Damage Logging"))
-			Offsets::CallID<"ToggleDamageLogging", void(*)(void *, bool)>(nullptr, true);
-		ImGui::MenuItem("Enable Player Cover", "", &debugSettings->m_PlayerCoverEnabled);
-		ImGui::MenuItem("Show Debug Coordinates", "", &debugSettings->m_DrawDebugCoordinates);
-		ImGui::MenuItem("Disable Inactivity Check", "", &debugSettings->m_DisableInactivityCheck);
+		static bool toggleDamageLogging;
+		if (ImGui::MenuItem("Enable Damage Logging", nullptr, &toggleDamageLogging))
+			Offsets::CallID<"ToggleDamageLogging", void(*)(void *, bool)>(nullptr, toggleDamageLogging);
+		ImGui::MenuItem("Enable Player Cover", nullptr, &debugSettings->m_PlayerCoverEnabled);
+		if (ImGui::MenuItem("Enable Inactivity Check", nullptr, !debugSettings->m_DisableInactivityCheck))
+			debugSettings->m_DisableInactivityCheck = !debugSettings->m_DisableInactivityCheck;
+		ImGui::MenuItem("Show Debug Coordinates", nullptr, &debugSettings->m_DrawDebugCoordinates);
 	}
 
 	ImGui::Separator();
 
 	if (ImGui::MenuItem("Show Log Window"))
 		AddWindow(std::make_unique<LogWindow>());
+}
 
+void MainMenuBar::DrawMiscellaneousMenu()
+{
 	if (ImGui::MenuItem("Show ImGui Demo Window"))
 		AddWindow(std::make_unique<DemoWindow>());
-
-	ImGui::Separator();
 
 	if (ImGui::MenuItem("Dump RTTI Typeinfo"))
 		RTTIScanner::ExportAll("C:\\hzd_rtti_export", "HZD");
@@ -351,103 +356,10 @@ void MainMenuBar::DrawDebugMenu()
 	ImGui::Separator();
 	ImGui::MenuItem("", nullptr, nullptr, false);
 	ImGui::MenuItem("", nullptr, nullptr, false);
-	ImGui::MenuItem("", nullptr, nullptr, false);
 	ImGui::Separator();
 
 	if (ImGui::MenuItem("Terminate Process"))
 		TerminateProcess(GetCurrentProcess(), 0);
-}
-
-void MainMenuBar::UpdateFreecam()
-{
-	if (m_FreeCamMode == FreeCamMode::Off)
-		return;
-
-	auto player = Player::GetLocalPlayer();
-
-	if (!player)
-		return;
-
-	auto camera = player->GetLastActivatedCamera();
-
-	if (!camera)
-		return;
-
-	auto& io = ImGui::GetIO();
-
-	// Set up the camera's rotation matrix
-	RotMatrix cameraMatrix;
-	float yaw = 0.0f;
-	float pitch = 0.0f;
-
-	if (m_FreeCamMode == FreeCamMode::Free)
-	{
-		// Convert mouse X/Y to yaw/pitch angles in radians
-		static float degreesX = 0.0f;
-		static float degreesY = 0.0f;
-
-		if (ImGui::IsMouseDragging(ImGuiMouseButton_Right, 0.0f))
-		{
-			degreesX = fmodf(degreesX + io.MouseDelta.x, 360.0f);
-			degreesY = fmodf(degreesY + io.MouseDelta.y, 360.0f);
-		}
-
-		yaw = degreesX * (3.14159f / 180.0f);
-		pitch = degreesY * (3.14159f / 180.0f);
-
-		cameraMatrix = RotMatrix(yaw, pitch, 0.0f);
-	}
-	else if (m_FreeCamMode == FreeCamMode::Noclip)
-	{
-		std::scoped_lock lock(camera->m_DataLock);
-
-		// Convert matrix components to angles
-		cameraMatrix = camera->m_Orientation.Orientation;
-		cameraMatrix.Decompose(&yaw, &pitch, nullptr);
-	}
-
-	// Scale camera velocity based on delta time
-	float speed = io.DeltaTime * 5.0f;
-
-	if (io.KeysDown[VK_SHIFT])
-		speed *= 10.0f;
-	else if (io.KeysDown[VK_CONTROL])
-		speed /= 5.0f;
-
-	// WSAD keys for movement
-	Vec3 moveDirection(sin(yaw) * cos(pitch), cos(yaw) * cos(pitch), -sin(pitch));
-
-	if (io.KeysDown['W'])
-		m_FreeCamPosition += moveDirection * speed;
-
-	if (io.KeysDown['S'])
-		m_FreeCamPosition -= moveDirection * speed;
-
-	if (io.KeysDown['A'])
-		m_FreeCamPosition -= moveDirection.CrossProduct(Vec3(0, 0, 1)) * speed;
-
-	if (io.KeysDown['D'])
-		m_FreeCamPosition += moveDirection.CrossProduct(Vec3(0, 0, 1)) * speed;
-
-	WorldTransform newTransform
-	{
-		.Position = m_FreeCamPosition,
-		.Orientation = cameraMatrix,
-	};
-
-	if (m_FreeCamMode == FreeCamMode::Free)
-	{
-		std::scoped_lock lock(camera->m_DataLock);
-
-		camera->m_PreviousOrientation = newTransform;
-		camera->m_Orientation = newTransform;
-		camera->m_Flags |= Entity::WorldTransformChanged;
-		//CallOffset<0x0BB41A0, void(*)(CameraEntity *, WorldTransform&)>(camera, cameraTransform);
-	}
-	else if (m_FreeCamMode == FreeCamMode::Noclip)
-	{
-		player->m_Entity->m_Mover->MoveToWorldTransform(newTransform, 0.01f, false);
-	}
 }
 
 }
