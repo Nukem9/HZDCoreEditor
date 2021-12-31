@@ -14,7 +14,7 @@ namespace Decima.HZD
 
         public void SerializeExtraData(BinaryWriter writer)
         {
-            Buffer.ToData(writer);
+            Buffer.ToData(writer, GameType.HZD);
         }
     }
 }

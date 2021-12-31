@@ -140,7 +140,7 @@ namespace Decima
         public static object CreateObjectInstance(Type type)
         {
             var objectInstance = Activator.CreateInstance(type);
-            var info = GetOrderedFieldsForClass(type);
+            var info = GetOrderedFieldsForClass(type, false);
 
             if (info != null)
             {
@@ -211,16 +211,11 @@ namespace Decima
             }
             else
             {
-                var info = GetOrderedFieldsForClass(type);
+                var info = GetOrderedFieldsForClass(type, false);
 
                 // Read members
                 foreach (var member in info.Members)
-                {
-                    if (member.SaveStateOnly)
-                        continue;
-
                     member.SetValue(objectInstance, DeserializeType(reader, member.Field.Type));
-                }
             }
 
             // Done reading. Now copy what the engine does and notify MsgReadBinary subscribers.
@@ -278,16 +273,11 @@ namespace Decima
             }
             else
             {
-                var info = GetOrderedFieldsForClass(type);
+                var info = GetOrderedFieldsForClass(type, false);
 
                 // Write members
                 foreach (var member in info.Members)
-                {
-                    if (member.SaveStateOnly)
-                        continue;
-
                     SerializeType(writer, member.GetValue(objectInstance));
-                }
             }
 
             if (objectInstance is IExtraBinaryDataCallback asExtraBinaryDataCallback)
@@ -296,8 +286,11 @@ namespace Decima
             return true;
         }
 
-        private static OrderedFieldInfo GetOrderedFieldsForClass(Type type)
+        private static OrderedFieldInfo GetOrderedFieldsForClass(Type type, bool saveState)
         {
+            if (saveState)
+                throw new NotImplementedException("SaveState RTTI fields are currently unsupported");
+
             if (_typeFieldInfoCache.TryGetValue(type, out OrderedFieldInfo info))
                 return info;
 
@@ -308,38 +301,61 @@ namespace Decima
             }
 
             //
-            // This insane code tries to replicate HZD's sorting mechanism. Rebuild the class member hierarchy because of a few reasons:
+            // This insane code tries to replicate Decima's sorting mechanism. Rebuild the class member hierarchy because of a few reasons:
             //
-            // - C# doesn't allow multiple inheritance / multiple base classes.
+            // - C# doesn't allow multiple inheritance.
             // - C# doesn't expose private fields from base classes with ParentType.GetFields().
-            // - Properties are declared at offset 0. Serialization order is undefined (???) when multiple are declared at offset 0.
+            // - C# doesn't have strict ordering for members returned in GetFields().
+            // - Save state variables may interfere with PCore.Quicksort order. The upside is that they're not used in the core files. The
+            // downside is that we need to decode save games.
             // - Child class members can overlap parent class members.
+            // - Decima properties are declared at offset 0. Serialization order is unstable/undefined when multiple are declared at offset 0.
             //
             // All [RTTI.Member()] fields are enumerated and sorted by offset, order, and most complex class type. Multiple inheritance
             // offsets are handled by the dumping code ([RTTI.BaseClass()]) so it doesn't need to be taken into account.
             //
-            // Test: AIDynamicObstacleRectangleResource members are out of order and overlap the base (AIDynamicObstacleResource)
-            // Test: CubemapZone emulated MI (Shape2DExtrusion)
+            // Test: HZD.AIDynamicObstacleRectangleResource members are out of order and overlap the base.
+            // Test: HZD.CubemapZone emulated MI.
+            // Test: DS.IndirectLightingBakeZone order is unstable, emulated MI.
+            // Test: DS.LightShadowedRenderVolume order is unstable, emulated MI, and contains save state variables.
             //
             var allFields = new List<(MemberAttribute Attr, uint Offset, uint ClassOrder, RttiField MIBase, RttiField Field)>();
             uint classIndex = 0;
 
             void addFieldsRecursively(Type classType, RttiField miBase = null, uint offset = 0)
             {
-                // Drill down until System.Object is hit
+                // Gather each class type in reverse order of inheritance
+                var typesToVisit = new List<Type>();
+
                 for (; classType != null; classType = classType.BaseType)
+                    typesToVisit.Add(classType);
+
+                typesToVisit.Reverse();
+
+                // Then start from the most basic class
+                foreach (var type in typesToVisit)
                 {
                     classIndex++;
-                    var fields = RttiField.GetMembers(classType, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
+                    var fields = RttiField.GetMembers(type, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
 
+                    // Emulated MI
                     foreach (var field in fields)
                     {
                         var baseClassAttr = field.GetCustomAttribute<BaseClassAttribute>();
-                        var reflectionAttr = field.GetCustomAttribute<MemberAttribute>();
 
                         if (baseClassAttr != null)
+                        {
                             addFieldsRecursively(field.Type, field, offset + baseClassAttr.RuntimeOffset);
-                        else if (reflectionAttr != null)
+                            classIndex++;
+                        }
+                    }
+
+                    // Real members
+                    foreach (var field in fields)
+                    {
+                        var reflectionAttr = field.GetCustomAttribute<MemberAttribute>();
+
+                        if (reflectionAttr != null && reflectionAttr.GetType() == typeof(MemberAttribute) && !reflectionAttr.SaveStateOnly)
                             allFields.Add((reflectionAttr, offset + reflectionAttr.RuntimeOffset, classIndex, miBase, field));
                     }
                 }
@@ -349,7 +365,7 @@ namespace Decima
             addFieldsRecursively(type);
 
             var sortedHierarchy = allFields
-                .OrderByDescending(x => x.ClassOrder)
+                .OrderBy(x => x.ClassOrder)
                 .ThenBy(x => x.Attr.Order)
                 .ToArray();
 

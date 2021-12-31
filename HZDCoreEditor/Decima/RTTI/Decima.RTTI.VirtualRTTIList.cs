@@ -44,7 +44,7 @@ namespace Decima
 
             public void ResolveMembersToFieldInfo()
             {
-                var info = GetOrderedFieldsForClass(ClassType);
+                var info = GetOrderedFieldsForClass(ClassType, true);
 
                 foreach (var virtualMember in _members)
                 {

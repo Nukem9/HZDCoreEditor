@@ -11,6 +11,7 @@ namespace Decima
         public uint StreamedMipCount;
         public uint EmbeddedDataSize;
         public byte[] EmbeddedTextureData;
+        public ulong DeathStrandingUnknown;// TODO: What is this?
 
         public class TextureHeader
         {
@@ -30,7 +31,7 @@ namespace Decima
             public BaseGGUUID ResourceDataHash;// Actually MurmurHashValue
         }
 
-        public void ToData(BinaryWriter writer)
+        public void ToData(BinaryWriter writer, GameType gameType)
         {
             writer.Write((byte)Header.Type);
             writer.Write((byte)0);
@@ -74,6 +75,9 @@ namespace Decima
             bw.Write(EmbeddedDataSize);
             bw.Write(StreamHandle?.ResourceSize() ?? 0);
             bw.Write(StreamedMipCount);
+
+            if (gameType == GameType.DS)
+                bw.Write(DeathStrandingUnknown);
 
             StreamHandle?.ToData(bw);
 
@@ -136,6 +140,9 @@ namespace Decima
             texture.EmbeddedDataSize = reader.ReadUInt32();         // Size of pixel data in this core object entry. This value is never used. if (a - b > 0) only.
             uint streamedDataSize = reader.ReadUInt32();            // Size of pixel data in external file. This value is never used. if (a > 0) only.
             texture.StreamedMipCount = reader.ReadUInt32();         // Number of mipmaps in external file
+
+            if (gameType == GameType.DS)
+                texture.DeathStrandingUnknown = reader.ReadUInt64();
 
             if (streamedDataSize > 0)
                 texture.StreamHandle = BaseStreamHandle.FromData(reader, gameType);

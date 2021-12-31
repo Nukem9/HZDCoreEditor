@@ -9,12 +9,12 @@ namespace Decima.DS
 
         public void DeserializeExtraData(BinaryReader reader)
         {
-            Buffer = HwTexture.FromData(reader, GameType.HZD);
+            Buffer = HwTexture.FromData(reader, GameType.DS);
         }
 
         public void SerializeExtraData(BinaryWriter writer)
         {
-            Buffer.ToData(writer);
+            Buffer.ToData(writer, GameType.DS);
         }
     }
 }

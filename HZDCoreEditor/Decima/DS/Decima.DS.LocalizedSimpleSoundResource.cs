@@ -15,7 +15,8 @@ namespace Decima.DS
         [RTTI.Member(48, 0x150, "General")] public float VolumeCorrectionRTPCValue;
         public ushort LanguageBits;
         public WaveResource SoundFormat;
-        public (byte, StreamHandle)[] StreamInfos;
+        public byte[] UnknownStreamBytes;
+        public StreamHandle[] StreamHandles;
 
         public void DeserializeExtraData(BinaryReader reader)
         {
@@ -35,7 +36,8 @@ namespace Decima.DS
             SoundFormat.BlockAlignment = reader.ReadUInt16();
             SoundFormat.FormatTag = reader.ReadUInt16();
 
-            StreamInfos = new (byte, StreamHandle)[26];
+            UnknownStreamBytes = new byte[26];
+            StreamHandles = new StreamHandle[26];
             uint currentLanguageBit = 1;
 
             for (uint i = 1; i < 26; i++)
@@ -45,10 +47,8 @@ namespace Decima.DS
 
                 if ((currentLanguageBit & LanguageBits) != 0)
                 {
-                    byte entryLength = reader.ReadByte();
-                    var entry = StreamHandle.FromData(reader);
-
-                    StreamInfos[i] = (entryLength, entry);
+                    UnknownStreamBytes[i] = reader.ReadByte();
+                    StreamHandles[i] = StreamHandle.FromData(reader);
                 }
 
                 currentLanguageBit = BitOperations.RotateLeft(currentLanguageBit, 1);
@@ -79,8 +79,8 @@ namespace Decima.DS
 
                 if ((currentLanguageBit & LanguageBits) != 0)
                 {
-                    writer.Write(StreamInfos[i].Item1);
-                    StreamInfos[i].Item2.ToData(writer);
+                    writer.Write(UnknownStreamBytes[i]);
+                    StreamHandles[i].ToData(writer);
                 }
 
                 currentLanguageBit = BitOperations.RotateLeft(currentLanguageBit, 1);
