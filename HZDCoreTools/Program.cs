@@ -16,9 +16,10 @@ public class Program
                 typeof(Archive.ExtractArchiveCommand),
                 typeof(Localize.ExportLocalizationCommand),
                 typeof(Localize.ImportLocalizationCommand),
+                typeof(ArchiveIndex.ExportIndexFilesCommand),
+                typeof(ArchiveIndex.RebuildIndexFilesCommand),
                 typeof(Misc.ExportAllStringsCommand),
-                typeof(Misc.ExportIndexFilesCommand),
-                typeof(Misc.RebuildIndexFilesCommand),
+                typeof(Misc.ExportEntryPointNamesCommand),
                 typeof(Misc.RebuildPrefetchFileCommand),
         };
 
@@ -49,16 +50,20 @@ public class Program
                 Localize.ImportLocalization(c);
                 break;
 
+            case ArchiveIndex.ExportIndexFilesCommand c:
+                ArchiveIndex.ExportIndexFiles(c);
+                break;
+
+            case ArchiveIndex.RebuildIndexFilesCommand c:
+                ArchiveIndex.RebuildIndexFiles(c);
+                break;
+
             case Misc.ExportAllStringsCommand c:
                 Misc.ExportAllStrings(c);
                 break;
 
-            case Misc.ExportIndexFilesCommand c:
-                Misc.ExportIndexFiles(c);
-                break;
-
-            case Misc.RebuildIndexFilesCommand c:
-                Misc.RebuildIndexFiles(c);
+            case Misc.ExportEntryPointNamesCommand c:
+                Misc.ExportEntryPointNames(c);
                 break;
 
             case Misc.RebuildPrefetchFileCommand c:

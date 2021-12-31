@@ -1,4 +1,4 @@
-﻿namespace HZDCoreTools;
+﻿namespace HZDCoreTools.Util;
 
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using Decima;
 
-public static class Util
+public static class Utils
 {
     public static IEnumerable<(string Absolute, string Relative)> GatherFiles(string inputPath, string[] acceptedExtensions, out string extension)
     {

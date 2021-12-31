@@ -1,14 +1,16 @@
 ﻿namespace HZDCoreTools;
 
+using CommandLine;
+using CommandLine.Text;
 using Decima;
+using HZDCoreTools.Util;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
-using CommandLine;
-using CommandLine.Text;
 
 public static class Misc
 {
@@ -41,10 +43,10 @@ public static class Misc
         }
     }
 
-    [Verb("exportindexstrings", HelpText = "Extract all paths contained in a set of archive index files.")]
-    public class ExportIndexFilesCommand
+    [Verb("exportentrypointnames", HelpText = "Extract all script entry point names contained in a set of archives.")]
+    public class ExportEntryPointNamesCommand
     {
-        [Option('i', "input", Required = true, HelpText = "OS input path for game data (.idx). Wildcards (*) supported.")]
+        [Option('i', "input", Required = true, HelpText = "OS input path for game data (.bin). Wildcards (*) supported.")]
         public string InputPath { get; set; }
 
         [Option('o', "output", Required = true, HelpText = "OS output path for the generated text file (.txt, *.*).")]
@@ -55,44 +57,10 @@ public static class Misc
         {
             get
             {
-                yield return new Example("Extract single index", new ExportIndexFilesCommand
-                {
-                    InputPath = @"E:\HZD\Packed_DX12\Initial.idx",
-                    OutputPath = @"E:\HZD\Packed_DX12\valid_file_lines.txt",
-                });
-            }
-        }
-    }
-
-    [Verb("rebuildindexfiles", HelpText = "Rebuild index files from a set of archives.")]
-    public class RebuildIndexFilesCommand
-    {
-        [Option('i', "input", Required = true, HelpText = "OS input path for game data (.bin). Wildcards (*) supported.")]
-        public string InputPath { get; set; }
-
-        [Option('o', "output", Required = true, HelpText = "OS output directory for the generated index files (.idx).")]
-        public string OutputPath { get; set; }
-
-        [Option('l', "lookupfile", Required = true, HelpText = "OS input path for a text file containing possible core file paths (.txt, *.*).")]
-        public string LookupFile { get; set; }
-
-        [Usage(ApplicationAlias = nameof(HZDCoreTools))]
-        public static IEnumerable<Example> Examples
-        {
-            get
-            {
-                yield return new Example("Update all", new RebuildIndexFilesCommand
+                yield return new Example("Extract all", new ExportAllStringsCommand
                 {
                     InputPath = @"E:\HZD\Packed_DX12\*.bin",
-                    OutputPath = @"E:\HZD\Packed_DX12\",
-                    LookupFile = "valid_file_lines.txt",
-                });
-
-                yield return new Example("Update single bin", new RebuildIndexFilesCommand
-                {
-                    InputPath = @"E:\HZD\Packed_DX12\DLC1.bin",
-                    OutputPath = @"E:\HZD\Packed_DX12\",
-                    LookupFile = "DLC1_file_lines.txt",
+                    OutputPath = @"E:\HZD\Packed_DX12\valid_entrypoints.txt",
                 });
             }
         }
@@ -142,7 +110,7 @@ public static class Misc
 
     public static void ExportAllStrings(ExportAllStringsCommand options)
     {
-        var sourceBins = Util.GatherFiles(options.InputPath, new[] { ".bin" }, out _);
+        var sourceBins = Utils.GatherFiles(options.InputPath, new[] { ".bin" }, out _);
 
         // Mount archives
         using var device = new PackfileDevice();
@@ -158,10 +126,10 @@ public static class Misc
 
         device.ActiveFiles.AsParallel().ForAll(fileId =>
         {
-                // There's no way to determine if a file is a .core or a .stream.core. This might throw an exception.
-                try
+            // There's no way to determine if a file is a .core or a .stream.core. This might throw an exception.
+            try
             {
-                var coreBinary = Util.ExtractCoreBinaryInMemory(device, fileId);
+                var coreBinary = Utils.ExtractCoreBinaryInMemory(device, fileId);
 
                 coreBinary.VisitAllObjects((string str, object _) =>
                 {
@@ -179,14 +147,14 @@ public static class Misc
         if (options.ValidPathsOnly)
         {
             // Now test all possilbe core paths from the given strings
-            var allValidPaths = new ConcurrentDictionary<string, bool>();
-            var possibleLanguages = Enum.GetNames(typeof(Decima.HZD.ELanguage))
+            var allValidPaths = new Dictionary<string, bool>();
+            var possibleLanguages = Enum.GetNames(typeof(Decima.DS.ELanguage))
                 .Select(x => x.ToLower())
                 .ToArray();
 
             foreach (string key in allStrings.Keys)
             {
-                string pathStr = Util.RemoveMountPrefixes(key);
+                string pathStr = Utils.RemoveMountPrefixes(key);
                 pathStr = pathStr.Replace(Packfile.StreamExt, string.Empty);
                 pathStr = pathStr.Replace(Packfile.CoreExt, string.Empty);
 
@@ -197,6 +165,7 @@ public static class Misc
                 // path/to/file.dep
                 // path/to/file.core.stream
                 // path/to/file.<language>.stream
+                // path/to/file.wem.<language>.stream
                 void TestPath(string p)
                 {
                     if (device.HasFile(p))
@@ -209,7 +178,10 @@ public static class Misc
                     TestPath($"{pathStr}{ext}");
 
                 foreach (string lang in possibleLanguages)
+                {
                     TestPath($"{pathStr}.{lang}.stream");
+                    TestPath($"{pathStr}.wem.{lang}.core.stream");
+                }
             }
 
             File.WriteAllLines(options.OutputPath, allValidPaths.Keys.OrderBy(x => x));
@@ -223,46 +195,46 @@ public static class Misc
         }
     }
 
-    public static void ExportIndexFiles(ExportIndexFilesCommand options)
+    public static void ExportEntryPointNames(ExportEntryPointNamesCommand options)
     {
-        var sourceIndexes = Util.GatherFiles(options.InputPath, new[] { ".idx" }, out _);
-        var allValidPaths = new ConcurrentDictionary<string, bool>();
+        var sourceBins = Utils.GatherFiles(options.InputPath, new[] { ".bin" }, out _);
 
-        foreach (var (indexPath, _) in sourceIndexes)
+        // Mount archives
+        using var device = new PackfileDevice();
+
+        foreach (var (archive, relative) in sourceBins)
         {
-            var packfileIndex = PackfileIndex.FromFile(indexPath);
+            Console.WriteLine($"Mounting {relative}...");
+            device.Mount(archive);
+        }
 
-            foreach (string corePath in packfileIndex.Entries.Select(x => x.FilePath))
+        // For each core file...
+        var allStrings = new ConcurrentDictionary<string, bool>();
+
+        device.ActiveFiles.AsParallel().ForAll(fileId =>
+        {
+            // There's no way to determine if a file is a .core or a .stream.core. This might throw an exception.
+            try
             {
-                string pathStr = Util.RemoveMountPrefixes(corePath.ToLower());
-                allValidPaths.TryAdd(pathStr, true);
+                var coreBinary = Utils.ExtractCoreBinaryInMemory(device, fileId);
+
+                coreBinary.VisitAllObjects((Decima.DS.ProgramResourceEntryPoint entryPoint, object _) =>
+                {
+                    uint nameChecksum = CRC32C.Checksum(Encoding.UTF8.GetBytes(entryPoint.EntryPoint)) & ~0x80000000u;
+
+                    allStrings.TryAdd($"0x{nameChecksum:X},{entryPoint.EntryPoint}", true);
+                });
             }
-        }
+            catch (InvalidDataException)
+            {
+            }
+            catch (EndOfStreamException)
+            {
+            }
+        });
 
-        File.WriteAllLines(options.OutputPath, allValidPaths.Keys.OrderBy(x => x));
-    }
-
-    public static void RebuildIndexFiles(RebuildIndexFilesCommand options)
-    {
-        // Create table of lookup strings
-        var fileLines = File.ReadAllLines(options.LookupFile);
-        var lookupTable = new Dictionary<ulong, string>();
-
-        foreach (string line in fileLines)
-            lookupTable.TryAdd(Packfile.GetHashForPath(line), line);
-
-        // Then apply them to the bins
-        var sourceArchives = Util.GatherFiles(options.InputPath, new[] { ".bin" }, out _);
-
-        foreach ((string absolutePath, string relativePath) in sourceArchives)
-        {
-            Console.WriteLine($"Processing {relativePath}...");
-
-            using var archive = new PackfileReader(absolutePath);
-            var index = PackfileIndex.RebuildFromArchive(archive, lookupTable);
-
-            index.ToFile(Path.ChangeExtension(absolutePath, ".idx"), FileMode.Create);
-        }
+        File.WriteAllLines(options.OutputPath, allStrings.Keys.OrderBy(x => x));
+        Console.WriteLine($"Total lines extracted: {allStrings.Count}");
     }
 
     public static void RebuildPrefetchFile(RebuildPrefetchFileCommand options)
@@ -272,7 +244,7 @@ public static class Misc
         using (var device = new PackfileDevice())
         {
             // Add each bin
-            var sourceFiles = Util.GatherFiles(options.InputPath, new[] { ".bin" }, out string _);
+            var sourceFiles = Utils.GatherFiles(options.InputPath, new[] { ".bin" }, out string _);
 
             foreach ((string absolute, string relative) in sourceFiles)
             {
@@ -293,7 +265,7 @@ public static class Misc
                 throw new FileNotFoundException($"'{PrefetchCorePath}' not found. Expected at least one archive to have an existing prefecth core file.");
 
             // Extract the .core, iterate over each file, then update the size for each file
-            prefetchCore = Util.ExtractCoreBinaryInMemory(device, PrefetchCorePath);
+            prefetchCore = Utils.ExtractCoreBinaryInMemory(device, PrefetchCorePath);
             var prefetch = prefetchCore.Objects.OfType<Decima.HZD.PrefetchList>().Single();
 
             if (prefetch.Files.Count != prefetch.Sizes.Count)
@@ -383,7 +355,7 @@ public static class Misc
                 // Rebuild references (don't forget to remove duplicates (Distinct()!))
             if (!options.SkipLinks)
             {
-                var coreBinary = Util.ExtractCoreBinaryInMemory(device, corePath);
+                var coreBinary = Utils.ExtractCoreBinaryInMemory(device, corePath);
 
                 // TODO: Skip or fix unknown CoreBinary types. If a type is unknown, it'll return 0 references. The game seems
                 // to be okay with it as-is. The original prefetech core is generated by a dev tool that I don't have.

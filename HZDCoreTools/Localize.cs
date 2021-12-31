@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading;
 using CommandLine;
 using CommandLine.Text;
+using HZDCoreTools.Util;
 
 public static class Localize
 {
@@ -103,7 +104,7 @@ public static class Localize
 
     public static void ExportLocalization(ExportLocalizationCommand options)
     {
-        var sourceFiles = Util.GatherFiles(options.InputPath, _validExtensions, out string ext);
+        var sourceFiles = Utils.GatherFiles(options.InputPath, _validExtensions, out string ext);
         var coresToExtract = CreateFileStreamEnumerator(sourceFiles, ext == ".core");
 
         // For each core file...
@@ -127,7 +128,7 @@ public static class Localize
     {
         var translationData = ReadTranslationFile(options);
 
-        var sourceFiles = Util.GatherFiles(options.InputPath, _validExtensions, out string ext);
+        var sourceFiles = Utils.GatherFiles(options.InputPath, _validExtensions, out string ext);
         var coresToModify = CreateFileStreamEnumerator(sourceFiles, ext == ".core", x => translationData.ContainsKey(x));
 
         // Open each core file in parallel and insert the data

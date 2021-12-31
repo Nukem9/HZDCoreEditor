@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using CommandLine;
 using Decima;
+using HZDCoreTools.Util;
 
 public static class Archive
 {
@@ -47,7 +48,7 @@ public static class Archive
 
     public static void PackArchive(PackArchiveCommand options)
     {
-        var sourceFiles = Util.GatherFiles(options.InputPath, null, out string _);
+        var sourceFiles = Utils.GatherFiles(options.InputPath, null, out string _);
         var ignoredFileFilter = string.IsNullOrEmpty(options.IgnoredRegex) ? null : new Regex(options.IgnoredRegex);
 
         IEnumerable<string> GatherValidFiles()
@@ -85,7 +86,7 @@ public static class Archive
 
     public static void ExtractArchive(ExtractArchiveCommand options)
     {
-        var sourceFiles = Util.GatherFiles(options.InputPath, new[] { ".bin" }, out string _);
+        var sourceFiles = Utils.GatherFiles(options.InputPath, new[] { ".bin" }, out string _);
 
         // Add each bin
         using var device = new PackfileDevice();
@@ -159,7 +160,7 @@ public static class Archive
         // No prefetch present -> return nothing
         if (device.HasFile(PrefetchCorePath))
         {
-            var prefetchCore = Util.ExtractCoreBinaryInMemory(device, PrefetchCorePath);
+            var prefetchCore = Utils.ExtractCoreBinaryInMemory(device, PrefetchCorePath);
             var prefetch = prefetchCore.Objects.OfType<Decima.HZD.PrefetchList>().Single();
 
             foreach (var file in prefetch.Files.Select(x => x.Path))
