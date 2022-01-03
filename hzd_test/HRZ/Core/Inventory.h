@@ -18,7 +18,7 @@ class Inventory : public EntityComponent
 public:
 	TYPE_RTTI(Inventory);
 
-	Array<InventoryEntity *> m_Items; // 0x58
+	Array<Ref<InventoryEntity>> m_Items; // 0x58 TODO: Is this actually a Ref<>?
 	char _pad68[0x68];
 
 	virtual const RTTI *GetRTTI() const override;							// 0

@@ -71,6 +71,7 @@ void Initialize(const SwapChainDX12 *SwapChain)
 
 	auto& style = ImGui::GetStyle();
 	style.FrameBorderSize = 1;
+	style.ScrollbarRounding = 0;
 
 	auto& io = ImGui::GetIO();
 	io.MouseDrawCursor = false;

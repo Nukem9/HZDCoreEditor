@@ -28,51 +28,58 @@ void EntityWindow::Render()
 
 	ImGui::Text("Entity name: %s", m_Entity->GetName().c_str());
 	ImGui::Text("Resource type: %s (%p)", m_Entity->m_Resource ? m_Entity->m_Resource->GetName().c_str() : "", m_Entity->m_Resource.get());
-	ImGui::Spacing();
 	ImGui::Separator();
 
-	// World position
-	m_Entity->m_DataLock.lock();
-	auto transform = m_Entity->m_Orientation;
-	auto velocity = m_Entity->m_Mover ? m_Entity->m_Mover->GetVelocity() : Vec3{};
-	m_Entity->m_DataLock.unlock();
-
-	bool valueChanged = false;
-	valueChanged |= ImGui::InputDouble("Position X", &transform.Position.X, 1.0, 20.0, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue);
-	valueChanged |= ImGui::InputDouble("Position Y", &transform.Position.Y, 1.0, 20.0, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue);
-	valueChanged |= ImGui::InputDouble("Position Z", &transform.Position.Z, 1.0, 20.0, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue);
-
-	if (ImGui::Button("Save Position"))
-		m_SavedWorldPosition = transform.Position;
-
-	ImGui::SameLine();
-
-	if (ImGui::Button("Load Position"))
+	ImGui::PushItemWidth(200);
 	{
-		valueChanged = true;
-		transform.Position = m_SavedWorldPosition;
+		// World position
+		m_Entity->m_DataLock.lock();
+		auto transform = m_Entity->m_Orientation;
+		auto velocity = m_Entity->m_Mover ? m_Entity->m_Mover->GetVelocity() : Vec3{};
+		m_Entity->m_DataLock.unlock();
+
+		bool valueChanged = false;
+		valueChanged |= ImGui::InputDouble("Position X", &transform.Position.X, 1.0, 20.0, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue);
+		valueChanged |= ImGui::InputDouble("Position Y", &transform.Position.Y, 1.0, 20.0, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue);
+		valueChanged |= ImGui::InputDouble("Position Z", &transform.Position.Z, 1.0, 20.0, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue);
+
+		// Save/load position
+		ImGui::Spacing();
+
+		if (ImGui::Button("Save Position"))
+			m_SavedWorldPosition = transform.Position;
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Load Position"))
+		{
+			valueChanged = true;
+			transform.Position = m_SavedWorldPosition;
+		}
+
+		ImGui::Spacing();
+
+		if (valueChanged)
+			m_Entity->PlaceOnWorldTransform(transform, false);
+
+		// Velocity
+		valueChanged = false;
+		valueChanged |= ImGui::InputFloat("Velocity X", &velocity.X, 1.0f, 20.0f, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue);
+		valueChanged |= ImGui::InputFloat("Velocity Y", &velocity.Y, 1.0f, 20.0f, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue);
+		valueChanged |= ImGui::InputFloat("Velocity Z", &velocity.Z, 1.0f, 20.0f, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue);
+
+		if (valueChanged && m_Entity->m_Mover)
+			m_Entity->m_Mover->SetVelocity(velocity);
 	}
-
-	if (valueChanged)
-		m_Entity->PlaceOnWorldTransform(transform, false);
-
-	// Velocity
-	ImGui::Spacing();
-
-	valueChanged = false;
-	valueChanged |= ImGui::InputFloat("Velocity X", &velocity.X, 1.0f, 20.0f, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue);
-	valueChanged |= ImGui::InputFloat("Velocity Y", &velocity.Y, 1.0f, 20.0f, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue);
-	valueChanged |= ImGui::InputFloat("Velocity Z", &velocity.Z, 1.0f, 20.0f, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue);
-
-	if (valueChanged && m_Entity->m_Mover)
-		m_Entity->m_Mover->SetVelocity(velocity);
+	ImGui::PopItemWidth();
 
 	// Component list
-	ImGui::Spacing();
 	ImGui::Separator();
 
-	ImGui::Text("Components:");
 	m_ComponentListFilter.Draw();
+
+	ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - ImGui::CalcTextSize("Component List").x);
+	ImGui::TextDisabled("Component List");
 
 	constexpr ImGuiTableFlags flags =
 		ImGuiTableFlags_Resizable | ImGuiTableFlags_RowBg | ImGuiTableFlags_Borders | ImGuiTableFlags_NoBordersInBody
@@ -108,6 +115,9 @@ void EntityWindow::Render()
 
 					ImGui::EndPopup();
 				}
+
+				if (ImGui::IsItemHovered())
+					ImGui::SetTooltip("Right click for options");
 
 				ImGui::PopID();
 			};
@@ -147,7 +157,7 @@ bool EntityWindow::Close()
 
 std::string EntityWindow::GetId() const
 {
-	return std::format("Entity \"{0:}\" ({1:X})", m_Entity->GetName().c_str(), reinterpret_cast<uintptr_t>(m_Entity.get()));
+	return std::format("Entity \"{0:}\" ({1:016X})", m_Entity->GetName().c_str(), reinterpret_cast<uintptr_t>(m_Entity.get()));
 }
 
 }

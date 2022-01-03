@@ -11,9 +11,12 @@ namespace HRZ
 {
 
 class EntityComponent;
-class ItemDescriptionComponent;
+class EquipmentModificationComponent;
+class EquipmentModificationItemComponent;
 class InventoryItemComponent;
-class HumanoidInventory;
+class Inventory;
+class ItemDescriptionComponent;
+class StackableComponent;
 
 }
 
@@ -34,10 +37,18 @@ public:
 	virtual bool Close() override;
 	virtual std::string GetId() const override;
 
+private:
 	void DrawComponent(EntityComponent *Component);
-	void DrawComponent(ItemDescriptionComponent *Component);
+	void DrawComponent(EquipmentModificationComponent *Component);
+	void DrawComponent(EquipmentModificationItemComponent *Component);
+	void DrawComponent(Inventory *Component);
 	void DrawComponent(InventoryItemComponent *Component);
-	void DrawComponent(HumanoidInventory *Component);
+	void DrawComponent(ItemDescriptionComponent *Component);
+	void DrawComponent(StackableComponent *Component);
+
+	template<typename T>
+	void DrawEntityList(Array<T>& Items, const ImGuiTextFilter *Filter);
+	String GetLocalizedResourceName(Resource *ResourcePtr);
 };
 
 }
