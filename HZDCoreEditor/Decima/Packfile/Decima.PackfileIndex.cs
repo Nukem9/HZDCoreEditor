@@ -131,12 +131,16 @@ namespace Decima
         /// </summary>
         /// <param name="archive">Archive handle</param>
         /// <param name="pathIdMapping">Dictionary that maps path IDs to strings</param>
-        public static PackfileIndex RebuildFromArchive(Packfile archive, Dictionary<ulong, string> pathIdMapping)
+        /// <param name="skipUnmappedEntries">Skip entries if the path ID isn't present in the dictionary</param>
+        public static PackfileIndex RebuildFromArchive(Packfile archive, Dictionary<ulong, string> pathIdMapping, bool skipUnmappedEntries)
         {
             var index = new PackfileIndex();
 
             foreach (var fileEntry in archive.FileEntries)
             {
+                if (skipUnmappedEntries && !pathIdMapping.ContainsKey(fileEntry.PathHash))
+                    continue;
+
                 index._entries.Add(new IndexEntry()
                 {
                     FilePath = $"cache:{pathIdMapping[fileEntry.PathHash]}",

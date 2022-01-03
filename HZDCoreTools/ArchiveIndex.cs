@@ -47,6 +47,9 @@ public static class ArchiveIndex
         [Option('l', "lookupfile", Required = true, HelpText = "OS input path for a text file containing possible core file paths (.txt, *.*).")]
         public string LookupFile { get; set; }
 
+        [Option('s', "skipmissing", HelpText = "Skip creating entries if paths can't be mapped from the lookup file.")]
+        public bool SkipMissing { get; set; }
+
         [Usage(ApplicationAlias = nameof(HZDCoreTools))]
         public static IEnumerable<Example> Examples
         {
@@ -102,13 +105,12 @@ public static class ArchiveIndex
 
         foreach ((string absolutePath, string relativePath) in sourceArchives)
         {
-            Console.WriteLine($"Processing {relativePath}...");
+            Console.Write($"Processing {relativePath}...");
 
             using var archive = new PackfileReader(absolutePath);
-            var index = PackfileIndex.RebuildFromArchive(archive, lookupTable);
+            var index = PackfileIndex.RebuildFromArchive(archive, lookupTable, options.SkipMissing);
 
-            if (archive.FileEntries.Count != index.Entries.Count)
-                Console.WriteLine($"Possible entries: {archive.FileEntries.Count} Mapped entries: {index.Entries.Count}");
+            Console.WriteLine($"Possible entries: {archive.FileEntries.Count} Mapped entries: {index.Entries.Count}");
 
             index.ToFile(Path.ChangeExtension(absolutePath, ".idx"), FileMode.Create);
         }
