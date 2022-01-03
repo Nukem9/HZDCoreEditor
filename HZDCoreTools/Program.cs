@@ -1,6 +1,7 @@
 ﻿namespace HZDCoreTools;
 
 using System;
+using System.Linq;
 using CommandLine;
 using Decima;
 
@@ -8,8 +9,33 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        RTTI.SetGameMode(GameType.HZD);
+        // Determine the game type from the first arg if it was supplied. Default to HZD otherwise.
+        GameType targetGameType = GameType.Invalid;
 
+        if (args.Length > 0)
+        {
+            switch (args[0].ToLower())
+            {
+                case "--horizonzerodawn":
+                    targetGameType = GameType.HZD;
+                    break;
+
+                case "--deathstranding":
+                    targetGameType = GameType.DS;
+                    break;
+            }
+
+            // No longer needed. Remove this index.
+            if (targetGameType != GameType.Invalid)
+                args = args.Skip(1).ToArray();
+        }
+
+        if (targetGameType == GameType.Invalid)
+            targetGameType = GameType.HZD;
+
+        RTTI.SetGameMode(targetGameType);
+
+        // Handle the rest of the arguments
         var types = new Type[]
         {
                 typeof(Archive.PackArchiveCommand),

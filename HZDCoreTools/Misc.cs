@@ -148,8 +148,10 @@ public static class Misc
         {
             // Now test all possilbe core paths from the given strings
             var allValidPaths = new Dictionary<string, bool>();
-            var possibleLanguages = Enum.GetNames(typeof(Decima.DS.ELanguage))
+            var possibleLanguages = Enum.GetNames(typeof(Decima.HZD.ELanguage))
+                .Concat(Enum.GetNames(typeof(Decima.DS.ELanguage)))
                 .Select(x => x.ToLower())
+                .Distinct()
                 .ToArray();
 
             foreach (string key in allStrings.Keys)
@@ -165,7 +167,7 @@ public static class Misc
                 // path/to/file.dep
                 // path/to/file.core.stream
                 // path/to/file.<language>.stream
-                // path/to/file.wem.<language>.stream
+                // path/to/file.wem.<language>.core.stream
                 void TestPath(string p)
                 {
                     if (device.HasFile(p))
