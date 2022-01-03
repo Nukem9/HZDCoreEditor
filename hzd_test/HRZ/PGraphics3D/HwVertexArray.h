@@ -24,7 +24,7 @@ public:
 		uint32_t m_TypeFlags;							// 0x0 Bit flags based on VertexElementDesc contents
 		Ref<HwVertexStreamBufferResource> m_Resource;	// 0x8
 		GGUUID m_VertexDataHash;						// 0x10 Actually MurMurHashValue
-		void *m_VertexElementLayout;					// 0x20 Points to an array of VertexElementDesc (cached object pool)
+		void *m_VertexElementLayout;					// 0x20 Points to an array of VertexElementDesc (cached object pool) VertexStreamField?
 	};
 	assert_size(VertexStreamResource, 0x28);
 

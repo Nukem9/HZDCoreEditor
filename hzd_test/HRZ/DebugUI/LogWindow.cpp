@@ -24,7 +24,8 @@ void LogWindow::Render()
 
 		// Main window
 		ImGui::SameLine();
-		bool clear = ImGui::Button("Clear");
+		if (ImGui::Button("Clear"))
+			Clear();
 
 		ImGui::SameLine();
 		bool copy = ImGui::Button("Copy");
@@ -35,9 +36,6 @@ void LogWindow::Render()
 
 		ImGui::Separator();
 		ImGui::BeginChild("scrolling", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
-
-		if (clear)
-			Clear();
 
 		if (copy)
 			ImGui::LogToClipboard();

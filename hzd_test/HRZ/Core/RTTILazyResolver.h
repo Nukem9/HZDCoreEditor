@@ -23,7 +23,7 @@ public:
 	RTTILazyResolver(const RTTILazyResolver&) = delete;
 	RTTILazyResolver& operator=(const RTTILazyResolver&) = delete;
 
-	const HRZ::RTTI *get() const;
+	__declspec(noinline) const HRZ::RTTI *get() const;
 
 	const HRZ::RTTI *operator->() const;
 	operator const HRZ::RTTI *() const;

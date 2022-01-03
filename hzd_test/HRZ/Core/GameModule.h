@@ -10,6 +10,7 @@ namespace HRZ
 {
 
 class LevelSettings;
+class PlayerProfile;
 class SlowMotionManager;
 class WeatherSystem;
 class WorldState;
@@ -32,7 +33,9 @@ public:
 	float m_TimescaleTransitionCurrent;		// 0x18C
 	float m_TimescaleTransitionTarget;		// 0x190
 	float m_TimescaleTransitionDelta;		// 0x194
-	char _pad190[0x138];
+	char _pad198[0xF8];
+	Ref<PlayerProfile> m_PlayerProfile;		// 0x290
+	char _pad298[0x38];
 	Ref<WeatherSystem> m_WeatherSystem;		// 0x2D0
 	char _pad2D8[0x6B0];
 	SlowMotionManager *m_SlowMotionManager;	// 0x988
@@ -77,6 +80,7 @@ assert_offset(GameModule, m_LevelSettings, 0x50);
 assert_offset(GameModule, m_ActiveTimescale, 0x80);
 assert_offset(GameModule, m_UnknownTimescaleModifier, 0xC0);
 assert_offset(GameModule, m_TimescaleTransitionCurrent, 0x18C);
+assert_offset(GameModule, m_PlayerProfile, 0x290);
 assert_offset(GameModule, m_WeatherSystem, 0x2D0);
 assert_offset(GameModule, m_SlowMotionManager, 0x988);
 assert_size(GameModule, 0xA80);

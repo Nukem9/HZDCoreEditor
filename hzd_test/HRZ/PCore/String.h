@@ -53,7 +53,7 @@ public:
 		Offsets::CallID<"String::AssignFromOther", String *(*)(String *, const String&)>(this, Other);
 		return *this;
 	}
-	
+
 	bool operator==(const String& Other) const
 	{
 		return (size() == Other.size()) && (memcmp(data(), Other.data(), size()) == 0);
