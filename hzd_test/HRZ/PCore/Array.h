@@ -24,8 +24,8 @@ public:
 	using pointer = value_type*;
 	using const_pointer = const value_type*;
 
-	using iterator = internal_iterator<true>;
-	using const_iterator = internal_iterator<false>;
+	using iterator = internal_iterator<false>;
+	using const_iterator = internal_iterator<true>;
 
 private:
 	uint32_t m_Count = 0;
