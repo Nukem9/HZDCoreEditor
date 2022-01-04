@@ -31,7 +31,7 @@ public static class Utils
         }
 
         return Directory.EnumerateFiles(basePath, filePart, SearchOption.AllDirectories)
-            .Select(x => (x, x.Substring(basePath.Length)));
+            .Select(x => (x, x.Substring(basePath.Length + 1)));
     }
 
     public static string RemoveMountPrefixes(string path)
