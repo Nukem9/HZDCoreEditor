@@ -175,15 +175,16 @@ std::optional<std::string> RTTIPrimitive::SerializeObject(const void *Object) co
 
 bool RTTIPrimitive::DeserializeObject(void *Object, const String& InText) const
 {
-	return (m_DeserializeString && m_DeserializeString(InText, Object));
+	return m_DeserializeString && m_DeserializeString(InText, Object);
 }
 
 std::optional<std::string> RTTIContainer::SerializeObject(const void *Object) const
 {
 	if (m_InfoType == InfoType::Reference)
-		return std::nullopt;
-
-	if (m_Data)
+	{
+		throw std::runtime_error("Serializing references is currently not implemented");
+	}
+	else if (m_InfoType == InfoType::Container)
 	{
 		auto containerData = static_cast<const ContainerData *>(m_Data);
 
@@ -197,13 +198,23 @@ std::optional<std::string> RTTIContainer::SerializeObject(const void *Object) co
 bool RTTIContainer::DeserializeObject(void *Object, const String& InText) const
 {
 	if (m_InfoType == InfoType::Reference)
-		return false;
-
-	if (m_Data)
+	{
+		throw std::runtime_error("Deserializing references is currently not implemented");
+	}
+	else if (m_InfoType == InfoType::Container)
 	{
 		auto containerData = static_cast<const ContainerData *>(m_Data);
 
-		return (containerData->m_DeserializeString && containerData->m_DeserializeString(InText, this, Object));
+		// Empty strings will erase all elements stored in the array
+		if (InText.empty())
+		{
+			containerData->m_Destructor(this, Object);
+			return true;
+		}
+
+		// Try to parse it
+		if (containerData->m_DeserializeString)
+			return containerData->m_DeserializeString(InText, this, Object);
 	}
 
 	return false;
@@ -212,7 +223,7 @@ bool RTTIContainer::DeserializeObject(void *Object, const String& InText) const
 std::optional<std::string> RTTIEnum::SerializeObject(const void *Object) const
 {
 	if (m_InfoType == InfoType::EnumFlags)
-		__debugbreak();
+		throw std::runtime_error("Serializing enum flags is currently not implemented");
 
 	for (auto& member : EnumMembers())
 	{
@@ -226,7 +237,7 @@ std::optional<std::string> RTTIEnum::SerializeObject(const void *Object) const
 bool RTTIEnum::DeserializeObject(void *Object, const String& InText) const
 {
 	if (m_InfoType == InfoType::EnumFlags)
-		__debugbreak();
+		throw std::runtime_error("Deserializing enum flags is currently not implemented");
 
 	for (auto& member : EnumMembers())
 	{
@@ -327,25 +338,7 @@ std::optional<std::string> RTTIClass::SerializeObject(const void *Object) const
 		return std::nullopt;
 	}
 
-	// Split each member by a newline
-	std::string finalDecl;
-
-	EnumerateOrderedRTTIClassMembers([&](const RTTIClass::MemberEntry& Member, const char *, uint32_t BaseOffset, bool)
-	{
-		// TODO: Properties need to be handled
-		if (Member.IsGroupMarker() || Member.IsProperty())
-			return false;
-
-		auto memberObject = reinterpret_cast<const void *>(reinterpret_cast<uintptr_t>(Object) + BaseOffset + Member.m_Offset);
-		auto decl = Member.m_Type->SerializeObject(memberObject);
-
-		if (decl)
-			finalDecl += decl.value().append("\n");
-
-		return false;
-	});
-
-	return finalDecl;
+	throw std::runtime_error("Attempting to serialize a class without a dedicated handler. This is not supported.");
 }
 
 bool RTTIClass::DeserializeObject(void *Object, const String& InText) const
@@ -353,8 +346,7 @@ bool RTTIClass::DeserializeObject(void *Object, const String& InText) const
 	if (m_DeserializeString)
 		return m_DeserializeString(Object, InText);
 
-	__debugbreak();
-	return false;
+	throw std::runtime_error("Attempting to deserialize a class without a dedicated handler. This is not supported.");
 }
 
 }

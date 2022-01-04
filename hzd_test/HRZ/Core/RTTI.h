@@ -143,14 +143,22 @@ public:
 
 	struct RefData : Data
 	{
+		char _pad8[0x8];
+		void (* m_Constructor)(const RTTIContainer *Type, void *Object);	// 0x10
+		void (* m_Destructor)(const RTTIContainer *Type, void *Object);		// 0x18
 	};
+	assert_offset(RefData, m_Constructor, 0x10);
 
 	struct ContainerData : Data
 	{
-		char _pad8[0x88];
-		bool (* m_SerializeString)(const void *Object, const RTTI *RTTIType, String& OutText);	// +0x90
-		bool (* m_DeserializeString)(const String& InText, const RTTI *RTTIType, void *Object);	// +0x98
+		char _pad8[0x8];
+		void (* m_Constructor)(const RTTIContainer *Type, void *Object);								// 0x10
+		void (* m_Destructor)(const RTTIContainer *Type, void *Object);									// 0x18
+		char _pad20[0x70];
+		bool (* m_SerializeString)(const void *Object, const RTTIContainer *Type, String& OutText);		// +0x90
+		bool (* m_DeserializeString)(const String& InText, const RTTIContainer *Type, void *Object);	// +0x98
 	};
+	assert_offset(ContainerData, m_Constructor, 0x10);
 	assert_offset(ContainerData, m_SerializeString, 0x90);
 
 	// Type 1 = Reference/Pointer (Ref<>, UUIDRef<>, StreamingRef<>, WeakPtr<>)
@@ -348,7 +356,7 @@ public:
 				return false;
 
 			if (Member.IsProperty())
-				__debugbreak();
+				throw std::runtime_error("Cannot deserialize a property string. Functionality not implemented.");
 
 			succeeded = Member.m_Type->DeserializeObject(MemberObject, Value);
 			return true;
@@ -388,14 +396,14 @@ public:
 				return false;
 
 			if (Member.IsProperty())
-				throw std::logic_error("Cannot obtain a reference to a property function");
+				throw std::runtime_error("Cannot obtain a reference to a property function");
 
 			memberObjectPointer = MemberObject;
 			return true;
 		});
 
 		if (!memberObjectPointer)
-			throw std::logic_error("Couldn't resolve member name");
+			throw std::runtime_error("Couldn't resolve member name");
 
 		return *reinterpret_cast<T *>(memberObjectPointer);
 	}
