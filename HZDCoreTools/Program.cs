@@ -47,6 +47,8 @@ public class Program
                 typeof(Misc.ExportAllStringsCommand),
                 typeof(Misc.ExportEntryPointNamesCommand),
                 typeof(Misc.RebuildPrefetchFileCommand),
+                typeof(Misc.CoreToJsonCommand),
+                typeof(Misc.JsonToCoreCommand),
         };
 
         var parser = new Parser(with => with.HelpWriter = Console.Error);
@@ -94,6 +96,14 @@ public class Program
 
             case Misc.RebuildPrefetchFileCommand c:
                 Misc.RebuildPrefetchFile(c);
+                break;
+
+            case Misc.CoreToJsonCommand c:
+                Misc.CoreToJson(c);
+                break;
+
+            case Misc.JsonToCoreCommand c:
+                Misc.JsonToCore(c);
                 break;
         }
     }

@@ -4,6 +4,7 @@ using CommandLine;
 using CommandLine.Text;
 using Decima;
 using HZDCoreTools.Util;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -106,6 +107,26 @@ public static class Misc
                 });
             }
         }
+    }
+
+    [Verb("coretojson", HelpText = "Convert binary core files to json format.")]
+    public class CoreToJsonCommand
+    {
+        [Option('i', "input", Required = true, HelpText = "OS input path for game data (*.core). Wildcards (*) supported.")]
+        public string InputPath { get; set; }
+
+        [Option('o', "output", Required = true, HelpText = "OS output directory for the generated json files (.json).")]
+        public string OutputPath { get; set; }
+    }
+
+    [Verb("jsontocore", HelpText = "Convert json core files to binary format.")]
+    public class JsonToCoreCommand
+    {
+        [Option('i', "input", Required = true, HelpText = "OS input path for game data (*.json). Wildcards (*) supported.")]
+        public string InputPath { get; set; }
+
+        [Option('o', "output", Required = true, HelpText = "OS output directory for the generated core files (.core).")]
+        public string OutputPath { get; set; }
     }
 
     public static void ExportAllStrings(ExportAllStringsCommand options)
@@ -284,9 +305,9 @@ public static class Misc
 
             ms.Position = 0;
             var streamList = new List<(string, Stream)>
-                {
-                    (PrefetchCorePath, ms),
-                };
+            {
+                (PrefetchCorePath, ms),
+            };
 
             using var packfile = new PackfileWriter(options.OutputPath, false, FileMode.Create);
             packfile.BuildFromStreamList(streamList);
@@ -340,7 +361,7 @@ public static class Misc
             if (!device.HasFile(corePath))
                 return;
 
-                // Rebuild sizes
+            // Rebuild sizes
             if (!options.SkipSizes)
             {
                 int binarySize = (int)device.GetFileSize(corePath);
@@ -354,7 +375,7 @@ public static class Misc
                 }
             }
 
-                // Rebuild references (don't forget to remove duplicates (Distinct()!))
+            // Rebuild references (don't forget to remove duplicates (Distinct()!))
             if (!options.SkipLinks)
             {
                 var coreBinary = Utils.ExtractCoreBinaryInMemory(device, corePath);
@@ -371,7 +392,7 @@ public static class Misc
                 if (!links.TryGetValue(i, out int[] oldLinks))
                     throw new KeyNotFoundException("Failed to get a value? Previous code guarantees this shouldn't happen.");
 
-                    // Element order doesn't matter. Only check the sets for equality.
+                // Element order doesn't matter. Only check the sets for equality.
                 if (!oldLinks.OrderBy(x => x).SequenceEqual(newLinks))
                 {
                     if (options.Verbose)
@@ -416,5 +437,54 @@ public static class Misc
         }
 
         File.WriteAllLines(filePath, allLines);
+    }
+
+    public static void CoreToJson(CoreToJsonCommand options)
+    {
+        var sourceCores = Utils.GatherFiles(options.InputPath, new[] { ".core" }, out _);
+        var serializerSettings = new JsonSerializerSettings()
+        {
+            Formatting = Formatting.Indented,
+            TypeNameHandling = TypeNameHandling.Objects,
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+            Converters = new List<JsonConverter>() { new BaseGGUUIDConverter() },
+        };
+
+        foreach ((string absolute, string relative) in sourceCores)
+        {
+            var core = CoreBinary.FromFile(absolute);
+            var outputJsonPath = Path.Combine(options.OutputPath, relative) + ".json";
+
+            Console.WriteLine($"Converting {relative}...");
+
+            Directory.CreateDirectory(Path.GetDirectoryName(outputJsonPath));
+            File.WriteAllText(outputJsonPath, JsonConvert.SerializeObject(core.Objects, serializerSettings));
+        }
+    }
+
+    public static void JsonToCore(JsonToCoreCommand options)
+    {
+        var sourceJsons = Utils.GatherFiles(options.InputPath, new[] { ".json" }, out _);
+        var serializerSettings = new JsonSerializerSettings()
+        {
+            TypeNameHandling = TypeNameHandling.Objects,
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+            Converters = new List<JsonConverter>() { new BaseGGUUIDConverter() },
+        };
+
+        foreach ((string absolute, string relative) in sourceJsons)
+        {
+            var objects = JsonConvert.DeserializeObject<IEnumerable<object>>(File.ReadAllText(absolute), serializerSettings);
+            var core = new CoreBinary();
+            var outputCorePath = Path.Combine(options.OutputPath, Path.ChangeExtension(relative, ".core"));
+
+            Console.WriteLine($"Converting {relative}...");
+
+            foreach (var obj in objects)
+                core.AddObject(obj);
+
+            Directory.CreateDirectory(Path.GetDirectoryName(outputCorePath));
+            core.ToFile(outputCorePath, FileMode.Create);
+        }
     }
 }
