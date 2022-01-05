@@ -99,6 +99,18 @@ public:
 		return size() == 0;
 	}
 
+	static String Format(const char *Format, ...)
+	{
+		char buffer[4096];
+
+		va_list va;
+		va_start(va, Format);
+		_vsnprintf_s(buffer, _TRUNCATE, Format, va);
+		va_end(va);
+
+		return String(buffer);
+	}
+
 private:
 	StringRefData *InternalData() const
 	{

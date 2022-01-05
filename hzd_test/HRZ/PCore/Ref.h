@@ -50,6 +50,11 @@ public:
 		return get();
 	}
 
+	operator T *() const
+	{
+		return get();
+	}
+
 	T& operator*() const
 	{
 		return get();

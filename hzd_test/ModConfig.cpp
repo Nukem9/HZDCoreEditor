@@ -2,9 +2,9 @@
 
 #include "ModConfig.h"
 
-ModConfig::GlobalSettings ModConfiguration;
+InternalModConfig::GlobalSettings ModConfiguration;
 
-namespace ModConfig
+namespace InternalModConfig
 {
 
 GlobalSettings ParseSettings(const toml::table& Table);
@@ -41,26 +41,27 @@ GlobalSettings ParseSettings(const toml::table& Table)
 
 	auto& general = *Table["General"].as_table();
 	PARSE_TOML_MEMBER(general, EnableDebugMenu);
+	PARSE_TOML_MEMBER(general, EnableCoreLogging);
 	PARSE_TOML_MEMBER(general, EnableAssetLogging);
+	PARSE_TOML_MEMBER(general, EnableAssetOverrides);
 	PARSE_TOML_MEMBER(general, EnableDiscordRichPresence);
-	PARSE_TOML_MEMBER(general, OverrideGeographicalRegion);
-	PARSE_TOML_MEMBER(general, GeographicalRegion);
 
 	auto& gameplay = *Table["Gameplay"].as_table();
-	PARSE_TOML_MEMBER(gameplay, UnlockMapBorders);
+	PARSE_TOML_MEMBER(gameplay, SkipIntroLogos);
 	PARSE_TOML_MEMBER(gameplay, UnlockNGPExtras);
 	PARSE_TOML_MEMBER(gameplay, UnlockEntitlementExtras);
-	PARSE_TOML_MEMBER(gameplay, DisableTimeOfDay);
-	PARSE_TOML_MEMBER(gameplay, DisableWeatherTransitions);
 
-	auto enabledOverrides = Table["AssetOverrides"]["Enabled"].as_array();
-	auto disabledOverrides = Table["AssetOverrides"]["Disabled"].as_array();
+	if (o.EnableAssetOverrides)
+	{
+		auto enabledOverrides = Table["AssetOverrides"]["Enabled"].as_array();
+		auto disabledOverrides = Table["AssetOverrides"]["Disabled"].as_array();
 
-	for (auto& entry : *enabledOverrides)
-		o.AssetOverrides.emplace_back(ParseOverride(*entry.as_table(), true));
+		for (auto& entry : *enabledOverrides)
+			o.AssetOverrides.emplace_back(ParseOverride(*entry.as_table(), true));
 
-	for (auto& entry : *disabledOverrides)
-		o.AssetOverrides.emplace_back(ParseOverride(*entry.as_table(), false));
+		for (auto& entry : *disabledOverrides)
+			o.AssetOverrides.emplace_back(ParseOverride(*entry.as_table(), false));
+	}
 
 	return o;
 }

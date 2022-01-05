@@ -12,7 +12,6 @@ class ModCoreEvents : public HRZ::CoreFileManager::Events
 private:
 	struct RTTIValuePatch
 	{
-		std::variant<HRZ::GGUUID, const HRZ::RTTI *> m_MatchCriteria;
 		HRZ::String m_Path;
 		HRZ::String m_Value;
 	};
@@ -29,8 +28,8 @@ private:
 		virtual int GetFlags() override;
 	};
 
-	std::unordered_map<HRZ::GGUUID, std::vector<RTTIValuePatch>> m_RTTIPatchesByUUID;
 	std::unordered_map<const HRZ::RTTI *, std::vector<RTTIValuePatch>> m_RTTIPatchesByType;
+	std::unordered_map<HRZ::GGUUID, std::vector<RTTIValuePatch>> m_RTTIPatchesByUUID;
 
 public:
 	ModCoreEvents();

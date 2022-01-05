@@ -21,7 +21,6 @@ DECL_RTTI(AIFaction);
 }
 
 HRZ::SharedLock ResourceListLock;
-std::unordered_set<RTTIRefObject *> AllResources;
 std::unordered_set<RTTIRefObject *> CachedWeatherSetups;
 std::unordered_set<RTTIRefObject *> CachedSpawnSetupBases;
 std::unordered_set<RTTIRefObject *> CachedAIFactions;
@@ -35,10 +34,7 @@ void ModCoreEvents::ValuePatchVisitor::SetValue(void *Object, const RTTI *Type)
 	bool result = Type->DeserializeObject(Object, m_Patch.m_Value);
 
 	if (!result)
-	{
-		DebugUI::LogWindow::AddLog("[AssetOverride] Failed to set variable '%s' to '%s' for object %p\n", m_Patch.m_Path.c_str(), m_Patch.m_Value.c_str(), Object);
-		__debugbreak();
-	}
+		m_LastError = String::Format("Failed to set variable '%s' to '%s'.", m_Patch.m_Path.c_str(), m_Patch.m_Value.c_str(), Object);
 }
 
 int ModCoreEvents::ValuePatchVisitor::GetFlags()
@@ -48,7 +44,7 @@ int ModCoreEvents::ValuePatchVisitor::GetFlags()
 
 ModCoreEvents::ModCoreEvents()
 {
-	auto splitStringByDelimiter = []<typename Func>(const std::string_view & Text, char Delim, const Func& Callback)
+	auto splitStringByDelimiter = []<typename Func>(const std::string_view Text, char Delim, const Func& Callback)
 	{
 		if (Text.empty())
 			return;
@@ -71,139 +67,149 @@ ModCoreEvents::ModCoreEvents()
 		if (!override.Enabled)
 			continue;
 
-		// Lookup is done by UUID
-		splitStringByDelimiter(override.ObjectUUIDs, ',', [&](const std::string_view& UUID)
-		{
-			auto uuid = GGUUID::Parse(UUID);
-
-			RTTIValuePatch patch
-			{
-				.m_MatchCriteria = uuid,
-				.m_Path = override.Path.c_str(),
-				.m_Value = override.Value.c_str(),
-			};
-
-			m_RTTIPatchesByUUID[uuid].emplace_back(patch);
-		});
+		if (override.ObjectTypes.empty() && override.ObjectUUIDs.empty())
+			DebugUI::LogWindow::AddLog("[AssetOverride] ObjectTypes and ObjectUUIDs are both empty. Patches will have no effect.\n");
 
 		// Lookup is done by type
-		splitStringByDelimiter(override.ObjectTypes, ',', [&](const std::string_view& Type)
+		splitStringByDelimiter(override.ObjectTypes, ',', [&](const std::string_view Type)
 		{
 			auto type = RTTIScanner::GetTypeByName(Type);
 
 			if (!type)
-				__debugbreak();
+			{
+				DebugUI::LogWindow::AddLog("[AssetOverride] Failed to resolve type name '%s'. Skipping.\n", Type.data());
+				return;
+			}
 
 			RTTIValuePatch patch
 			{
-				.m_MatchCriteria = type,
 				.m_Path = override.Path.c_str(),
 				.m_Value = override.Value.c_str(),
 			};
 
 			m_RTTIPatchesByType[type].emplace_back(patch);
 		});
+
+		// Lookup is done by UUID
+		splitStringByDelimiter(override.ObjectUUIDs, ',', [&](const std::string_view UUID)
+		{
+			auto uuid = GGUUID::TryParse(UUID);
+
+			if (!uuid)
+			{
+				DebugUI::LogWindow::AddLog("[AssetOverride] Failed to resolve UUID '%s'. Skipping.\n", UUID.data());
+				return;
+			}
+
+			RTTIValuePatch patch
+			{
+				.m_Path = override.Path.c_str(),
+				.m_Value = override.Value.c_str(),
+			};
+
+			m_RTTIPatchesByUUID[uuid.value()].emplace_back(patch);
+		});
 	}
 }
 
 void ModCoreEvents::OnBeginRootCoreLoad(const String& CorePath)
 {
-	DebugUI::LogWindow::AddLog("OnBeginRootCoreLoad %s\n", CorePath.c_str());
+	if (ModConfiguration.EnableCoreLogging)
+		DebugUI::LogWindow::AddLog("[Asset] OnBeginRootCoreLoad(%s)\n", CorePath.c_str());
 }
 
 void ModCoreEvents::OnEndRootCoreLoad(const String& CorePath)
 {
-	DebugUI::LogWindow::AddLog("OnEndRootCoreLoad %s\n", CorePath.c_str());
+	if (ModConfiguration.EnableCoreLogging)
+		DebugUI::LogWindow::AddLog("[Asset] OnEndRootCoreLoad(%s)\n", CorePath.c_str());
 }
 
 void ModCoreEvents::OnBeginCoreUnload(const String& CorePath)
 {
-	DebugUI::LogWindow::AddLog("OnBeginCoreUnload %s\n", CorePath.c_str());
+	if (ModConfiguration.EnableCoreLogging)
+		DebugUI::LogWindow::AddLog("[Asset] OnBeginCoreUnload(%s)\n", CorePath.c_str());
 }
 
 void ModCoreEvents::OnEndCoreUnload()
 {
-	DebugUI::LogWindow::AddLog("OnEndCoreUnload\n");
+	if (ModConfiguration.EnableCoreLogging)
+		DebugUI::LogWindow::AddLog("[Asset] OnEndCoreUnload()\n");
 }
 
 void ModCoreEvents::OnCoreLoad(const String& CorePath, const Array<Ref<RTTIRefObject>>& Objects)
 {
+	if (ModConfiguration.EnableCoreLogging)
+		DebugUI::LogWindow::AddLog("[Asset] OnCoreLoad(%s, %lld objects)\n", CorePath.c_str(), Objects.size());
+
 	for (auto& refObject : Objects)
 	{
-		if (refObject->m_ObjectUUID == GGUUID::Parse("{44E1CF57-24A6-9A43-B087-172C87BB0DFE}"))
+		// Skip the main intro movie. InGameMenuResource needs to be manually patched as it will crash when unloading if
+		// StartupIntro is a null pointer.
+		if (ModConfiguration.SkipIntroLogos)
 		{
-			// Disable the intro menu
-			*(HRZ::Ref<HRZ::RTTIRefObject> *)((uintptr_t)refObject.get() + 0x158) = *(HRZ::Ref<HRZ::RTTIRefObject> *)((uintptr_t)refObject.get() + 0xB0);
-		}
-		else if (refObject->m_ObjectUUID == GGUUID::Parse("{F5F801CF-5F14-F34F-8695-E701F7BF3728}"))
-		{
-			auto& array = refObject->GetMemberRefUnsafe<Array<void *>>("OutOfBoundsAreaTags");
-			array.clear();
+			if (refObject->m_ObjectUUID == GGUUID::Parse("{44E1CF57-24A6-9A43-B087-172C87BB0DFE}"))
+				refObject->GetMemberRefUnsafe<Ref<RTTIRefObject>>("StartupIntro") = refObject->GetMemberRefUnsafe<Ref<RTTIRefObject>>("StartPage");
 		}
 
-		auto rtti = refObject->GetRTTI()->AsClass();
-		auto object = refObject.get();
-
+		// Apply all patches loaded from user config
+		auto rtti = refObject->GetRTTI();
 		auto applyPatches = [&](const std::vector<RTTIValuePatch>& Patches)
 		{
 			for (auto& patch : Patches)
 			{
 				ValuePatchVisitor v(patch);
-				RTTIObjectTweaker::VisitObjectPath(object, rtti, patch.m_Path, &v);
+				RTTIObjectTweaker::VisitObjectPath(refObject, rtti, patch.m_Path, &v);
 
 				if (!v.m_LastError.empty())
-					__debugbreak();
+					DebugUI::LogWindow::AddLog("[AssetOverride] Failed to patch object %p. %s\n", refObject, v.m_LastError.c_str());
 			}
 		};
 
-		if (auto itr = m_RTTIPatchesByUUID.find(object->m_ObjectUUID); itr != m_RTTIPatchesByUUID.end())
-			applyPatches(itr->second);
-
 		if (auto itr = m_RTTIPatchesByType.find(rtti); itr != m_RTTIPatchesByType.end())
 			applyPatches(itr->second);
-	}
 
-	DebugUI::LogWindow::AddLog("OnCoreLoad (%lld) %s\n", Objects.size(), CorePath.c_str());
+		if (auto itr = m_RTTIPatchesByUUID.find(refObject->m_ObjectUUID); itr != m_RTTIPatchesByUUID.end())
+			applyPatches(itr->second);
+	}
 }
 
 void ModCoreEvents::OnLoadCoreObjects(const String& CorePath, const Array<Ref<RTTIRefObject>>& Objects)
 {
+	if (ModConfiguration.EnableCoreLogging)
+		DebugUI::LogWindow::AddLog("[Asset] OnLoadCoreObjects(%s, %lld objects)\n", CorePath.c_str(), Objects.size());
+
 	ResourceListLock.lock();
 	{
 		for (auto& refObject : Objects)
 		{
-			AllResources.emplace(refObject.get());
-
 			if (refObject->GetRTTI()->IsKindOf(HRZ::RTTI_WeatherSetup))
-				CachedWeatherSetups.emplace(refObject.get());
+				CachedWeatherSetups.emplace(refObject);
 
 			if (refObject->GetRTTI()->IsKindOf(HRZ::RTTI_SpawnSetupBase))
-				CachedSpawnSetupBases.emplace(refObject.get());
+				CachedSpawnSetupBases.emplace(refObject);
 
 			if (refObject->GetRTTI()->IsKindOf(HRZ::RTTI_AIFaction))
-				CachedAIFactions.emplace(refObject.get());
+				CachedAIFactions.emplace(refObject);
 		}
 	}
 	ResourceListLock.unlock();
-
-	DebugUI::LogWindow::AddLog("OnLoadCoreObjects (%lld) %s\n", Objects.size(), CorePath.c_str());
 }
 
 void ModCoreEvents::OnUnloadCoreObjects(const String& CorePath, const Array<Ref<RTTIRefObject>>& Objects)
 {
+	if (ModConfiguration.EnableCoreLogging)
+		DebugUI::LogWindow::AddLog("[Asset] OnUnloadCoreObjects(%s, %lld objects)\n", CorePath.c_str(), Objects.size());
+
 	ResourceListLock.lock();
 	{
 		for (auto& refObject : Objects)
 		{
-			AllResources.erase(refObject.get());
-			CachedWeatherSetups.erase(refObject.get());
-			CachedSpawnSetupBases.erase(refObject.get());
-			CachedAIFactions.erase(refObject.get());
+			CachedWeatherSetups.erase(refObject);
+			CachedSpawnSetupBases.erase(refObject);
+			CachedAIFactions.erase(refObject);
 		}
 	}
 	ResourceListLock.unlock();
-
-	DebugUI::LogWindow::AddLog("OnUnloadCoreObjects (%lld) %s\n", Objects.size(), CorePath.c_str());
 }
 
 ModCoreEvents& ModCoreEvents::Instance()

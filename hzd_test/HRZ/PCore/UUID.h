@@ -4,6 +4,8 @@
 #include <cstddef>
 #include <array>
 #include <string_view>
+#include <stdexcept>
+#include <optional>
 
 namespace HRZ
 {
@@ -36,16 +38,6 @@ struct GGUUID final
 		return All != Other.All;
 	}
 
-	static GGUUID Generate()
-	{
-		static_assert(sizeof(GUID) == sizeof(GGUUID));
-
-		GGUUID id {};
-		CoCreateGuid(reinterpret_cast<GUID *>(&id));
-
-		return id;
-	}
-
 	template<typename T, size_t Digits = sizeof(T) * 2>
 	constexpr static uint32_t UUIDHexToBytes(const char *Hex)
 	{
@@ -58,15 +50,25 @@ struct GGUUID final
 			else if (C >= '0' && C <= '9')
 				return C - '0';
 
-			throw "Invalid hexadecimal digit";
+			throw std::invalid_argument("Invalid hexadecimal digit");
 		};
 
-		T value {};
+		T value{};
 
 		for (size_t i = 0; i < Digits; i++)
 			value |= charToByte(Hex[i]) << (4 * (Digits - i - 1));
 
 		return value;
+	}
+
+	static GGUUID Generate()
+	{
+		static_assert(sizeof(GUID) == sizeof(GGUUID));
+
+		GGUUID id {};
+		CoCreateGuid(reinterpret_cast<GUID *>(&id));
+
+		return id;
 	}
 
 	constexpr static GGUUID Parse(const std::string_view UUID)
@@ -93,10 +95,10 @@ struct GGUUID final
 		const size_t add = (Length == 38) ? 1 : 0;
 
 		if (Length != 36 && Length != 38)
-			throw "Invalid GUID length specified";
+			throw std::invalid_argument("Invalid GUID length specified");
 
 		if (add && (UUID[0] != '{' || UUID[Length - 1] != '}'))
-			throw "Invalid bracket pair used";
+			throw std::invalid_argument("Invalid bracket pair used");
 
 		GGUUID id {};
 		id.Data1 = UUIDHexToBytes<uint32_t>(UUID + 0 + add);
@@ -109,6 +111,19 @@ struct GGUUID final
 			id.Data4[i + 2] = UUIDHexToBytes<uint8_t>(UUID + 24 + (i * 2) + add);
 
 		return id;
+	}
+
+	constexpr static std::optional<GGUUID> TryParse(const std::string_view UUID)
+	{
+		try
+		{
+			return Parse(UUID);
+		}
+		catch (std::exception&)
+		{
+		}
+
+		return std::nullopt;
 	}
 };
 

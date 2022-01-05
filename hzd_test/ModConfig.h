@@ -1,9 +1,10 @@
 #pragma once
 
 #include <string>
+#include <string_view>
 #include <vector>
 
-namespace ModConfig
+namespace InternalModConfig
 {
 
 struct AssetOverride
@@ -19,17 +20,15 @@ struct GlobalSettings
 {
 	// [General]
 	bool EnableDebugMenu;
+	bool EnableCoreLogging;
 	bool EnableAssetLogging;
+	bool EnableAssetOverrides;
 	bool EnableDiscordRichPresence;
-	bool OverrideGeographicalRegion;
-	std::string GeographicalRegion;
 
 	// [Gameplay]
-	bool UnlockMapBorders;
+	bool SkipIntroLogos;
 	bool UnlockNGPExtras;
 	bool UnlockEntitlementExtras;
-	bool DisableTimeOfDay;
-	bool DisableWeatherTransitions;
 
 	// [AssetOverrides]
 	std::vector<AssetOverride> AssetOverrides;
@@ -40,4 +39,4 @@ bool LoadFromFile(const std::string_view FilePath);
 
 }
 
-extern ModConfig::GlobalSettings ModConfiguration;
+extern InternalModConfig::GlobalSettings ModConfiguration;
