@@ -29,17 +29,6 @@
 #include "EntitySpawnerWindow.h"
 #include "MainMenuBar.h"
 
-extern std::unordered_set<HRZ::RTTIRefObject *> AllResources;
-extern std::unordered_set<HRZ::RTTIRefObject *> CachedAIFactions;
-extern HRZ::SharedLock ResourceListLock;
-
-namespace HRZ
-{
-DECL_RTTI(AIFaction);
-DECL_RTTI(Spawnpoint);
-DECL_RTTI(SpawnSetupBase);
-}
-
 namespace HRZ::DebugUI
 {
 
@@ -97,6 +86,13 @@ void MainMenuBar::Render()
 		ImGui::EndMenu();
 	}
 
+	// Credits
+	auto text = "Game input blocked | Mod created by Nukem (Nukem9)";
+	auto len = ImGui::CalcTextSize(text).x;
+
+	ImGui::SetCursorPosX(ImGui::GetWindowContentRegionMax().x - len);
+	ImGui::BeginMenu(text, false);
+
 	ImGui::EndMainMenuBar();
 }
 
@@ -126,8 +122,8 @@ void MainMenuBar::DrawWorldMenu()
 	if (ImGui::MenuItem("Player Camera Entity"))
 		AddWindow(std::make_shared<EntityWindow>(Player::GetLocalPlayer()->GetLastActivatedCamera()));
 
-	if (ImGui::MenuItem("Player Focus Entity"))
-		AddWindow(std::make_shared<FocusEditorWindow>());
+	//if (ImGui::MenuItem("Player Focus Entity"))
+	//	AddWindow(std::make_shared<FocusEditorWindow>());
 }
 
 void MainMenuBar::DrawTimeMenu()
@@ -206,7 +202,7 @@ void MainMenuBar::DrawCheatsMenu()
 {
 	auto debugSettings = Application::Instance().m_DebugSettings;
 
-	if (ImGui::MenuItem("Enable Freefly Cam", nullptr, m_FreeCamMode == FreeCamMode::Free))
+	if (ImGui::MenuItem("Enable Freefly Camera", nullptr, m_FreeCamMode == FreeCamMode::Free))
 	{
 		m_FreeCamMode = (m_FreeCamMode == FreeCamMode::Free) ? FreeCamMode::Off : FreeCamMode::Free;
 		m_FreeCamPosition = Player::GetLocalPlayer()->GetLastActivatedCamera()->m_Orientation.Position;
@@ -246,10 +242,11 @@ void MainMenuBar::DrawCheatsMenu()
 				.Orientation = player->m_Entity->m_Orientation.Orientation,
 			};
 
+			m_FreeCamPosition = Position;
 			player->m_Entity->PlaceOnWorldTransform(transform, false);
 		};
 
-		if (ImGui::MenuItem("Freefly Cam Position"))
+		if (ImGui::MenuItem("Freefly Camera Position"))
 			doTeleport(m_FreeCamPosition);
 		if (ImGui::MenuItem("Naming Cliff"))
 			doTeleport(WorldPosition(2258.91, -1097.40, 359.18));
@@ -265,25 +262,6 @@ void MainMenuBar::DrawCheatsMenu()
 			doTeleport(WorldPosition(-2523.0, -2220.0, 221.0));
 		if (ImGui::MenuItem("DLC Testing Area"))
 			doTeleport(WorldPosition(-4953.22, -4907.42, 258.15));
-
-		ImGui::EndMenu();
-	}
-
-	if (ImGui::BeginMenu("Set Faction"))
-	{
-		auto player = Player::GetLocalPlayer();
-
-		for (auto refObject : CachedAIFactions)
-		{
-			if (!refObject->GetRTTI()->IsExactKindOf(RTTI_AIFaction))
-				continue;
-			
-			if (String assetName; refObject->GetMemberValue("Name", &assetName))
-			{
-				if (ImGui::MenuItem(assetName.c_str(), nullptr, player->m_Entity->m_Faction == (HRZ::AIFaction *)refObject))
-					player->m_Entity->SetFaction((HRZ::AIFaction *)refObject);
-			}
-		}
 
 		ImGui::EndMenu();
 	}

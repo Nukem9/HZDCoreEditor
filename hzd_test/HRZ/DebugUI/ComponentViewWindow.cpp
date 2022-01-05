@@ -230,7 +230,7 @@ void ComponentViewWindow::DrawEntityList(Array<T>& Items, const ImGuiTextFilter 
 			ImGui::TableSetColumnIndex(2);
 			auto desc = item->m_Components.FindComponent<ItemDescriptionComponent>();
 			if (desc)
-				ImGui::Text("%s", GetLocalizedResourceName(desc->m_Resource.get()).c_str());
+				ImGui::Text("%s", GetLocalizedResourceName(desc->m_Resource).c_str());
 			else
 				ImGui::Text("");
 			showContextMenu();

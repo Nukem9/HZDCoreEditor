@@ -1,3 +1,4 @@
+#include <unordered_set>
 #include <imgui.h>
 
 #include "../Core/Mover.h"
@@ -5,6 +6,14 @@
 #include "DebugUI.h"
 #include "ComponentViewWindow.h"
 #include "EntityWindow.h"
+
+extern HRZ::SharedLock ResourceListLock;
+extern std::unordered_set<HRZ::RTTIRefObject *> CachedAIFactions;
+
+namespace HRZ
+{
+DECL_RTTI(AIFaction);
+}
 
 namespace HRZ::DebugUI
 {
@@ -70,6 +79,32 @@ void EntityWindow::Render()
 
 		if (valueChanged && m_Entity->m_Mover)
 			m_Entity->m_Mover->SetVelocity(velocity);
+
+		ImGui::Spacing();
+
+		// Faction
+		std::scoped_lock lock(ResourceListLock);
+		std::vector<Resource *> sortedFactions;
+
+		for (auto refObject : CachedAIFactions)
+			sortedFactions.push_back(RTTI::Cast<Resource>(refObject));
+
+		std::sort(sortedFactions.begin(), sortedFactions.end(), [](Resource *A, Resource *B)
+		{
+			return A->GetName() < B->GetName();
+		});
+
+		auto itr = std::find(sortedFactions.begin(), sortedFactions.end(), (Resource *)m_Entity->m_Faction);
+		int currentIndex = std::distance(sortedFactions.begin(), itr);
+
+		auto fetchItem = +[](void *Data, int Index, const char **Text)
+		{
+			*Text = reinterpret_cast<std::vector<Resource *> *>(Data)->at(Index)->GetName().c_str();
+			return true;
+		};
+
+		if (ImGui::Combo("Faction##entityfactioncombo", &currentIndex, fetchItem, &sortedFactions, sortedFactions.size()))
+			m_Entity->SetFaction((AIFaction *)sortedFactions[currentIndex]);
 	}
 	ImGui::PopItemWidth();
 

@@ -1,6 +1,7 @@
 #include <d3d12.h>
 #include <array>
 #include <imgui.h>
+#include <imgui_internal.h>
 #include <imgui_impl_dx12.h>
 #include <imgui_impl_win32.h>
 
@@ -32,13 +33,6 @@ WNDPROC OriginalWndProc;
 bool InterceptInput;
 
 LRESULT WINAPI WndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
-
-D3D12_CPU_DESCRIPTOR_HANDLE TextureCpuDescriptorIndex;
-D3D12_GPU_DESCRIPTOR_HANDLE TextureGpuDescriptorIndex;
-
-D3D12_CPU_DESCRIPTOR_HANDLE cpuDescriptorIndex;
-D3D12_GPU_DESCRIPTOR_HANDLE gpuDescriptorIndex;
-uint32_t descriptorIncrement;
 
 void Initialize(const SwapChainDX12 *SwapChain)
 {
@@ -76,18 +70,8 @@ void Initialize(const SwapChainDX12 *SwapChain)
 	auto& io = ImGui::GetIO();
 	io.MouseDrawCursor = false;
 
-	cpuDescriptorIndex = SrvDescHeap->GetCPUDescriptorHandleForHeapStart();
-	gpuDescriptorIndex = SrvDescHeap->GetGPUDescriptorHandleForHeapStart();
-	descriptorIncrement = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-
 	ImGui_ImplWin32_Init(SwapChain->m_NativeWindowHandle);
-	ImGui_ImplDX12_Init(device, SwapChainDX12::BackBufferCount, SwapChain->m_BackBuffers[0].m_Resource->GetDesc().Format, SrvDescHeap, cpuDescriptorIndex, gpuDescriptorIndex);
-
-	cpuDescriptorIndex.ptr += descriptorIncrement;
-	gpuDescriptorIndex.ptr += descriptorIncrement;
-	TextureCpuDescriptorIndex = cpuDescriptorIndex;
-	TextureGpuDescriptorIndex = gpuDescriptorIndex;
-
+	ImGui_ImplDX12_Init(device, SwapChainDX12::BackBufferCount, SwapChain->m_BackBuffers[0].m_Resource->GetDesc().Format, SrvDescHeap, SrvDescHeap->GetCPUDescriptorHandleForHeapStart(), SrvDescHeap->GetGPUDescriptorHandleForHeapStart());
 	OriginalWndProc = reinterpret_cast<WNDPROC>(SetWindowLongPtrW(SwapChain->m_NativeWindowHandle, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&WndProc)));
 
 	DebugUI::AddWindow(std::make_shared<MainMenuBar>());
@@ -104,11 +88,15 @@ void AddWindow(std::shared_ptr<Window> Handle)
 
 void RenderUI()
 {
-	UpdateFreecam();
-
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+
+	UpdateFreecam();
+
+	// Clear window focus for every frame that isn't intercepting input
+	if (!InterceptInput)
+		ImGui::FocusWindow(nullptr);
 
 	// A copy is required because Render() might create new instances and invalidate iterators
 	auto currentWindows = m_Windows;
@@ -131,27 +119,6 @@ void RenderUID3D(const SwapChainDX12 *SwapChain)
 	ID3D12CommandAllocator *allocator = CommandAllocators[bufferIndex];
 
 	allocator->Reset();
-	/*
-	if (TestTexture)
-	{
-		static bool once = []()
-		{
-			auto tex = static_cast<TextureDX12 *>(TestTexture.get())->m_Copies[0].m_State.m_D3DResource;
-
-			auto desc = tex->GetDesc();
-
-			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
-			srvDesc.Format = desc.Format;
-			srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-			srvDesc.Texture2D.MipLevels = desc.MipLevels;
-			srvDesc.Shader4ComponentMapping = D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING(D3D12_SHADER_COMPONENT_MAPPING_FROM_MEMORY_COMPONENT_0, D3D12_SHADER_COMPONENT_MAPPING_FROM_MEMORY_COMPONENT_1, D3D12_SHADER_COMPONENT_MAPPING_FROM_MEMORY_COMPONENT_2, D3D12_SHADER_COMPONENT_MAPPING_FORCE_VALUE_1);
-
-			RenderingDeviceDX12::Instance().m_Device->CreateShaderResourceView(tex.Get(), &srvDesc, TextureCpuDescriptorIndex);
-			return true;
-		}();
-	}
-	*/
-	//	RenderingDeviceDX12::Instance().m_Device->CopyDescriptorsSimple(1, TextureCpuDescriptorIndex, static_cast<TextureDX12 *>(TestTexture.get())->m_Copies[0].m_CPUDescriptorHandle, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
 	D3D12_RESOURCE_BARRIER barrier {};
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
@@ -174,6 +141,25 @@ void RenderUID3D(const SwapChainDX12 *SwapChain)
 	CommandList->Close();
 
 	SwapChain->m_RenderingConfig->GetCommandQueue()->ExecuteCommandLists(1, reinterpret_cast<ID3D12CommandList * const *>(&CommandList));
+}
+
+void ToggleInputInterception()
+{
+	InterceptInput = !InterceptInput;
+	auto cursorManager = Application::Instance().m_CursorManager;
+
+	if (InterceptInput)
+	{
+		ImGui::GetIO().MouseDrawCursor = true;
+		cursorManager->m_UnlockCursorBounds = true;
+		cursorManager->m_ForceHideCursor = true;
+	}
+	else
+	{
+		ImGui::GetIO().MouseDrawCursor = false;
+		cursorManager->m_UnlockCursorBounds = false;
+		cursorManager->m_ForceHideCursor = false;
+	}
 }
 
 bool ShouldInterceptInput()
@@ -280,40 +266,13 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 	switch (Msg)
 	{
 	case WM_KEYDOWN:
-		if (wParam == VK_OEM_3 || wParam == VK_F12)
+		if (wParam == VK_OEM_3)
 		{
-			// Toggle input blocking (~ or F12)
-			InterceptInput = !InterceptInput;
-			auto cursorManager = Application::Instance().m_CursorManager;
+			// Toggle input blocking (tilde `~`)
+			ToggleInputInterception();
 
-			if (InterceptInput)
-			{
-				ImGui::GetIO().MouseDrawCursor = true;
-
-				cursorManager->m_UnlockCursorBounds = true;
-				cursorManager->m_ForceHideCursor = true;
-
-				CallWindowProcW(OriginalWndProc, hWnd, WM_ACTIVATEAPP, 0, 0);
-			}
-			else
-			{
-				ImGui::GetIO().MouseDrawCursor = false;
-
-				cursorManager->m_UnlockCursorBounds = false;
-				cursorManager->m_ForceHideCursor = false;
-
-				CallWindowProcW(OriginalWndProc, hWnd, WM_ACTIVATEAPP, 1, 0);
-			}
-
+			CallWindowProcW(OriginalWndProc, hWnd, WM_ACTIVATEAPP, InterceptInput ? 0 : 1, 0);
 			return 0;
-		}
-		else if (wParam == VK_F5)
-		{
-
-		}
-		else if (wParam == VK_F6)
-		{
-			// Load last save
 		}
 		break;
 
