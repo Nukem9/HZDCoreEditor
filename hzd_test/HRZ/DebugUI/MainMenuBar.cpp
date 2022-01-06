@@ -261,7 +261,7 @@ void MainMenuBar::DrawCheatsMenu()
 		if (ImGui::MenuItem("Script Testing Area"))
 			doTeleport(WorldPosition(-2523.0, -2220.0, 221.0));
 		if (ImGui::MenuItem("DLC Testing Area"))
-			doTeleport(WorldPosition(-4953.22, -4907.42, 258.15));
+			doTeleport(WorldPosition(4765.22, 4832.68, 282.68));
 
 		ImGui::EndMenu();
 	}

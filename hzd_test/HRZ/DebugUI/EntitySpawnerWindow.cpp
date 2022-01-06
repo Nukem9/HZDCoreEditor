@@ -79,7 +79,6 @@ void EntitySpawnerWindow::Render()
 
 	static int spawnCount = 1;
 	static int spawnLocationType = 0;
-	static WorldPosition spawnPosition;
 
 	ImGui::Separator();
 	ImGui::SetNextItemWidth(200); ImGui::InputInt("Entity count", &spawnCount);
@@ -90,34 +89,43 @@ void EntitySpawnerWindow::Render()
 	ImGui::Spacing();
 
 	auto player = Player::GetLocalPlayer();
-	auto camera = player->GetLastActivatedCamera();
+	auto currentTransform = player->m_Entity->m_Orientation;
 
-	auto cameraMatrix = camera->m_Orientation.Orientation;
-	float yaw;
-	float pitch;
-	cameraMatrix.Decompose(&yaw, &pitch, nullptr);
-	Vec3 moveDirection(sin(yaw) * cos(pitch), cos(yaw) * cos(pitch), -sin(pitch));
-	moveDirection = moveDirection * 50.0f;
-
-	auto testPosition = moveDirection;// camera->m_Orientation.Orientation * Vec3(10, 10, 10);
-	spawnPosition.X = camera->m_Orientation.Position.X + testPosition.X;
-	spawnPosition.Y = camera->m_Orientation.Position.Y + testPosition.Y;
-	spawnPosition.Z = camera->m_Orientation.Position.Z + testPosition.Z;
-
-	WorldTransform xform
+	if (spawnLocationType == 0)
 	{
-		.Position = spawnPosition,
-		.Orientation = camera->m_Orientation.Orientation,
-	};
-
-	if (spawnLocationType == 2)
+		// Player position
+		currentTransform.Position = player->m_Entity->m_Orientation.Position;
+	}
+	else if (spawnLocationType == 2)
 	{
+		// Crosshair position
+		auto camera = player->GetLastActivatedCamera();
+		auto cameraMatrix = camera->m_Orientation.Orientation;
+
+		float yaw;
+		float pitch;
+		cameraMatrix.Decompose(&yaw, &pitch, nullptr);
+
+		Vec3 moveDirection(sin(yaw) * cos(pitch), cos(yaw) * cos(pitch), -sin(pitch));
+		moveDirection = moveDirection * 50.0f;
+
+		currentTransform.Position.X = camera->m_Orientation.Position.X + moveDirection.X;
+		currentTransform.Position.Y = camera->m_Orientation.Position.Y + moveDirection.Y;
+		currentTransform.Position.Z = camera->m_Orientation.Position.Z + moveDirection.Z;
+	}
+	else if (spawnLocationType == 2)
+	{
+		// Custom position
+		static WorldPosition tempPosition;
+
 		ImGui::PushItemWidth(200);
-		ImGui::InputDouble("X", &spawnPosition.X, 1.0, 20.0, "%.3f");
-		ImGui::InputDouble("Y", &spawnPosition.Y, 1.0, 20.0, "%.3f");
-		ImGui::InputDouble("Z", &spawnPosition.Z, 1.0, 20.0, "%.3f");
+		ImGui::InputDouble("X", &tempPosition.X, 1.0, 20.0, "%.3f");
+		ImGui::InputDouble("Y", &tempPosition.Y, 1.0, 20.0, "%.3f");
+		ImGui::InputDouble("Z", &tempPosition.Z, 1.0, 20.0, "%.3f");
 		ImGui::PopItemWidth();
 		ImGui::Spacing();
+
+		currentTransform.Position = tempPosition;
 	}
 
 	if (ImGui::Button("Spawn"))
@@ -129,11 +137,11 @@ void EntitySpawnerWindow::Render()
 
 			spawnpoint->IncRef();
 			rtti->SetMemberValue<GGUUID>(spawnpoint, "ObjectUUID", GGUUID::Generate());
-			rtti->SetMemberValue<WorldTransform>(spawnpoint, "Orientation", xform);
+			rtti->SetMemberValue<WorldTransform>(spawnpoint, "Orientation", currentTransform);
 			rtti->SetMemberValue<String>(spawnpoint, "Name", "UI_Manually_Spawned_Entity");
 			rtti->SetMemberValue<Ref<Resource>>(spawnpoint, "SpawnSetup", selectedObjectThisFrame);
 			rtti->SetMemberValue<float>(spawnpoint, "Radius", 1.0f);
-			rtti->SetMemberValue<float>(spawnpoint, "DespawnRadius", 1000000.0f);
+			rtti->SetMemberValue<float>(spawnpoint, "DespawnRadius", 0.0f);
 			// WeakPtr<Entity> @ Spawnpoint+0x188
 
 			Offsets::CallID<"NodeGraph::ExportedSpawnpointSpawn", void(*)(RTTIRefObject *)>(spawnpoint);
