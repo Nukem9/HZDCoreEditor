@@ -22,7 +22,7 @@ public:
 
 	static StreamingManager *Instance()
 	{
-		return *Offsets::Resolve<StreamingManager **>(0x712D0C0);
+		return *Offsets::ResolveID<"StreamingManager::Instance", StreamingManager **>();
 	}
 };
 assert_offset(StreamingManager, m_CoreFileManager, 0x90);

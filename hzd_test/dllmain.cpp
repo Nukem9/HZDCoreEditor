@@ -1,132 +1,57 @@
 #include <atomic>
 #include <stdlib.h>
+#include <detours/Detours.h>
 
-#include "HRZ/Core/RTTIBinaryReader.h"
-#include "HRZ/Core/PrefetchList.h"
 #include "HRZ/PGraphics3D/SwapChainDX12.h"
 #include "HRZ/DebugUI/DebugUI.h"
-#include "HRZ/DebugUI/LogWindow.h"
 #include "HRZ/DebugUI/MainMenuBar.h"
 
+#include "HRZ/Core/Application.h"
 #include "HRZ/Core/StreamingManager.h"
 #include "HRZ/Core/CoreFileManager.h"
 #include "HRZ/Core/WorldTransform.h"
 #include "HRZ/Core/CameraEntity.h"
 #include "HRZ/Core/GameModule.h"
+#include "HRZ/Core/WorldState.h"
 
 #include "RTTI/MSRTTI.h"
 #include "RTTI/RTTIScanner.h"
 
+#include "LogHooks.h"
 #include "ModConfig.h"
 #include "ModCoreEvents.h"
 #include "common.h"
 
 using namespace HRZ;
 
-void PreLoadObjectHook(RTTIBinaryReader *Reader)
-{
-	auto object = Reader->m_CurrentObject;
-	Reader->OnObjectPreInit(object);
-
-	if (false)
-	{
-		// Subtract 12 for the core entry header length (uint64, uint)
-		uint64_t assetOffset = Reader->GetStreamPosition() - 12;
-
-		DebugUI::LogWindow::AddLog("[Asset] Loading %s at [offset %lld, address 0x%p] (%s)\n", object->GetRTTI()->GetSymbolName().c_str(), assetOffset, object, Reader->m_FullFilePath.c_str());
-	}
-}
-
-void PostLoadObjectHook(RTTIBinaryReader *Reader)
-{
-	auto object = Reader->m_CurrentObject;
-	auto rtti = object->GetRTTI();
-
-	Reader->OnObjectPostInit(object);
-
-	if (false)
-	{
-		DebugUI::LogWindow::AddLog("[Asset] Finished loading %s at [offset %lld, address 0x%p] (%s)", rtti->GetSymbolName().c_str(), Reader->GetStreamPosition(), object, Reader->m_FullFilePath.c_str());
-
-		// Dump the name
-		if (String assetName; object->GetMemberValue("Name", &assetName) && !assetName.empty())
-			DebugUI::LogWindow::AddLog(" (%s)\n", assetName.c_str());
-		else
-			DebugUI::LogWindow::AddLog("\n");
-
-		// Log prefetch values for debugging purposes
-		if (auto prefetch = RTTI::Cast<PrefetchList>(object); prefetch)
-		{
-			DebugUI::LogWindow::AddLog("[Asset] Prefetch load done\n");
-			DebugUI::LogWindow::AddLog("[Asset] Total files: %d\n", prefetch->m_Files.size());
-			DebugUI::LogWindow::AddLog("[Asset] Total sizes: %d\n", prefetch->m_Sizes.size());
-			DebugUI::LogWindow::AddLog("[Asset] Total links: %d\n", prefetch->m_Links.size());
-		}
-	}
-}
-
-void NodeGraphAlert(const char *Message, bool Unknown)
-{
-	DebugUI::LogWindow::AddLog("[Alert] %s\n", Message);
-}
-
-void NodeGraphAlertWithName(const char *Category, const char *Severity, const char *Message, bool Unknown)
-{
-	DebugUI::LogWindow::AddLog("[Alert] [%s] [%s] %s\n", Category, Severity, Message);
-}
-
-void NodeGraphTrace(const char *UUID, const char *Message)
-{
-	DebugUI::LogWindow::AddLog("[Trace] [%s] %s\n", UUID, Message);
-}
-
-void InternalEngineLog(const char *Format, ...)
-{
-	va_list va;
-	char buffer[2048];
-
-	va_start(va, Format);
-	int len = _vsnprintf_s(buffer, _TRUNCATE, Format, va);
-	va_end(va);
-
-	if (len > 1 && buffer[len - 1] == '\n')
-		DebugUI::LogWindow::AddLog("[Engine] %s", buffer);
-	else
-		DebugUI::LogWindow::AddLog("[Engine] %s\n", buffer);
-}
-
-void PackfileDevice_MountArchive(class PackFileDevice *Device, const String& BinPath, uint32_t Priority)
-{
-	Offsets::CallID<"PackfileDevice::MountArchive", void(*)(PackFileDevice *, const String&, uint32_t)>(Device, BinPath, Priority);
-
-	DebugUI::LogWindow::AddLog("[PackfileDevice] Mounted archive %s with priority %u\n", BinPath.c_str(), Priority);
-}
-
 bool hk_SwapChainDX12_Present(SwapChainDX12 *SwapChain)
 {
-	static bool init = [&]()
+	// Register debug UI
+	static bool initUI = [&]()
 	{
 		DebugUI::Initialize(SwapChain);
 		return true;
 	}();
 
-	static bool initCoreEvents = false;
+	// Register core load callbacks
 	auto streamingManager = HRZ::StreamingManager::Instance();
 
-	if (streamingManager && !initCoreEvents)
+	if (streamingManager)
 	{
-		streamingManager->m_CoreFileManager->RegisterEventListener(ModCoreEvents::Instance());
-		initCoreEvents = true;
+		static bool initCore = [&]()
+		{
+			streamingManager->m_CoreFileManager->RegisterEventListener(ModCoreEvents::Instance());
+			return true;
+		}();
 	}
 
-	/*
-	uintptr_t playerProfile = *Offsets::Resolve<uintptr_t *>(0x7133A40);
-
-	if (playerProfile)
+	// HighestCompletedNewGamePlusDifficulty
+	// Set the highest NG+ difficulty that has been unlocked. Used for custom face paints and focus models.
+	if (auto& module = HRZ::Application::Instance().m_GameModule; module)
 	{
-		// Set the highest NG+ difficulty that has been unlocked. Used for custom face paints and focus models.
-		*(int *)(playerProfile + 0x25C) = 5;
-	}*/
+		if (module->m_PlayerProfile)
+			*reinterpret_cast<int *>(reinterpret_cast<uintptr_t>(module->m_PlayerProfile.get()) + 0x25C) = 5;
+	}
 
 	DebugUI::RenderUI();
 	DebugUI::RenderUID3D(SwapChain);
@@ -154,9 +79,34 @@ void hk_call_1411E3210(HRZ::GameModule *This, float Timescale, float TransitionT
 	This->SetTimescale(Timescale, TransitionTime);
 }
 
+struct EntrypointToAddress
+{
+	uint32_t m_CRC;
+	void *m_Address;
+};
+
+struct EntrypointArray
+{
+	uint32_t m_Count;
+	char _pad4[0xC];
+	EntrypointToAddress m_Entries[10000];
+};
+
 void hk_call_1417BC7AA()
 {
 	RTTIScanner::ExportAll("C:\\ds_rtti_export", "DS");
+
+	auto& array = *Offsets::Resolve<EntrypointArray *>(0x73E7120);
+	FILE *temp = fopen("C:\\ds_rtti_export\\entrypoint_crc_listing.csv", "w");
+
+	for (size_t i = 0; i < array.m_Count; i++)
+	{
+		auto& element = array.m_Entries[i];
+
+		fprintf(temp, "0x%llX,0x%X\n", reinterpret_cast<uintptr_t>(element.m_Address) - Offsets::GetModule().first + 0x140000000, element.m_CRC);
+	}
+
+	fclose(temp);
 	ExitProcess(0);
 }
 
@@ -180,9 +130,12 @@ void LoadSignatures(GameType Game)
 	auto offsetFromInstruction = [&](const char *Signature, uint32_t Add)
 	{
 		auto addr = XUtil::FindPattern(moduleBase, moduleEnd - moduleBase, Signature);
-		auto relOffset = *reinterpret_cast<int32_t *>(addr + Add) + sizeof(int32_t);
 
-		return addr + Add + relOffset - moduleBase;;
+		if (!addr)
+			return addr;
+
+		auto relOffset = *reinterpret_cast<int32_t *>(addr + Add) + sizeof(int32_t);
+		return addr + Add + relOffset - moduleBase;
 	};
 
 	if (Game == GameType::DeathStranding)
@@ -191,6 +144,8 @@ void LoadSignatures(GameType Game)
 		Offsets::MapSignature("String::CtorCString", "40 53 48 83 EC 20 48 8B D9 48 C7 01 00 00 00 00 49 C7 C0 FF FF FF FF");
 		Offsets::MapSignature("String::Dtor", "40 53 48 83 EC 20 48 8B 19 48 8D 05 ? ? ? ? 48 83 EB 10");
 		Offsets::MapSignature("RTTI::GetCoreBinaryTypeId", "4C 8B DC 55 53 56 41 56 49 8D 6B A1 48 81 EC C8 00 00 00");
+
+		// Hooks
 
 		// Globals
 		Offsets::MapAddress("ExportedSymbolGroupArray", offsetFromInstruction("48 8B C2 4C 8D ? ? ? ? ? 48 8D ? ? ? ? ? 4C 8D ? ? ? ? ? 48 8D ? ? ? ? ? 48 FF E0", 6));
@@ -212,12 +167,21 @@ void LoadSignatures(GameType Game)
 		Offsets::MapSignature("WeakPtr::Acquire", "40 57 48 83 EC 20 48 8B F9 48 8B 09 48 85 C9 74 58 33 C0 48 89 5C 24 30");
 		Offsets::MapSignature("WeakPtr::Release", "40 57 48 83 EC 20 48 8B F9 48 8B 09 48 85 C9 0F 84 8D 00 00 00 33 C0 48 89 5C 24 30 F2 48 0F 38 F1 C1");
 
-		Offsets::MapSignature("Player::GetLocalPlayer", "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 30 48 63 E9 85 C9 0F 85 E2 00 00 00");
-
 		Offsets::MapSignature("Entity::AddComponent", "48 89 5C 24 10 48 89 6C 24 18 48 89 74 24 20 57 41 56 41 57 48 83 EC 40 48 8B F9 48 8B F2 48 8B 4A 30");
 		Offsets::MapSignature("Entity::RemoveComponent", "48 8B C4 56 57 48 83 EC 68 83 B9 30 02 00 00 00 48 8B F2 48 8B F9");
+		Offsets::MapSignature("Entity::SetFaction", "48 89 5C 24 08 48 89 74 24 10 57 48 83 EC 40 48 8B F9 48 8B F2 48 83 C1 50 FF 15 ? ? ? ? 85 C0 75 0A 48 8D 4F 50 FF 15 ? ? ? ? 48 8B 8F 28 02 00 00 48 3B CE");
+
+		Offsets::MapSignature("HwBuffer::Map", "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 48 89 7C 24 20 41 54 41 56 41 57 48 83 EC 20 48 8B 01 45 8B F1 8B 6C 24 60");
+		Offsets::MapSignature("HwBuffer::Unmap", "40 53 48 83 EC 30 44 8B 42 08 48 8D 44 24 40 44 89 44 24 40 48 8B DA");
+
+		Offsets::MapSignature("NodeGraph::ExportedReloadLastSaveGame", "40 53 48 83 EC 40 0F 29 74 24 30 B9 20 00 00 00 0F 28 F0 E8");
+		Offsets::MapSignature("NodeGraph::ExportedCreateSaveGame", "48 83 EC 48 44 0F B6 D1 48 8B ? ? ? ? ? 48 85 C9 74 3B 32 C0 41 B9 01 00 00 00 84 D2");
+		Offsets::MapSignature("NodeGraph::ExportedSpawnpointSpawn", "48 85 C9 74 25 80 B9 80 01 00 00 00 75 1C 80 B9 81 01 00 00 00 75 13");
 
 		Offsets::MapSignature("RTTI::GetCoreBinaryTypeId", "48 8B C4 44 89 40 18 48 89 50 10 48 89 48 08 55 53 56 41 56 48 8D 68 A1 48 81 EC 98 00 00 00 4C 89 60 D0");
+		Offsets::MapSignature("RTTI::CreateObject", "48 89 5C 24 20 57 48 83 EC 20 44 0F B6 49 04 4C 8D ? ? ? ? ? 45 33 C0 48 8B D9 41 83 F9 06");
+
+		Offsets::MapSignature("Player::GetLocalPlayer", "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 30 48 63 E9 85 C9 0F 85 E2 00 00 00");
 		Offsets::MapSignature("SwapChainDX12::Present", "48 89 5C 24 08 48 89 74 24 10 57 48 83 EC 40 48 8B 05 ? ? ? ? 48 8B D9");
 		Offsets::MapSignature("PackfileDevice::MountArchive", "44 89 44 24 18 48 89 54 24 10 48 89 4C 24 08 55 53 56 57 41 56");
 		Offsets::MapSignature("LocalizedTextResource::GetTranslation", "48 89 5C 24 10 57 48 83 EC 20 48 8B F9 48 8B DA 48 8B 0D ? ? ? ? 48 8B 01");
@@ -225,11 +189,25 @@ void LoadSignatures(GameType Game)
 		Offsets::MapSignature("WeatherSystem::SetWeatherOverride", "48 8B C4 53 48 81 EC 90 00 00 00 48 89 70 10 48 8D 99 30 01 00 00 48 89 78 18 48 8B F9");
 		Offsets::MapSignature("WorldState::SetTimeOfDay", "F3 0F 10 99 98 00 00 00 0F 57 C0 0F 2F D0 76 3B 0F 2F CB 72 06");
 		Offsets::MapSignature("ToggleDamageLogging", "40 53 48 83 EC 20 84 D2 0F 84 B9 00 00 00 48 8B 05 ? ? ? ? 33 DB");
+		Offsets::MapSignature("CoreFileManager::RegisterEventListener", "48 89 5C 24 08 48 89 74 24 10 57 48 83 EC 20 48 8B F9 48 8B F2 48 83 C1 18 FF 15 ? ? ? ? 84 C0 75 0A 48 8D 4F 18 FF 15 ? ? ? ? 48 8D 4F 28");
+		Offsets::MapSignature("RTTIObjectTweaker::VisitObjectPath", "4C 8B DC 55 53 56 41 55 41 56 49 8D 6B B1 48 81 EC 90 00 00 00");
+		Offsets::MapSignature("HeapAllocator::Free", "48 83 EC 28 48 85 C9 0F 84 ? ? ? ? 8B ? ? ? ? ? 65 48 8B 04 25 58 00 00 00 48 89 5C 24 30 48 89 7C 24 20");
+
+		// Hooks
+		Offsets::MapSignature("SwapChainDX12PresentHookLoc", "E8 ? ? ? ? 49 8B 76 08 33 FF 41 39 3E 7E 17");
+		Offsets::MapSignature("PostLoadObjectHookLoc", "48 8B 53 38 FF 50 10 E9 ? ? ? ? 48 8B CB");
+		Offsets::MapSignature("PreLoadObjectHookLoc", "48 8B 53 38 FF 50 08 48 8B 54 24 20 48 8D");
+		Offsets::MapSignature("PackfileDeviceMountArchiveHookLoc1", "E8 ? ? ? ? 48 8D 4D E7 E8 ? ? ? ? 48 83 C3 08 48 3B DF");
+		Offsets::MapSignature("PackfileDeviceMountArchiveHookLoc2", "E8 ? ? ? ? 41 FF 46 40 48 8D 4D EF E8");
+		Offsets::MapSignature("SetCameraTransformHookLoc", "E8 ? ? ? ? 48 8B 8F 38 02 00 00 48 8D ? ? ? ? ? E8");
+		Offsets::MapSignature("SetGameModuleTimescaleHookLoc", "E8 ? ? ? ? 48 8B ? ? ? ? ? 4C 8D 44 24 20 48 8D 54 24 40 4C 89 7C 24 20");
+		Offsets::MapSignature("EntitlementOverridePatchLoc", "40 53 41 56 41 57 48 83 EC 20 48 83 39 00 4C 8B FA 4C 8B F1 75 14 BB FF FF FF FF 3B DB 0F 95 C0");
 
 		// Globals
 		Offsets::MapAddress("ExportedSymbolGroupArray", offsetFromInstruction("48 8B C2 4C 8D ? ? ? ? ? 48 8D ? ? ? ? ? 48 8D ? ? ? ? ? 48 FF E0", 6));
 		Offsets::MapAddress("Application::Instance", offsetFromInstruction("48 89 5C 24 08 57 48 83 EC 20 48 83 79 28 00 48 8B DA 48 8B F9 74 5A 33 D2 48 8D", 28));
 		Offsets::MapAddress("RenderingDeviceDX12::Instance", offsetFromInstruction("48 89 5C 24 08 48 89 74 24 10 57 48 83 EC 20 48 83 B9 38 01 00 00 00 48 8D ? ? ? ? ? 48 89 01 48 8B F9 74 13 48 8D 91 30 01 00 00 48 8D", 48));
+		Offsets::MapAddress("StreamingManager::Instance", offsetFromInstruction("48 8B ? ? ? ? ? 45 33 C0 48 8D 50 30 4C 8B 09 41 FF 51 30 48 8B CB", 3));
 	}
 }
 
@@ -242,54 +220,49 @@ void ApplyHooks(GameType Game)
 		MSRTTI::Initialize();
 		RTTIScanner::ScanForRTTIStructures();
 
-		XUtil::DetourCall(moduleBase + 0x17BC7AA, hk_call_1417BC7AA);
-		XUtil::DetourCall(moduleBase + 0x17B52CF, hk_call_1417B52CF);
+		XUtil::DetourCall(moduleBase + 0x17BC7AA, &hk_call_1417BC7AA);
+		XUtil::DetourCall(moduleBase + 0x17B52CF, &hk_call_1417B52CF);
 
 		// Kill SteamAPI_RestartAppIfNecessary check
 		XUtil::PatchMemoryNop(moduleBase + 0x16A5864, 9);
 	}
 	else if (Game == GameType::HorizonZeroDawn)
 	{
-		ModConfig::InitializeDefault();
+		InternalModConfig::InitializeDefault();
 
 		MSRTTI::Initialize();
 		RTTIScanner::ScanForRTTIStructures();
 
-		XUtil::DetourCall(moduleBase + 0x023CFD0, &hk_SwapChainDX12_Present);
+		// Redirect internal log prints
+		Detours::IATHook(moduleBase, "api-ms-win-crt-stdio-l1-1-0.dll", "__acrt_iob_func", reinterpret_cast<uintptr_t>(&LogHooks::hk___acrt_iob_func));
+		Detours::IATHook(moduleBase, "api-ms-win-crt-stdio-l1-1-0.dll", "fwrite", reinterpret_cast<uintptr_t>(&LogHooks::hk_fwrite));
+		Detours::IATHook(moduleBase, "api-ms-win-crt-stdio-l1-1-0.dll", "__stdio_common_vfprintf", reinterpret_cast<uintptr_t>(&LogHooks::hk___stdio_common_vfprintf));
 
-		XUtil::PatchMemoryNop(moduleBase + 0x04A9762, 7);// Rewriting instructions since the 5 byte call doesn't fit
-		XUtil::DetourCall(moduleBase + 0x04A9762, &PostLoadObjectHook);
+		XUtil::DetourCall(Offsets::ResolveID<"PackfileDeviceMountArchiveHookLoc1">(), &LogHooks::PackfileDevice_MountArchive);
+		XUtil::DetourCall(Offsets::ResolveID<"PackfileDeviceMountArchiveHookLoc2">(), &LogHooks::PackfileDevice_MountArchive);
 
-		XUtil::PatchMemoryNop(moduleBase + 0x04A9735, 7);// Rewriting instructions since the 5 byte call doesn't fit
-		XUtil::DetourCall(moduleBase + 0x04A9735, &PreLoadObjectHook);
+		XUtil::DetourCall(Offsets::ResolveID<"PreLoadObjectHookLoc">(), &LogHooks::PreLoadObjectHook);
+		XUtil::DetourCall(Offsets::ResolveID<"PostLoadObjectHookLoc">(), &LogHooks::PostLoadObjectHook);
 
-		XUtil::DetourJump(moduleBase + 0x0605830, NodeGraphAlert);
-		XUtil::DetourJump(moduleBase + 0x0605840, NodeGraphAlertWithName);
-		XUtil::DetourJump(moduleBase + 0x0605860, NodeGraphTrace);
-		XUtil::DetourJump(moduleBase + 0x031C4D0, InternalEngineLog);
-		XUtil::DetourJump(moduleBase + 0x0372D60, InternalEngineLog);
-		XUtil::DetourJump(moduleBase + 0x0372B50, InternalEngineLog);
+		//XUtil::DetourJump(moduleBase + 0x0605830, &LogHooks::NodeGraphAlert);
+		//XUtil::DetourJump(moduleBase + 0x0605840, &LogHooks::NodeGraphAlertWithName);
+		//XUtil::DetourJump(moduleBase + 0x0605860, &LogHooks::NodeGraphTrace);
 
-		XUtil::DetourCall(moduleBase + 0x01409B2, PackfileDevice_MountArchive);
-		XUtil::DetourCall(moduleBase + 0x0140A1E, PackfileDevice_MountArchive);
+		// Rendering
+		XUtil::DetourCall(Offsets::ResolveID<"SwapChainDX12PresentHookLoc">(), &hk_SwapChainDX12_Present);
 
 		// Function to set 3rd person camera position
-		XUtil::DetourCall(moduleBase + 0x13AF84C, hk_call_1413AB8FC);
+		XUtil::DetourCall(Offsets::ResolveID<"SetCameraTransformHookLoc">(), &hk_call_1413AB8FC);
 
 		// Override GameModule timescale function
-		XUtil::DetourCall(moduleBase + 0x11E3210, hk_call_1411E3210);
+		XUtil::DetourCall(Offsets::ResolveID<"SetGameModuleTimescaleHookLoc">(), &hk_call_1411E3210);
 
-		// Kill one of the out of bounds checks
-		if (ModConfiguration.UnlockMapBorders)
-		{
-			XUtil::PatchMemoryNop(moduleBase + 0x0EF937D, 2);
-		}
+		// Override the WorldState SetTimeOfDay function
+		//XUtil::DetourJump(Offsets::ResolveID<"WorldState::SetTimeOfDay">(), &WorldState::SetTimeOfDay);
 
 		// Enable all entitlements
 		if (ModConfiguration.UnlockEntitlementExtras)
-		{
-			XUtil::PatchMemory(moduleBase + 0x0ED5D50, { 0xB0, 0x01, 0xC3 });
-		}
+			XUtil::PatchMemory(Offsets::ResolveID<"EntitlementOverridePatchLoc">(), { 0xB0, 0x01, 0xC3 });
 	}
 }
 
@@ -298,7 +271,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpReserved)
 	if (fdwReason == DLL_PROCESS_ATTACH)
 	{
 		wchar_t modulePath[MAX_PATH] {};
-		GetModuleFileNameW(GetModuleHandleW(nullptr), modulePath, std::size(modulePath));
+		GetModuleFileNameW(GetModuleHandleW(nullptr), modulePath, static_cast<DWORD>(std::size(modulePath)));
 
 		wchar_t executableName[MAX_PATH] {};
 		_wsplitpath_s(modulePath, nullptr, 0, nullptr, 0, executableName, std::size(executableName), nullptr, 0);
@@ -310,8 +283,21 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpReserved)
 		else if (!_wcsicmp(executableName, L"HorizonZeroDawn"))
 			gameType = GameType::HorizonZeroDawn;
 
-		LoadSignatures(gameType);
-		ApplyHooks(gameType);
+		try
+		{
+			if (gameType == GameType::Invalid)
+				throw std::runtime_error("Trying to use winhttp.dll with an unsupported game. 'ds.exe' or 'HorizonZeroDawn.exe' are expected");
+
+			LoadSignatures(gameType);
+			ApplyHooks(gameType);
+		}
+		catch (std::exception& e)
+		{
+			wchar_t buffer[2048];
+			swprintf_s(buffer, L"An exception has occurred on startup: %hs. Failed to initialize Horizon Zero Dawn mod.\n\nExecutable path: %ws", e.what(), modulePath);
+
+			MessageBoxW(nullptr, buffer, L"Error", MB_ICONERROR);
+		}
 	}
 
 	return TRUE;

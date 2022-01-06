@@ -82,7 +82,7 @@ public:
 	~Array()
 	{
 		DestructElements();
-		Offsets::Call<0x0376D20, void(*)(void *)>(m_Entries);
+		Offsets::CallID<"HeapAllocator::Free", void(*)(void *)>(m_Entries);
 	}
 
 	iterator begin()

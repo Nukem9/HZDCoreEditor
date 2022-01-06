@@ -124,7 +124,7 @@ void EntitySpawnerWindow::Render()
 	{
 		for (int i = 0; i < spawnCount; i++)
 		{
-			auto spawnpoint = (RTTIRefObject *)Offsets::Call<0x02F5CD0, void *(*)(const RTTI *)>(RTTI_Spawnpoint);
+			auto spawnpoint = (RTTIRefObject *)Offsets::CallID<"RTTI::CreateObject", void *(*)(const RTTI *)>(RTTI_Spawnpoint);
 			auto rtti = spawnpoint->GetRTTI()->AsClass();
 
 			spawnpoint->IncRef();
@@ -136,7 +136,7 @@ void EntitySpawnerWindow::Render()
 			rtti->SetMemberValue<float>(spawnpoint, "DespawnRadius", 1000000.0f);
 			// WeakPtr<Entity> @ Spawnpoint+0x188
 
-			Offsets::Call<0x0C49D00, void(*)(RTTIRefObject *)>(spawnpoint);
+			Offsets::CallID<"NodeGraph::ExportedSpawnpointSpawn", void(*)(RTTIRefObject *)>(spawnpoint);
 			spawnpoint->DecRef();
 		}
 	}

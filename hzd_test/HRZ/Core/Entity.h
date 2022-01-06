@@ -185,7 +185,7 @@ public:
 
 	void SetFaction(AIFaction *Faction)
 	{
-		Offsets::Call<0x0BBA910, void(*)(Entity *, AIFaction *)>(this, Faction);
+		Offsets::CallID<"Entity::SetFaction", void(*)(Entity *, AIFaction *)>(this, Faction);
 	}
 };
 assert_offset(Entity, m_Name, 0x38);

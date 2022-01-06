@@ -43,7 +43,7 @@ public:
 
 	void RegisterEventListener(const Events& EventListener)
 	{
-		Offsets::Call<0x04AA440, void(*)(CoreFileManager *, const Events&)>(this, EventListener);
+		Offsets::CallID<"CoreFileManager::RegisterEventListener", void(*)(CoreFileManager *, const Events&)>(this, EventListener);
 	}
 };
 assert_size(CoreFileManager, 0x98);

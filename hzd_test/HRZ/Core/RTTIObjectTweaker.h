@@ -24,7 +24,7 @@ public:
 
 	static void VisitObjectPath(void *Object, const RTTI *Type, const String& Path, SetValueVisitor *Visitor)
 	{
-		Offsets::Call<0x05F5BA0, void(*)(void *, void *, const RTTI *, const String&, int, SetValueVisitor *)>(nullptr, Object, Type, Path, 0, Visitor);
+		Offsets::CallID<"RTTIObjectTweaker::VisitObjectPath", void(*)(void *, void *, const RTTI *, const String&, int, SetValueVisitor *)>(nullptr, Object, Type, Path, 0, Visitor);
 	}
 };
 

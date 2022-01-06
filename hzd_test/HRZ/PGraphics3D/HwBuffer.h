@@ -80,14 +80,14 @@ public:
 	MapData Map(uint32_t MapFlags, uint32_t StartOffset, uint32_t Length)
 	{
 		MapData data;
-		Offsets::Call<0x1FE310, void(*)(HwBuffer *, uint8_t, MapData&, uint32_t, uint32_t)>(this, MapFlags, data, StartOffset, Length);
+		Offsets::CallID<"HwBuffer::Map", void(*)(HwBuffer *, uint8_t, MapData&, uint32_t, uint32_t)>(this, MapFlags, data, StartOffset, Length);
 
 		return data;
 	}
 
 	void Unmap(MapData& Data)
 	{
-		Offsets::Call<0x21D900, void(*)(HwBuffer *, MapData&)>(this, Data);
+		Offsets::CallID<"HwBuffer::Unmap", void(*)(HwBuffer *, MapData&)>(this, Data);
 	}
 
 	uint32_t m_Flags;					// 0x28

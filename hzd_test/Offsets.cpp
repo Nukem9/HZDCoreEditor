@@ -1,5 +1,6 @@
 #include <Windows.h>
 #include <unordered_map>
+#include <stdexcept>
 
 #include "Offsets.h"
 #include "XUtil.h"
@@ -55,8 +56,11 @@ void MapAddress(const std::string_view ID, uintptr_t Offset)
 	auto hash = LiteralHash::FNV1A(ID);
 	auto found = OffsetMapping.find(hash);
 
+	if (Offset == 0)
+		throw std::runtime_error("Trying to map an address to 0");
+
 	if (found != OffsetMapping.end())
-		__debugbreak();
+		throw std::runtime_error("Trying to map an address that was previously mapped");
 
 	OffsetMapping.emplace(hash, Offset);
 }
@@ -67,7 +71,7 @@ void MapSignature(const std::string_view ID, const std::string_view Signature)
 	uintptr_t address = XUtil::FindPattern(moduleBase, moduleEnd - moduleBase, Signature.data());
 
 	if (address == 0)
-		__debugbreak();
+		throw std::runtime_error("Failed to find signature");
 
 	MapAddress(ID, address - moduleBase);
 }

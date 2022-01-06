@@ -271,7 +271,7 @@ void MainMenuBar::DrawSavesMenu()
 {
 	auto doSave = [](uint8_t SaveType)
 	{
-		Offsets::Call<0x1269560, void(*)(uint8_t SaveType, bool Unknown, const class AIMarker *)>(SaveType, false, nullptr);
+		Offsets::CallID<"NodeGraph::ExportedCreateSaveGame", void(*)(uint8_t SaveType, bool Unknown, const class AIMarker *)>(SaveType, false, nullptr);
 	};
 
 	if (ImGui::MenuItem("Force Quicksave"))
@@ -295,7 +295,7 @@ void MainMenuBar::DrawSavesMenu()
 	ImGui::Separator();
 
 	if (ImGui::MenuItem("Load Previous Save"))
-		Offsets::Call<0x117C3F0, void(*)(float)>(0.0f);
+		Offsets::CallID<"NodeGraph::ExportedReloadLastSaveGame", void(*)(float)>(0.0f);
 }
 
 void MainMenuBar::DrawDebugMenu()

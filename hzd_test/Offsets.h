@@ -52,19 +52,19 @@ struct LiteralHash
 template<typename T>
 auto Resolve(uintptr_t Offset)
 {
-	return reinterpret_cast<T>(GetModule().first + Offset);
+	return (T)(GetModule().first + Offset);
 }
 
-template<LiteralHash Hash, typename T>
+template<LiteralHash Hash, typename T = uintptr_t>
 auto ResolveID()
 {
-	return reinterpret_cast<T>(GetModule().first + FindOffset(Hash.Value));
+	return (T)(GetModule().first + FindOffset(Hash.Value));
 }
 
 template<uintptr_t Offset, typename T, typename... TArgs>
 __declspec(noinline) auto Call(TArgs&&... Args)
 {
-	static std::atomic<uintptr_t> address = 0;
+	static std::atomic<uintptr_t> address;
 
 	if (address == 0)
 		address.store(GetModule().first + Offset);
@@ -75,7 +75,7 @@ __declspec(noinline) auto Call(TArgs&&... Args)
 template<LiteralHash Hash, typename T, typename... TArgs>
 __declspec(noinline) auto CallID(TArgs&&... Args)
 {
-	static std::atomic<uintptr_t> address = 0;
+	static std::atomic<uintptr_t> address;
 
 	if (address == 0)
 		address.store(GetModule().first + FindOffset(Hash.Value));
