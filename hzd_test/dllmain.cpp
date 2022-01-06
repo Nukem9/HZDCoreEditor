@@ -177,6 +177,7 @@ void LoadSignatures(GameType Game)
 		Offsets::MapSignature("NodeGraph::ExportedReloadLastSaveGame", "40 53 48 83 EC 40 0F 29 74 24 30 B9 20 00 00 00 0F 28 F0 E8");
 		Offsets::MapSignature("NodeGraph::ExportedCreateSaveGame", "48 83 EC 48 44 0F B6 D1 48 8B ? ? ? ? ? 48 85 C9 74 3B 32 C0 41 B9 01 00 00 00 84 D2");
 		Offsets::MapSignature("NodeGraph::ExportedSpawnpointSpawn", "48 85 C9 74 25 80 B9 80 01 00 00 00 75 1C 80 B9 81 01 00 00 00 75 13");
+		Offsets::MapSignature("NodeGraph::ExportedIntersectLine", "48 8B C4 48 89 58 08 48 89 70 10 48 89 78 18 55 41 54 41 55 41 56 41 57 48 8D 68 D1 48 81 EC E0 00 00 00 0F 10 01");
 
 		Offsets::MapSignature("RTTI::GetCoreBinaryTypeId", "48 8B C4 44 89 40 18 48 89 50 10 48 89 48 08 55 53 56 41 56 48 8D 68 A1 48 81 EC 98 00 00 00 4C 89 60 D0");
 		Offsets::MapSignature("RTTI::CreateObject", "48 89 5C 24 20 57 48 83 EC 20 44 0F B6 49 04 4C 8D ? ? ? ? ? 45 33 C0 48 8B D9 41 83 F9 06");

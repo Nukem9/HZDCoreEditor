@@ -96,7 +96,7 @@ void EntitySpawnerWindow::Render()
 		// Player position
 		currentTransform.Position = player->m_Entity->m_Orientation.Position;
 	}
-	else if (spawnLocationType == 2)
+	else if (spawnLocationType == 1)
 	{
 		// Crosshair position
 		auto camera = player->GetLastActivatedCamera();
@@ -106,12 +106,25 @@ void EntitySpawnerWindow::Render()
 		float pitch;
 		cameraMatrix.Decompose(&yaw, &pitch, nullptr);
 
+		// Project forwards
 		Vec3 moveDirection(sin(yaw) * cos(pitch), cos(yaw) * cos(pitch), -sin(pitch));
-		moveDirection = moveDirection * 50.0f;
+		moveDirection = moveDirection * 200.0f;
 
 		currentTransform.Position.X = camera->m_Orientation.Position.X + moveDirection.X;
 		currentTransform.Position.Y = camera->m_Orientation.Position.Y + moveDirection.Y;
 		currentTransform.Position.Z = camera->m_Orientation.Position.Z + moveDirection.Z;
+
+		// Raycast
+		WorldPosition rayHitPosition;
+		float unknownFloat;
+		uint16_t materialType;
+		Entity *unknownEntity;
+		Vec3 normal;
+
+		Offsets::CallID<"NodeGraph::ExportedIntersectLine", void(*)(WorldPosition&, WorldPosition&, int, const Entity *, bool, WorldPosition *, Vec3 *, float *, Entity **, uint16_t *)>
+			(camera->m_Orientation.Position, currentTransform.Position, 47, nullptr, false, &rayHitPosition, &normal, &unknownFloat, &unknownEntity, &materialType);
+
+		currentTransform.Position = rayHitPosition;
 	}
 	else if (spawnLocationType == 2)
 	{
