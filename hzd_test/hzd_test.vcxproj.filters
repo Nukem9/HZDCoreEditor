@@ -87,6 +87,9 @@
     <ClCompile Include="HRZ\DebugUI\LogWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LogHooks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h">
@@ -423,6 +426,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HRZ\Core\StackableComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LogHooks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -96,6 +96,7 @@
     <ClCompile Include="common.cpp" />
     <ClCompile Include="HRZ\DebugUI\DemoWindow.cpp" />
     <ClCompile Include="HRZ\DebugUI\LogWindow.cpp" />
+    <ClCompile Include="LogHooks.cpp" />
     <ClCompile Include="ModConfig.cpp" />
     <ClCompile Include="ModCoreEvents.cpp" />
     <ClCompile Include="dllmain.cpp" />
@@ -125,6 +126,7 @@
     <ClInclude Include="HRZ\Core\RTTIObjectTweaker.h" />
     <ClInclude Include="HRZ\Core\StackableComponent.h" />
     <ClInclude Include="HRZ\Core\StatModification.h" />
+    <ClInclude Include="LogHooks.h" />
     <ClInclude Include="ModConfig.h" />
     <ClInclude Include="ModCoreEvents.h" />
     <ClInclude Include="HRZ\Core\Application.h" />
