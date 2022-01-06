@@ -1,0 +1,220 @@
+#
+# *** MAIN SETTINGS ***
+#
+[General]
+EnableDebugMenu = true              # Enable the debug menu. Toggled with the '~' key.
+EnableCoreLogging = false           # Log all core loads to the debug console.
+EnableAssetLogging = false          # Log all asset loads to the debug console.
+EnableAssetOverrides = true         # Enable the [AssetOverrides] section below.
+#EnableDiscordRichPresence = false  # Not yet implemented. Has no effect.
+
+[Gameplay]
+SkipIntroLogos = true               # Skip the intro logo movies on game startup
+UnlockNGPExtras = false             # Unlock all facepaints and custom focus models without completing NewGame+
+UnlockEntitlementExtras = false     # Unlock all preorder and reviewer copy bonuses
+
+#
+# *** ASSET OVERRIDES ***
+#
+# For users who want to modify the settings below:
+#
+#   All overrides are initially disabled. "Value" fields can be adjusted to your personal preferences.
+#
+#   To ENABLE (add) a patch: Change [[AssetOverrides.Disabled]] to [[AssetOverrides.Enabled]]
+#   To DISABLE (remove) a patch: change [[AssetOverrides.Enabled]] to [[AssetOverrides.Disabled]]
+#
+# For users who wish to add new settings:
+#
+#   [[AssetOverrides.X]]        [Required] X is "Enabled" or "Disabled".
+#   ObjectUUID = "X"            [Optional] X is a list of GUIDs in core files, separated by commas. This is disconnected from ObjectTypes.
+#   ObjectType = "X"            [Optional] X is a list of RTTI class types, separated by commas. This is disconnected from ObjectUUIDs.
+#   Path = "X"                  [Required] X is a RTTI member field path.
+#   Value = "X"                 [Required] X is the new value of the field.
+#   Notes = "X"                 [Optional] X is the original value in the core file or any other info. This is for reference purposes only and serves no use.
+#
+[AssetOverrides]
+    #
+    # Patch (2): Allow the player to explore outside of the map boundaries
+    #
+    [[AssetOverrides.Disabled]]
+    ObjectUUIDs = "{40DA43CC-1953-6E4D-8D5C-017DB5353968}"
+    Path = "EntryPointsData[2].EntryPoint"
+    Value = ""
+    Notes = "GraphProgramResource in levels/worlds/world/features/worldborder/scenes/worldborder_colliders_script"
+
+    [[AssetOverrides.Disabled]]
+    ObjectUUIDs = "{F5F801CF-5F14-F34F-8695-E701F7BF3728}"
+    Path = "OutOfBoundsAreaTags"
+    Value = ""
+    Notes = "OutOfBoundsQueryComponentResource in entities/characters/humanoids/player/player_components"
+
+    #
+    # Patch (5): Increase inventory space/item limits (10X)
+    #
+    [[AssetOverrides.Disabled]]
+    ObjectUUIDs = "{8B81A415-2174-4C4C-8AA9-5E767E4E6561}"
+    Path = "ModificationsCapacity"
+    Value = "100"
+    Notes = "Limits the base # of weapon coils and equipment mods. Default is 10."
+
+    [[AssetOverrides.Disabled]]
+    ObjectUUIDs = "{8B81A415-2174-4C4C-8AA9-5E767E4E6561}"
+    Path = "OutfitsCapacity"
+    Value = "50"
+    Notes = "Limits the base # of outfits you can own. Default is 5."
+
+    [[AssetOverrides.Disabled]]
+    ObjectUUIDs = "{8B81A415-2174-4C4C-8AA9-5E767E4E6561}"
+    Path = "ResourcesCapacity"
+    Value = "200"
+    Notes = "Limits the base # of resources. Default is 20."
+
+    [[AssetOverrides.Disabled]]
+    ObjectUUIDs = "{8B81A415-2174-4C4C-8AA9-5E767E4E6561}"
+    Path = "ToolsCapacity"
+    Value = "100"
+    Notes = "Limits the base # of potions. Default is 10."
+
+    [[AssetOverrides.Disabled]]
+    ObjectUUIDs = "{8B81A415-2174-4C4C-8AA9-5E767E4E6561}"
+    Path = "WeaponsCapacity"
+    Value = "50"
+    Notes = "Limits the base # of weapons. Default is 5."
+
+    #
+    # Patch (1): Increase all weapon ammo limits
+    #
+    [[AssetOverrides.Disabled]]
+    ObjectTypes = "UpgradableStackableComponentResource"
+    Path = "UpgradedLimits"
+    Value = "[100]"
+
+    #
+    # Patch (2): Allow horse mounts in all areas (settlements, foundries, bunkers)
+    #
+    [[AssetOverrides.Disabled]]
+    ObjectTypes = "HorseCallComponentResource,HorseControllerComponentResource"
+    Path = "HorseNotAllowedNavMeshAreaTags"
+    Value = ""
+
+    [[AssetOverrides.Disabled]]
+    ObjectTypes = "HorseCallComponentResource"
+    Path = "DisallowedFacts"
+    Value = ""
+
+    #
+    # Patch (2): Allow sprinting and mounting horses with all weapons, including heavy pickups
+    #
+    [[AssetOverrides.Disabled]]
+    ObjectTypes = "InventoryWeaponResource,InventoryThrowableResource,InventoryAmmoEjectorResource,InventoryNothingResource"
+    Path = "AllowsSprinting"
+    Value = "true"
+
+    [[AssetOverrides.Disabled]]
+    ObjectTypes = "InventoryWeaponResource,InventoryThrowableResource,InventoryAmmoEjectorResource,InventoryNothingResource"
+    Path = "CanWieldWhileMounted"
+    Value = "true"
+
+    #
+    # Patch (3): Unlock photo mode camera panning controls (settlements, cutscenes, falling, range limits)
+    #
+    [[AssetOverrides.Disabled]]
+    ObjectUUIDs = "{9D995414-CEF7-6830-AAFA-87CCF64E0448}"
+    Path = "EntryPointsData[0].EntryPoint"
+    Value = "EntryPoint_GraphResource_217800417_0_Evaluate"
+    Notes = "Forced to return true. GraphProgramResource in default_assets/photomode/photomode"
+
+    [[AssetOverrides.Disabled]]
+    ObjectUUIDs = "{1C710F84-C54D-9643-8353-379EC8927545}"
+    Path = "PanXRange"
+    Value = "[-10000, 10000]"
+    Notes = "Defaults to [-4, 4]. PhotoModeResource in default_assets/photomode/photomode"
+
+    [[AssetOverrides.Disabled]]
+    ObjectUUIDs = "{1C710F84-C54D-9643-8353-379EC8927545}"
+    Path = "PanZRange"
+    Value = "[-10000, 10000]"
+    Notes = "Defaults to [-4, 4]. PhotoModeResource in default_assets/photomode/photomode"
+
+    #
+    # Patch (1): Remove depth of field near camera blur
+    #
+    [[AssetOverrides.Disabled]]
+    ObjectTypes = "CameraEntityResource"
+    Path = "NearFuzzy"
+    Value = "10"
+
+    #
+    # Patch (2): Remove all camera magnetism, but optionally keep aim assist enabled when Aloy's focus is open
+    #
+    [[AssetOverrides.Disabled]]
+    ObjectTypes = "CameraMagnetParmResource"
+    Path = "Strength.Val"
+    Value = "0"
+    Notes = "CameraMagnetParmResource in entities/cameras/cameramagnetmanager"
+
+    [[AssetOverrides.Disabled]]
+    ObjectUUIDs = "{21C36C16-CE92-F049-9388-58102D6BA86B},{49A8B7AA-7687-3D48-82FA-596294B25685},{A44C00B3-2534-5B40-91FB-CFD89E72DFE3}"
+    Path = "Strength.Val"
+    Value = "1"
+    Notes = "FOCUS_* CameraMagnetParmResource in entities/cameras/cameramagnetmanager"
+
+    #
+    # Patch (1): Remove ambient looping sound effects on the Shield Weaver armor
+    #
+    [[AssetOverrides.Disabled]]
+    ObjectUUIDs = "{28846CC1-96AF-AA4A-8AB9-C491D56BC17E},{68FF19FB-A372-6947-8216-66FF83DB0A1F}"
+    Path = "SampleCount"
+    Value = "0"
+    Notes = "WaveResource in sounds/effects/movements/gear/aloy_outfit_warbot/wav/shield_loop_b_1_m"
+
+    #
+    # Patch (1): Remove the shield overlay on the Shield Weaver armor (glowing hexagons)
+    #
+    [[AssetOverrides.Disabled]]
+    ObjectUUIDs = "{0867F5E6-0375-7434-9534-BB9B73FB1103}"
+    Path = "EndIndex"
+    Value = "0"
+    Notes = "PrimitiveResource in models/characters/humans/aloyadvancedwarbot/animation/parts/shield"
+
+    #
+    # Patch (1): Remove the movement penalty when Aloy's focus is open
+    #
+    [[AssetOverrides.Disabled]]
+    ObjectUUIDs = "{5D90A387-B337-A643-A4DC-3C2CFDD15167}"
+    Path = "MovementModifier"
+    Value = "1.0"
+    Notes = "Defaults to 0.3. SpeedModifierComponentResource in entities/components/focus/focuscomponent"
+
+    #
+    # Patch (1): Change the length of ingame days
+    #
+    [[AssetOverrides.Disabled]]
+    ObjectUUIDs = "{6969906F-9E78-B449-936E-B21BE4CC9869}"
+    Path = "DurationOfOneDayInSeconds"
+    Value = "4800"
+    Notes = "Defaults to 2400. WorldStateResource in levels/worlds/world/levelinfo/levelsettings"
+
+    #
+    # Patch (2): Increase the time between weather transitions
+    #
+    [[AssetOverrides.Disabled]]
+    ObjectTypes = "ClimateWeatherState"
+    Path = "DurationInMinutes.Min"
+    Value = "8"
+    Notes = "Default typically beteween 2 and 4 minutes"
+
+    [[AssetOverrides.Disabled]]
+    ObjectTypes = "ClimateWeatherState"
+    Path = "DurationInMinutes.Max"
+    Value = "12"
+    Notes = "Default typically beteween 4 and 6 minutes"
+
+    #
+    # Patch (1): Dramatically increase the spawn rate for birds, fish, and mammals. This is more for fun than anything. Your game might crash.
+    #
+    [[AssetOverrides.Disabled]]
+    ObjectTypes = "DynamicSpawnEcotopeSetup"
+    Path = "Density"
+    Value = "20000"
+    Notes = "Default typically between 150 and 1000. DynamicSpawnEcotopeSetup in entities/dynamicspawn/dynamicspawnmanager"
