@@ -296,10 +296,13 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpReserved)
 			LoadSignatures(gameType);
 			ApplyHooks(gameType);
 		}
-		catch (std::exception& e)
+		catch (const std::exception& e)
 		{
 			wchar_t buffer[2048];
-			swprintf_s(buffer, L"An exception has occurred on startup: %hs. Failed to initialize Horizon Zero Dawn mod.\n\nExecutable path: %ws", e.what(), modulePath);
+
+			swprintf_s(buffer,
+				L"An exception has occurred on startup: %hs. Failed to initialize Horizon Zero Dawn mod. Note that the December 2021 patch"
+				" (version 1.11) is the minimum requirement.\n\nExecutable path: %ws", e.what(), modulePath);
 
 			MessageBoxW(nullptr, buffer, L"Error", MB_ICONERROR);
 		}

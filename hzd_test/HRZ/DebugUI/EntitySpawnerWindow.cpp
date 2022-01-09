@@ -3,10 +3,12 @@
 #include <algorithm>
 #include <imgui.h>
 
+#include "../../ModConfig.h"
 #include "../Core/Application.h"
 #include "../Core/GameModule.h"
 #include "../Core/Resource.h"
 #include "../Core/Player.h"
+#include "../Core/StreamingManager.h"
 
 #include "DebugUI.h"
 #include "EntitySpawnerWindow.h"
@@ -73,14 +75,17 @@ void EntitySpawnerWindow::Render()
 		ImGui::EndListBox();
 	}
 
+	DrawCacheStreamedAssets();
+
 	// Draw settings
+	ImGui::Separator();
+
 	if (!selectedObjectThisFrame)
 		ImGui::BeginDisabled(true);
 
 	static int spawnCount = 1;
 	static int spawnLocationType = 0;
 
-	ImGui::Separator();
 	ImGui::SetNextItemWidth(200); ImGui::InputInt("Entity count", &spawnCount);
 	ImGui::Spacing();
 	ImGui::RadioButton("Spawn at player position", &spawnLocationType, 0);
@@ -88,58 +93,63 @@ void EntitySpawnerWindow::Render()
 	ImGui::RadioButton("Spawn at custom position", &spawnLocationType, 2);
 	ImGui::Spacing();
 
-	auto player = Player::GetLocalPlayer();
-	auto currentTransform = player->m_Entity->m_Orientation;
-
-	if (spawnLocationType == 0)
+	auto getSpawnTransform = []()
 	{
-		// Player position
-		currentTransform.Position = player->m_Entity->m_Orientation.Position;
-	}
-	else if (spawnLocationType == 1)
-	{
-		// Crosshair position
-		auto camera = player->GetLastActivatedCamera();
-		auto cameraMatrix = camera->m_Orientation.Orientation;
+		auto player = Player::GetLocalPlayer();
+		auto currentTransform = player->m_Entity->m_Orientation;
 
-		float yaw;
-		float pitch;
-		cameraMatrix.Decompose(&yaw, &pitch, nullptr);
+		if (spawnLocationType == 0)
+		{
+			// Player position
+			currentTransform.Position = player->m_Entity->m_Orientation.Position;
+		}
+		else if (spawnLocationType == 1)
+		{
+			// Crosshair position
+			auto camera = player->GetLastActivatedCamera();
+			auto cameraMatrix = camera->m_Orientation.Orientation;
 
-		// Project forwards
-		Vec3 moveDirection(sin(yaw) * cos(pitch), cos(yaw) * cos(pitch), -sin(pitch));
-		moveDirection = moveDirection * 200.0f;
+			float yaw;
+			float pitch;
+			cameraMatrix.Decompose(&yaw, &pitch, nullptr);
 
-		currentTransform.Position.X = camera->m_Orientation.Position.X + moveDirection.X;
-		currentTransform.Position.Y = camera->m_Orientation.Position.Y + moveDirection.Y;
-		currentTransform.Position.Z = camera->m_Orientation.Position.Z + moveDirection.Z;
+			// Project forwards
+			Vec3 moveDirection(sin(yaw) * cos(pitch), cos(yaw) * cos(pitch), -sin(pitch));
+			moveDirection = moveDirection * 200.0f;
 
-		// Raycast
-		WorldPosition rayHitPosition;
-		float unknownFloat;
-		uint16_t materialType;
-		Entity *unknownEntity;
-		Vec3 normal;
+			currentTransform.Position.X = camera->m_Orientation.Position.X + moveDirection.X;
+			currentTransform.Position.Y = camera->m_Orientation.Position.Y + moveDirection.Y;
+			currentTransform.Position.Z = camera->m_Orientation.Position.Z + moveDirection.Z;
 
-		Offsets::CallID<"NodeGraph::ExportedIntersectLine", void(*)(WorldPosition&, WorldPosition&, int, const Entity *, bool, WorldPosition *, Vec3 *, float *, Entity **, uint16_t *)>
-			(camera->m_Orientation.Position, currentTransform.Position, 47, nullptr, false, &rayHitPosition, &normal, &unknownFloat, &unknownEntity, &materialType);
+			// Raycast
+			WorldPosition rayHitPosition;
+			float unknownFloat;
+			uint16_t materialType;
+			Entity *unknownEntity;
+			Vec3 normal;
 
-		currentTransform.Position = rayHitPosition;
-	}
-	else if (spawnLocationType == 2)
-	{
-		// Custom position
-		static WorldPosition tempPosition;
+			Offsets::CallID<"NodeGraph::ExportedIntersectLine", void(*)(WorldPosition&, WorldPosition&, int, const Entity *, bool, WorldPosition *, Vec3 *, float *, Entity **, uint16_t *)>
+				(camera->m_Orientation.Position, currentTransform.Position, 47, nullptr, false, &rayHitPosition, &normal, &unknownFloat, &unknownEntity, &materialType);
 
-		ImGui::PushItemWidth(200);
-		ImGui::InputDouble("X", &tempPosition.X, 1.0, 20.0, "%.3f");
-		ImGui::InputDouble("Y", &tempPosition.Y, 1.0, 20.0, "%.3f");
-		ImGui::InputDouble("Z", &tempPosition.Z, 1.0, 20.0, "%.3f");
-		ImGui::PopItemWidth();
-		ImGui::Spacing();
+			currentTransform.Position = rayHitPosition;
+		}
+		else if (spawnLocationType == 2)
+		{
+			// Custom position
+			static WorldPosition tempPosition;
 
-		currentTransform.Position = tempPosition;
-	}
+			ImGui::PushItemWidth(200);
+			ImGui::InputDouble("X", &tempPosition.X, 1.0, 20.0, "%.3f");
+			ImGui::InputDouble("Y", &tempPosition.Y, 1.0, 20.0, "%.3f");
+			ImGui::InputDouble("Z", &tempPosition.Z, 1.0, 20.0, "%.3f");
+			ImGui::PopItemWidth();
+			ImGui::Spacing();
+
+			currentTransform.Position = tempPosition;
+		}
+
+		return currentTransform;
+	};
 
 	if (ImGui::Button("Spawn"))
 	{
@@ -150,7 +160,7 @@ void EntitySpawnerWindow::Render()
 
 			spawnpoint->IncRef();
 			rtti->SetMemberValue<GGUUID>(spawnpoint, "ObjectUUID", GGUUID::Generate());
-			rtti->SetMemberValue<WorldTransform>(spawnpoint, "Orientation", currentTransform);
+			rtti->SetMemberValue<WorldTransform>(spawnpoint, "Orientation", getSpawnTransform());
 			rtti->SetMemberValue<String>(spawnpoint, "Name", "UI_Manually_Spawned_Entity");
 			rtti->SetMemberValue<Ref<Resource>>(spawnpoint, "SpawnSetup", selectedObjectThisFrame);
 			rtti->SetMemberValue<float>(spawnpoint, "Radius", 1.0f);
@@ -170,12 +180,48 @@ void EntitySpawnerWindow::Render()
 
 bool EntitySpawnerWindow::Close()
 {
-	return !m_WindowOpen;
+	return !m_WindowOpen || !Application::IsInGame();
 }
 
 std::string DebugUI::EntitySpawnerWindow::GetId() const
 {
 	return "Entity Spawner";
+}
+
+void EntitySpawnerWindow::DrawCacheStreamedAssets()
+{
+	static std::vector<StreamingRefHandle> cachedHandles;
+
+	bool streamedAssetsLoaded = !cachedHandles.empty();
+	auto text = streamedAssetsLoaded ? "Unload cached spawn setups" : "Force load cached spawn setups";
+
+	if (ImGui::Button(text, ImVec2(-FLT_MIN, 0)))
+	{
+		if (streamedAssetsLoaded)
+		{
+			// Release references to the handles
+			cachedHandles.clear();
+		}
+		else
+		{
+			cachedHandles.resize(ModConfiguration.CachedSpawnSetups.size());
+
+			for (size_t i = 0; i < ModConfiguration.CachedSpawnSetups.size(); i++)
+			{
+				auto& [corePath, uuid] = ModConfiguration.CachedSpawnSetups[i];
+
+				IStreamingManager::AssetLink link
+				{
+					.m_Handle = &cachedHandles[i],
+					.m_Path = corePath.c_str(),
+					.m_UUID = GGUUID::TryParse(uuid).value(),
+				};
+
+				StreamingManager::Instance()->CreateHandleFromLink(link);
+				StreamingManager::Instance()->UpdateLoadState(*link.m_Handle, 7);
+			}
+		}
+	}
 }
 
 }

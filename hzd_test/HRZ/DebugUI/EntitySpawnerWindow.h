@@ -19,6 +19,9 @@ public:
 	virtual void Render() override;
 	virtual bool Close() override;
 	virtual std::string GetId() const override;
+
+private:
+	static void DrawCacheStreamedAssets();
 };
 
 }

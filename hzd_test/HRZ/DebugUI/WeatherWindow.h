@@ -25,6 +25,7 @@ public:
 
 private:
 	void DrawWeatherSetupEditor(WeatherSetup *Setup, bool ForceSet);
+	static void DrawCacheStreamedAssets();
 };
 
 }

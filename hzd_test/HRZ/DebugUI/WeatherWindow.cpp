@@ -3,10 +3,13 @@
 #include <algorithm>
 #include <imgui.h>
 
+#include "../../ModConfig.h"
 #include "../Core/Application.h"
 #include "../Core/GameModule.h"
 #include "../Core/WeatherSetup.h"
 #include "../Core/WeatherSystem.h"
+#include "../Core/StreamingManager.h"
+#include "../Core/PrefetchList.h"
 
 #include "DebugUI.h"
 #include "WeatherWindow.h"
@@ -71,9 +74,11 @@ void WeatherWindow::Render()
 		ImGui::EndListBox();
 	}
 
-	ImGui::Separator();
+	DrawCacheStreamedAssets();
 
 	// Draw options
+	ImGui::Separator();
+
 	if (selectedObjectThisFrame)
 		DrawWeatherSetupEditor(selectedObjectThisFrame, forceSet);
 
@@ -82,7 +87,7 @@ void WeatherWindow::Render()
 
 bool WeatherWindow::Close()
 {
-	return !m_WindowOpen;
+	return !m_WindowOpen || !Application::IsInGame();
 }
 
 std::string WeatherWindow::GetId() const
@@ -142,6 +147,42 @@ void WeatherWindow::DrawWeatherSetupEditor(WeatherSetup *Setup, bool ForceSet)
 	{
 		auto& system = Application::Instance().m_GameModule->m_WeatherSystem;
 		system->SetWeatherOverride(Setup, 1.0f, 0);
+	}
+}
+
+void WeatherWindow::DrawCacheStreamedAssets()
+{
+	static std::vector<StreamingRefHandle> cachedHandles;
+
+	bool streamedAssetsLoaded = !cachedHandles.empty();
+	auto text = streamedAssetsLoaded ? "Unload cached weather setups" : "Force load cached weather setups";
+
+	if (ImGui::Button(text, ImVec2(-FLT_MIN, 0)))
+	{
+		if (streamedAssetsLoaded)
+		{
+			// Release references to the handles
+			cachedHandles.clear();
+		}
+		else
+		{
+			cachedHandles.resize(ModConfiguration.CachedWeatherSetups.size());
+
+			for (size_t i = 0; i < ModConfiguration.CachedWeatherSetups.size(); i++)
+			{
+				auto& [corePath, uuid] = ModConfiguration.CachedWeatherSetups[i];
+
+				IStreamingManager::AssetLink link
+				{
+					.m_Handle = &cachedHandles[i],
+					.m_Path = corePath.c_str(),
+					.m_UUID = GGUUID::TryParse(uuid).value(),
+				};
+
+				StreamingManager::Instance()->CreateHandleFromLink(link);
+				StreamingManager::Instance()->UpdateLoadState(*link.m_Handle, 7);
+			}
+		}
 	}
 }
 
