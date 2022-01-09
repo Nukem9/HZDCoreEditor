@@ -5,6 +5,7 @@
 #include <imgui_impl_dx12.h>
 #include <imgui_impl_win32.h>
 
+#include "../../ModConfig.h"
 #include "../Core/Application.h"
 #include "../Core/CursorManager.h"
 #include "../Core/PlayerGame.h"
@@ -68,6 +69,7 @@ void Initialize(const SwapChainDX12 *SwapChain)
 	style.ScrollbarRounding = 0;
 
 	auto& io = ImGui::GetIO();
+	io.FontGlobalScale = ModConfiguration.DebugMenuFontScale;
 	io.MouseDrawCursor = false;
 
 	ImGui_ImplWin32_Init(SwapChain->m_NativeWindowHandle);

@@ -24,6 +24,7 @@ struct GlobalSettings
 	bool EnableAssetLogging;
 	bool EnableAssetOverrides;
 	bool EnableDiscordRichPresence;
+	float DebugMenuFontScale;
 
 	// [Gameplay]
 	bool SkipIntroLogos;

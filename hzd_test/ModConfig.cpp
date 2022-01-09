@@ -45,6 +45,10 @@ GlobalSettings ParseSettings(const toml::table& Table)
 	PARSE_TOML_MEMBER(general, EnableAssetLogging);
 	PARSE_TOML_MEMBER(general, EnableAssetOverrides);
 	PARSE_TOML_MEMBER(general, EnableDiscordRichPresence);
+	PARSE_TOML_MEMBER(general, DebugMenuFontScale);
+
+	if (o.DebugMenuFontScale <= 0)
+		o.DebugMenuFontScale = 1.0f;
 
 	auto& gameplay = *Table["Gameplay"].as_table();
 	PARSE_TOML_MEMBER(gameplay, SkipIntroLogos);
