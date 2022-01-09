@@ -56,11 +56,17 @@ GlobalSettings ParseSettings(const toml::table& Table)
 		auto enabledOverrides = Table["AssetOverrides"]["Enabled"].as_array();
 		auto disabledOverrides = Table["AssetOverrides"]["Disabled"].as_array();
 
-		for (auto& entry : *enabledOverrides)
-			o.AssetOverrides.emplace_back(ParseOverride(*entry.as_table(), true));
+		if (enabledOverrides)
+		{
+			for (auto& entry : *enabledOverrides)
+				o.AssetOverrides.emplace_back(ParseOverride(*entry.as_table(), true));
+		}
 
-		for (auto& entry : *disabledOverrides)
-			o.AssetOverrides.emplace_back(ParseOverride(*entry.as_table(), false));
+		if (disabledOverrides)
+		{
+			for (auto& entry : *disabledOverrides)
+				o.AssetOverrides.emplace_back(ParseOverride(*entry.as_table(), false));
+		}
 	}
 
 	return o;
