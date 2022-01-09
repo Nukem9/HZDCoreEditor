@@ -4,17 +4,26 @@
 
 #include "../PCore/Common.h"
 
-#include "RTTIRefObject.h"
+#include "IStreamingManager.h"
 
 namespace HRZ
 {
 
 class CoreFileManager;
 
-class StreamingManager
+class StreamingManager : public IStreamingManager
 {
 public:
-	char _pad0[0x90];
+	virtual ~StreamingManager() override;																				// 0
+	virtual void CreateHandleFromLink(AssetLink& Link) override;														// 1
+	virtual void CreateHandleFromPath(StreamingRefHandle& Handle, const AssetPath& Path, const GGUUID& UUID) override;	// 2
+	virtual void CreateHandleFromObject(StreamingRefHandle& Handle, RTTIRefObject *Object, uint8_t Flags) override;		// 3
+	virtual void IStreamingManagerUnknown04(StreamingRefHandle&) override;												// 4
+	virtual void IStreamingManagerUnknown05() override;																	// 5
+	virtual void UpdateLoadState(StreamingRefHandle& Handle, uint8_t Flags) override;									// 6
+	virtual void IStreamingManagerUnknown07(StreamingRefHandle&, uint8_t) override;										// 7
+
+	char _pad8[0x88];
 	CoreFileManager *m_CoreFileManager;					// 0x90
 	char _pad98[0x20];
 	HashSet<Ref<RTTIRefObject>> m_ActiveStreamObjects;	// 0xB8

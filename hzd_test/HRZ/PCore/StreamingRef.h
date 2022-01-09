@@ -8,13 +8,14 @@ namespace HRZ
 {
 
 class IStreamingManager;
+class RTTIRefObject;
 
-template<typename T>
-class StreamingRef final
+class StreamingRefHandle final
 {
 private:
-	enum StreamFlags : uint16_t
+	enum StreamFlags : uint8_t
 	{
+		None = 0,
 		Loaded = 0x80,
 	};
 
@@ -22,30 +23,43 @@ private:
 	{
 		uint32_t m_RefCount;			// 0x0
 		String m_CorePath;				// 0x8
-		uint64_t m_Hash1;				// 0x10
-		uint64_t m_Hash2;				// 0x18
+		GGUUID m_UUID;					// 0x10
 		uint64_t m_Unknown20;			// 0x20
 		IStreamingManager *m_Manager;	// 0x28
-		Ref<T> m_Ref;					// 0x30
+		Ref<RTTIRefObject> m_Ref;		// 0x30
 	};
 	assert_size(StreamData, 0x38);
 
-	StreamData *m_Data;		// 0x0
-	char _pad8[0x10];		// 0x8
-	StreamFlags m_Flags;	// 0x18
+	StreamData *m_Data = nullptr;	// 0x0
+	void *m_Unknown8 = nullptr;		// 0x8
+	void *m_Unknown10 = nullptr;	// 0x10
+	StreamFlags m_Flags = None;		// 0x18
+	uint8_t m_UnknownFlags = 0;		// 0x19
 
 public:
-	StreamingRef() = delete;
-	StreamingRef(const StreamingRef<T>&) = delete;
-	~StreamingRef() = delete;
-	StreamingRef<T>& operator=(const StreamingRef<T>&) = delete;
+	StreamingRefHandle() = default;
+	StreamingRefHandle(const StreamingRefHandle& Other);
+	~StreamingRefHandle();
+	StreamingRefHandle& operator=(const StreamingRefHandle&) = delete;
+
+	RTTIRefObject *get() const;
+};
+
+template<typename T>
+class StreamingRef final
+{
+private:
+	StreamingRefHandle m_Handle;
+
+public:
+	StreamingRef() = default;
+	StreamingRef(const StreamingRef<T>&) = default;
+	~StreamingRef() = default;
+	StreamingRef<T>& operator=(const StreamingRef<T>&) = default;
 
 	T *get() const
 	{
-		if (m_Data && (m_Flags & Loaded) != 0)
-			return m_Data->m_Ref.get();
-
-		return nullptr;
+		return static_cast<T *>(m_Handle.get());
 	}
 
 	explicit operator bool() const
