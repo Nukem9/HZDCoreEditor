@@ -45,14 +45,6 @@ bool hk_SwapChainDX12_Present(SwapChainDX12 *SwapChain)
 		}();
 	}
 
-	// HighestCompletedNewGamePlusDifficulty
-	// Set the highest NG+ difficulty that has been unlocked. Used for custom face paints and focus models.
-	if (auto& module = HRZ::Application::Instance().m_GameModule; module)
-	{
-		if (module->m_PlayerProfile)
-			*reinterpret_cast<int *>(reinterpret_cast<uintptr_t>(module->m_PlayerProfile.get()) + 0x25C) = 5;
-	}
-
 	DebugUI::RenderUI();
 	DebugUI::RenderUID3D(SwapChain);
 	return SwapChain->Present();
@@ -203,6 +195,9 @@ void LoadSignatures(GameType Game)
 		Offsets::MapSignature("SetCameraTransformHookLoc", "E8 ? ? ? ? 48 8B 8F 38 02 00 00 48 8D ? ? ? ? ? E8");
 		Offsets::MapSignature("SetGameModuleTimescaleHookLoc", "E8 ? ? ? ? 48 8B ? ? ? ? ? 4C 8D 44 24 20 48 8D 54 24 40 4C 89 7C 24 20");
 		Offsets::MapSignature("EntitlementOverridePatchLoc", "40 53 41 56 41 57 48 83 EC 20 48 83 39 00 4C 8B FA 4C 8B F1 75 14 BB FF FF FF FF 3B DB 0F 95 C0");
+		Offsets::MapSignature("FacepaintIsUnlockedPatchLoc", "4C 8B 01 85 D2 78 29 41 8B 40 28 FF C8 3B D0 7F 1F");
+		Offsets::MapSignature("FocusModelIsUnlockedPatchLoc1", "4C 8B 01 85 D2 78 29 41 8B 40 40 FF C8 3B D0 7F 1F");
+		Offsets::MapSignature("FocusModelIsUnlockedPatchLoc2", "7F 09 4A 8B 04 C8 C3 49 8B 40 48 48 8B 00 C3 33 C0 C3");
 
 		// Globals
 		Offsets::MapAddress("ExportedSymbolGroupArray", offsetFromInstruction("48 8B C2 4C 8D ? ? ? ? ? 48 8D ? ? ? ? ? 48 8D ? ? ? ? ? 48 FF E0", 6));
@@ -264,6 +259,14 @@ void ApplyHooks(GameType Game)
 		// Enable all entitlements
 		if (ModConfiguration.UnlockEntitlementExtras)
 			XUtil::PatchMemory(Offsets::ResolveID<"EntitlementOverridePatchLoc">(), { 0xB0, 0x01, 0xC3 });
+
+		// Enable all focus models and facepaints
+		if (ModConfiguration.UnlockNGPExtras)
+		{
+			XUtil::PatchMemory(Offsets::ResolveID<"FacepaintIsUnlockedPatchLoc">(), { 0xB0, 0x01, 0xC3 });
+			XUtil::PatchMemory(Offsets::ResolveID<"FocusModelIsUnlockedPatchLoc1">(), { 0xB0, 0x01, 0xC3 });
+			XUtil::PatchMemory(Offsets::ResolveID<"FocusModelIsUnlockedPatchLoc2">(), { 0x90, 0x90 });
+		}
 	}
 }
 
