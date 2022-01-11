@@ -145,14 +145,14 @@ void PatchMemoryNop(uintptr_t Address, size_t Size)
 	FlushInstructionCache(GetCurrentProcess(), asPointer, Size);
 }
 
-void DetourJump(uintptr_t Target, uintptr_t Destination)
+uintptr_t DetourJump(uintptr_t Target, uintptr_t Destination)
 {
-	Detours::X64::DetourFunction(Target, Destination, Detours::X64Option::USE_REL32_JUMP);
+	return Detours::X64::DetourFunction(Target, Destination, Detours::X64Option::USE_REL32_JUMP);
 }
 
-void DetourCall(uintptr_t Target, uintptr_t Destination)
+uintptr_t DetourCall(uintptr_t Target, uintptr_t Destination)
 {
-	Detours::X64::DetourFunction(Target, Destination, Detours::X64Option::USE_REL32_CALL);
+	return Detours::X64::DetourFunction(Target, Destination, Detours::X64Option::USE_REL32_CALL);
 }
 
 }

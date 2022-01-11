@@ -23,7 +23,7 @@ public:
 
 	static inline FreeCamMode m_FreeCamMode;
 	static inline WorldPosition m_FreeCamPosition;
-
+	static inline bool m_PauseAIProcessing;
 	static inline bool m_TimescaleOverride;
 	static inline bool m_TimescaleOverrideInMenus;
 	static inline float m_Timescale = 1.0f;

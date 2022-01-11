@@ -15,7 +15,7 @@ std::pair<uintptr_t, uintptr_t> GetRdataSection();
 std::pair<uintptr_t, uintptr_t> GetDataSection();
 
 void MapAddress(const std::string_view ID, uintptr_t Offset);
-void MapSignature(const std::string_view ID, const std::string_view Signature);
+void MapSignature(const std::string_view ID, const std::string_view Signature, int Adjustment = 0);
 uintptr_t FindOffset(const std::string_view ID);
 uintptr_t FindOffset(uint64_t IDHash);
 

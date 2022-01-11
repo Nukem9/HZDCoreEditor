@@ -65,7 +65,7 @@ void MapAddress(const std::string_view ID, uintptr_t Offset)
 	OffsetMapping.emplace(hash, Offset);
 }
 
-void MapSignature(const std::string_view ID, const std::string_view Signature)
+void MapSignature(const std::string_view ID, const std::string_view Signature, int Adjustment)
 {
 	auto [moduleBase, moduleEnd] = GetModule();
 	uintptr_t address = XUtil::FindPattern(moduleBase, moduleEnd - moduleBase, Signature.data());
@@ -73,7 +73,7 @@ void MapSignature(const std::string_view ID, const std::string_view Signature)
 	if (address == 0)
 		throw std::runtime_error("Failed to find signature");
 
-	MapAddress(ID, address - moduleBase);
+	MapAddress(ID, address - moduleBase + Adjustment);
 }
 
 uintptr_t FindOffset(const std::string_view ID)

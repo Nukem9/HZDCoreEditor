@@ -139,7 +139,13 @@ void MainMenuBar::DrawTimeMenu()
 
 	ImGui::Text("Days Passed: %u", worldState->m_DayNightCycleCount);
 	ImGui::Text("Current Time: %02u:%02u", hour, minute);
+	ImGui::Separator();
 
+	// Game loop
+	if (ImGui::MenuItem("Pause Game Logic", nullptr, gameModule->IsSuspended()))
+		TogglePauseGameLogic();
+
+	ImGui::MenuItem("Pause AI Processing", nullptr, &m_PauseAIProcessing);
 	ImGui::Separator();
 
 	// Day/night cycle
