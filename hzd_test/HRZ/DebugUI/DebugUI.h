@@ -1,6 +1,8 @@
 #pragma once
 
+#include <Windows.h>
 #include <memory>
+#include <optional>
 
 #include "DebugUIWindow.h"
 
@@ -20,6 +22,7 @@ void RenderUID3D(const SwapChainDX12 *SwapChain);
 
 void ToggleInputInterception();
 bool ShouldInterceptInput();
+std::optional<LRESULT> HandleMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 void UpdateFreecam();
 
 }

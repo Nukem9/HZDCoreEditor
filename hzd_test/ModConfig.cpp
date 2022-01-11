@@ -8,7 +8,7 @@ namespace InternalModConfig
 {
 
 GlobalSettings ParseSettings(const toml::table& Table);
-AssetOverride ParseOverride(const toml::table& Table, bool Enable);
+AssetOverride ParseOverride(const toml::table *Table, bool Enable);
 
 bool InitializeDefault()
 {
@@ -33,28 +33,48 @@ bool LoadFromFile(const std::string_view FilePath)
 	return true;
 }
 
-#define PARSE_TOML_MEMBER(obj, x) o.x = obj[#x].value_or(decltype(o.x){})
+#define PARSE_TOML_MEMBER(obj, x) o.x = (*obj)[#x].value_or(decltype(o.x){})
+#define PARSE_TOML_HOTKEY(obj, x) o.Hotkeys.x = (*obj)[#x].value_or(-1)
 
 GlobalSettings ParseSettings(const toml::table& Table)
 {
 	GlobalSettings o;
 
-	auto& general = *Table["General"].as_table();
-	PARSE_TOML_MEMBER(general, EnableDebugMenu);
-	PARSE_TOML_MEMBER(general, EnableCoreLogging);
-	PARSE_TOML_MEMBER(general, EnableAssetLogging);
-	PARSE_TOML_MEMBER(general, EnableAssetOverrides);
-	PARSE_TOML_MEMBER(general, EnableDiscordRichPresence);
-	PARSE_TOML_MEMBER(general, DebugMenuFontScale);
+	// [General]
+	if (auto general = Table["General"].as_table())
+	{
+		PARSE_TOML_MEMBER(general, EnableDebugMenu);
+		PARSE_TOML_MEMBER(general, EnableCoreLogging);
+		PARSE_TOML_MEMBER(general, EnableAssetLogging);
+		PARSE_TOML_MEMBER(general, EnableAssetOverrides);
+		PARSE_TOML_MEMBER(general, EnableDiscordRichPresence);
+		PARSE_TOML_MEMBER(general, DebugMenuFontScale);
+	}
 
 	if (o.DebugMenuFontScale <= 0)
 		o.DebugMenuFontScale = 1.0f;
 
-	auto& gameplay = *Table["Gameplay"].as_table();
-	PARSE_TOML_MEMBER(gameplay, SkipIntroLogos);
-	PARSE_TOML_MEMBER(gameplay, UnlockNGPExtras);
-	PARSE_TOML_MEMBER(gameplay, UnlockEntitlementExtras);
+	// [Gameplay]
+	if (auto gameplay = Table["Gameplay"].as_table())
+	{
+		PARSE_TOML_MEMBER(gameplay, SkipIntroLogos);
+		PARSE_TOML_MEMBER(gameplay, UnlockNGPExtras);
+		PARSE_TOML_MEMBER(gameplay, UnlockEntitlementExtras);
+	}
 
+	// [Hotkeys]
+	if (auto hotkeys = Table["Hotkeys"].as_table())
+	{
+		PARSE_TOML_HOTKEY(hotkeys, ToggleDebugUI);
+		PARSE_TOML_HOTKEY(hotkeys, TogglePauseGameLogic);
+		PARSE_TOML_HOTKEY(hotkeys, ToggleFreeflyCamera);
+		PARSE_TOML_HOTKEY(hotkeys, ToggleNoclip);
+		PARSE_TOML_HOTKEY(hotkeys, SaveQuicksave);
+		PARSE_TOML_HOTKEY(hotkeys, LoadPreviousSave);
+		PARSE_TOML_HOTKEY(hotkeys, SpawnEntity);
+	}
+
+	// [AssetOverrides]
 	if (o.EnableAssetOverrides)
 	{
 		auto enabledOverrides = Table["AssetOverrides"]["Enabled"].as_array();
@@ -63,16 +83,17 @@ GlobalSettings ParseSettings(const toml::table& Table)
 		if (enabledOverrides)
 		{
 			for (auto& entry : *enabledOverrides)
-				o.AssetOverrides.emplace_back(ParseOverride(*entry.as_table(), true));
+				o.AssetOverrides.emplace_back(ParseOverride(entry.as_table(), true));
 		}
 
 		if (disabledOverrides)
 		{
 			for (auto& entry : *disabledOverrides)
-				o.AssetOverrides.emplace_back(ParseOverride(*entry.as_table(), false));
+				o.AssetOverrides.emplace_back(ParseOverride(entry.as_table(), false));
 		}
 	}
 
+	// [CoreObjectCache]
 	auto cachedSpawnSetups = Table["CoreObjectCache"]["CachedSpawnSetups"].as_array();
 
 	if (cachedSpawnSetups)
@@ -98,7 +119,7 @@ GlobalSettings ParseSettings(const toml::table& Table)
 	return o;
 }
 
-AssetOverride ParseOverride(const toml::table& Table, bool Enable)
+AssetOverride ParseOverride(const toml::table *Table, bool Enable)
 {
 	AssetOverride o;
 
@@ -111,6 +132,7 @@ AssetOverride ParseOverride(const toml::table& Table, bool Enable)
 	return o;
 }
 
+#undef PARSE_TOML_HOTKEY
 #undef PARSE_TOML_MEMBER
 
 }

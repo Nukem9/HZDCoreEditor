@@ -1,6 +1,5 @@
 #pragma once
 
-#include <objbase.h>
 #include <imgui.h>
 
 #include "../../RTTI/RTTIScanner.h"
@@ -106,6 +105,81 @@ std::string MainMenuBar::GetId() const
 	return "Main Menu Bar";
 }
 
+void MainMenuBar::TogglePauseGameLogic()
+{
+	auto& gameModule = Application::Instance().m_GameModule;
+
+	if (gameModule)
+	{
+		if (gameModule->IsSuspended())
+			gameModule->Resume();
+		else
+			gameModule->Suspend();
+	}
+}
+
+void MainMenuBar::ToggleFreeflyCamera()
+{
+	if (!Application::IsInGame())
+		return;
+
+	m_FreeCamMode = (m_FreeCamMode == FreeCamMode::Free) ? FreeCamMode::Off : FreeCamMode::Free;
+	m_FreeCamPosition = Player::GetLocalPlayer()->GetLastActivatedCamera()->m_Orientation.Position;
+}
+
+void MainMenuBar::ToggleNoclip()
+{
+	if (!Application::IsInGame())
+		return;
+
+	m_FreeCamMode = (m_FreeCamMode == FreeCamMode::Noclip) ? FreeCamMode::Off : FreeCamMode::Noclip;
+	m_FreeCamPosition = Player::GetLocalPlayer()->m_Entity->m_Orientation.Position;
+}
+
+void MainMenuBar::SavePlayerGame(SaveType Type)
+{
+	if (!Application::IsInGame())
+		return;
+
+	auto doSave = [](uint8_t SaveType)
+	{
+		Offsets::CallID<"NodeGraph::ExportedCreateSaveGame", void(*)(uint8_t SaveType, bool Unknown, const class AIMarker *)>(SaveType, false, nullptr);
+	};
+
+	switch (Type)
+	{
+	case SaveType::Quick:
+	{
+		// RestartOnSpawned determines if the player is moved to their last position or moved to a campfire
+		auto playerGame = RTTI::Cast<PlayerGame>(Player::GetLocalPlayer());
+		playerGame->m_RestartOnSpawned = true;
+
+		doSave(2);
+	}
+	break;
+
+	case SaveType::Auto:
+		doSave(4);
+		break;
+
+	case SaveType::Manual:
+		doSave(1);
+		break;
+
+	case SaveType::NewGamePlus:
+		doSave(8);
+		break;
+	}
+}
+
+void MainMenuBar::LoadPreviousSave()
+{
+	if (!Application::IsInGame())
+		return;
+
+	Offsets::CallID<"NodeGraph::ExportedReloadLastSaveGame", void(*)(float)>(0.0f);
+}
+
 void MainMenuBar::DrawWorldMenu()
 {
 	if (ImGui::MenuItem("Weather Editor"))
@@ -149,14 +223,6 @@ void MainMenuBar::DrawTimeMenu()
 	ImGui::Separator();
 
 	// Day/night cycle
-	if (static bool pauseGameLogic; ImGui::MenuItem("Pause Game Logic", nullptr, &pauseGameLogic))
-	{
-		if (pauseGameLogic)
-			gameModule->Suspend();
-		else
-			gameModule->Resume();
-	}
-
 	ImGui::MenuItem("Pause Time of Day", nullptr, &worldState->m_PauseTimeOfDay);
 
 	if (ImGui::MenuItem("Pause Day/Night Cycle", nullptr, !worldState->m_DayNightCycleEnabled))
@@ -209,16 +275,10 @@ void MainMenuBar::DrawCheatsMenu()
 	auto debugSettings = Application::Instance().m_DebugSettings;
 
 	if (ImGui::MenuItem("Enable Freefly Camera", nullptr, m_FreeCamMode == FreeCamMode::Free))
-	{
-		m_FreeCamMode = (m_FreeCamMode == FreeCamMode::Free) ? FreeCamMode::Off : FreeCamMode::Free;
-		m_FreeCamPosition = Player::GetLocalPlayer()->GetLastActivatedCamera()->m_Orientation.Position;
-	}
+		ToggleFreeflyCamera();
 
 	if (ImGui::MenuItem("Enable Noclip", nullptr, m_FreeCamMode == FreeCamMode::Noclip))
-	{
-		m_FreeCamMode = (m_FreeCamMode == FreeCamMode::Noclip) ? FreeCamMode::Off : FreeCamMode::Noclip;
-		m_FreeCamPosition = Player::GetLocalPlayer()->m_Entity->m_Orientation.Position;
-	}
+		ToggleNoclip();
 
 	if (ImGui::MenuItem("Enable Demigod Mode", nullptr, debugSettings->m_GodModeState == EGodMode::On))
 		debugSettings->m_GodModeState = (debugSettings->m_GodModeState == EGodMode::On) ? EGodMode::Off : EGodMode::On;
@@ -231,43 +291,101 @@ void MainMenuBar::DrawCheatsMenu()
 	ImGui::MenuItem("Enable All Unlocks", nullptr, &debugSettings->m_UnlockAll);
 	ImGui::MenuItem("Simulate Game Completed", nullptr, &debugSettings->m_SimulateGameFinished);
 
+	// Teleport locations
 	ImGui::Separator();
 
-	if (ImGui::BeginMenu("Teleport To"))
+	auto doTeleport = [](const WorldPosition Position)
 	{
-		auto doTeleport = [](const WorldPosition Position)
+		auto player = Player::GetLocalPlayer();
+
+		if (!player || !player->m_Entity)
+			return;
+
+		WorldTransform transform
 		{
-			auto player = Player::GetLocalPlayer();
-
-			if (!player || !player->m_Entity)
-				return;
-
-			WorldTransform transform
-			{
-				.Position = Position,
-				.Orientation = player->m_Entity->m_Orientation.Orientation,
-			};
-
-			m_FreeCamPosition = Position;
-			player->m_Entity->PlaceOnWorldTransform(transform, false);
+			.Position = Position,
+			.Orientation = player->m_Entity->m_Orientation.Orientation,
 		};
 
+		// Fixup so Aloy doesn't fall through the ground
+		transform.Position.Z += 0.5;
+
+		m_FreeCamPosition = transform.Position;
+		player->m_Entity->PlaceOnWorldTransform(transform, false);
+	};
+
+	const static std::vector<std::pair<const char *, WorldPosition>> AreaLocations
+	{
+		{ "Naming Cliff", { 2258.91, -1097.40, 359.18 } },
+		{ "Elizabet Sobeck's Ranch", { 5349.0, -2322.0, 120.0 } },
+		{ "Climbing Testing Area 1", { -2278.0, -2222.0, 219.0 } },
+		{ "Climbing Testing Area 2", { -2265.0, -2307.0, 224.0 } },
+		{ "Terrain Slope Testing Area", { -2277.0, -2541.0, 324.0 } },
+		{ "Script Testing Area", { -2523.0, -2220.0, 221.0 } },
+		{ "DLC Testing Area", { 4765.22, 4832.68, 282.68 } },
+	};
+
+	if (ImGui::BeginMenu("Teleport To Area"))
+	{
 		if (ImGui::MenuItem("Freefly Camera Position"))
 			doTeleport(m_FreeCamPosition);
-		if (ImGui::MenuItem("Naming Cliff"))
-			doTeleport(WorldPosition(2258.91, -1097.40, 359.18));
-		if (ImGui::MenuItem("Elizabet Sobeck's Ranch"))
-			doTeleport(WorldPosition(5349.0, -2322.0, 120.0));
-		if (ImGui::MenuItem("Climbing Testing Area 1"))
-			doTeleport(WorldPosition(-2278.0, -2222.0, 219.0));
-		if (ImGui::MenuItem("Climbing Testing Area 2"))
-			doTeleport(WorldPosition(-2265.0, -2307.0, 224.0));
-		if (ImGui::MenuItem("Terrain Slope Testing Area"))
-			doTeleport(WorldPosition(-2277.0, -2541.0, 324.0));
-		if (ImGui::MenuItem("Script Testing Area"))
-			doTeleport(WorldPosition(-2523.0, -2220.0, 221.0));
-		if (ImGui::MenuItem("DLC Testing Area"))
-			doTeleport(WorldPosition(4765.22, 4832.68, 282.68));
+
+		for (auto& [k, v] : AreaLocations)
+		{
+			if (ImGui::MenuItem(k))
+				doTeleport(v);
+		}
+
+		ImGui::EndMenu();
+	}
+
+	const static std::vector<std::pair<const char *, WorldPosition>> UnlockableLocations
+	{
+		{ "GrazerDummy_01_RostsHovel", { 2166.24, -1521.54, 286.74 } },
+		{ "GrazerDummy_02_RostsHovel", { 2163.07, -1525.95, 287.56 } },
+		{ "GrazerDummy_03_RostsHovel", { 2158.27, -1526.80, 287.61 } },
+		{ "GrazerDummy_04_RostsHovel", { 2148.92, -1509.10, 293.15 } },
+		{ "GrazerDummy_05_RostsHovel", { 2141.70, -1496.57, 290.79 } },
+		{ "GrazerDummy_06_RostsHovel", { 2166.80, -1496.77, 284.57 } },
+		{ "GrazerDummy_07_RostsHovel", { 2163.33, -1496.83, 284.35 } },
+		{ "GrazerDummy_08_KarstsShop", { 2829.59, -1956.60, 192.76 } },
+		{ "GrazerDummy_09_MothersCradle", { 2731.09, -1914.96, 178.85 } },
+		{ "GrazerDummy_10_MothersHeart", { 2518.01, -1359.98, 217.37 } },
+		{ "GrazerDummy_11_MothersHeart", { 2489.16, -1361.32, 217.56 } },
+		{ "GrazerDummy_12_MothersRise", { 2665.99, -1315.13, 209.17 } },
+		{ "GrazerDummy_13_MothersRise", { 2671.79, -1372.27, 209.78 } },
+		{ "GrazerDummy_14_MothersGate", { 2401.44, -1868.80, 188.97 } },
+		{ "GrazerDummy_15_MothersGate", { 2364.84, -1868.52, 190.54 } },
+		{ "GrazerDummy_16_MothersCrown", { 2684.90, -726.55, 180.38 } },
+		{ "GrazerDummy_17_MothersCrown", { 2685.16, -719.75, 180.12 } },
+		{ "GrazerDummy_18_BanditCamp", { 3076.84, -956.83, 170.23 } },
+		{ "GrazerDummy_19_BanditCamp", { 1846.26, -540.75, 305.31 } },
+		{ "GrazerDummy_20_HuntersGathering", { 2300.65, -457.92, 226.96 } },
+		{ "GrazerDummy_21_HuntersGathering", { 2286.95, -462.21, 227.73 } },
+		{ "GrazerDummy_22_HuntingGrounds1", { 2986.81, -1562.17, 194.28 } },
+		{ "GrazerDummy_23_HuntingGrounds1", { 2965.68, -1574.96, 195.57 } },
+		{ "Vantage_01_Airforce", { 2963.06, -1821.89, 209.79 } },
+		{ "Vantage_02_ColoradoBuilding", { 3043.23, -1162.05, 216.93 } },
+		{ "Vantage_03_PioneerMuseum", { 2998.87, -854.69, 170.04 } },
+		{ "Vantage_04_DenverSkyline", { 3352.45, -573.77, 198.24 } },
+		{ "Vantage_05_BridalVeilFalls", { 1775.53, -694.61, 254.63 } },
+		{ "Vantage_06_MesaCity", { -176.51, -677.21, 230.51 } },
+		{ "Vantage_07_Drone", { -572.33, -1969.96, 123.52 } },
+		{ "Vantage_08_Citadel", { -929.59, 545.55, 301.81 } },
+		{ "Vantage_09_FaroBuilding", { -424.89, 985.27, 290.85 } },
+		{ "Vantage_10_LakePowell", { -610.22, -305.05, 255.51 } },
+		{ "Vantage_11_ExplodedMountain", { 1328.36, 1333.82, 460.66 } },
+		{ "Vantage_12_RedrockTheater", { 3045.02, -153.56, 185.03 } },
+		{ "Vantage_13_DenverStadium", { 3877.23, -26.01, 164.08 } },
+	};
+
+	if (ImGui::BeginMenu("Teleport To Unlockable"))
+	{
+		for (auto& [k, v] : UnlockableLocations)
+		{
+			if (ImGui::MenuItem(k))
+				doTeleport(v);
+		}
 
 		ImGui::EndMenu();
 	}
@@ -275,33 +393,22 @@ void MainMenuBar::DrawCheatsMenu()
 
 void MainMenuBar::DrawSavesMenu()
 {
-	auto doSave = [](uint8_t SaveType)
-	{
-		Offsets::CallID<"NodeGraph::ExportedCreateSaveGame", void(*)(uint8_t SaveType, bool Unknown, const class AIMarker *)>(SaveType, false, nullptr);
-	};
-
 	if (ImGui::MenuItem("Force Quicksave"))
-	{
-		// RestartOnSpawned determines if the player is moved to their last position or moved to a campfire
-		auto playerGame = RTTI::Cast<PlayerGame>(Player::GetLocalPlayer());
-		playerGame->m_RestartOnSpawned = true;
-
-		doSave(2);
-	}
+		SavePlayerGame(SaveType::Quick);
 
 	if (ImGui::MenuItem("Force Autosave"))
-		doSave(4);
+		SavePlayerGame(SaveType::Auto);
 
 	if (ImGui::MenuItem("Force Manual Save"))
-		doSave(1);
+		SavePlayerGame(SaveType::Manual);
 
 	if (ImGui::MenuItem("Force NG+ Save"))
-		doSave(8);
+		SavePlayerGame(SaveType::NewGamePlus);
 
 	ImGui::Separator();
 
 	if (ImGui::MenuItem("Load Previous Save"))
-		Offsets::CallID<"NodeGraph::ExportedReloadLastSaveGame", void(*)(float)>(0.0f);
+		LoadPreviousSave();
 }
 
 void MainMenuBar::DrawDebugMenu()

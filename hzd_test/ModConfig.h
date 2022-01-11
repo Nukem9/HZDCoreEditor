@@ -31,6 +31,18 @@ struct GlobalSettings
 	bool UnlockNGPExtras;
 	bool UnlockEntitlementExtras;
 
+	// [Hotkeys]
+	struct
+	{
+		int ToggleDebugUI;
+		int TogglePauseGameLogic;
+		int ToggleFreeflyCamera;
+		int ToggleNoclip;
+		int SaveQuicksave;
+		int LoadPreviousSave;
+		int SpawnEntity;
+	} Hotkeys;
+
 	// [AssetOverrides]
 	std::vector<AssetOverride> AssetOverrides;
 

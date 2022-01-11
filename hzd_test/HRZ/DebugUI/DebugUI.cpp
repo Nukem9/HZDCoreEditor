@@ -18,6 +18,7 @@
 #include "DebugUI.h"
 #include "DebugUIWindow.h"
 #include "MainMenuBar.h"
+#include "EntitySpawnerWindow.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -169,12 +170,61 @@ bool ShouldInterceptInput()
 	return InterceptInput;
 }
 
+std::optional<LRESULT> HandleMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
+{
+	switch (Msg)
+	{
+	case WM_KEYDOWN:
+	{
+		bool keyHandled = true;
+
+		if (wParam == ModConfiguration.Hotkeys.ToggleDebugUI)
+		{
+			// Toggle input blocking and the main menu bar
+			ToggleInputInterception();
+			CallWindowProcW(OriginalWndProc, hWnd, WM_ACTIVATEAPP, InterceptInput ? 0 : 1, 0);
+		}
+		else if (wParam == ModConfiguration.Hotkeys.TogglePauseGameLogic)
+			MainMenuBar::TogglePauseGameLogic();
+		else if (wParam == ModConfiguration.Hotkeys.ToggleFreeflyCamera)
+			MainMenuBar::ToggleFreeflyCamera();
+		else if (wParam == ModConfiguration.Hotkeys.ToggleNoclip)
+			MainMenuBar::ToggleNoclip();
+		else if (wParam == ModConfiguration.Hotkeys.SaveQuicksave)
+			MainMenuBar::SavePlayerGame(MainMenuBar::SaveType::Quick);
+		else if (wParam == ModConfiguration.Hotkeys.LoadPreviousSave)
+			MainMenuBar::LoadPreviousSave();
+		else if (wParam == ModConfiguration.Hotkeys.SpawnEntity)
+			EntitySpawnerWindow::ForceSpawnEntityClick();
+		else
+			keyHandled = false;
+
+		if (keyHandled)
+			return 1;
+	}
+	break;
+
+	case WM_ACTIVATEAPP:
+	{
+		// Prevent alt-tab from interfering with input blocking
+		if (InterceptInput)
+			return 1;
+	}
+	break;
+	}
+
+	return std::nullopt;
+}
+
 void UpdateFreecam()
 {
 	auto cameraMode = MainMenuBar::m_FreeCamMode;
 	auto& cameraPosition = MainMenuBar::m_FreeCamPosition;
 
 	if (cameraMode == MainMenuBar::FreeCamMode::Off)
+		return;
+
+	if (!Application::IsInGame())
 		return;
 
 	auto player = Player::GetLocalPlayer();
@@ -265,27 +315,11 @@ void UpdateFreecam()
 
 LRESULT WINAPI WndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
-	switch (Msg)
-	{
-	case WM_KEYDOWN:
-		if (wParam == VK_OEM_3)
-		{
-			// Toggle input blocking (tilde `~`)
-			ToggleInputInterception();
+	// Intercepted messages will prevent them from being forwarded to imgui and the game
+	auto handled = HandleMessage(hWnd, Msg, wParam, lParam);
 
-			CallWindowProcW(OriginalWndProc, hWnd, WM_ACTIVATEAPP, InterceptInput ? 0 : 1, 0);
-			return 0;
-		}
-		break;
-
-	case WM_ACTIVATEAPP:
-		if (InterceptInput)
-		{
-			// Prevent alt-tab from interfering with input blocking
-			return 0;
-		}
-		break;
-	}
+	if (handled.has_value())
+		return handled.value();
 
 	ImGui_ImplWin32_WndProcHandler(hWnd, Msg, wParam, lParam);
 	return CallWindowProcW(OriginalWndProc, hWnd, Msg, wParam, lParam);

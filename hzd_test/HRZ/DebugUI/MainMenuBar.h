@@ -21,6 +21,14 @@ public:
 		Noclip,
 	};
 
+	enum class SaveType
+	{
+		Quick,
+		Auto,
+		Manual,
+		NewGamePlus,
+	};
+
 	static inline FreeCamMode m_FreeCamMode;
 	static inline WorldPosition m_FreeCamPosition;
 	static inline bool m_PauseAIProcessing;
@@ -31,6 +39,12 @@ public:
 	virtual void Render() override;
 	virtual bool Close() override;
 	virtual std::string GetId() const override;
+
+	static void TogglePauseGameLogic();
+	static void ToggleFreeflyCamera();
+	static void ToggleNoclip();
+	static void SavePlayerGame(SaveType Type);
+	static void LoadPreviousSave();
 
 private:
 	void DrawWorldMenu();

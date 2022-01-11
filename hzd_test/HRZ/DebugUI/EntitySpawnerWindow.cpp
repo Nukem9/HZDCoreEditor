@@ -5,7 +5,6 @@
 
 #include "../../ModConfig.h"
 #include "../Core/Application.h"
-#include "../Core/GameModule.h"
 #include "../Core/Resource.h"
 #include "../Core/Player.h"
 #include "../Core/StreamingManager.h"
@@ -85,6 +84,7 @@ void EntitySpawnerWindow::Render()
 
 	static int spawnCount = 1;
 	static int spawnLocationType = 0;
+	static WorldPosition customSpawnPosition;
 
 	ImGui::SetNextItemWidth(200); ImGui::InputInt("Entity count", &spawnCount);
 	ImGui::Spacing();
@@ -92,6 +92,16 @@ void EntitySpawnerWindow::Render()
 	ImGui::RadioButton("Spawn at crosshair position", &spawnLocationType, 1);
 	ImGui::RadioButton("Spawn at custom position", &spawnLocationType, 2);
 	ImGui::Spacing();
+
+	if (spawnLocationType == 2)
+	{
+		ImGui::PushItemWidth(200);
+		ImGui::InputDouble("X", &customSpawnPosition.X, 1.0, 20.0, "%.3f");
+		ImGui::InputDouble("Y", &customSpawnPosition.Y, 1.0, 20.0, "%.3f");
+		ImGui::InputDouble("Z", &customSpawnPosition.Z, 1.0, 20.0, "%.3f");
+		ImGui::PopItemWidth();
+		ImGui::Spacing();
+	}
 
 	auto getSpawnTransform = []()
 	{
@@ -136,26 +146,17 @@ void EntitySpawnerWindow::Render()
 		else if (spawnLocationType == 2)
 		{
 			// Custom position
-			static WorldPosition tempPosition;
-
-			ImGui::PushItemWidth(200);
-			ImGui::InputDouble("X", &tempPosition.X, 1.0, 20.0, "%.3f");
-			ImGui::InputDouble("Y", &tempPosition.Y, 1.0, 20.0, "%.3f");
-			ImGui::InputDouble("Z", &tempPosition.Z, 1.0, 20.0, "%.3f");
-			ImGui::PopItemWidth();
-			ImGui::Spacing();
-
-			currentTransform.Position = tempPosition;
+			currentTransform.Position = customSpawnPosition;
 		}
 
 		return currentTransform;
 	};
 
-	if (ImGui::Button("Spawn"))
+	if (ImGui::Button("Spawn") || (selectedObjectThisFrame && m_DoSpawnOnNextFrame))
 	{
 		for (int i = 0; i < spawnCount; i++)
 		{
-			auto spawnpoint = (RTTIRefObject *)Offsets::CallID<"RTTI::CreateObject", void *(*)(const RTTI *)>(RTTI_Spawnpoint);
+			auto spawnpoint = Offsets::CallID<"RTTI::CreateObject", RTTIRefObject *(*)(const RTTI *)>(RTTI_Spawnpoint);
 			auto rtti = spawnpoint->GetRTTI()->AsClass();
 
 			spawnpoint->IncRef();
@@ -176,6 +177,8 @@ void EntitySpawnerWindow::Render()
 		ImGui::EndDisabled();
 
 	ImGui::End();
+
+	m_DoSpawnOnNextFrame = false;
 }
 
 bool EntitySpawnerWindow::Close()
@@ -186,6 +189,11 @@ bool EntitySpawnerWindow::Close()
 std::string DebugUI::EntitySpawnerWindow::GetId() const
 {
 	return "Entity Spawner";
+}
+
+void EntitySpawnerWindow::ForceSpawnEntityClick()
+{
+	m_DoSpawnOnNextFrame = true;
 }
 
 void EntitySpawnerWindow::DrawCacheStreamedAssets()
