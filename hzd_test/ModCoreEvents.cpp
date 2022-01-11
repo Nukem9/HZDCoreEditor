@@ -214,6 +214,9 @@ void ModCoreEvents::OnUnloadCoreObjects(const String& CorePath, const Array<Ref<
 
 ModCoreEvents& ModCoreEvents::Instance()
 {
-	static ModCoreEvents handler;
-	return handler;
+	// Yes, I'm intentionally leaking memory. There's no virtual destructor present and this
+	// never gets unregistered properly.
+	static auto handler = new ModCoreEvents();
+
+	return *handler;
 }

@@ -198,7 +198,7 @@ void EntitySpawnerWindow::ForceSpawnEntityClick()
 
 void EntitySpawnerWindow::DrawCacheStreamedAssets()
 {
-	static std::vector<StreamingRefHandle> cachedHandles;
+	static auto& cachedHandles = *new std::vector<StreamingRefHandle>();
 
 	bool streamedAssetsLoaded = !cachedHandles.empty();
 	auto text = streamedAssetsLoaded ? "Unload cached spawn setups" : "Force load cached spawn setups";
