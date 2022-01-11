@@ -2,17 +2,32 @@
 # *** MAIN SETTINGS ***
 #
 [General]
-EnableDebugMenu = true              # Enable the debug menu. Toggled with the '~' key.
+EnableDebugMenu = true              # Enable the debug menu. Toggled with the hotkey below ('~' by default).
 EnableCoreLogging = false           # Log all core loads to the debug console.
 EnableAssetLogging = false          # Log all asset loads to the debug console.
 EnableAssetOverrides = true         # Enable the [AssetOverrides] section below.
 #EnableDiscordRichPresence = false  # Not yet implemented. Has no effect.
-DebugMenuFontScale = 1.0            # Change the global font scale in the debug menu
+DebugMenuFontScale = 1.0            # Change the global font scale in the debug menu.
 
 [Gameplay]
-SkipIntroLogos = true               # Skip the intro logo movies on game startup
-UnlockNGPExtras = false             # Unlock all facepaints and custom focus models without completing NewGame+
-UnlockEntitlementExtras = false     # Unlock all preorder and reviewer copy bonuses
+SkipIntroLogos = true               # Skip the intro logo movies on game startup.
+UnlockNGPExtras = false             # Unlock all facepaints and custom focus models without completing NewGame+.
+UnlockEntitlementExtras = false     # Unlock all preorder and reviewer copy bonuses.
+
+#
+# *** HOTKEYS (KEYBINDS) ***
+#
+# Each hotkey maps to one of the Windows virtual key codes in hexadecimal format. To disable a keybind, set its value to -1. You can
+# find a list of keys here: https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
+#
+[Hotkeys]
+ToggleDebugUI = 0xC0        # '~'  key. Toggles the main menu bar and cursor.
+TogglePauseGameLogic = 0x77 # 'F8' key. Toggles pausing game logic.
+ToggleFreeflyCamera = 0x75  # 'F6' key. Toggles the freefly camera.
+ToggleNoclip = 0x74         # 'F5' key. Toggles noclip.
+SaveQuicksave = -1          # Unbound. Forces a quicksave.
+LoadPreviousSave = -1       # Unbound. Loads the last created save game.
+SpawnEntity = 0x76          # 'F7' key. Spawns an entity when the Entity Spawner window is open.
 
 #
 # *** ASSET OVERRIDES ***
@@ -104,6 +119,14 @@ UnlockEntitlementExtras = false     # Unlock all preorder and reviewer copy bonu
     Value = ""
 
     #
+    # Patch (1): Remove the automatic slowdown while riding a horse
+    #
+    [[AssetOverrides.Disabled]]
+    ObjectTypes = "HorseControllerComponentResource"
+    Path = "SlowdownStartTime"
+    Value = "1000000"
+
+    #
     # Patch (2): Allow sprinting and mounting horses with all weapons, including heavy pickups
     #
     [[AssetOverrides.Disabled]]
@@ -117,7 +140,7 @@ UnlockEntitlementExtras = false     # Unlock all preorder and reviewer copy bonu
     Value = "true"
 
     #
-    # Patch (3): Unlock photo mode camera panning controls (settlements, cutscenes, falling, range limits)
+    # Patch (3): Unlock photo mode camera panning controls (settlements, cinematic events, falling, range limits)
     #
     [[AssetOverrides.Disabled]]
     ObjectUUIDs = "{9D995414-CEF7-6830-AAFA-87CCF64E0448}"
@@ -186,6 +209,25 @@ UnlockEntitlementExtras = false     # Unlock all preorder and reviewer copy bonu
     Path = "MovementModifier"
     Value = "1.0"
     Notes = "Defaults to 0.3. SpeedModifierComponentResource in entities/components/focus/focuscomponent"
+
+    #
+    # Patch (3): Remove the pick-up animation when collecting resources. All of these must be enabled or your game will softlock.
+    #
+    [[AssetOverrides.Disabled]]
+    ObjectUUIDs = "{6A8E8CF8-418E-604E-91F8-CBBB54D5D7A4}"
+    Path = "PickUpAnimationName"
+    Value = "Pick_Up_Quick"
+    Notes = "PickUpAnimationComponentResource in entities/characters/humanoids/player/player_components"
+
+    [[AssetOverrides.Disabled]]
+    ObjectUUIDs = "{6A8E8CF8-418E-604E-91F8-CBBB54D5D7A4}"
+    Path = "PickUpAnimationTag"
+    Value = "Pick_Up_Quick"
+
+    [[AssetOverrides.Disabled]]
+    ObjectUUIDs = "{6A8E8CF8-418E-604E-91F8-CBBB54D5D7A4}"
+    Path = "PickUpEventTimeout"
+    Value = "0"
 
     #
     # Patch (1): Change the length of ingame days
