@@ -69,7 +69,7 @@ namespace Decima
                 if (!filePart.Contains("patch") && entry.ArchiveName.Contains("patch"))
                     break;
 
-                int compare = filePart.CompareTo(entry.ArchiveName);
+                int compare = string.Compare(filePart, entry.ArchiveName, StringComparison.Ordinal);
 
                 // Don't allow duplicate archives to be loaded
                 if (compare == 0)
