@@ -60,6 +60,7 @@ GlobalSettings ParseSettings(const toml::table& Table)
 		PARSE_TOML_MEMBER(gameplay, SkipIntroLogos);
 		PARSE_TOML_MEMBER(gameplay, UnlockNGPExtras);
 		PARSE_TOML_MEMBER(gameplay, UnlockEntitlementExtras);
+		PARSE_TOML_MEMBER(gameplay, ForceBodyVariantUUID);
 	}
 
 	// [Hotkeys]
@@ -94,27 +95,23 @@ GlobalSettings ParseSettings(const toml::table& Table)
 	}
 
 	// [CoreObjectCache]
-	auto cachedSpawnSetups = Table["CoreObjectCache"]["CachedSpawnSetups"].as_array();
-
-	if (cachedSpawnSetups)
+	auto parseCoreObjectCacheTable = [&Table](const char *Name, auto& TargetVector)
 	{
-		for (auto& entry : *cachedSpawnSetups)
-		{
-			auto& a = *entry.as_array();
-			o.CachedSpawnSetups.emplace_back(a[0].value_or(""), a[1].value_or(""));
-		}
-	}
+		auto cachedObjectArray = Table["CoreObjectCache"][Name].as_array();
 
-	auto cachedWeatherSetups = Table["CoreObjectCache"]["CachedWeatherSetups"].as_array();
-
-	if (cachedWeatherSetups)
-	{
-		for (auto& entry : *cachedWeatherSetups)
+		if (cachedObjectArray)
 		{
-			auto& a = *entry.as_array();
-			o.CachedWeatherSetups.emplace_back(a[0].value_or(""), a[1].value_or(""));
+			for (auto& entry : *cachedObjectArray)
+			{
+				auto& a = *entry.as_array();
+				TargetVector.emplace_back(a[0].value_or(""), a[1].value_or(""));
+			}
 		}
-	}
+	};
+
+	parseCoreObjectCacheTable("CachedSpawnSetups", o.CachedSpawnSetups);
+	parseCoreObjectCacheTable("CachedWeatherSetups", o.CachedWeatherSetups);
+	parseCoreObjectCacheTable("CachedBodyVariants", o.CachedBodyVariants);
 
 	return o;
 }

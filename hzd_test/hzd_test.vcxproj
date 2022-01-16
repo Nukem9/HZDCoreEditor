@@ -94,6 +94,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="common.cpp" />
+    <ClCompile Include="HRZ\DebugUI\BodyVariantWindow.cpp" />
     <ClCompile Include="HRZ\DebugUI\DemoWindow.cpp" />
     <ClCompile Include="HRZ\DebugUI\LogWindow.cpp" />
     <ClCompile Include="HRZ\PCore\StreamingRef.cpp" />
@@ -122,12 +123,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
+    <ClInclude Include="HRZ\Core\BodyVariantRuntimeComponent.h" />
     <ClInclude Include="HRZ\Core\EquipmentModificationComponent.h" />
     <ClInclude Include="HRZ\Core\EquipmentModificationItemComponent.h" />
     <ClInclude Include="HRZ\Core\IStreamingManager.h" />
     <ClInclude Include="HRZ\Core\RTTIObjectTweaker.h" />
     <ClInclude Include="HRZ\Core\StackableComponent.h" />
     <ClInclude Include="HRZ\Core\StatModification.h" />
+    <ClInclude Include="HRZ\DebugUI\BodyVariantWindow.h" />
     <ClInclude Include="LogHooks.h" />
     <ClInclude Include="ModConfig.h" />
     <ClInclude Include="ModCoreEvents.h" />

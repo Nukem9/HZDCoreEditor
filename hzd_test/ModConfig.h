@@ -30,6 +30,7 @@ struct GlobalSettings
 	bool SkipIntroLogos;
 	bool UnlockNGPExtras;
 	bool UnlockEntitlementExtras;
+	std::string ForceBodyVariantUUID;
 
 	// [Hotkeys]
 	struct
@@ -49,6 +50,7 @@ struct GlobalSettings
 	// [CoreObjectCache]
 	std::vector<std::pair<std::string, std::string>> CachedSpawnSetups;
 	std::vector<std::pair<std::string, std::string>> CachedWeatherSetups;
+	std::vector<std::pair<std::string, std::string>> CachedBodyVariants;
 };
 
 bool InitializeDefault();

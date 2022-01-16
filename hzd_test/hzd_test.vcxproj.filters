@@ -93,6 +93,9 @@
     <ClCompile Include="HRZ\PCore\StreamingRef.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="HRZ\DebugUI\BodyVariantWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h">
@@ -435,6 +438,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HRZ\Core\IStreamingManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\Core\BodyVariantRuntimeComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HRZ\DebugUI\BodyVariantWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

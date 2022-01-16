@@ -13,6 +13,7 @@
 #include "HRZ/Core/CameraEntity.h"
 #include "HRZ/Core/GameModule.h"
 #include "HRZ/Core/WorldState.h"
+#include "HRZ/Core/BodyVariantRuntimeComponent.h"
 
 #include "RTTI/MSRTTI.h"
 #include "RTTI/RTTIScanner.h"
@@ -133,6 +134,34 @@ void hk_ProcessAIJob2_140DBD670(__int64 a1)
 	original_ProcessAIJob2_140DBD670(a1);
 }
 
+void hk_call_1414A4418(BodyVariantRuntimeComponent *Component, const GGUUID& UUID)
+{
+	Component->SetVariantByUUID(UUID);
+
+#if 0
+	if (!ModConfiguration.ForceBodyVariantUUID.empty())
+	{
+		// Find the core file that maps to this GUID
+		auto itr = std::find_if(ModConfiguration.CachedBodyVariants.begin(), ModConfiguration.CachedBodyVariants.end(),
+		[](const auto& Pair)
+		{
+			return Pair.second == ModConfiguration.ForceBodyVariantUUID;
+		});
+
+		if (itr == ModConfiguration.CachedBodyVariants.end())
+		{
+			// User made a typo somewhere
+			// TODO: Log
+		}
+		else
+		{
+			// Stream in the HumanBodyVariant
+			Component->ForceSetUnlistedVariantByPath(itr->first.c_str(), GGUUID::TryParse(itr->second).value());
+		}
+	}
+#endif
+}
+
 void LoadSignatures(GameType Game)
 {
 	auto [moduleBase, moduleEnd] = Offsets::GetModule();
@@ -220,8 +249,9 @@ void LoadSignatures(GameType Game)
 		Offsets::MapSignature("FacepaintIsUnlockedPatchLoc", "4C 8B 01 85 D2 78 29 41 8B 40 28 FF C8 3B D0 7F 1F");
 		Offsets::MapSignature("FocusModelIsUnlockedPatchLoc1", "4C 8B 01 85 D2 78 29 41 8B 40 40 FF C8 3B D0 7F 1F");
 		Offsets::MapSignature("FocusModelIsUnlockedPatchLoc2", "7F 09 4A 8B 04 C8 C3 49 8B 40 48 48 8B 00 C3 33 C0 C3");
-		Offsets::MapSignature("ProcessAIJobHook1", "48 8B 01 FF 90 00 01 00 00 48 8B 03 48 8D", -0xF8);
-		Offsets::MapSignature("ProcessAIJobHook2", "48 8B 01 FF 90 00 01 00 00 48 8B 03 48 8B 5C 24 30", -0xE6);
+		Offsets::MapSignature("ProcessAIJobHookLoc1", "48 8B 01 FF 90 00 01 00 00 48 8B 03 48 8D", -0xF8);
+		Offsets::MapSignature("ProcessAIJobHookLoc2", "48 8B 01 FF 90 00 01 00 00 48 8B 03 48 8B 5C 24 30", -0xE6);
+		Offsets::MapSignature("SetBodyVariantHookLoc1", "E8 ? ? ? ? 48 8B 5C 24 58 48 83 C4 38 5F 5D C3");
 
 		// Globals
 		Offsets::MapAddress("ExportedSymbolGroupArray", offsetFromInstruction("48 8B C2 4C 8D ? ? ? ? ? 48 8D ? ? ? ? ? 48 8D ? ? ? ? ? 48 FF E0", 6));
@@ -278,8 +308,11 @@ void ApplyHooks(GameType Game)
 		XUtil::DetourCall(Offsets::ResolveID<"SetGameModuleTimescaleHookLoc">(), &hk_call_1411E3210);
 
 		// Override AI processing function
-		original_ProcessAIJob1_140DBD530 = XUtil::DetourJump(Offsets::ResolveID<"ProcessAIJobHook1">(), &hk_ProcessAIJob1_140DBD530);
-		original_ProcessAIJob2_140DBD670 = XUtil::DetourJump(Offsets::ResolveID<"ProcessAIJobHook2">(), &hk_ProcessAIJob2_140DBD670);
+		original_ProcessAIJob1_140DBD530 = XUtil::DetourJump(Offsets::ResolveID<"ProcessAIJobHookLoc1">(), &hk_ProcessAIJob1_140DBD530);
+		original_ProcessAIJob2_140DBD670 = XUtil::DetourJump(Offsets::ResolveID<"ProcessAIJobHookLoc2">(), &hk_ProcessAIJob2_140DBD670);
+
+		// Override current player body variant
+		XUtil::DetourCall(Offsets::ResolveID<"SetBodyVariantHookLoc1">(), &hk_call_1414A4418);
 
 		// Override the WorldState SetTimeOfDay function
 		//XUtil::DetourJump(Offsets::ResolveID<"WorldState::SetTimeOfDay">(), &WorldState::SetTimeOfDay);

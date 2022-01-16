@@ -26,6 +26,7 @@
 #include "LogWindow.h"
 #include "FocusEditorWindow.h"
 #include "EntitySpawnerWindow.h"
+#include "BodyVariantWindow.h"
 #include "MainMenuBar.h"
 
 namespace HRZ::DebugUI
@@ -195,6 +196,9 @@ void MainMenuBar::DrawWorldMenu()
 
 	if (ImGui::MenuItem("Player Camera Entity"))
 		AddWindow(std::make_shared<EntityWindow>(Player::GetLocalPlayer()->GetLastActivatedCamera()));
+
+	if (ImGui::MenuItem("Player Body Variants"))
+		AddWindow(std::make_shared<BodyVariantWindow>());
 
 	//if (ImGui::MenuItem("Player Focus Entity"))
 	//	AddWindow(std::make_shared<FocusEditorWindow>());
