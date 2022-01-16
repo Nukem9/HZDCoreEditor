@@ -192,6 +192,9 @@ void LoadSignatures(GameType Game)
 		Offsets::MapSignature("RTTI::GetCoreBinaryTypeId", "48 8B C4 44 89 40 18 48 89 50 10 48 89 48 08 55 53 56 41 56 48 8D 68 A1 48 81 EC 98 00 00 00 4C 89 60 D0");
 		Offsets::MapSignature("RTTI::CreateObject", "48 89 5C 24 20 57 48 83 EC 20 44 0F B6 49 04 4C 8D ? ? ? ? ? 45 33 C0 48 8B D9 41 83 F9 06");
 
+		Offsets::MapSignature("StreamingRefHandle::Dtor", "40 53 48 83 EC 20 48 8B CA 48 8B DA E8 ? ? ? ? 48 8B 1B");
+		Offsets::MapSignature("StreamingRefHandle::AssignFromOther", "48 89 5C 24 08 57 48 83 EC 20 48 8B 02 48 8B FA 48 8B D9 48 39 01 0F 84");
+
 		Offsets::MapSignature("Player::GetLocalPlayer", "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 30 48 63 E9 85 C9 0F 85 E2 00 00 00");
 		Offsets::MapSignature("SwapChainDX12::Present", "48 89 5C 24 08 48 89 74 24 10 57 48 83 EC 40 48 8B 05 ? ? ? ? 48 8B D9");
 		Offsets::MapSignature("PackfileDevice::MountArchive", "44 89 44 24 18 48 89 54 24 10 48 89 4C 24 08 55 53 56 57 41 56");
@@ -203,7 +206,7 @@ void LoadSignatures(GameType Game)
 		Offsets::MapSignature("CoreFileManager::RegisterEventListener", "48 89 5C 24 08 48 89 74 24 10 57 48 83 EC 20 48 8B F9 48 8B F2 48 83 C1 18 FF 15 ? ? ? ? 84 C0 75 0A 48 8D 4F 18 FF 15 ? ? ? ? 48 8D 4F 28");
 		Offsets::MapSignature("RTTIObjectTweaker::VisitObjectPath", "4C 8B DC 55 53 56 41 55 41 56 49 8D 6B B1 48 81 EC 90 00 00 00");
 		Offsets::MapSignature("HeapAllocator::Free", "48 83 EC 28 48 85 C9 0F 84 ? ? ? ? 8B ? ? ? ? ? 65 48 8B 04 25 58 00 00 00 48 89 5C 24 30 48 89 7C 24 20");
-		Offsets::MapSignature("StreamingRefHandle::Dtor", "40 53 48 83 EC 20 48 8B CA 48 8B DA E8 ? ? ? ? 48 8B 1B");
+		Offsets::MapSignature("BodyVariantRuntimeComponent::SetVariantByUUID", "40 56 41 54 41 55 48 83 EC 70 4C 8D A1 80 00 00 00");
 
 		// Hooks
 		Offsets::MapSignature("SwapChainDX12PresentHookLoc", "E8 ? ? ? ? 49 8B 76 08 33 FF 41 39 3E 7E 17");

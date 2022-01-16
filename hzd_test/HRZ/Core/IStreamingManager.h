@@ -8,6 +8,14 @@ namespace HRZ
 class AssetPath;
 class RTTIRefObject;
 
+class IStreamingRefCallback
+{
+public:
+	virtual ~IStreamingRefCallback();							// 0
+	virtual void OnStreamingRefLoad(RTTIRefObject *Object) = 0;	// 1
+	virtual void OnStreamingRefUnload() = 0;					// 2
+};
+
 class IStreamingManager
 {
 public:
@@ -24,7 +32,7 @@ public:
 	virtual void CreateHandleFromPath(StreamingRefHandle& Handle, const AssetPath& Path, const GGUUID& UUID) = 0;	// 2
 	virtual void CreateHandleFromObject(StreamingRefHandle& Handle, RTTIRefObject *Object, uint8_t Flags) = 0;		// 3
 	virtual void IStreamingManagerUnknown04(StreamingRefHandle&) = 0;												// 4
-	virtual void IStreamingManagerUnknown05() = 0;																	// 5
+	virtual void IStreamingManagerUnknown05(StreamingRefHandle& Handle, uint8_t Flags, IStreamingRefCallback *Callback, void *Unknown) = 0;	// 5
 	virtual void UpdateLoadState(StreamingRefHandle& Handle, uint8_t Flags) = 0;									// 6
 	virtual void IStreamingManagerUnknown07(StreamingRefHandle&, uint8_t) = 0;										// 7
 };

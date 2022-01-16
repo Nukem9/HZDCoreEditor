@@ -6,23 +6,17 @@ namespace HRZ
 
 StreamingRefHandle::StreamingRefHandle(const StreamingRefHandle& Other)
 {
-	if (Other.m_Data)
-	{
-		IStreamingManager::AssetLink link
-		{
-			.m_Handle = this,
-			.m_Path = Other.m_Data->m_CorePath,
-			.m_UUID = Other.m_Data->m_UUID,
-		};
-
-		Other.m_Data->m_Manager->CreateHandleFromLink(link);
-		Other.m_Data->m_Manager->UpdateLoadState(*this, Other.m_Flags);
-	}
+	*this = Other;
 }
 
 StreamingRefHandle::~StreamingRefHandle()
 {
 	Offsets::CallID<"StreamingRefHandle::Dtor", void(*)(void *, StreamingRefHandle *)>(nullptr, this);
+}
+
+StreamingRefHandle& StreamingRefHandle::operator=(const StreamingRefHandle& Other)
+{
+	return *Offsets::CallID<"StreamingRefHandle::AssignFromOther", StreamingRefHandle*(*)(StreamingRefHandle *, const StreamingRefHandle&)>(this, Other);
 }
 
 RTTIRefObject *StreamingRefHandle::get() const

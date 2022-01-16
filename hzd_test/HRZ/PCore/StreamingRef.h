@@ -8,9 +8,10 @@ namespace HRZ
 {
 
 class IStreamingManager;
+class IStreamingRefCallback;
 class RTTIRefObject;
 
-class StreamingRefHandle final
+class StreamingRefHandle
 {
 private:
 	enum StreamFlags : uint8_t
@@ -30,27 +31,25 @@ private:
 	};
 	assert_size(StreamData, 0x38);
 
-	StreamData *m_Data = nullptr;	// 0x0
-	void *m_Unknown8 = nullptr;		// 0x8
-	void *m_Unknown10 = nullptr;	// 0x10
-	StreamFlags m_Flags = None;		// 0x18
-	uint8_t m_UnknownFlags = 0;		// 0x19
+	StreamData *m_Data = nullptr;					// 0x0
+	IStreamingRefCallback *m_RefCallback = nullptr;	// 0x8
+	void *m_Unknown10 = nullptr;					// 0x10
+	StreamFlags m_Flags = None;						// 0x18
+	uint8_t m_UnknownFlags = 0;						// 0x19
 
 public:
 	StreamingRefHandle() = default;
 	StreamingRefHandle(const StreamingRefHandle& Other);
 	~StreamingRefHandle();
-	StreamingRefHandle& operator=(const StreamingRefHandle&) = delete;
+	StreamingRefHandle& operator=(const StreamingRefHandle&);
 
 	RTTIRefObject *get() const;
 };
+assert_size(StreamingRefHandle, 0x20);
 
 template<typename T>
-class StreamingRef final
+class StreamingRef final : public StreamingRefHandle
 {
-private:
-	StreamingRefHandle m_Handle;
-
 public:
 	StreamingRef() = default;
 	StreamingRef(const StreamingRef<T>&) = default;
@@ -59,7 +58,7 @@ public:
 
 	T *get() const
 	{
-		return static_cast<T *>(m_Handle.get());
+		return static_cast<T *>(StreamingRefHandle::get());
 	}
 
 	explicit operator bool() const
