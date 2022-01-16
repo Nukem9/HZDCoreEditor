@@ -119,6 +119,17 @@ void MainMenuBar::TogglePauseGameLogic()
 	}
 }
 
+void MainMenuBar::TogglePauseTimeOfDay()
+{
+	auto& gameModule = Application::Instance().m_GameModule;
+
+	if (gameModule)
+	{
+		if (auto& worldState = gameModule->m_WorldState)
+			worldState->m_PauseTimeOfDay = !worldState->m_PauseTimeOfDay;
+	}
+}
+
 void MainMenuBar::ToggleFreeflyCamera()
 {
 	if (!Application::IsInGame())
@@ -181,6 +192,12 @@ void MainMenuBar::LoadPreviousSave()
 	Offsets::CallID<"NodeGraph::ExportedReloadLastSaveGame", void(*)(float)>(0.0f);
 }
 
+void MainMenuBar::AdjustTimescale(float Adjustment)
+{
+	m_Timescale = std::max(m_Timescale + Adjustment, 0.001f);
+	m_TimescaleOverride = true;
+}
+
 void MainMenuBar::DrawWorldMenu()
 {
 	if (ImGui::MenuItem("Weather Editor"))
@@ -227,7 +244,8 @@ void MainMenuBar::DrawTimeMenu()
 	ImGui::Separator();
 
 	// Day/night cycle
-	ImGui::MenuItem("Pause Time of Day", nullptr, &worldState->m_PauseTimeOfDay);
+	if (ImGui::MenuItem("Pause Time of Day", nullptr, worldState->m_PauseTimeOfDay))
+		TogglePauseTimeOfDay();
 
 	if (ImGui::MenuItem("Pause Day/Night Cycle", nullptr, !worldState->m_DayNightCycleEnabled))
 		worldState->m_DayNightCycleEnabled = !worldState->m_DayNightCycleEnabled;
@@ -318,7 +336,7 @@ void MainMenuBar::DrawCheatsMenu()
 		player->m_Entity->PlaceOnWorldTransform(transform, false);
 	};
 
-	const static std::vector<std::pair<const char *, WorldPosition>> AreaLocations
+	const static std::vector<std::pair<const char *, WorldPosition>> areaLocations
 	{
 		{ "Naming Cliff", { 2258.91, -1097.40, 359.18 } },
 		{ "Elizabet Sobeck's Ranch", { 5349.0, -2322.0, 120.0 } },
@@ -334,7 +352,7 @@ void MainMenuBar::DrawCheatsMenu()
 		if (ImGui::MenuItem("Freefly Camera Position"))
 			doTeleport(m_FreeCamPosition);
 
-		for (auto& [k, v] : AreaLocations)
+		for (auto& [k, v] : areaLocations)
 		{
 			if (ImGui::MenuItem(k))
 				doTeleport(v);
@@ -343,7 +361,7 @@ void MainMenuBar::DrawCheatsMenu()
 		ImGui::EndMenu();
 	}
 
-	const static std::vector<std::pair<const char *, WorldPosition>> UnlockableLocations
+	const static std::vector<std::pair<const char *, WorldPosition>> unlockableLocations
 	{
 		{ "GrazerDummy_01_RostsHovel", { 2166.24, -1521.54, 286.74 } },
 		{ "GrazerDummy_02_RostsHovel", { 2163.07, -1525.95, 287.56 } },
@@ -385,7 +403,7 @@ void MainMenuBar::DrawCheatsMenu()
 
 	if (ImGui::BeginMenu("Teleport To Unlockable"))
 	{
-		for (auto& [k, v] : UnlockableLocations)
+		for (auto& [k, v] : unlockableLocations)
 		{
 			if (ImGui::MenuItem(k))
 				doTeleport(v);

@@ -68,11 +68,14 @@ GlobalSettings ParseSettings(const toml::table& Table)
 	{
 		PARSE_TOML_HOTKEY(hotkeys, ToggleDebugUI);
 		PARSE_TOML_HOTKEY(hotkeys, TogglePauseGameLogic);
+		PARSE_TOML_HOTKEY(hotkeys, TogglePauseTimeOfDay);
 		PARSE_TOML_HOTKEY(hotkeys, ToggleFreeflyCamera);
 		PARSE_TOML_HOTKEY(hotkeys, ToggleNoclip);
 		PARSE_TOML_HOTKEY(hotkeys, SaveQuicksave);
 		PARSE_TOML_HOTKEY(hotkeys, LoadPreviousSave);
 		PARSE_TOML_HOTKEY(hotkeys, SpawnEntity);
+		PARSE_TOML_HOTKEY(hotkeys, IncreaseTimescale);
+		PARSE_TOML_HOTKEY(hotkeys, DecreaseTimescale);
 	}
 
 	// [AssetOverrides]

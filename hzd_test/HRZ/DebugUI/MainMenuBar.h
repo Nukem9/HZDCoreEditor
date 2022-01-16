@@ -41,10 +41,12 @@ public:
 	virtual std::string GetId() const override;
 
 	static void TogglePauseGameLogic();
+	static void TogglePauseTimeOfDay();
 	static void ToggleFreeflyCamera();
 	static void ToggleNoclip();
 	static void SavePlayerGame(SaveType Type);
 	static void LoadPreviousSave();
+	static void AdjustTimescale(float Adjustment);
 
 private:
 	void DrawWorldMenu();

@@ -37,11 +37,14 @@ struct GlobalSettings
 	{
 		int ToggleDebugUI;
 		int TogglePauseGameLogic;
+		int TogglePauseTimeOfDay;
 		int ToggleFreeflyCamera;
 		int ToggleNoclip;
 		int SaveQuicksave;
 		int LoadPreviousSave;
 		int SpawnEntity;
+		int IncreaseTimescale;
+		int DecreaseTimescale;
 	} Hotkeys;
 
 	// [AssetOverrides]

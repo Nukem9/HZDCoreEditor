@@ -23,11 +23,14 @@ UnlockEntitlementExtras = false     # Unlock all preorder and reviewer copy bonu
 [Hotkeys]
 ToggleDebugUI = 0xC0        # '~'  key. Toggles the main menu bar and cursor.
 TogglePauseGameLogic = 0x77 # 'F8' key. Toggles pausing game logic.
+TogglePauseTimeOfDay = -1   # Unbound. Pauses the time of day.
 ToggleFreeflyCamera = 0x75  # 'F6' key. Toggles the freefly camera.
 ToggleNoclip = 0x74         # 'F5' key. Toggles noclip.
 SaveQuicksave = -1          # Unbound. Forces a quicksave.
 LoadPreviousSave = -1       # Unbound. Loads the last created save game.
 SpawnEntity = 0x76          # 'F7' key. Spawns an entity when the Entity Spawner window is open.
+IncreaseTimescale = -1      # Unbound. Increases the timescale by 0.25x.
+DecreaseTimescale = -1      # Unbound. Decreases the timescale by 0.25x.
 
 #
 # *** ASSET OVERRIDES ***

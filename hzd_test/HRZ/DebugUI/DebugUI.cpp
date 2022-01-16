@@ -186,6 +186,8 @@ std::optional<LRESULT> HandleMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM 
 		}
 		else if (wParam == ModConfiguration.Hotkeys.TogglePauseGameLogic)
 			MainMenuBar::TogglePauseGameLogic();
+		else if (wParam == ModConfiguration.Hotkeys.TogglePauseTimeOfDay)
+			MainMenuBar::TogglePauseTimeOfDay();
 		else if (wParam == ModConfiguration.Hotkeys.ToggleFreeflyCamera)
 			MainMenuBar::ToggleFreeflyCamera();
 		else if (wParam == ModConfiguration.Hotkeys.ToggleNoclip)
@@ -196,6 +198,10 @@ std::optional<LRESULT> HandleMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM 
 			MainMenuBar::LoadPreviousSave();
 		else if (wParam == ModConfiguration.Hotkeys.SpawnEntity)
 			EntitySpawnerWindow::ForceSpawnEntityClick();
+		else if (wParam == ModConfiguration.Hotkeys.IncreaseTimescale)
+			MainMenuBar::AdjustTimescale(0.25f);
+		else if (wParam == ModConfiguration.Hotkeys.DecreaseTimescale)
+			MainMenuBar::AdjustTimescale(-0.25f);
 		else
 			keyHandled = false;
 
