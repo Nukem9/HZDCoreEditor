@@ -11,7 +11,7 @@ class RTTIRefObject;
 class IStreamingRefCallback
 {
 public:
-	virtual ~IStreamingRefCallback();							// 0
+	virtual ~IStreamingRefCallback() {};						// 0
 	virtual void OnStreamingRefLoad(RTTIRefObject *Object) = 0;	// 1
 	virtual void OnStreamingRefUnload() = 0;					// 2
 };

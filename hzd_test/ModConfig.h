@@ -51,9 +51,16 @@ struct GlobalSettings
 	std::vector<AssetOverride> AssetOverrides;
 
 	// [CoreObjectCache]
-	std::vector<std::pair<std::string, std::string>> CachedSpawnSetups;
-	std::vector<std::pair<std::string, std::string>> CachedWeatherSetups;
-	std::vector<std::pair<std::string, std::string>> CachedBodyVariants;
+	struct ObjectCacheEntry
+	{
+		std::string Name;
+		std::string CorePath;
+		std::string UUID;
+	};
+
+	std::vector<ObjectCacheEntry> CachedSpawnSetups;
+	std::vector<ObjectCacheEntry> CachedWeatherSetups;
+	std::vector<ObjectCacheEntry> CachedBodyVariants;
 };
 
 bool InitializeDefault();

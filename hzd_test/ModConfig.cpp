@@ -107,7 +107,7 @@ GlobalSettings ParseSettings(const toml::table& Table)
 			for (auto& entry : *cachedObjectArray)
 			{
 				auto& a = *entry.as_array();
-				TargetVector.emplace_back(a[0].value_or(""), a[1].value_or(""));
+				TargetVector.emplace_back(a[0].value_or(""), a[1].value_or(""), a[2].value_or(""));
 			}
 		}
 	};

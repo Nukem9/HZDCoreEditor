@@ -25,22 +25,22 @@ void BodyVariantWindow::Render()
 
 	if (ImGui::BeginListBox("##BodyVariantSelector", ImVec2(-FLT_MIN, -FLT_MIN)))
 	{
-		for (auto& [corePath, uuid] : ModConfiguration.CachedBodyVariants)
+		for (auto& variant : ModConfiguration.CachedBodyVariants)
 		{
 			char fullName[2048];
-			sprintf_s(fullName, "%s, %s", uuid.c_str(), corePath.c_str());
+			sprintf_s(fullName, "%s, %s", variant.Name.c_str(), variant.UUID.c_str());
 
 			if (!m_VariantNameFilter.PassFilter(fullName))
 				continue;
 
-			if (ImGui::Selectable(fullName, previouslySelectedUUID == uuid))
+			if (ImGui::Selectable(fullName, previouslySelectedUUID == variant.UUID))
 			{
-				previouslySelectedUUID = uuid;
+				previouslySelectedUUID = variant.UUID;
 
 				auto entity = Player::GetLocalPlayer()->m_Entity;
 				auto component = entity->m_Components.FindComponent<BodyVariantRuntimeComponent>();
 
-				component->ForceSetUnlistedVariantByPath(corePath.c_str(), GGUUID::TryParse(uuid).value());
+				component->ForceSetUnlistedVariantByPath(variant.CorePath.c_str(), GGUUID::Parse(variant.UUID));
 			}
 		}
 

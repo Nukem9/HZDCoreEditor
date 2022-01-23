@@ -170,13 +170,13 @@ void WeatherWindow::DrawCacheStreamedAssets()
 
 			for (size_t i = 0; i < ModConfiguration.CachedWeatherSetups.size(); i++)
 			{
-				auto& [corePath, uuid] = ModConfiguration.CachedWeatherSetups[i];
+				auto& weatherSetup = ModConfiguration.CachedWeatherSetups[i];
 
 				IStreamingManager::AssetLink link
 				{
 					.m_Handle = &cachedHandles[i],
-					.m_Path = corePath.c_str(),
-					.m_UUID = GGUUID::TryParse(uuid).value(),
+					.m_Path = weatherSetup.CorePath.c_str(),
+					.m_UUID = GGUUID::Parse(weatherSetup.UUID),
 				};
 
 				StreamingManager::Instance()->CreateHandleFromLink(link);

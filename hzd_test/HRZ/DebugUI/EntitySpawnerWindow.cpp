@@ -24,6 +24,65 @@ DECL_RTTI(SpawnSetupBase);
 namespace HRZ::DebugUI
 {
 
+void DebugUI::EntitySpawnerLoaderCallback::OnStreamingRefLoad(RTTIRefObject *Object)
+{
+	if (!Object)
+		return;
+
+	uint32_t count = m_NextSpawnCount.exchange(0);
+
+	if (count <= 0)
+		return;
+
+	Application::RunOnMainThread([count, transform = m_NextSpawnTransform, refObj = Ref<RTTIRefObject>(Object)]()
+	{
+		for (uint32_t i = 0; i < count; i++)
+		{
+			auto spawnpoint = Offsets::CallID<"RTTI::CreateObject", RTTIRefObject *(*)(const RTTI *)>(RTTI_Spawnpoint);
+			auto rtti = spawnpoint->GetRTTI()->AsClass();
+
+			spawnpoint->IncRef();
+			rtti->SetMemberValue<GGUUID>(spawnpoint, "ObjectUUID", GGUUID::Generate());
+			rtti->SetMemberValue<WorldTransform>(spawnpoint, "Orientation", transform);
+			rtti->SetMemberValue<String>(spawnpoint, "Name", "DebugUI_Manually_Spawned_Entity");
+			rtti->SetMemberValue<Ref<Resource>>(spawnpoint, "SpawnSetup", RTTI::Cast<Resource>(refObj.get()));
+			rtti->SetMemberValue<float>(spawnpoint, "Radius", 1.0f);
+			rtti->SetMemberValue<float>(spawnpoint, "DespawnRadius", 0.0f);
+			// WeakPtr<Entity> @ Spawnpoint+0x188
+
+			Offsets::CallID<"NodeGraph::ExportedSpawnpointSpawn", void(*)(RTTIRefObject *)>(spawnpoint);
+			spawnpoint->DecRef();
+		}
+	});
+}
+
+void DebugUI::EntitySpawnerLoaderCallback::OnStreamingRefUnload()
+{
+}
+
+void DebugUI::EntitySpawnerLoaderCallback::DoSpawn(const std::string_view CorePath, const std::string_view UUID)
+{
+	StreamingRef<Resource> newHandle;
+	IStreamingManager::AssetLink link
+	{
+		.m_Handle = &newHandle,
+		.m_Path = CorePath.data(),
+		.m_UUID = GGUUID::Parse(UUID),
+	};
+
+	// Don't call CreateHandleFromLink directly on m_PendingLoadBodyVariant. It won't unload the previous asset.
+	StreamingManager::Instance()->CreateHandleFromLink(link);
+
+	// Now set the loader callback
+	m_NextSpawnSetup = newHandle;
+	StreamingManager::Instance()->IStreamingManagerUnknown05(m_NextSpawnSetup, 1, this, nullptr);
+	StreamingManager::Instance()->UpdateLoadState(m_NextSpawnSetup, 7);
+
+	// Handle cases where the ref is already loaded
+	if (m_NextSpawnSetup)
+		OnStreamingRefLoad(m_NextSpawnSetup.get());
+}
+
 void EntitySpawnerWindow::Render()
 {
 	ImGui::SetNextWindowSize(ImVec2(500, 600), ImGuiCond_FirstUseEver);
@@ -34,52 +93,34 @@ void EntitySpawnerWindow::Render()
 		return;
 	}
 
-	// Gather & sort
-	std::scoped_lock lock(ResourceListLock);
-	std::vector<Resource *> sortedSetups;
-
-	for (auto refObject : CachedSpawnSetupBases)
-		sortedSetups.push_back(RTTI::Cast<Resource>(refObject));
-
-	std::sort(sortedSetups.begin(), sortedSetups.end(), [](Resource *A, Resource *B)
-	{
-		return A->GetName() < B->GetName();
-	});
-
 	// Draw list
-	static GGUUID selectedUUID;
-	Resource *selectedObjectThisFrame = nullptr;
-
 	m_SpawnerNameFilter.Draw();
 
 	if (ImGui::BeginListBox("##SpawnSetupSelector", ImVec2(-FLT_MIN, -200)))
 	{
-		for (auto setup : sortedSetups)
+		for (size_t i = 0; i < ModConfiguration.CachedSpawnSetups.size(); i++)
 		{
-			auto& name = setup->GetName();
+			auto& spawnSetup = ModConfiguration.CachedSpawnSetups[i];
 
-			if (!m_SpawnerNameFilter.PassFilter(name.c_str()))
+			char fullName[2048];
+			sprintf_s(fullName, "%s, %s##%p", spawnSetup.Name.c_str(), spawnSetup.CorePath.c_str(), &spawnSetup);
+
+			if (!m_SpawnerNameFilter.PassFilter(fullName))
 				continue;
 
-			char itemText[512];
-			sprintf_s(itemText, "%s##%p", name.c_str(), setup);
-
-			if (ImGui::Selectable(itemText, setup->m_ObjectUUID == selectedUUID))
-				selectedUUID = setup->m_ObjectUUID;
-
-			if (setup->m_ObjectUUID == selectedUUID)
-				selectedObjectThisFrame = setup;
+			if (ImGui::Selectable(fullName, m_LastSelectedSetupIndex == i))
+				m_LastSelectedSetupIndex = i;
 		}
 
 		ImGui::EndListBox();
 	}
 
-	DrawCacheStreamedAssets();
-
 	// Draw settings
 	ImGui::Separator();
 
-	if (!selectedObjectThisFrame)
+	bool allowSpawn = m_LastSelectedSetupIndex != -1 && m_LoaderCallback.m_NextSpawnCount == 0;
+
+	if (!allowSpawn)
 		ImGui::BeginDisabled(true);
 
 	static int spawnCount = 1;
@@ -152,28 +193,18 @@ void EntitySpawnerWindow::Render()
 		return currentTransform;
 	};
 
-	if (ImGui::Button("Spawn") || (selectedObjectThisFrame && m_DoSpawnOnNextFrame))
+	// Spawn button
+	if (ImGui::Button("Spawn") || (m_DoSpawnOnNextFrame && allowSpawn))
 	{
-		for (int i = 0; i < spawnCount; i++)
-		{
-			auto spawnpoint = Offsets::CallID<"RTTI::CreateObject", RTTIRefObject *(*)(const RTTI *)>(RTTI_Spawnpoint);
-			auto rtti = spawnpoint->GetRTTI()->AsClass();
-
-			spawnpoint->IncRef();
-			rtti->SetMemberValue<GGUUID>(spawnpoint, "ObjectUUID", GGUUID::Generate());
-			rtti->SetMemberValue<WorldTransform>(spawnpoint, "Orientation", getSpawnTransform());
-			rtti->SetMemberValue<String>(spawnpoint, "Name", "UI_Manually_Spawned_Entity");
-			rtti->SetMemberValue<Ref<Resource>>(spawnpoint, "SpawnSetup", selectedObjectThisFrame);
-			rtti->SetMemberValue<float>(spawnpoint, "Radius", 1.0f);
-			rtti->SetMemberValue<float>(spawnpoint, "DespawnRadius", 0.0f);
-			// WeakPtr<Entity> @ Spawnpoint+0x188
-
-			Offsets::CallID<"NodeGraph::ExportedSpawnpointSpawn", void(*)(RTTIRefObject *)>(spawnpoint);
-			spawnpoint->DecRef();
-		}
+		m_LoaderCallback.m_NextSpawnCount = spawnCount;
+		m_LoaderCallback.m_NextSpawnTransform = getSpawnTransform();
+		m_LoaderCallback.DoSpawn(ModConfiguration.CachedSpawnSetups[m_LastSelectedSetupIndex].CorePath, ModConfiguration.CachedSpawnSetups[m_LastSelectedSetupIndex].UUID);
 	}
 
-	if (!selectedObjectThisFrame)
+	ImGui::Spacing();
+	ImGui::TextDisabled("Note that many humanoid and scripted entities will crash the game upon taking damage.");
+
+	if (!allowSpawn)
 		ImGui::EndDisabled();
 
 	ImGui::End();
@@ -194,42 +225,6 @@ std::string DebugUI::EntitySpawnerWindow::GetId() const
 void EntitySpawnerWindow::ForceSpawnEntityClick()
 {
 	m_DoSpawnOnNextFrame = true;
-}
-
-void EntitySpawnerWindow::DrawCacheStreamedAssets()
-{
-	static auto& cachedHandles = *new std::vector<StreamingRefHandle>();
-
-	bool streamedAssetsLoaded = !cachedHandles.empty();
-	auto text = streamedAssetsLoaded ? "Unload cached spawn setups" : "Force load cached spawn setups";
-
-	if (ImGui::Button(text, ImVec2(-FLT_MIN, 0)))
-	{
-		if (streamedAssetsLoaded)
-		{
-			// Release references to the handles
-			cachedHandles.clear();
-		}
-		else
-		{
-			cachedHandles.resize(ModConfiguration.CachedSpawnSetups.size());
-
-			for (size_t i = 0; i < ModConfiguration.CachedSpawnSetups.size(); i++)
-			{
-				auto& [corePath, uuid] = ModConfiguration.CachedSpawnSetups[i];
-
-				IStreamingManager::AssetLink link
-				{
-					.m_Handle = &cachedHandles[i],
-					.m_Path = corePath.c_str(),
-					.m_UUID = GGUUID::TryParse(uuid).value(),
-				};
-
-				StreamingManager::Instance()->CreateHandleFromLink(link);
-				StreamingManager::Instance()->UpdateLoadState(*link.m_Handle, 7);
-			}
-		}
-	}
 }
 
 }
