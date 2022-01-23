@@ -119,6 +119,21 @@ DecreaseTimescale = -1      # Unbound. Decreases the timescale by 0.25x.
     Value = "0"
 
     #
+    # Patch (2): Cheats: Adjust player damage dealt & player damage received multipliers
+    #
+    [[AssetOverrides.Disabled]]
+    ObjectUUIDs = "{BFCE3F79-C130-6D43-AE18-675909CA229D}"
+    Path = "Points"
+    Value = "[(0 0.5)]"
+    Notes = "Change 0.5 to your desired multiplier for player damage received. CurveResource in entities/globaldamagemodifiercampaign."
+
+    [[AssetOverrides.Disabled]]
+    ObjectUUIDs = "{FB80923D-9B59-D541-B835-AA883ED97CF1}"
+    Path = "Points"
+    Value = "[(0 10)]"
+    Notes = "Change 10 to your desired multiplier for player damage dealt. CurveResource in entities/globaldamagemodifiercampaign."
+
+    #
     # Patch (2): QoL: Allow horse mounts in all areas (settlements, foundries, bunkers)
     #
     [[AssetOverrides.Disabled]]
