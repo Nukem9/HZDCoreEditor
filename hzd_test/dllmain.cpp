@@ -46,6 +46,8 @@ bool hk_SwapChainDX12_Present(SwapChainDX12 *SwapChain)
 		}();
 	}
 
+	Application::RunMainThreadCallbacks();
+
 	DebugUI::RenderUI();
 	DebugUI::RenderUID3D(SwapChain);
 	return SwapChain->Present();

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 #include "../../Offsets.h"
 #include "../PCore/Common.h"
 
@@ -42,6 +44,8 @@ public:
 
 	static Application& Instance();
 	static bool IsInGame();
+	static void RunOnMainThread(std::function<void()> Callback);
+	static void RunMainThreadCallbacks();
 };
 assert_offset(Application, m_Game, 0x18);
 assert_offset(Application, m_LevelData, 0x38);
