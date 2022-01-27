@@ -31,6 +31,8 @@ LoadPreviousSave = -1       # Unbound. Loads the last created save game.
 SpawnEntity = 0x76          # 'F7' key. Spawns an entity when the Entity Spawner window is open.
 IncreaseTimescale = -1      # Unbound. Increases the timescale by 0.25x.
 DecreaseTimescale = -1      # Unbound. Decreases the timescale by 0.25x.
+IncreaseTimeOfDay = -1      # Unbound. Increase the time of day by 1 hour.
+DecreaseTimeOfDay = -1      # Unbound. Decrease the time of day by 1 hour.
 
 #
 # *** ASSET OVERRIDES ***

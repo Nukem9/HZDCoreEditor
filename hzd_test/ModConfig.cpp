@@ -76,6 +76,8 @@ GlobalSettings ParseSettings(const toml::table& Table)
 		PARSE_TOML_HOTKEY(hotkeys, SpawnEntity);
 		PARSE_TOML_HOTKEY(hotkeys, IncreaseTimescale);
 		PARSE_TOML_HOTKEY(hotkeys, DecreaseTimescale);
+		PARSE_TOML_HOTKEY(hotkeys, IncreaseTimeOfDay);
+		PARSE_TOML_HOTKEY(hotkeys, DecreaseTimeOfDay);
 	}
 
 	// [AssetOverrides]

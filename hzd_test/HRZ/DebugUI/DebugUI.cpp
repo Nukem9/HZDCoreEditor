@@ -202,6 +202,10 @@ std::optional<LRESULT> HandleMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM 
 			MainMenuBar::AdjustTimescale(0.25f);
 		else if (wParam == ModConfiguration.Hotkeys.DecreaseTimescale)
 			MainMenuBar::AdjustTimescale(-0.25f);
+		else if (wParam == ModConfiguration.Hotkeys.IncreaseTimeOfDay)
+			MainMenuBar::AdjustTimeOfDay(1.0f);
+		else if (wParam == ModConfiguration.Hotkeys.DecreaseTimeOfDay)
+			MainMenuBar::AdjustTimeOfDay(-1.0f);
 		else
 			keyHandled = false;
 

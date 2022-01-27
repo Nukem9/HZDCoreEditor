@@ -47,6 +47,7 @@ public:
 	static void SavePlayerGame(SaveType Type);
 	static void LoadPreviousSave();
 	static void AdjustTimescale(float Adjustment);
+	static void AdjustTimeOfDay(float Adjustment);
 
 private:
 	void DrawWorldMenu();

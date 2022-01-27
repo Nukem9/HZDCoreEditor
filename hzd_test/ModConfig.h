@@ -45,6 +45,8 @@ struct GlobalSettings
 		int SpawnEntity;
 		int IncreaseTimescale;
 		int DecreaseTimescale;
+		int IncreaseTimeOfDay;
+		int DecreaseTimeOfDay;
 	} Hotkeys;
 
 	// [AssetOverrides]

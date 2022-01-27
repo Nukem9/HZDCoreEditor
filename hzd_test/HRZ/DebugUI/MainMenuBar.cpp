@@ -132,20 +132,24 @@ void MainMenuBar::TogglePauseTimeOfDay()
 
 void MainMenuBar::ToggleFreeflyCamera()
 {
-	if (!Application::IsInGame())
+	auto player = Player::GetLocalPlayer();
+
+	if (!player || !player->GetLastActivatedCamera())
 		return;
 
 	m_FreeCamMode = (m_FreeCamMode == FreeCamMode::Free) ? FreeCamMode::Off : FreeCamMode::Free;
-	m_FreeCamPosition = Player::GetLocalPlayer()->GetLastActivatedCamera()->m_Orientation.Position;
+	m_FreeCamPosition = player->GetLastActivatedCamera()->m_Orientation.Position;
 }
 
 void MainMenuBar::ToggleNoclip()
 {
-	if (!Application::IsInGame())
+	auto player = Player::GetLocalPlayer();
+
+	if (!player || !player->m_Entity)
 		return;
 
 	m_FreeCamMode = (m_FreeCamMode == FreeCamMode::Noclip) ? FreeCamMode::Off : FreeCamMode::Noclip;
-	m_FreeCamPosition = Player::GetLocalPlayer()->m_Entity->m_Orientation.Position;
+	m_FreeCamPosition = player->m_Entity->m_Orientation.Position;
 }
 
 void MainMenuBar::SavePlayerGame(SaveType Type)
@@ -196,6 +200,17 @@ void MainMenuBar::AdjustTimescale(float Adjustment)
 {
 	m_Timescale = std::max(m_Timescale + Adjustment, 0.001f);
 	m_TimescaleOverride = true;
+}
+
+void MainMenuBar::AdjustTimeOfDay(float Adjustment)
+{
+	auto& gameModule = Application::Instance().m_GameModule;
+
+	if (gameModule)
+	{
+		if (auto& worldState = gameModule->m_WorldState)
+			worldState->SetTimeOfDay(worldState->m_TimeOfDay + Adjustment, 0.0f);
+	}
 }
 
 void MainMenuBar::DrawWorldMenu()
