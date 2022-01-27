@@ -2,25 +2,33 @@
 
 #include <d3d12.h>
 
+#include "../../Offsets.h"
+
 namespace HRZ
 {
 
 class RenderingConfiguration
 {
 public:
-	uint32_t GetDescriptorHandleIncrementSize() const
-	{
-		return *(uint32_t *)((uintptr_t)this + 0x48F7C8);
-	}
-
 	ID3D12DescriptorHeap *GetDescriptorHeap() const
 	{
-		return *(ID3D12DescriptorHeap **)((uintptr_t)this + 0x48F7C0);
+		const static auto structOffset = *Offsets::ResolveID<"RenderingConfigDescriptorHeapOffsetPtr", uint32_t *>();
+
+		return *(ID3D12DescriptorHeap **)((uintptr_t)this + structOffset);
+	}
+
+	uint32_t GetDescriptorHandleIncrementSize() const
+	{
+		const static auto structOffset = *Offsets::ResolveID<"RenderingConfigDescriptorHandleIncrementSizeOffsetPtr", uint32_t *>();
+
+		return *(uint32_t *)((uintptr_t)this + structOffset);
 	}
 
 	ID3D12CommandQueue *GetCommandQueue() const
 	{
-		return *(ID3D12CommandQueue **)((uintptr_t)this + 0x48F808);
+		const static auto structOffset = *Offsets::ResolveID<"RenderingConfigDescriptorCommandQueueOffsetPtr", uint32_t *>();
+
+		return *(ID3D12CommandQueue **)((uintptr_t)this + structOffset);
 	}
 };
 

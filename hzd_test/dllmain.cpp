@@ -260,6 +260,11 @@ void LoadSignatures(GameType Game)
 		Offsets::MapAddress("Application::Instance", offsetFromInstruction("48 89 5C 24 08 57 48 83 EC 20 48 83 79 28 00 48 8B DA 48 8B F9 74 5A 33 D2 48 8D", 28));
 		Offsets::MapAddress("RenderingDeviceDX12::Instance", offsetFromInstruction("48 89 5C 24 08 48 89 74 24 10 57 48 83 EC 20 48 83 B9 38 01 00 00 00 48 8D ? ? ? ? ? 48 89 01 48 8B F9 74 13 48 8D 91 30 01 00 00 48 8D", 48));
 		Offsets::MapAddress("StreamingManager::Instance", offsetFromInstruction("48 8B ? ? ? ? ? 45 33 C0 48 8D 50 30 4C 8B 09 41 FF 51 30 48 8B CB", 3));
+
+		// Structure offsets
+		Offsets::MapSignature("RenderingConfigDescriptorHeapOffsetPtr", "4C 8D 45 98 45 0F AF CF 41 8B D5 49 8B CE 4C 03 08 4C 89 4E F4", -0x10);
+		Offsets::MapSignature("RenderingConfigDescriptorHandleIncrementSizeOffsetPtr", "4C 8D 45 98 45 0F AF CF 41 8B D5 49 8B CE 4C 03 08 4C 89 4E F4", -0x4);
+		Offsets::MapSignature("RenderingConfigDescriptorCommandQueueOffsetPtr", "48 89 7D 30 48 8B 01 FF 50 78 85 C0 79 14", -0x4);
 	}
 }
 
