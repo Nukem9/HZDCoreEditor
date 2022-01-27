@@ -254,6 +254,7 @@ void LoadSignatures(GameType Game)
 		Offsets::MapSignature("ProcessAIJobHookLoc1", "48 8B 01 FF 90 00 01 00 00 48 8B 03 48 8D", -0xF8);
 		Offsets::MapSignature("ProcessAIJobHookLoc2", "48 8B 01 FF 90 00 01 00 00 48 8B 03 48 8B 5C 24 30", -0xE6);
 		Offsets::MapSignature("SetBodyVariantHookLoc1", "E8 ? ? ? ? 48 8B 5C 24 58 48 83 C4 38 5F 5D C3");
+		Offsets::MapSignature("SendCrashReportDialogPatchLoc", "74 14 FF 15 ? ? ? ? 48 8B C8 BA FF FF FF FF FF 15");
 
 		// Globals
 		Offsets::MapAddress("ExportedSymbolGroupArray", offsetFromInstruction("48 8B C2 4C 8D ? ? ? ? ? 48 8D ? ? ? ? ? 48 8D ? ? ? ? ? 48 FF E0", 6));
@@ -289,6 +290,9 @@ void ApplyHooks(GameType Game)
 
 		MSRTTI::Initialize();
 		RTTIScanner::ScanForRTTIStructures();
+
+		// Prevent crash reports from being submitted to Guerrilla if they're not caused by the vanilla game
+		XUtil::PatchMemory(Offsets::ResolveID<"SendCrashReportDialogPatchLoc">(), { 0x90, 0x90 });
 
 		// Redirect internal log prints
 		Detours::IATHook(moduleBase, "api-ms-win-crt-stdio-l1-1-0.dll", "__acrt_iob_func", reinterpret_cast<uintptr_t>(&LogHooks::hk___acrt_iob_func));
