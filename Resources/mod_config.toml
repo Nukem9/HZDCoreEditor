@@ -300,6 +300,15 @@ DecreaseTimeOfDay = -1      # Unbound. Decrease the time of day by 1 hour.
     Value = "20000"
     Notes = "Default typically between 150 and 1000. DynamicSpawnEcotopeSetup in entities/dynamicspawn/dynamicspawnmanager"
 
+    #
+    # Patch (1): QoL: Hide Aloy's dynamic hair to prevent clipping with custom outfits.
+    #
+    [[AssetOverrides.Disabled]]
+    ObjectUUIDs = "{90DF4B98-42E7-1639-8B8E-B046B8670B0C}"
+    Path = "LODMeshDistances"
+    Value = "[10000, 9999, 9998, 9997, 9996, 9995, 0]"
+    Notes = "HairResource in models/characters/humans/hair/aloy/model/model"
+
 #
 # *** CORE OBJECT CACHE LIST ***
 #
