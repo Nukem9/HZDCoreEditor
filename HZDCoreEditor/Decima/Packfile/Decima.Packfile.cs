@@ -39,6 +39,15 @@ namespace Decima
         /// <summary>
         /// Main header for *.bin files.
         /// </summary>
+        /// <remarks>
+        /// 0x0  Magic
+        /// 0x4  Xor key
+        /// 0x8  Unused
+        /// 0x18 File entry count
+        /// 0x20 Block entry count
+        /// 
+        /// Size = 0x28
+        /// </remarks>
         public sealed class PackfileHeader
         {
             public const int DataHeaderSize = 40;// Bytes
@@ -47,8 +56,8 @@ namespace Decima
 
             public uint Magic { get; internal set; }
             public uint XorKey { get; internal set; }
-            public uint FileEntryCount { get; internal set; }
-            public uint BlockEntryCount { get; internal set; }
+            public ulong FileEntryCount { get; internal set; }
+            public int BlockEntryCount { get; internal set; }
 
             public bool IsEncrypted
             {
@@ -110,8 +119,8 @@ namespace Decima
                 }
 
                 //_ = Bits.ToUInt32(xorData.Slice(8));                              // 0x8 - 0x18 Not used?
-                header.FileEntryCount = BitConverter.ToUInt32(xorData.Slice(24));   // 0x18
-                header.BlockEntryCount = BitConverter.ToUInt32(xorData.Slice(32));  // 0x20
+                header.FileEntryCount = BitConverter.ToUInt64(xorData.Slice(24));   // 0x18
+                header.BlockEntryCount = BitConverter.ToInt32(xorData.Slice(32));   // 0x20
                 //_ = Bits.ToUInt32(xorData.Slice(36));                             // 0x24 Not used?
 
                 return header;

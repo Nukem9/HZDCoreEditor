@@ -169,10 +169,10 @@ namespace Decima
         private void WriteArchiveHeaders(BinaryWriter writer)
         {
             _fileEntries.Sort((x, y) => x.PathHash.CompareTo(y.PathHash));
-            Header.FileEntryCount = (uint)_fileEntries.Count;
+            Header.FileEntryCount = (ulong)_fileEntries.Count;
 
             _blockEntries.Sort((x, y) => x.DecompressedOffset.CompareTo(y.DecompressedOffset));
-            Header.BlockEntryCount = (uint)_blockEntries.Count;
+            Header.BlockEntryCount = _blockEntries.Count;
 
             Header.ToData(writer);
 

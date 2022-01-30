@@ -28,12 +28,12 @@ namespace Decima
 
             Header = PackfileHeader.FromData(reader);
             _fileEntries = new List<FileEntry>((int)Header.FileEntryCount);
-            _blockEntries = new List<BlockEntry>((int)Header.BlockEntryCount);
+            _blockEntries = new List<BlockEntry>(Header.BlockEntryCount);
 
-            Span<byte> fileData = reader.ReadBytesStrict(Header.FileEntryCount * FileEntry.DataHeaderSize);
+            Span<byte> fileData = reader.ReadBytesStrict((int)Header.FileEntryCount * FileEntry.DataHeaderSize);
             Span<byte> blockData = reader.ReadBytesStrict(Header.BlockEntryCount * BlockEntry.DataHeaderSize);
 
-            for (int i = 0; i < Header.FileEntryCount; i++)
+            for (int i = 0; i < (int)Header.FileEntryCount; i++)
             {
                 var data = fileData.Slice(i * FileEntry.DataHeaderSize);
                 _fileEntries.Add(FileEntry.FromData(data, Header));
