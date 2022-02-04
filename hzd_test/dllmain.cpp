@@ -255,12 +255,13 @@ void LoadSignatures(GameType Game)
 		Offsets::MapSignature("ProcessAIJobHookLoc2", "48 8B 01 FF 90 00 01 00 00 48 8B 03 48 8B 5C 24 30", -0xE6);
 		Offsets::MapSignature("SetBodyVariantHookLoc1", "E8 ? ? ? ? 48 8B 5C 24 58 48 83 C4 38 5F 5D C3");
 		Offsets::MapSignature("SendCrashReportDialogPatchLoc", "74 14 FF 15 ? ? ? ? 48 8B C8 BA FF FF FF FF FF 15");
+		Offsets::MapAddress("CutsceneAspectRatioPatchLoc", offsetFromInstruction("F3 0F 10 ? ? ? ? ? F3 0F 5C C7 F3 0F 11 44 24 58 8B 44 24 58 25 00 00 80 7F", 0x4));
 
 		// Globals
-		Offsets::MapAddress("ExportedSymbolGroupArray", offsetFromInstruction("48 8B C2 4C 8D ? ? ? ? ? 48 8D ? ? ? ? ? 48 8D ? ? ? ? ? 48 FF E0", 6));
-		Offsets::MapAddress("Application::Instance", offsetFromInstruction("48 89 5C 24 08 57 48 83 EC 20 48 83 79 28 00 48 8B DA 48 8B F9 74 5A 33 D2 48 8D", 28));
-		Offsets::MapAddress("RenderingDeviceDX12::Instance", offsetFromInstruction("48 89 5C 24 08 48 89 74 24 10 57 48 83 EC 20 48 83 B9 38 01 00 00 00 48 8D ? ? ? ? ? 48 89 01 48 8B F9 74 13 48 8D 91 30 01 00 00 48 8D", 48));
-		Offsets::MapAddress("StreamingManager::Instance", offsetFromInstruction("48 8B ? ? ? ? ? 45 33 C0 48 8D 50 30 4C 8B 09 41 FF 51 30 48 8B CB", 3));
+		Offsets::MapAddress("ExportedSymbolGroupArray", offsetFromInstruction("48 8B C2 4C 8D ? ? ? ? ? 48 8D ? ? ? ? ? 48 8D ? ? ? ? ? 48 FF E0", 0x6));
+		Offsets::MapAddress("Application::Instance", offsetFromInstruction("48 89 5C 24 08 57 48 83 EC 20 48 83 79 28 00 48 8B DA 48 8B F9 74 5A 33 D2 48 8D", 0x1C));
+		Offsets::MapAddress("RenderingDeviceDX12::Instance", offsetFromInstruction("48 89 5C 24 08 48 89 74 24 10 57 48 83 EC 20 48 83 B9 38 01 00 00 00 48 8D ? ? ? ? ? 48 89 01 48 8B F9 74 13 48 8D 91 30 01 00 00 48 8D", 0x30));
+		Offsets::MapAddress("StreamingManager::Instance", offsetFromInstruction("48 8B ? ? ? ? ? 45 33 C0 48 8D 50 30 4C 8B 09 41 FF 51 30 48 8B CB", 0x3));
 
 		// Structure offsets
 		Offsets::MapSignature("RenderingConfigDescriptorHeapOffsetPtr", "4C 8D 45 98 45 0F AF CF 41 8B D5 49 8B CE 4C 03 08 4C 89 4E F4", -0x10);
@@ -339,6 +340,10 @@ void ApplyHooks(GameType Game)
 			XUtil::PatchMemory(Offsets::ResolveID<"FocusModelIsUnlockedPatchLoc1">(), { 0xB0, 0x01, 0xC3 });
 			XUtil::PatchMemory(Offsets::ResolveID<"FocusModelIsUnlockedPatchLoc2">(), { 0x90, 0x90 });
 		}
+
+		// Force a set aspect ratio during realtime cutscenes
+		if (ModConfiguration.CutsceneAspectRatio > 0)
+			XUtil::PatchMemory(Offsets::ResolveID<"CutsceneAspectRatioPatchLoc">(), reinterpret_cast<uint8_t *>(&ModConfiguration.CutsceneAspectRatio), sizeof(float));
 	}
 }
 

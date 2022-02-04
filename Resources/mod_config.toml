@@ -13,6 +13,7 @@ DebugMenuFontScale = 1.0            # Change the global font scale in the debug 
 SkipIntroLogos = true               # Skip the intro logo movies on game startup.
 UnlockNGPExtras = false             # Unlock all facepaints and custom focus models without completing NewGame+.
 UnlockEntitlementExtras = false     # Unlock all preorder and reviewer copy bonuses.
+CutsceneAspectRatio = 1.77777777    # Force a custom aspect ratio in realtime cutscenes. Horizon Zero Dawn defaults to 16:9.
 
 #
 # *** HOTKEYS (KEYBINDS) ***

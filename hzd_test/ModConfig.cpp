@@ -60,6 +60,7 @@ GlobalSettings ParseSettings(const toml::table& Table)
 		PARSE_TOML_MEMBER(gameplay, SkipIntroLogos);
 		PARSE_TOML_MEMBER(gameplay, UnlockNGPExtras);
 		PARSE_TOML_MEMBER(gameplay, UnlockEntitlementExtras);
+		PARSE_TOML_MEMBER(gameplay, CutsceneAspectRatio);
 		PARSE_TOML_MEMBER(gameplay, ForceBodyVariantUUID);
 	}
 

@@ -30,6 +30,7 @@ struct GlobalSettings
 	bool SkipIntroLogos;
 	bool UnlockNGPExtras;
 	bool UnlockEntitlementExtras;
+	float CutsceneAspectRatio;
 	std::string ForceBodyVariantUUID;
 
 	// [Hotkeys]
