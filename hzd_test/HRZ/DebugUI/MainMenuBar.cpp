@@ -34,7 +34,7 @@ namespace HRZ::DebugUI
 
 void MainMenuBar::Render()
 {
-	if (!ShouldInterceptInput())
+	if (!m_IsVisible)
 		return;
 
 	if (!ImGui::BeginMainMenuBar())
@@ -104,6 +104,11 @@ bool MainMenuBar::Close()
 std::string MainMenuBar::GetId() const
 {
 	return "Main Menu Bar";
+}
+
+void MainMenuBar::ToggleVisibility()
+{
+	m_IsVisible = !m_IsVisible;
 }
 
 void MainMenuBar::TogglePauseGameLogic()

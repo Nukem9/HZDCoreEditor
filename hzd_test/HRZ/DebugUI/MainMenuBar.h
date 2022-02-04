@@ -29,6 +29,7 @@ public:
 		NewGamePlus,
 	};
 
+	static inline bool m_IsVisible;
 	static inline FreeCamMode m_FreeCamMode;
 	static inline WorldPosition m_FreeCamPosition;
 	static inline bool m_PauseAIProcessing;
@@ -40,6 +41,7 @@ public:
 	virtual bool Close() override;
 	virtual std::string GetId() const override;
 
+	static void ToggleVisibility();
 	static void TogglePauseGameLogic();
 	static void TogglePauseTimeOfDay();
 	static void ToggleFreeflyCamera();

@@ -20,9 +20,10 @@ void AddWindow(std::shared_ptr<Window> Handle);
 void RenderUI();
 void RenderUID3D(const SwapChainDX12 *SwapChain);
 
+std::optional<LRESULT> HandleMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
+
 void ToggleInputInterception();
 bool ShouldInterceptInput();
-std::optional<LRESULT> HandleMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 void UpdateFreecam();
 
 }

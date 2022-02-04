@@ -146,30 +146,6 @@ void RenderUID3D(const SwapChainDX12 *SwapChain)
 	SwapChain->m_RenderingConfig->GetCommandQueue()->ExecuteCommandLists(1, reinterpret_cast<ID3D12CommandList * const *>(&CommandList));
 }
 
-void ToggleInputInterception()
-{
-	InterceptInput = !InterceptInput;
-	auto cursorManager = Application::Instance().m_CursorManager;
-
-	if (InterceptInput)
-	{
-		ImGui::GetIO().MouseDrawCursor = true;
-		cursorManager->m_UnlockCursorBounds = true;
-		cursorManager->m_ForceHideCursor = true;
-	}
-	else
-	{
-		ImGui::GetIO().MouseDrawCursor = false;
-		cursorManager->m_UnlockCursorBounds = false;
-		cursorManager->m_ForceHideCursor = false;
-	}
-}
-
-bool ShouldInterceptInput()
-{
-	return InterceptInput;
-}
-
 std::optional<LRESULT> HandleMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (Msg)
@@ -182,7 +158,9 @@ std::optional<LRESULT> HandleMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM 
 		{
 			// Toggle input blocking and the main menu bar
 			ToggleInputInterception();
-			CallWindowProcW(OriginalWndProc, hWnd, WM_ACTIVATEAPP, InterceptInput ? 0 : 1, 0);
+			MainMenuBar::ToggleVisibility();
+
+			CallWindowProcW(OriginalWndProc, hWnd, WM_ACTIVATEAPP, ShouldInterceptInput() ? 0 : 1, 0);
 		}
 		else if (wParam == ModConfiguration.Hotkeys.TogglePauseGameLogic)
 			MainMenuBar::TogglePauseGameLogic();
@@ -217,13 +195,41 @@ std::optional<LRESULT> HandleMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM 
 	case WM_ACTIVATEAPP:
 	{
 		// Prevent alt-tab from interfering with input blocking
-		if (InterceptInput)
+		if (ShouldInterceptInput())
 			return 1;
 	}
 	break;
 	}
 
 	return std::nullopt;
+}
+
+void ToggleInputInterception()
+{
+	InterceptInput = !InterceptInput;
+	auto cursorManager = Application::Instance().m_CursorManager;
+
+	if (InterceptInput)
+	{
+		ImGui::GetIO().MouseDrawCursor = true;
+		cursorManager->m_UnlockCursorBounds = true;
+		cursorManager->m_ForceHideCursor = true;
+	}
+	else
+	{
+		ImGui::GetIO().MouseDrawCursor = false;
+		cursorManager->m_UnlockCursorBounds = false;
+		cursorManager->m_ForceHideCursor = false;
+	}
+
+	// Apply freecam overrides (no visible cursor, but input still blocked)
+	if (MainMenuBar::m_FreeCamMode == MainMenuBar::FreeCamMode::Free)
+		cursorManager->m_UnlockCursorBounds = true;
+}
+
+bool ShouldInterceptInput()
+{
+	return InterceptInput || MainMenuBar::m_FreeCamMode == MainMenuBar::FreeCamMode::Free;
 }
 
 void UpdateFreecam()
@@ -328,7 +334,7 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 	// Intercepted messages will prevent them from being forwarded to imgui and the game
 	auto handled = HandleMessage(hWnd, Msg, wParam, lParam);
 
-	if (handled.has_value())
+	if (handled)
 		return handled.value();
 
 	ImGui_ImplWin32_WndProcHandler(hWnd, Msg, wParam, lParam);
