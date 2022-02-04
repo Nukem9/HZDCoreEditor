@@ -247,7 +247,7 @@ DecreaseTimeOfDay = -1      # Unbound. Decrease the time of day by 1 hour.
     [[AssetOverrides.Disabled]]
     ObjectTypes = "StackableComponentResource"
     Path = "StackLimit"
-    Value = "100000"
+    Value = "10000000"
 
     #
     # Patch (3): QoL: Remove the pick-up animation when collecting resources. All of these must be enabled or your game will softlock.
