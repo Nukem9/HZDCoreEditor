@@ -262,16 +262,31 @@ void UpdateFreecam()
 
 	if (cameraMode == MainMenuBar::FreeCamMode::Free)
 	{
-		// Convert mouse X/Y to yaw/pitch angles in radians
-		static float degreesX = 0.0f;
-		static float degreesY = 0.0f;
+		// Convert mouse X/Y to yaw/pitch angles
+		static float currentCursorX = 0.0f;
+		static float currentCursorY = 0.0f;
+		static float targetCursorX = 0.0f;
+		static float targetCursorY = 0.0f;
 
 		if (ImGui::IsMouseDragging(ImGuiMouseButton_Right, 0.0f))
 		{
-			degreesX = fmodf(degreesX + io.MouseDelta.x, 360.0f);
-			degreesY = fmodf(degreesY + io.MouseDelta.y, 360.0f);
+			targetCursorX += io.MouseDelta.x * 0.5f;
+			targetCursorY += io.MouseDelta.y * 0.5f;
 		}
 
+		// Exponential decay view angle smoothing (https://stackoverflow.com/a/10228863)
+		const double springiness = 60.0;
+		const float mult = static_cast<float>(1.0 - std::exp(std::log(0.5) * springiness * io.DeltaTime));
+
+		currentCursorX += (targetCursorX - currentCursorX) * mult;
+		currentCursorY += (targetCursorY - currentCursorY) * mult;
+
+		float degreesX = std::fmodf(currentCursorX, 360.0f);
+		if (degreesX < 0) degreesX += 360.0f;
+		float degreesY = std::fmodf(currentCursorY, 360.0f);
+		if (degreesY < 0) degreesY += 360.0f;
+
+		// Degrees to radians
 		yaw = degreesX * (3.14159f / 180.0f);
 		pitch = degreesY * (3.14159f / 180.0f);
 
