@@ -19,7 +19,7 @@ public:
 	virtual void CreateHandleFromPath(StreamingRefHandle& Handle, const AssetPath& Path, const GGUUID& UUID) override;	// 2
 	virtual void CreateHandleFromObject(StreamingRefHandle& Handle, RTTIRefObject *Object, uint8_t Flags) override;		// 3
 	virtual void IStreamingManagerUnknown04(StreamingRefHandle&) override;												// 4
-	virtual void IStreamingManagerUnknown05(StreamingRefHandle& Handle, uint8_t Flags, IStreamingRefCallback *Callback, void *Unknown) override;	// 5
+	virtual void IStreamingManagerUnknown05(StreamingRefHandle& Handle, uint8_t Flags, IStreamingRefCallback *Callback, void *Unknown) override;	// 5 Callback is discarded on destruction, copy ctors, and assignment operators
 	virtual void UpdateLoadState(StreamingRefHandle& Handle, uint8_t Flags) override;									// 6
 	virtual void IStreamingManagerUnknown07(StreamingRefHandle&, uint8_t) override;										// 7
 

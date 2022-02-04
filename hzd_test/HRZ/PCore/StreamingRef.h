@@ -31,7 +31,7 @@ private:
 	};
 	assert_size(StreamData, 0x38);
 
-	StreamData *m_Data = nullptr;					// 0x0
+	StreamData *m_Data = nullptr;					// 0x0 Ref counted pointer
 	IStreamingRefCallback *m_RefCallback = nullptr;	// 0x8
 	void *m_Unknown10 = nullptr;					// 0x10
 	StreamFlags m_Flags = None;						// 0x18

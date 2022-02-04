@@ -22,7 +22,6 @@ DECL_RTTI(AIFaction);
 
 HRZ::SharedLock ResourceListLock;
 std::unordered_set<RTTIRefObject *> CachedWeatherSetups;
-std::unordered_set<RTTIRefObject *> CachedSpawnSetupBases;
 std::unordered_set<RTTIRefObject *> CachedAIFactions;
 
 ModCoreEvents::ValuePatchVisitor::ValuePatchVisitor(const RTTIValuePatch& Patch) : m_Patch(Patch)
@@ -185,9 +184,6 @@ void ModCoreEvents::OnLoadCoreObjects(const String& CorePath, const Array<Ref<RT
 			if (refObject->GetRTTI()->IsKindOf(HRZ::RTTI_WeatherSetup))
 				CachedWeatherSetups.emplace(refObject);
 
-			if (refObject->GetRTTI()->IsKindOf(HRZ::RTTI_SpawnSetupBase))
-				CachedSpawnSetupBases.emplace(refObject);
-
 			if (refObject->GetRTTI()->IsKindOf(HRZ::RTTI_AIFaction))
 				CachedAIFactions.emplace(refObject);
 		}
@@ -205,7 +201,6 @@ void ModCoreEvents::OnUnloadCoreObjects(const String& CorePath, const Array<Ref<
 		for (auto& refObject : Objects)
 		{
 			CachedWeatherSetups.erase(refObject);
-			CachedSpawnSetupBases.erase(refObject);
 			CachedAIFactions.erase(refObject);
 		}
 	}

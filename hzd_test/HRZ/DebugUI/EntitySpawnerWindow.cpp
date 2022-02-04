@@ -8,12 +8,10 @@
 #include "../Core/Resource.h"
 #include "../Core/Player.h"
 #include "../Core/StreamingManager.h"
+#include "../Core/PrefetchList.h"
 
 #include "DebugUI.h"
 #include "EntitySpawnerWindow.h"
-
-extern HRZ::SharedLock ResourceListLock;
-extern std::unordered_set<HRZ::RTTIRefObject *> CachedSpawnSetupBases;
 
 namespace HRZ
 {
@@ -23,6 +21,8 @@ DECL_RTTI(SpawnSetupBase);
 
 namespace HRZ::DebugUI
 {
+
+std::unordered_map<GGUUID, StreamingRef<Resource>> CurrentlyLoadedSpawnSetups;
 
 void DebugUI::EntitySpawnerLoaderCallback::OnStreamingRefLoad(RTTIRefObject *Object)
 {
@@ -62,25 +62,26 @@ void DebugUI::EntitySpawnerLoaderCallback::OnStreamingRefUnload()
 
 void DebugUI::EntitySpawnerLoaderCallback::DoSpawn(const std::string_view CorePath, const std::string_view UUID)
 {
-	StreamingRef<Resource> newHandle;
-	IStreamingManager::AssetLink link
+	auto uuid = GGUUID::Parse(UUID);
+
+	if (auto itr = CurrentlyLoadedSpawnSetups.find(uuid); itr != CurrentlyLoadedSpawnSetups.end())
 	{
-		.m_Handle = &newHandle,
-		.m_Path = CorePath.data(),
-		.m_UUID = GGUUID::Parse(UUID),
-	};
+		// Instance already loaded. Spawn a copy.
+		OnStreamingRefLoad(itr->second.get());
+	}
+	else
+	{
+		// Instance has to be loaded
+		StreamingRef<Resource> resourceHandle;
+		StreamingManager::Instance()->CreateHandleFromPath(resourceHandle, AssetPath{ CorePath.data() }, uuid);
 
-	// Don't call CreateHandleFromLink directly on m_PendingLoadBodyVariant. It won't unload the previous asset.
-	StreamingManager::Instance()->CreateHandleFromLink(link);
+		// Set the loader callback
+		m_NextSpawnSetup = resourceHandle;
+		StreamingManager::Instance()->IStreamingManagerUnknown05(m_NextSpawnSetup, 1, this, nullptr);
+		StreamingManager::Instance()->UpdateLoadState(m_NextSpawnSetup, 5);
 
-	// Now set the loader callback
-	m_NextSpawnSetup = newHandle;
-	StreamingManager::Instance()->IStreamingManagerUnknown05(m_NextSpawnSetup, 1, this, nullptr);
-	StreamingManager::Instance()->UpdateLoadState(m_NextSpawnSetup, 7);
-
-	// Handle cases where the ref is already loaded
-	if (m_NextSpawnSetup)
-		OnStreamingRefLoad(m_NextSpawnSetup.get());
+		CurrentlyLoadedSpawnSetups.emplace(uuid, m_NextSpawnSetup);
+	}
 }
 
 void EntitySpawnerWindow::Render()
