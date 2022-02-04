@@ -1,3 +1,5 @@
+# HZD Gameplay Tweaks & Cheat Menu
+# Source code: https://github.com/Nukem9/HZDCoreEditor/tree/master/hzd_test
 #
 # *** MAIN SETTINGS ***
 #
@@ -200,6 +202,19 @@ DecreaseTimeOfDay = -1      # Unbound. Decrease the time of day by 1 hour.
     Value = "10"
 
     #
+    # Patch (2): QoL: Remove the vignette postprocessing effect
+    #
+    [[AssetOverrides.Disabled]]
+    ObjectTypes = "VignetteSettingsResource"
+    Path = "InnerRadius"
+    Value = "0"
+
+    [[AssetOverrides.Disabled]]
+    ObjectTypes = "VignetteSettingsResource"
+    Path = "OuterRadius"
+    Value = "0"
+
+    #
     # Patch (2): QoL: Remove all camera magnetism, but optionally keep aim assist enabled when Aloy's focus is open
     #
     [[AssetOverrides.Disabled]]
@@ -302,7 +317,7 @@ DecreaseTimeOfDay = -1      # Unbound. Decrease the time of day by 1 hour.
     Notes = "Default typically between 150 and 1000. DynamicSpawnEcotopeSetup in entities/dynamicspawn/dynamicspawnmanager"
 
     #
-    # Patch (1): QoL: Hide Aloy's dynamic hair to prevent clipping with custom outfits.
+    # Patch (1): QoL: Hide Aloy's dynamic hair to prevent clipping with custom outfits
     #
     [[AssetOverrides.Disabled]]
     ObjectUUIDs = "{90DF4B98-42E7-1639-8B8E-B046B8670B0C}"
