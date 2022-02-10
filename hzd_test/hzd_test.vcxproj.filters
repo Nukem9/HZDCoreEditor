@@ -33,7 +33,7 @@
     <ClCompile Include="XUtil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="winhttp_exports.cpp">
+    <ClCompile Include="version_dll_proxy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="HRZ\Core\RTTI.cpp">
