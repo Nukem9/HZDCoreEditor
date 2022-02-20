@@ -45,13 +45,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <TargetName>winhttp</TargetName>
+    <TargetName>version</TargetName>
     <IncludePath>$(SolutionDir)Dependencies\detours;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <LibraryPath>$(OutDir);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <TargetName>winhttp</TargetName>
+    <TargetName>version</TargetName>
     <IncludePath>$(SolutionDir)Dependencies\detours;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <LibraryPath>$(OutDir);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
@@ -118,7 +118,7 @@
     <ClCompile Include="RTTI\RTTICSharpExporter.cpp" />
     <ClCompile Include="RTTI\RTTIIDAExporter.cpp" />
     <ClCompile Include="RTTI\RTTIYamlExporter.cpp" />
-    <ClCompile Include="winhttp_exports.cpp" />
+    <ClCompile Include="version_dll_proxy.cpp" />
     <ClCompile Include="XUtil.cpp" />
   </ItemGroup>
   <ItemGroup>

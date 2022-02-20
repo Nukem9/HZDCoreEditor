@@ -23,6 +23,9 @@
 #include "ModCoreEvents.h"
 #include "common.h"
 
+HMODULE g_thisModule;
+extern HMODULE origDll;
+
 using namespace HRZ;
 
 bool hk_SwapChainDX12_Present(SwapChainDX12 *SwapChain)
@@ -351,6 +354,8 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpReserved)
 {
 	if (fdwReason == DLL_PROCESS_ATTACH)
 	{
+		g_thisModule = hModule;
+
 		wchar_t modulePath[MAX_PATH] {};
 		GetModuleFileNameW(GetModuleHandleW(nullptr), modulePath, static_cast<DWORD>(std::size(modulePath)));
 
@@ -381,6 +386,14 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpReserved)
 				" (version 1.11) is the minimum requirement.\n\nExecutable path: %ws", e.what(), modulePath);
 
 			MessageBoxW(nullptr, buffer, L"Error", MB_ICONERROR);
+		}
+	}
+
+	else if (fdwReason == DLL_PROCESS_DETACH)
+	{
+		if (origDll)
+		{
+			FreeLibrary(origDll);
 		}
 	}
 
