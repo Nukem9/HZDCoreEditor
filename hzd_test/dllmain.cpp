@@ -1,6 +1,7 @@
 #include <atomic>
 #include <stdlib.h>
 #include <chrono>
+#include <filesystem>
 #include <detours/Detours.h>
 
 #include "HRZ/PGraphics3D/SwapChainDX12.h"
@@ -395,8 +396,17 @@ void discordInitialize(GameType Game)
 
 void discordUnInitialize()
 {
-	Discord_Shutdown();
-	Discord_ClearPresence();
+	//since we are only using discord-rpc for HZD we don't want this running duing DS so checking for the executable here instead of inside of Dll main
+
+	if (std::filesystem::exists(".\\HorizonZeroDawn.exe"))
+	{
+		if (ModConfiguration.EnableDiscordRichPresence) //don't use this when discord not initilized
+		{
+			Discord_ClearPresence();
+			Discord_Shutdown();
+
+		}
+	}
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpReserved)
