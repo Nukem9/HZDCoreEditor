@@ -8,7 +8,7 @@ EnableDebugMenu = true              # Enable the debug menu. Toggled with the ho
 EnableCoreLogging = false           # Log all core loads to the debug console.
 EnableAssetLogging = false          # Log all asset loads to the debug console.
 EnableAssetOverrides = true         # Enable the [AssetOverrides] section below.
-#EnableDiscordRichPresence = false  # Not yet implemented. Has no effect.
+EnableDiscordRichPresence = false   # shows you are playing HZD on discord like other games does.
 DebugMenuFontScale = 1.0            # Change the global font scale in the debug menu.
 
 [Gameplay]
